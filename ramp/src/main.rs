@@ -3,6 +3,7 @@ extern crate anyhow;
 #[macro_use]
 extern crate log;
 
+mod make_population;
 mod population;
 mod quant;
 mod raw_data;
@@ -29,7 +30,7 @@ fn main() -> Result<()> {
     if false {
         raw_data::grab_raw_data(&input)?;
     }
-    population::initialize()?;
+    let _population = make_population::initialize()?;
 
     Ok(())
 }
