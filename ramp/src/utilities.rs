@@ -80,3 +80,17 @@ pub fn basename(path: &PathBuf) -> String {
         .into_string()
         .unwrap()
 }
+
+pub fn print_count(x: usize) -> String {
+    let num = format!("{}", x);
+    let mut result = String::new();
+    let mut i = num.len();
+    for c in num.chars() {
+        result.push(c);
+        i -= 1;
+        if i > 0 && i % 3 == 0 {
+            result.push(',');
+        }
+    }
+    result
+}
