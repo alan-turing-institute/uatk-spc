@@ -1,14 +1,19 @@
 #[macro_use]
+extern crate anyhow;
+#[macro_use]
 extern crate log;
+
+mod utilities;
 
 use std::collections::{HashMap, HashSet};
 use std::fs::File;
-use std::path::{Path, PathBuf};
-use std::process::Command;
+use std::path::Path;
 
 use anyhow::Result;
 use maplit::hashmap;
 use serde::Deserialize;
+
+use self::utilities::{basename, download, untar, unzip};
 
 fn main() -> Result<()> {
     simple_logger::SimpleLogger::new().init().unwrap();
@@ -61,23 +66,43 @@ fn raw_data_handler(input: &Input) -> Result<()> {
     // TODO And who creates these?
     // This grabbed tus_hse_west-yorkshire.gz, which is an 800MB (!!) CSV that seems to be a
     // per-person model
-    let tus_needed = {
-        // TODO This is much more heavyweight than the python one-liner
-        let mut result = HashSet::new();
-        for rec in csv::Reader::from_reader(File::open(lookup_path)?).deserialize() {
-            let rec: MsoaLookupRow = rec?;
-            if input.initial_cases_per_msoa.contains_key(&rec.msoa) {
-                result.insert(rec.new_tu);
-            }
+    let mut tus_needed = HashSet::new();
+    let mut osm_needed = HashSet::new();
+    // TODO This is much more heavyweight than the python one-liner
+    for rec in csv::Reader::from_reader(File::open(lookup_path)?).deserialize() {
+        let rec: MsoaLookupRow = rec?;
+        if input.initial_cases_per_msoa.contains_key(&rec.msoa) {
+            tus_needed.insert(rec.new_tu);
+            osm_needed.insert(rec.osm);
         }
-        result
-    };
+    }
     for tu in tus_needed {
         let path = download(azure.join("countydata").join(&format!("tus_hse_{}.gz", tu)))?;
         untar(path)?;
     }
+    for osm_url in osm_needed {
+        let path = download(osm_url.into())?;
+        let output_dir = format!("raw_data/osm/{}", basename(&path));
+        unzip(path, output_dir)?;
+    }
 
     // TODO combine all the TU files
+
+    // TODO Azure calls it nationaldata, local output seems to be national_data
+    let path = download(azure.join("nationaldata").join("QUANT_RAMP.tar.gz"))?;
+    untar(path)?;
+
+    // CommutingOD is all commented out
+
+    download(azure.join("nationaldata").join("businessRegistry.csv"))?;
+
+    download(azure.join("nationaldata").join("timeAtHomeIncreaseCTY.csv"))?;
+
+    let path = download(azure.join("nationaldata").join("MSOAS_shp.tar.gz"))?;
+    untar(path)?;
+
+    // TODO Some transformation of the lockdown file, "Dealing with the TimeAtHomeIncrease data".
+    // It gets pickled later.
 
     Ok(())
 }
@@ -88,45 +113,6 @@ struct MsoaLookupRow {
     msoa: MSOA,
     #[serde(rename = "NewTU")]
     new_tu: String,
-}
-
-/// Returns the filename
-fn download(url: PathBuf) -> Result<PathBuf> {
-    let filename = url
-        .file_name()
-        .unwrap()
-        .to_os_string()
-        .into_string()
-        .unwrap();
-    let output = Path::new("raw_data").join(filename);
-
-    info!("Downloading {} to {}", url.display(), output.display());
-
-    if output.exists() {
-        info!("... file exists, skipping");
-        return Ok(output);
-    }
-
-    std::fs::create_dir_all("raw_data")?;
-    Command::new("wget")
-        .arg(url)
-        .arg("-O")
-        .arg(&output)
-        .status()?;
-    // TODO assert success or turn into error
-    Ok(output)
-}
-
-fn untar(file: PathBuf) -> Result<()> {
-    info!("Untarring {}...", file.display());
-    // TODO Skipping isn't really idempotent; we still spend time gunzipping. Maybe we have to
-    // insist on extracting one known path.
-    Command::new("tar")
-        .arg("xzvf")
-        .arg(file)
-        .arg("--directory")
-        .arg("raw_data")
-        .arg("--skip-old-files")
-        .status()?;
-    Ok(())
+    #[serde(rename = "OSM")]
+    osm: String,
 }
