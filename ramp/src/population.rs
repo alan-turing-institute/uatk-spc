@@ -5,12 +5,25 @@ use std::fs::File;
 use anyhow::Result;
 use serde::Deserialize;
 
+use crate::quant::quant_get_flows;
 use crate::utilities::print_count;
 use crate::MSOA;
 
 pub struct Population {
     pub households: Vec<Household>,
     pub people: Vec<Person>,
+
+    pub activities: HashMap<Activity, ActivityLocation>,
+}
+
+impl Population {
+    pub fn unique_msoas(&self) -> HashSet<MSOA> {
+        let mut result = HashSet::new();
+        for h in &self.households {
+            result.insert(h.msoa.clone());
+        }
+        result
+    }
 }
 
 pub struct Household {
@@ -19,6 +32,7 @@ pub struct Household {
     pub orig_hid: isize,
     pub members: Vec<PersonID>,
 
+    // TODO Actually, this should probably be separate
     pub disease_danger: f64,
 }
 
@@ -30,7 +44,29 @@ pub struct Person {
     pub age_years: usize,
     pub pr_primary_school: f64,
     pub pr_secondary_school: f64,
+    // Per activity:
+    // - list of locations likely to visit
+    // - How likely they are to do the activity -- a "flow"
+    //   - same length as locations, sum to 1
+    // - Duration
 }
+
+pub enum Activity {
+    Retail,
+    PrimarySchool,
+    SecondarySchool,
+    Home,
+    Work,
+    Nightclubs,
+}
+
+pub struct ActivityLocation {
+    activity: Activity,
+    locations: Vec<Location>,
+    // The danger per location is kept here -- why is it per activity though?
+}
+
+pub struct Location {}
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct HouseholdID(pub usize);
@@ -50,12 +86,19 @@ impl fmt::Display for PersonID {
 
 // population_initialisation.py
 pub fn initialize() -> Result<()> {
-    let _population = read_individual_time_use_and_health_data()?;
+    let mut population = Population {
+        households: Vec::new(),
+        people: Vec::new(),
+        activities: HashMap::new(),
+    };
+    read_individual_time_use_and_health_data(&mut population)?;
+
+    setup_retail(&mut population)?;
 
     Ok(())
 }
 
-fn read_individual_time_use_and_health_data() -> Result<Population> {
+fn read_individual_time_use_and_health_data(population: &mut Population) -> Result<()> {
     let mut households: Vec<Household> = Vec::new();
     let mut people: Vec<Person> = Vec::new();
     let mut household_lookup: HashMap<(MSOA, isize), HouseholdID> = HashMap::new();
@@ -68,6 +111,9 @@ fn read_individual_time_use_and_health_data() -> Result<Population> {
         // TODO Progress bar
         if people.len() % 1000 == 0 {
             info!("{} people so far", print_count(people.len()));
+            /*if !people.is_empty() {
+                break;
+            }*/
         }
 
         let rec: TuPerson = rec?;
@@ -125,17 +171,15 @@ fn read_individual_time_use_and_health_data() -> Result<Population> {
 
     // TODO Strip out households with >10 people and fix up all the IDs
 
-    let mut unique_msoas = HashSet::new();
-    for h in &households {
-        unique_msoas.insert(h.msoa.clone());
-    }
+    population.households = households;
+    population.people = people;
     info!(
         "{} people across {} households, and {} MSOAs",
-        print_count(people.len()),
-        print_count(households.len()),
-        print_count(unique_msoas.len())
+        print_count(population.people.len()),
+        print_count(population.households.len()),
+        print_count(population.unique_msoas().len())
     );
-    Ok(Population { households, people })
+    Ok(())
 }
 
 #[derive(Deserialize)]
@@ -147,4 +191,18 @@ struct TuPerson {
 
     pschool: f64,
     age: usize,
+}
+
+fn setup_retail(population: &mut Population) -> Result<()> {
+    info!("Reading retail flow data...");
+    // generate flows
+    // and info about the stores
+
+    // id, zonei, east, north
+    let stores = "raw_data/QUANT_RAMP/retailpointsZones.csv";
+
+    // threshold is 10, nr
+    let flows = quant_get_flows("Retail", population.unique_msoas())?;
+
+    Ok(())
 }

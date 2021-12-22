@@ -8,5 +8,7 @@ anyhow = "1.0.51"
 csv = "1.1.6"
 log = "0.4.14"
 maplit = "1.0.2"
+ndarray = "0.15.4"
+ndarray-npy = "0.8.1"
 serde = { version = "1.0.132", features = ["derive"] }
 simple_logger = "1.16.0"

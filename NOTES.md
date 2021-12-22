@@ -23,6 +23,12 @@ initial_cases_per_msoa: HashMap<MSOA, usize>,
 
 population_initialisation.py the main example
 
+Don't want to keep around a bunch of old columns:
+- perf
+- some of them we use/transform/validate and then get rid of (the hid, pid index)
+- data from the outside world is messy. deal with that once, then work in your cleaned up representation
+- keep around original IDs to debug if needed
+
 ### CSV files
 
 tus_hse_west-yorkshire.csv

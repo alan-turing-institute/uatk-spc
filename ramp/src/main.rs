@@ -4,6 +4,7 @@ extern crate anyhow;
 extern crate log;
 
 mod population;
+mod quant;
 mod raw_data;
 mod utilities;
 
