@@ -21,22 +21,42 @@ pub fn quant_get_flows(
     msoas: HashSet<MSOA>,
     threshold: Threshold,
 ) -> Result<HashMap<MSOA, Vec<(VenueID, f64)>>> {
+    // Build a mapping from MSOA to zonei
+    let mut msoa_to_zonei: HashMap<MSOA, usize> = HashMap::new();
+    let population_csv = match activity {
+        Activity::Retail | Activity::Nightclub => "retailpointsPopulation.csv",
+        Activity::PrimarySchool => "primaryPopulation.csv",
+        Activity::SecondarySchool => "secondaryPopulation.csv",
+        Activity::Home | Activity::Work => unreachable!(),
+    };
+    for rec in csv::Reader::from_reader(File::open(
+        Path::new("raw_data/QUANT_RAMP").join(population_csv),
+    )?)
+    .deserialize()
+    {
+        let rec: RetailPopRow = rec?;
+        msoa_to_zonei.insert(rec.msoaiz, rec.zonei);
+    }
+
     let mut result = HashMap::new();
     // TODO This is slow, ripe for parallelization
     for msoa in msoas {
-        info!("Get {:?} flows for {}", activity, msoa.0);
+        // TODO Defaulting to 0 when the MSOA is missing seems weird?!
+        let zonei = msoa_to_zonei.get(&msoa).cloned().unwrap_or(0);
+
+        info!("Get {:?} flows for {} (zonei {})", activity, msoa.0, zonei);
         let mut pr_visit_venue = match activity {
             // TODO These're treated exactly the same?!
             Activity::Retail | Activity::Nightclub => get_venue_flows(
                 msoa.clone(),
-                "retailpointsPopulation.csv",
+                zonei,
                 "retailpointsZones.csv",
                 "retailpointsProbSij.bin",
                 0.0,
             )?,
             Activity::PrimarySchool => get_venue_flows(
                 msoa.clone(),
-                "primaryPopulation.csv",
+                zonei,
                 "primaryZones.csv",
                 // TODO PiJ? SiJ? HiJ?
                 "primaryProbPij.bin",
@@ -44,7 +64,7 @@ pub fn quant_get_flows(
             )?,
             Activity::SecondarySchool => get_venue_flows(
                 msoa.clone(),
-                "secondaryPopulation.csv",
+                zonei,
                 "secondaryZones.csv",
                 "secondaryProbPij.bin",
                 0.0,
@@ -93,7 +113,7 @@ impl Threshold {
 // From this MSOA, find the probability of visiting each venue
 fn get_venue_flows(
     msoa: MSOA,
-    population_csv: &str,
+    zonei: usize,
     // TODO This is only passed in for the commented out work in the inner loop
     _zones_csv: &str,
     prob_sij: &str,
@@ -102,10 +122,8 @@ fn get_venue_flows(
     use ndarray::Array2;
     use ndarray_npy::ReadNpyExt;
 
-    // TODO Defaulting to 0 when the MSOA is missing seems weird?!
     // TODO Could definitely cache this and the table
     let start = std::time::Instant::now();
-    let zonei = lookup_zonei_from_population_csv(msoa.clone(), population_csv)?.unwrap_or(0);
 
     // TODO Unpickling is going to be hard. In python...
     //
@@ -136,21 +154,6 @@ fn get_venue_flows(
     //info!("MSOA {} mapped to zonei {}. m is {}, n is {}, we got {} results", msoa.0, zonei, m, n, results.len());
 
     Ok(results)
-}
-
-// From population_csv, find the ONE row where msoaiz matches, and return zonei of that
-fn lookup_zonei_from_population_csv(msoa: MSOA, population_csv: &str) -> Result<Option<usize>> {
-    for rec in csv::Reader::from_reader(File::open(
-        Path::new("raw_data/QUANT_RAMP").join(population_csv),
-    )?)
-    .deserialize()
-    {
-        let rec: RetailPopRow = rec?;
-        if rec.msoaiz == msoa {
-            return Ok(Some(rec.zonei));
-        }
-    }
-    Ok(None)
 }
 
 #[derive(Deserialize)]
