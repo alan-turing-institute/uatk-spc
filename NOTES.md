@@ -37,6 +37,10 @@ What do all the column names mean? Explicit format allows for documentation
 
 https://github.com/BurntSushi/xsv useful
 
+### IDs matching up
+
+add_individual_flows doc is perfect example -- I need two coffees to understand this. Why not just reason about (VenueID, probability) tuples? Forcing everything into a 2D array with zeroed out values and indices having to match up is easy to get wrong.
+
 ## Comparisons
 
 - LoC
@@ -71,3 +75,8 @@ What tooling do people use to explore gigantic CSV files now? Make sure the worl
 ## Treating everything as a table
 
 What if the same hid has different lat/lng? Lots of paranoia checks everywhere, or just make it impossible to represent this situation in the first place
+
+## Code smells
+
+- why is getProbablePrimarySchoolsByMSOAIZ, getProbableSecondarySchoolsByMSOAIZ, etc copied?! makes the code look scarier than it is
+	- and why the unused variables there? (having the compiler complain is useful here)

@@ -77,3 +77,12 @@ impl fmt::Display for PersonID {
         write!(f, "Person #{}", self.0)
     }
 }
+
+// TODO These're also scoped by an activity, like retail!
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
+pub struct VenueID(pub usize);
+impl fmt::Display for VenueID {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Venue #{}", self.0)
+    }
+}

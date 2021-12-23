@@ -5,7 +5,7 @@ use anyhow::Result;
 use serde::Deserialize;
 
 use crate::population::{Household, HouseholdID, Person, PersonID, Population};
-use crate::quant::quant_get_flows;
+use crate::quant::{quant_get_flows, Threshold};
 use crate::utilities::print_count;
 use crate::MSOA;
 
@@ -120,14 +120,14 @@ struct TuPerson {
 
 fn setup_retail(population: &mut Population) -> Result<()> {
     info!("Reading retail flow data...");
-    // generate flows
-    // and info about the stores
 
     // id, zonei, east, north
+    // TODO Let's settle terminology -- shop? venue? retail point?
     let stores = "raw_data/QUANT_RAMP/retailpointsZones.csv";
 
-    // threshold is 10, nr
-    let flows = quant_get_flows("Retail", population.unique_msoas())?;
+    // Per MSOA, a list of venues and the probability of going from the MSOA to that venue
+    let flows = quant_get_flows("Retail", population.unique_msoas(), Threshold::TopN(10))?;
+    // TODO add_individual_flows
 
     Ok(())
 }
