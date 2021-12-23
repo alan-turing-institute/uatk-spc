@@ -8,11 +8,12 @@ use ndarray_npy::ReadNpyExt;
 use ordered_float::NotNan;
 use serde::Deserialize;
 
-use crate::population::{Activity, VenueID};
+use crate::population::{Activity, Venue, VenueID};
 use crate::MSOA;
 
 pub enum Threshold {
     // Take the top values until we hit a sum
+    #[allow(unused)]
     Sum(f64),
     // TODO What did NR stand for?
     TopN(usize),
@@ -39,7 +40,7 @@ pub fn quant_get_flows(
     )?)
     .deserialize()
     {
-        let rec: RetailPopRow = rec?;
+        let rec: PopulationRow = rec?;
         msoa_to_zonei.insert(rec.msoaiz, rec.zonei);
     }
 
@@ -62,14 +63,10 @@ pub fn quant_get_flows(
         let mut pr_visit_venue = match activity {
             // TODO These're treated exactly the same?!
             Activity::Retail | Activity::Nightclub => {
-                get_venue_flows(msoa.clone(), zonei, &table, "retailpointsZones.csv", 0.0)?
+                get_venue_flows(zonei, &table, "retailpointsZones.csv", 0.0)?
             }
-            Activity::PrimarySchool => {
-                get_venue_flows(msoa.clone(), zonei, &table, "primaryZones.csv", 0.0)?
-            }
-            Activity::SecondarySchool => {
-                get_venue_flows(msoa.clone(), zonei, &table, "secondaryZones.csv", 0.0)?
-            }
+            Activity::PrimarySchool => get_venue_flows(zonei, &table, "primaryZones.csv", 0.0)?,
+            Activity::SecondarySchool => get_venue_flows(zonei, &table, "secondaryZones.csv", 0.0)?,
             // Something else must handle these
             Activity::Home | Activity::Work => unreachable!(),
         };
@@ -113,7 +110,6 @@ impl Threshold {
 
 // From this MSOA, find the probability of visiting each venue
 fn get_venue_flows(
-    msoa: MSOA,
     zonei: usize,
     table: &Array2<f64>,
     // TODO This is only passed in for the commented out work in the inner loop
@@ -139,8 +135,43 @@ fn get_venue_flows(
     Ok(results)
 }
 
+// TODO Let's settle terminology -- shop? venue? retail point? location?
+pub fn load_venues(activity: Activity) -> Result<Vec<Venue>> {
+    let csv_path = match activity {
+        Activity::Retail | Activity::Nightclub => "retailpointsZones.csv",
+        Activity::PrimarySchool => "primaryZones.csv",
+        Activity::SecondarySchool => "secondaryZones.csv",
+        Activity::Home | Activity::Work => unreachable!(),
+    };
+    let mut venues = Vec::new();
+    for rec in csv::Reader::from_reader(File::open(format!("raw_data/QUANT_RAMP/{}", csv_path))?)
+        .deserialize()
+    {
+        let rec: ZoneRow = rec?;
+        // Let's check this while we're at it
+        assert_eq!(venues.len(), rec.zonei);
+        venues.push(Venue {
+            id: VenueID(venues.len()),
+            activity,
+            east: rec.east,
+            north: rec.north,
+            urn: rec.urn,
+        });
+    }
+    Ok(venues)
+}
+
 #[derive(Deserialize)]
-struct RetailPopRow {
+struct PopulationRow {
     msoaiz: MSOA,
     zonei: usize,
+}
+
+#[derive(Deserialize)]
+struct ZoneRow {
+    east: f64,
+    north: f64,
+    zonei: usize,
+    #[serde(rename = "urn")]
+    urn: Option<usize>,
 }

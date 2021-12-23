@@ -7,7 +7,8 @@ pub struct Population {
     pub households: Vec<Household>,
     pub people: Vec<Person>,
 
-    pub activities: HashMap<Activity, ActivityLocation>,
+    // VenueID indexes into each list
+    pub venues_per_activity: HashMap<Activity, Vec<Venue>>,
 }
 
 impl Population {
@@ -45,24 +46,30 @@ pub struct Person {
     // - Duration
 }
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum Activity {
     Retail,
     PrimarySchool,
     SecondarySchool,
+    #[allow(unused)]
     Home,
+    #[allow(unused)]
     Work,
     Nightclub,
     // TODO I see quant files for hospitals, why not incorporated yet?
 }
 
-pub struct ActivityLocation {
-    activity: Activity,
-    locations: Vec<Location>,
-    // The danger per location is kept here -- why is it per activity though?
-}
+pub struct Venue {
+    pub id: VenueID,
+    pub activity: Activity,
 
-pub struct Location {}
+    // TODO Turn this into WGS84 from whatever coordinate system this is...
+    pub east: f64,
+    pub north: f64,
+    /// This only exists for PrimarySchool and SecondarySchool. It's a
+    /// https://en.wikipedia.org/wiki/Unique_Reference_Number
+    pub urn: Option<usize>,
+}
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
 pub struct HouseholdID(pub usize);

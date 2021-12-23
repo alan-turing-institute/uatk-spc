@@ -5,7 +5,7 @@ use anyhow::Result;
 use serde::Deserialize;
 
 use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Population};
-use crate::quant::{quant_get_flows, Threshold};
+use crate::quant::{load_venues, quant_get_flows, Threshold};
 use crate::utilities::print_count;
 use crate::MSOA;
 
@@ -14,7 +14,7 @@ pub fn initialize() -> Result<Population> {
     let mut population = Population {
         households: Vec::new(),
         people: Vec::new(),
-        activities: HashMap::new(),
+        venues_per_activity: HashMap::new(),
     };
     read_individual_time_use_and_health_data(&mut population)?;
 
@@ -140,9 +140,9 @@ fn setup_venue_flows(
 ) -> Result<()> {
     info!("Reading {:?} flow data...", activity);
 
-    // id, zonei, east, north
-    // TODO Let's settle terminology -- shop? venue? retail point?
-    //let _stores = "raw_data/QUANT_RAMP/retailpointsZones.csv";
+    population
+        .venues_per_activity
+        .insert(activity, load_venues(activity)?);
 
     // Per MSOA, a list of venues and the probability of going from the MSOA to that venue
     let _flows = quant_get_flows(activity, population.unique_msoas(), threshold)?;
