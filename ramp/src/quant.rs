@@ -3,6 +3,8 @@ use std::fs::File;
 use std::path::Path;
 
 use anyhow::Result;
+use ndarray::Array2;
+use ndarray_npy::ReadNpyExt;
 use ordered_float::NotNan;
 use serde::Deserialize;
 
@@ -23,10 +25,13 @@ pub fn quant_get_flows(
 ) -> Result<HashMap<MSOA, Vec<(VenueID, f64)>>> {
     // Build a mapping from MSOA to zonei
     let mut msoa_to_zonei: HashMap<MSOA, usize> = HashMap::new();
-    let population_csv = match activity {
-        Activity::Retail | Activity::Nightclub => "retailpointsPopulation.csv",
-        Activity::PrimarySchool => "primaryPopulation.csv",
-        Activity::SecondarySchool => "secondaryPopulation.csv",
+    let (population_csv, prob_sij) = match activity {
+        Activity::Retail | Activity::Nightclub => {
+            ("retailpointsPopulation.csv", "retailpointsProbSij.bin")
+        }
+        // TODO PiJ? SiJ? HiJ?
+        Activity::PrimarySchool => ("primaryPopulation.csv", "primaryProbPij.bin"),
+        Activity::SecondarySchool => ("secondaryPopulation.csv", "secondaryProbPij.bin"),
         Activity::Home | Activity::Work => unreachable!(),
     };
     for rec in csv::Reader::from_reader(File::open(
@@ -38,8 +43,17 @@ pub fn quant_get_flows(
         msoa_to_zonei.insert(rec.msoaiz, rec.zonei);
     }
 
+    // TODO Unpickling is going to be hard. In python...
+    //
+    // import pickle
+    // import numpy
+    // x = pickle.load(open("national_data/QUANT_RAMP/retailpointsProbSij.bin", "rb"))
+    // numpy.save('national_data/QUANT_RAMP/retailpointsProbSij.npy', x)
+    let table_path = format!("raw_data/QUANT_RAMP/{}", prob_sij).replace(".bin", ".npy");
+    let table = Array2::<f64>::read_npy(File::open(table_path)?)?;
+
     let mut result = HashMap::new();
-    // TODO This is slow, ripe for parallelization
+    // TODO This is no longer slow, but we could still parallelize
     for msoa in msoas {
         // TODO Defaulting to 0 when the MSOA is missing seems weird?!
         let zonei = msoa_to_zonei.get(&msoa).cloned().unwrap_or(0);
@@ -47,28 +61,15 @@ pub fn quant_get_flows(
         info!("Get {:?} flows for {} (zonei {})", activity, msoa.0, zonei);
         let mut pr_visit_venue = match activity {
             // TODO These're treated exactly the same?!
-            Activity::Retail | Activity::Nightclub => get_venue_flows(
-                msoa.clone(),
-                zonei,
-                "retailpointsZones.csv",
-                "retailpointsProbSij.bin",
-                0.0,
-            )?,
-            Activity::PrimarySchool => get_venue_flows(
-                msoa.clone(),
-                zonei,
-                "primaryZones.csv",
-                // TODO PiJ? SiJ? HiJ?
-                "primaryProbPij.bin",
-                0.0,
-            )?,
-            Activity::SecondarySchool => get_venue_flows(
-                msoa.clone(),
-                zonei,
-                "secondaryZones.csv",
-                "secondaryProbPij.bin",
-                0.0,
-            )?,
+            Activity::Retail | Activity::Nightclub => {
+                get_venue_flows(msoa.clone(), zonei, &table, "retailpointsZones.csv", 0.0)?
+            }
+            Activity::PrimarySchool => {
+                get_venue_flows(msoa.clone(), zonei, &table, "primaryZones.csv", 0.0)?
+            }
+            Activity::SecondarySchool => {
+                get_venue_flows(msoa.clone(), zonei, &table, "secondaryZones.csv", 0.0)?
+            }
             // Something else must handle these
             Activity::Home | Activity::Work => unreachable!(),
         };
@@ -114,28 +115,11 @@ impl Threshold {
 fn get_venue_flows(
     msoa: MSOA,
     zonei: usize,
+    table: &Array2<f64>,
     // TODO This is only passed in for the commented out work in the inner loop
     _zones_csv: &str,
-    prob_sij: &str,
     min_threshold: f64,
 ) -> Result<Vec<(VenueID, f64)>> {
-    use ndarray::Array2;
-    use ndarray_npy::ReadNpyExt;
-
-    // TODO Could definitely cache this and the table
-    let start = std::time::Instant::now();
-
-    // TODO Unpickling is going to be hard. In python...
-    //
-    // import pickle
-    // import numpy
-    // x = pickle.load(open("national_data/QUANT_RAMP/retailpointsProbSij.bin", "rb"))
-    // numpy.save('national_data/QUANT_RAMP/retailpointsProbSij.npy', x)
-    let path = format!("raw_data/QUANT_RAMP/{}", prob_sij).replace(".bin", ".npy");
-    let table = Array2::<f64>::read_npy(File::open(path)?)?;
-    info!("...Shareable work took {:?}", start.elapsed());
-
-    let start = std::time::Instant::now();
     let mut results = Vec::new();
     // raw_data/QUANT_RAMP/retailpointsZones.csv has 14,228 rows representing venues.
     // n is 14,228 so hey that's good! one per venue.
@@ -149,7 +133,6 @@ fn get_venue_flows(
         }
         // TODO If not, we won't match up with venues?
     }
-    info!("...Table mangling took {:?}", start.elapsed());
 
     //info!("MSOA {} mapped to zonei {}. m is {}, n is {}, we got {} results", msoa.0, zonei, m, n, results.len());
 

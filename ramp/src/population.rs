@@ -53,6 +53,7 @@ pub enum Activity {
     Home,
     Work,
     Nightclub,
+    // TODO I see quant files for hospitals, why not incorporated yet?
 }
 
 pub struct ActivityLocation {
