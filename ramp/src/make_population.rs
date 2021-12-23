@@ -4,7 +4,7 @@ use std::fs::File;
 use anyhow::Result;
 use serde::Deserialize;
 
-use crate::population::{Household, HouseholdID, Person, PersonID, Population};
+use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Population};
 use crate::quant::{quant_get_flows, Threshold};
 use crate::utilities::print_count;
 use crate::MSOA;
@@ -18,7 +18,22 @@ pub fn initialize() -> Result<Population> {
     };
     read_individual_time_use_and_health_data(&mut population)?;
 
-    setup_retail(&mut population)?;
+    // pshop
+    setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;
+    // pleisure
+    setup_venue_flows(Activity::Nightclub, Threshold::TopN(10), &mut population)?;
+    // pschool-primary
+    setup_venue_flows(Activity::PrimarySchool, Threshold::TopN(5), &mut population)?;
+    // pschool-secondary
+    setup_venue_flows(
+        Activity::SecondarySchool,
+        Threshold::TopN(5),
+        &mut population,
+    )?;
+
+    // TODO Commuting
+
+    // TODO Lots of commented stuff, then rounding
 
     Ok(population)
 }
@@ -118,15 +133,19 @@ struct TuPerson {
     age: usize,
 }
 
-fn setup_retail(population: &mut Population) -> Result<()> {
-    info!("Reading retail flow data...");
+fn setup_venue_flows(
+    activity: Activity,
+    threshold: Threshold,
+    population: &mut Population,
+) -> Result<()> {
+    info!("Reading {:?} flow data...", activity);
 
     // id, zonei, east, north
     // TODO Let's settle terminology -- shop? venue? retail point?
-    let stores = "raw_data/QUANT_RAMP/retailpointsZones.csv";
+    //let _stores = "raw_data/QUANT_RAMP/retailpointsZones.csv";
 
     // Per MSOA, a list of venues and the probability of going from the MSOA to that venue
-    let flows = quant_get_flows("Retail", population.unique_msoas(), Threshold::TopN(10))?;
+    let _flows = quant_get_flows(activity, population.unique_msoas(), threshold)?;
     // TODO add_individual_flows
 
     Ok(())

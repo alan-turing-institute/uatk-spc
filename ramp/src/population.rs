@@ -45,13 +45,14 @@ pub struct Person {
     // - Duration
 }
 
+#[derive(Debug)]
 pub enum Activity {
     Retail,
     PrimarySchool,
     SecondarySchool,
     Home,
     Work,
-    Nightclubs,
+    Nightclub,
 }
 
 pub struct ActivityLocation {

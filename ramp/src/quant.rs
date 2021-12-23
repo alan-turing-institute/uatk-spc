@@ -6,7 +6,7 @@ use anyhow::Result;
 use ordered_float::NotNan;
 use serde::Deserialize;
 
-use crate::population::VenueID;
+use crate::population::{Activity, VenueID};
 use crate::MSOA;
 
 pub enum Threshold {
@@ -17,23 +17,40 @@ pub enum Threshold {
 }
 
 pub fn quant_get_flows(
-    venue: &str,
+    activity: Activity,
     msoas: HashSet<MSOA>,
     threshold: Threshold,
 ) -> Result<HashMap<MSOA, Vec<(VenueID, f64)>>> {
     let mut result = HashMap::new();
     // TODO This is slow, ripe for parallelization
     for msoa in msoas {
-        info!("Get flows for {}", msoa.0);
-        let mut pr_visit_venue = match venue {
-            "Retail" => get_retail_pr(
+        info!("Get {:?} flows for {}", activity, msoa.0);
+        let mut pr_visit_venue = match activity {
+            // TODO These're treated exactly the same?!
+            Activity::Retail | Activity::Nightclub => get_venue_flows(
                 msoa.clone(),
                 "retailpointsPopulation.csv",
                 "retailpointsZones.csv",
                 "retailpointsProbSij.bin",
                 0.0,
             )?,
-            _ => bail!("Unknown venue {}", venue),
+            Activity::PrimarySchool => get_venue_flows(
+                msoa.clone(),
+                "primaryPopulation.csv",
+                "primaryZones.csv",
+                // TODO PiJ? SiJ? HiJ?
+                "primaryProbPij.bin",
+                0.0,
+            )?,
+            Activity::SecondarySchool => get_venue_flows(
+                msoa.clone(),
+                "secondaryPopulation.csv",
+                "secondaryZones.csv",
+                "secondaryProbPij.bin",
+                0.0,
+            )?,
+            // Something else must handle these
+            Activity::Home | Activity::Work => unreachable!(),
         };
 
         // Sort ascending by probability
@@ -73,9 +90,8 @@ impl Threshold {
     }
 }
 
-// getProbableRetailByMSOAIZ
 // From this MSOA, find the probability of visiting each venue
-fn get_retail_pr(
+fn get_venue_flows(
     msoa: MSOA,
     population_csv: &str,
     // TODO This is only passed in for the commented out work in the inner loop
@@ -99,8 +115,9 @@ fn get_retail_pr(
     // numpy.save('national_data/QUANT_RAMP/retailpointsProbSij.npy', x)
     let path = format!("raw_data/QUANT_RAMP/{}", prob_sij).replace(".bin", ".npy");
     let table = Array2::<f64>::read_npy(File::open(path)?)?;
-    info!("Shareable work took {:?}", start.elapsed());
+    info!("...Shareable work took {:?}", start.elapsed());
 
+    let start = std::time::Instant::now();
     let mut results = Vec::new();
     // raw_data/QUANT_RAMP/retailpointsZones.csv has 14,228 rows representing venues.
     // n is 14,228 so hey that's good! one per venue.
@@ -114,6 +131,7 @@ fn get_retail_pr(
         }
         // TODO If not, we won't match up with venues?
     }
+    info!("...Table mangling took {:?}", start.elapsed());
 
     //info!("MSOA {} mapped to zonei {}. m is {}, n is {}, we got {} results", msoa.0, zonei, m, n, results.len());
 
