@@ -18,6 +18,7 @@ pub fn grab_raw_data(input: &Input) -> Result<()> {
 
     // TODO TUS files. county_data/tus_hse_{xyz}.gz. MSOA ID -> NewTU
     // TODO And who creates these?
+    // tu = time use
     // This grabbed tus_hse_west-yorkshire.gz, which is an 800MB (!!) CSV that seems to be a
     // per-person model
     let mut tus_needed = HashSet::new();

@@ -39,11 +39,10 @@ pub struct Person {
     pub age_years: usize,
     pub pr_primary_school: f64,
     pub pr_secondary_school: f64,
-    // Per activity:
-    // - list of locations likely to visit
-    // - How likely they are to do the activity -- a "flow"
-    //   - same length as locations, sum to 1
-    // - Duration
+
+    // The probabilities sum to 1 (TODO Make a distribution type or something)
+    // TODO Duration per activity?
+    pub flows_per_activity: HashMap<Activity, Vec<(VenueID, f64)>>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]

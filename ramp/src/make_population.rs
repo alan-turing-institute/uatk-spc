@@ -4,7 +4,7 @@ use std::fs::File;
 use anyhow::Result;
 use serde::Deserialize;
 
-use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Population};
+use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Population, VenueID};
 use crate::quant::{load_venues, quant_get_flows, Threshold};
 use crate::utilities::print_count;
 use crate::MSOA;
@@ -100,6 +100,8 @@ fn read_individual_time_use_and_health_data(population: &mut Population) -> Resu
             age_years: rec.age,
             pr_primary_school,
             pr_secondary_school,
+
+            flows_per_activity: HashMap::new(),
         });
     }
     if no_household > 0 {
@@ -145,8 +147,22 @@ fn setup_venue_flows(
         .insert(activity, load_venues(activity)?);
 
     // Per MSOA, a list of venues and the probability of going from the MSOA to that venue
-    let _flows = quant_get_flows(activity, population.unique_msoas(), threshold)?;
-    // TODO add_individual_flows
+    let flows_per_msoa: HashMap<MSOA, Vec<(VenueID, f64)>> =
+        quant_get_flows(activity, population.unique_msoas(), threshold)?;
+
+    // Now let's assign these flows to the people. Near as I can tell, this just copies the flows
+    // to every person in the MSOA. That's loads of duplication -- we could just keep it by (MSOA x
+    // activity), but let's follow the Python for now.
+    info!("Copying {:?} flows to the people", activity);
+    for person in &mut population.people {
+        let msoa = &population.households[person.household.0].msoa;
+        if let Some(flows) = flows_per_msoa.get(msoa) {
+            person.flows_per_activity.insert(activity, flows.clone());
+        } else {
+            // TODO I think this is an error; not happening for the small input
+            warn!("No flows for {:?} in {}", activity, msoa.0);
+        }
+    }
 
     Ok(())
 }

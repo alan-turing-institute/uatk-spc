@@ -76,7 +76,7 @@ pub fn quant_get_flows(
         pr_visit_venue.sort_by_key(|pair| NotNan::new(pair.1).unwrap());
 
         // Filter the venues
-        result.insert(msoa, threshold.apply(pr_visit_venue));
+        result.insert(msoa, normalize(threshold.apply(pr_visit_venue)));
     }
     Ok(result)
 }
@@ -108,7 +108,7 @@ impl Threshold {
     }
 }
 
-// From this MSOA, find the probability of visiting each venue
+// From this MSOA, find the probability of visiting each venue. Returns a normalized distribution.
 fn get_venue_flows(
     zonei: usize,
     table: &Array2<f64>,
@@ -174,4 +174,13 @@ struct ZoneRow {
     zonei: usize,
     #[serde(rename = "urn")]
     urn: Option<usize>,
+}
+
+// Make things sum to 1ish
+fn normalize(mut flows: Vec<(VenueID, f64)>) -> Vec<(VenueID, f64)> {
+    let sum: f64 = flows.iter().map(|pair| pair.1).sum();
+    for (_, pr) in &mut flows {
+        *pr /= sum;
+    }
+    flows
 }
