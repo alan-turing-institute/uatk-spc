@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 use std::fs::File;
 
 use anyhow::Result;
@@ -39,21 +39,19 @@ pub fn initialize() -> Result<Population> {
 }
 
 fn read_individual_time_use_and_health_data(population: &mut Population) -> Result<()> {
-    let mut households: Vec<Household> = Vec::new();
-    let mut people: Vec<Person> = Vec::new();
-    let mut household_lookup: HashMap<(MSOA, isize), HouseholdID> = HashMap::new();
-
+    // First read the raw CSV file and just group the raw rows by household (MSOA and hid)
+    let mut people_per_household: BTreeMap<(MSOA, isize), Vec<TuPerson>> = BTreeMap::new();
     let mut no_household = 0;
     // TODO Read from the combined TU file, not this hardcoded thing
     for rec in
         csv::Reader::from_reader(File::open("raw_data/tus_hse_west-yorkshire.csv")?).deserialize()
     {
-        // TODO Progress bar
-        if people.len() % 1000 == 0 {
-            info!("{} people so far", print_count(people.len()));
-            /*if !people.is_empty() {
-                break;
-            }*/
+        // TODO Real progress bar based on bytes read
+        if people_per_household.len() % 1000 == 0 {
+            info!(
+                "{} households so far",
+                print_count(people_per_household.len())
+            );
         }
 
         let rec: TuPerson = rec?;
@@ -65,55 +63,12 @@ fn read_individual_time_use_and_health_data(population: &mut Population) -> Resu
             continue;
         }
 
-        let household_id = household_lookup
+        people_per_household
             .entry((rec.msoa.clone(), rec.hid))
-            .or_insert_with(|| {
-                let id = HouseholdID(households.len());
-                households.push(Household {
-                    id,
-                    msoa: rec.msoa,
-                    orig_hid: rec.hid,
-                    members: Vec::new(),
-
-                    disease_danger: 0.0,
-                });
-                id
-            });
-        let household = &mut households[household_id.0];
-        let person_id = PersonID(people.len());
-        household.members.push(person_id);
-
-        let mut duration_per_activity: HashMap<Activity, f64> = HashMap::new();
-        duration_per_activity.insert(Activity::Retail, rec.pshop);
-        duration_per_activity.insert(Activity::Home, rec.phome);
-        duration_per_activity.insert(Activity::Work, rec.pwork);
-        duration_per_activity.insert(Activity::Nightclub, rec.pleisure);
-
-        // Use pschool and age to calculate primary/secondary school
-        if rec.age < 11 {
-            duration_per_activity.insert(Activity::PrimarySchool, rec.pschool);
-            duration_per_activity.insert(Activity::SecondarySchool, 0.0);
-        } else if rec.age < 19 {
-            duration_per_activity.insert(Activity::PrimarySchool, 0.0);
-            duration_per_activity.insert(Activity::SecondarySchool, rec.pschool);
-        } else {
-            // TODO Seems like we need a University activity
-            duration_per_activity.insert(Activity::PrimarySchool, 0.0);
-            duration_per_activity.insert(Activity::SecondarySchool, 0.0);
-        }
-        pad_durations(&mut duration_per_activity)?;
-
-        people.push(Person {
-            id: person_id,
-            household: household.id,
-            orig_pid: rec.pid,
-
-            age_years: rec.age,
-
-            flows_per_activity: HashMap::new(),
-            duration_per_activity,
-        });
+            .or_insert_with(Vec::new)
+            .push(rec);
     }
+
     if no_household > 0 {
         warn!(
             "{} people skipped, no household originally",
@@ -121,10 +76,38 @@ fn read_individual_time_use_and_health_data(population: &mut Population) -> Resu
         );
     }
 
-    // TODO Strip out households with >10 people and fix up all the IDs
+    // Strip out households with >10 people
+    let before_households = people_per_household.len();
+    people_per_household.retain(|_, people| people.len() <= 10);
+    let after_households = people_per_household.len();
+    if before_households != after_households {
+        warn!(
+            "{} households with >10 people filtered out",
+            print_count(before_households - after_households)
+        );
+    }
 
-    population.households = households;
-    population.people = people;
+    // Now create the people and households
+    for ((msoa, orig_hid), raw_people) in people_per_household {
+        let household_id = HouseholdID(population.households.len());
+        let mut household = Household {
+            id: household_id,
+            msoa,
+            orig_hid,
+            members: Vec::new(),
+
+            disease_danger: 0.0,
+        };
+        for raw_person in raw_people {
+            let person_id = PersonID(population.people.len());
+            household.members.push(person_id);
+            population
+                .people
+                .push(raw_person.create(household_id, person_id)?);
+        }
+        population.households.push(household);
+    }
+
     info!(
         "{} people across {} households, and {} MSOAs",
         print_count(population.people.len()),
@@ -147,6 +130,41 @@ struct TuPerson {
     pshop: f64,
     pschool: f64,
     age: usize,
+}
+
+impl TuPerson {
+    fn create(self, household: HouseholdID, id: PersonID) -> Result<Person> {
+        let mut duration_per_activity: HashMap<Activity, f64> = HashMap::new();
+        duration_per_activity.insert(Activity::Retail, self.pshop);
+        duration_per_activity.insert(Activity::Home, self.phome);
+        duration_per_activity.insert(Activity::Work, self.pwork);
+        duration_per_activity.insert(Activity::Nightclub, self.pleisure);
+
+        // Use pschool and age to calculate primary/secondary school
+        if self.age < 11 {
+            duration_per_activity.insert(Activity::PrimarySchool, self.pschool);
+            duration_per_activity.insert(Activity::SecondarySchool, 0.0);
+        } else if self.age < 19 {
+            duration_per_activity.insert(Activity::PrimarySchool, 0.0);
+            duration_per_activity.insert(Activity::SecondarySchool, self.pschool);
+        } else {
+            // TODO Seems like we need a University activity
+            duration_per_activity.insert(Activity::PrimarySchool, 0.0);
+            duration_per_activity.insert(Activity::SecondarySchool, 0.0);
+        }
+        pad_durations(&mut duration_per_activity)?;
+
+        Ok(Person {
+            id,
+            household,
+            orig_pid: self.pid,
+
+            age_years: self.age,
+
+            flows_per_activity: HashMap::new(),
+            duration_per_activity,
+        })
+    }
 }
 
 fn setup_venue_flows(

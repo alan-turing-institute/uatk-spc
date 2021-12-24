@@ -47,6 +47,8 @@ add_individual_flows doc is perfect example -- I need two coffees to understand 
 - build env setup, portability
 - what kind of mistakes are impossible to make? (msoa IDs)
 
+- I'm not used to reasoning with dataframes; how comfortable are people working on the current codebase?
+
 ## Individual files vs consolidated
 
 - have to maintain paths
