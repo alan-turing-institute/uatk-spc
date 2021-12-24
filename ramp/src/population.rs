@@ -37,12 +37,11 @@ pub struct Person {
     pub orig_pid: isize,
 
     pub age_years: usize,
-    pub pr_primary_school: f64,
-    pub pr_secondary_school: f64,
 
     // The probabilities sum to 1 (TODO Make a distribution type or something)
-    // TODO Duration per activity?
     pub flows_per_activity: HashMap<Activity, Vec<(VenueID, f64)>>,
+    // These are unitless, or a fraction of a day? They sum to 1
+    pub duration_per_activity: HashMap<Activity, f64>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
@@ -50,9 +49,7 @@ pub enum Activity {
     Retail,
     PrimarySchool,
     SecondarySchool,
-    #[allow(unused)]
     Home,
-    #[allow(unused)]
     Work,
     Nightclub,
     // TODO I see quant files for hospitals, why not incorporated yet?

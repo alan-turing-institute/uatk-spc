@@ -83,14 +83,25 @@ fn read_individual_time_use_and_health_data(population: &mut Population) -> Resu
         let person_id = PersonID(people.len());
         household.members.push(person_id);
 
+        let mut duration_per_activity: HashMap<Activity, f64> = HashMap::new();
+        duration_per_activity.insert(Activity::Retail, rec.pshop);
+        duration_per_activity.insert(Activity::Home, rec.phome);
+        duration_per_activity.insert(Activity::Work, rec.pwork);
+        duration_per_activity.insert(Activity::Nightclub, rec.pleisure);
+
         // Use pschool and age to calculate primary/secondary school
-        let pr_primary_school = if rec.age < 11 { rec.pschool } else { 0.0 };
-        let pr_secondary_school = if rec.age >= 11 && rec.age < 19 {
-            rec.pschool
+        if rec.age < 11 {
+            duration_per_activity.insert(Activity::PrimarySchool, rec.pschool);
+            duration_per_activity.insert(Activity::SecondarySchool, 0.0);
+        } else if rec.age < 19 {
+            duration_per_activity.insert(Activity::PrimarySchool, 0.0);
+            duration_per_activity.insert(Activity::SecondarySchool, rec.pschool);
         } else {
-            0.0
-        };
-        // TODO If rec.age > 18 and pschool is nonzero, currently skipping that activity
+            // TODO Seems like we need a University activity
+            duration_per_activity.insert(Activity::PrimarySchool, 0.0);
+            duration_per_activity.insert(Activity::SecondarySchool, 0.0);
+        }
+        pad_durations(&mut duration_per_activity)?;
 
         people.push(Person {
             id: person_id,
@@ -98,10 +109,9 @@ fn read_individual_time_use_and_health_data(population: &mut Population) -> Resu
             orig_pid: rec.pid,
 
             age_years: rec.age,
-            pr_primary_school,
-            pr_secondary_school,
 
             flows_per_activity: HashMap::new(),
+            duration_per_activity,
         });
     }
     if no_household > 0 {
@@ -131,6 +141,10 @@ struct TuPerson {
     hid: isize,
     pid: isize,
 
+    phome: f64,
+    pwork: f64,
+    pleisure: f64,
+    pshop: f64,
     pschool: f64,
     age: usize,
 }
@@ -164,5 +178,18 @@ fn setup_venue_flows(
         }
     }
 
+    Ok(())
+}
+
+// If the durations don't sum to 1, pad Home
+fn pad_durations(durations: &mut HashMap<Activity, f64>) -> Result<()> {
+    let total: f64 = durations.values().sum();
+    // TODO Check the rounding in the Python version
+    let epsilon = 0.00001;
+    if total > 1.0 + epsilon {
+        bail!("Someone's durations sum to {}", total);
+    } else if total < 1.0 {
+        durations.insert(Activity::Home, 1.0 - total);
+    }
     Ok(())
 }
