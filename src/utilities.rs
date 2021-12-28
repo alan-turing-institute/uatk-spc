@@ -1,12 +1,18 @@
+use std::cmp::min;
+use std::fs::File;
+use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use anyhow::Result;
+use futures_util::StreamExt;
+use indicatif::{ProgressBar, ProgressStyle};
+use reqwest::Client;
 
 // TODO I'm not happy at all about any of this, just temporary.
 
 /// Returns the filename
-pub fn download(url: PathBuf) -> Result<PathBuf> {
+pub async fn download(url: PathBuf) -> Result<PathBuf> {
     let filename = filename(&url);
     let output = Path::new("raw_data").join(filename);
 
@@ -18,16 +24,9 @@ pub fn download(url: PathBuf) -> Result<PathBuf> {
     }
 
     std::fs::create_dir_all("raw_data")?;
-    let status = Command::new("wget")
-        .arg(url)
-        .arg("-O")
-        .arg(&output)
-        .status()?;
-    if status.success() {
-        Ok(output)
-    } else {
-        bail!("Command failed");
-    }
+
+    download_file(&url.display().to_string(), &output.display().to_string()).await?;
+    Ok(output)
 }
 
 pub fn untar(file: PathBuf) -> Result<()> {
@@ -93,4 +92,35 @@ pub fn print_count(x: usize) -> String {
         }
     }
     result
+}
+
+// Adapted from
+// https://github.com/mihaigalos/tutorials/blob/master/rust/download_with_progressbar/src/main.rs
+async fn download_file(url: &str, path: &str) -> Result<()> {
+    let client = Client::new();
+    let res = client.get(url).send().await?;
+    let total_size = res
+        .content_length()
+        .ok_or(anyhow!("Failed to get content length from {}", url))?;
+
+    let pb = ProgressBar::new(total_size);
+    pb.set_style(ProgressStyle::default_bar()
+        .template("{msg}\n{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({bytes_per_sec}, {eta})")
+        .progress_chars("#>-"));
+    pb.set_message(format!("Downloading {}", url));
+
+    let mut file = File::create(path)?;
+    let mut downloaded: u64 = 0;
+    let mut stream = res.bytes_stream();
+
+    while let Some(item) = stream.next().await {
+        let chunk = item?;
+        file.write(&chunk)?;
+        let new = min(downloaded + (chunk.len() as u64), total_size);
+        downloaded = new;
+        pb.set_position(new);
+    }
+
+    pb.finish_with_message(format!("Downloaded {} to {}", url, path));
+    Ok(())
 }

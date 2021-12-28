@@ -82,3 +82,11 @@ What if the same hid has different lat/lng? Lots of paranoia checks everywhere, 
 
 - why is getProbablePrimarySchoolsByMSOAIZ, getProbableSecondarySchoolsByMSOAIZ, etc copied?! makes the code look scarier than it is
 	- and why the unused variables there? (having the compiler complain is useful here)
+
+## Cookbook / tricks
+
+multi language, potentially
+
+- determinism (hashmaps, RNG seeds, pinning to software versions, pinning to data versions like OSM extracts)
+- f64 headaches: sorting, rounding, serializing
+- No such file or directory (bad errors by default)

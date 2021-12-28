@@ -16,8 +16,9 @@ use anyhow::Result;
 use maplit::hashmap;
 use serde::Deserialize;
 
-fn main() -> Result<()> {
-    simple_logger::SimpleLogger::new().init().unwrap();
+#[tokio::main]
+async fn main() -> Result<()> {
+    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
 
     // TODO Input from a .yml
     let input = Input {
@@ -28,8 +29,8 @@ fn main() -> Result<()> {
         },
     };
 
-    if false {
-        raw_data::grab_raw_data(&input)?;
+    if true {
+        raw_data::grab_raw_data(&input).await?;
     }
     let _population = make_population::initialize()?;
 

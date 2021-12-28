@@ -9,12 +9,12 @@ use crate::utilities::{basename, download, untar, unzip};
 use crate::{Input, MSOA};
 
 // TODO Just writes a bunch of output files to a fixed location
-pub fn grab_raw_data(input: &Input) -> Result<()> {
+pub async fn grab_raw_data(input: &Input) -> Result<()> {
     let azure = Path::new("https://ramp0storage.blob.core.windows.net/");
 
     // This maps MSOA IDs to things like OSM geofabrik URL
     // TODO Who creates/maintains this?
-    let lookup_path = download(azure.join("referencedata").join("lookUp.csv"))?;
+    let lookup_path = download(azure.join("referencedata").join("lookUp.csv")).await?;
 
     // TODO TUS files. county_data/tus_hse_{xyz}.gz. MSOA ID -> NewTU
     // TODO And who creates these?
@@ -32,11 +32,11 @@ pub fn grab_raw_data(input: &Input) -> Result<()> {
         }
     }
     for tu in tus_needed {
-        let path = download(azure.join("countydata").join(&format!("tus_hse_{}.gz", tu)))?;
+        let path = download(azure.join("countydata").join(&format!("tus_hse_{}.gz", tu))).await?;
         untar(path)?;
     }
     for osm_url in osm_needed {
-        let path = download(osm_url.into())?;
+        let path = download(osm_url.into()).await?;
         let output_dir = format!("raw_data/osm/{}", basename(&path));
         unzip(path, output_dir)?;
     }
@@ -45,16 +45,16 @@ pub fn grab_raw_data(input: &Input) -> Result<()> {
     // TODO combine all the OSM shapefiles files
 
     // TODO Azure calls it nationaldata, local output seems to be national_data
-    let path = download(azure.join("nationaldata").join("QUANT_RAMP.tar.gz"))?;
+    let path = download(azure.join("nationaldata").join("QUANT_RAMP.tar.gz")).await?;
     untar(path)?;
 
     // CommutingOD is all commented out
 
-    download(azure.join("nationaldata").join("businessRegistry.csv"))?;
+    download(azure.join("nationaldata").join("businessRegistry.csv")).await?;
 
-    download(azure.join("nationaldata").join("timeAtHomeIncreaseCTY.csv"))?;
+    download(azure.join("nationaldata").join("timeAtHomeIncreaseCTY.csv")).await?;
 
-    let path = download(azure.join("nationaldata").join("MSOAS_shp.tar.gz"))?;
+    let path = download(azure.join("nationaldata").join("MSOAS_shp.tar.gz")).await?;
     untar(path)?;
 
     // TODO Some transformation of the lockdown file, "Dealing with the TimeAtHomeIncrease data".
