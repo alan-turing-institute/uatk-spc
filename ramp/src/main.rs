@@ -3,6 +3,7 @@ extern crate anyhow;
 #[macro_use]
 extern crate log;
 
+mod commuting;
 mod make_population;
 mod population;
 mod quant;

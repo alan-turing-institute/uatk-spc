@@ -35,6 +35,8 @@ pub struct Person {
     pub id: PersonID,
     pub household: HouseholdID,
     pub orig_pid: isize,
+    // Some kind of work-related ID
+    pub sic1d07: Option<usize>,
 
     pub age_years: usize,
 

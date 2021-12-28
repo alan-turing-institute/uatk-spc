@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, HashMap};
 use std::fs::File;
 
 use anyhow::Result;
-use serde::Deserialize;
+use serde::{Deserialize, Deserializer};
 
 use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Population, VenueID};
 use crate::quant::{load_venues, quant_get_flows, Threshold};
@@ -18,20 +18,18 @@ pub fn initialize() -> Result<Population> {
     };
     read_individual_time_use_and_health_data(&mut population)?;
 
-    // pshop
     setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;
-    // pleisure
     setup_venue_flows(Activity::Nightclub, Threshold::TopN(10), &mut population)?;
-    // pschool-primary
     setup_venue_flows(Activity::PrimarySchool, Threshold::TopN(5), &mut population)?;
-    // pschool-secondary
     setup_venue_flows(
         Activity::SecondarySchool,
         Threshold::TopN(5),
         &mut population,
     )?;
 
-    // TODO Commuting
+    // Commuting is special-cased
+    // TODO Share logic with setup_venue_flows?
+    let _commuting_flows = crate::commuting::get_commuting_flows()?;
 
     // TODO Lots of commented stuff, then rounding
 
@@ -40,6 +38,7 @@ pub fn initialize() -> Result<Population> {
 
 fn read_individual_time_use_and_health_data(population: &mut Population) -> Result<()> {
     // First read the raw CSV file and just group the raw rows by household (MSOA and hid)
+    // This isn't all that memory-intensive; the Population ultimately has to hold everyone anyway.
     let mut people_per_household: BTreeMap<(MSOA, isize), Vec<TuPerson>> = BTreeMap::new();
     let mut no_household = 0;
     // TODO Read from the combined TU file, not this hardcoded thing
@@ -123,6 +122,8 @@ struct TuPerson {
     msoa: MSOA,
     hid: isize,
     pid: isize,
+    #[serde(deserialize_with = "parse_usize_or_na")]
+    sic1d07: Option<usize>,
 
     phome: f64,
     pwork: f64,
@@ -130,6 +131,21 @@ struct TuPerson {
     pshop: f64,
     pschool: f64,
     age: usize,
+}
+
+fn parse_usize_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<Option<usize>, D::Error> {
+    // We have to parse it as a string first, or we lose the chance to check that it's "NA" later
+    let raw = <String>::deserialize(d)?;
+    if let Ok(x) = raw.parse::<usize>() {
+        return Ok(Some(x));
+    }
+    if raw == "NA" {
+        return Ok(None);
+    }
+    Err(serde::de::Error::custom(format!(
+        "Not a usize or \"NA\": {}",
+        raw
+    )))
 }
 
 impl TuPerson {
@@ -158,6 +174,7 @@ impl TuPerson {
             id,
             household,
             orig_pid: self.pid,
+            sic1d07: self.sic1d07,
 
             age_years: self.age,
 
