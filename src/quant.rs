@@ -3,6 +3,7 @@ use std::fs::File;
 use std::path::Path;
 
 use anyhow::Result;
+use indicatif::{ProgressBar, ProgressStyle};
 use ndarray::Array2;
 use ndarray_npy::ReadNpyExt;
 use ordered_float::NotNan;
@@ -53,13 +54,26 @@ pub fn quant_get_flows(
     let table_path = format!("raw_data/QUANT_RAMP/{}", prob_sij).replace(".bin", ".npy");
     let table = Array2::<f64>::read_npy(File::open(table_path)?)?;
 
+    // TODO Verbose
+    let pb = ProgressBar::new(msoas.len().try_into().unwrap());
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template(
+                "{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({eta})",
+            )
+            .progress_chars("#-"),
+    );
     let mut result = HashMap::new();
     // TODO This is no longer slow, but we could still parallelize
     for msoa in msoas {
         // TODO Defaulting to 0 when the MSOA is missing seems weird?!
         let zonei = msoa_to_zonei.get(&msoa).cloned().unwrap_or(0);
+        pb.set_message(format!(
+            "Get {:?} flows for {} (zonei {})",
+            activity, msoa.0, zonei
+        ));
+        pb.inc(1);
 
-        info!("Get {:?} flows for {} (zonei {})", activity, msoa.0, zonei);
         let mut pr_visit_venue = match activity {
             // TODO These're treated exactly the same?!
             Activity::Retail | Activity::Nightclub => {
