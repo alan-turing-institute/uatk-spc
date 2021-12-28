@@ -2,6 +2,7 @@ use std::collections::{BTreeMap, HashMap};
 use std::fs::File;
 
 use anyhow::Result;
+use indicatif::{ProgressBar, ProgressStyle};
 use serde::{Deserialize, Deserializer};
 
 use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Population, VenueID};
@@ -41,16 +42,25 @@ fn read_individual_time_use_and_health_data(population: &mut Population) -> Resu
     // This isn't all that memory-intensive; the Population ultimately has to hold everyone anyway.
     let mut people_per_household: BTreeMap<(MSOA, isize), Vec<TuPerson>> = BTreeMap::new();
     let mut no_household = 0;
+
     // TODO Read from the combined TU file, not this hardcoded thing
-    for rec in
-        csv::Reader::from_reader(File::open("raw_data/tus_hse_west-yorkshire.csv")?).deserialize()
-    {
-        // TODO Real progress bar based on bytes read
+    info!("Reading {}", "raw_data/tus_hse_west-yorkshire.csv");
+    let file = File::open("raw_data/tus_hse_west-yorkshire.csv")?;
+    let pb = ProgressBar::new(file.metadata()?.len());
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template(
+                "{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({eta})",
+            )
+            .progress_chars("#-"),
+    );
+
+    for rec in csv::Reader::from_reader(pb.wrap_read(file)).deserialize() {
         if people_per_household.len() % 1000 == 0 {
-            info!(
+            pb.set_message(format!(
                 "{} households so far",
                 print_count(people_per_household.len())
-            );
+            ));
         }
 
         let rec: TuPerson = rec?;
