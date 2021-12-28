@@ -5,9 +5,11 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use anyhow::Result;
+use flate2::read::GzDecoder;
 use futures_util::StreamExt;
-use indicatif::{ProgressBar, ProgressStyle};
+use indicatif::{HumanBytes, ProgressBar, ProgressStyle};
 use reqwest::Client;
+use tar::Archive;
 
 // TODO I'm not happy at all about any of this, just temporary.
 
@@ -29,22 +31,37 @@ pub async fn download(url: PathBuf) -> Result<PathBuf> {
     Ok(output)
 }
 
-pub fn untar(file: PathBuf) -> Result<()> {
-    info!("Untarring {}...", file.display());
-    // TODO Skipping isn't really idempotent; we still spend time gunzipping. Maybe we have to
-    // insist on extracting one known path.
-    let status = Command::new("tar")
-        .arg("xzvf")
-        .arg(file)
-        .arg("--directory")
-        .arg("raw_data")
-        .arg("--skip-old-files")
-        .status()?;
-    if status.success() {
-        Ok(())
-    } else {
-        bail!("Command failed");
+pub fn untar(file: PathBuf, expected_output: String) -> Result<()> {
+    if Path::new(&expected_output).exists() {
+        info!(
+            "{} already exists, not untarring {}",
+            expected_output,
+            file.display()
+        );
+        return Ok(());
     }
+
+    info!("Untarring {}...", file.display());
+
+    let tar_gz = File::open(file)?;
+    // TODO Detect if we need to gunzip, or make caller tell us too?
+    let tar = GzDecoder::new(tar_gz);
+    let mut archive = Archive::new(tar);
+
+    // TODO Progress hint...
+    for entry in archive.entries()? {
+        let mut entry = entry?;
+        info!(
+            "Extracting {}, which is {}",
+            entry.path()?.display(),
+            HumanBytes(entry.size())
+        );
+        // TODO This implements Read, we could have a granular progress bar
+        // TODO Make sure this path is correct
+        entry.unpack_in("raw_data")?;
+    }
+
+    Ok(())
 }
 
 pub fn unzip(file: PathBuf, output_dir: String) -> Result<()> {

@@ -33,7 +33,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<()> {
     }
     for tu in tus_needed {
         let path = download(azure.join("countydata").join(&format!("tus_hse_{}.gz", tu))).await?;
-        untar(path)?;
+        untar(path, format!("raw_data/tus_hse_{}.csv", tu))?;
     }
     for osm_url in osm_needed {
         let path = download(osm_url.into()).await?;
@@ -46,7 +46,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<()> {
 
     // TODO Azure calls it nationaldata, local output seems to be national_data
     let path = download(azure.join("nationaldata").join("QUANT_RAMP.tar.gz")).await?;
-    untar(path)?;
+    untar(path, "raw_data/QUANT_RAMP/".to_string())?;
 
     // CommutingOD is all commented out
 
@@ -55,7 +55,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<()> {
     download(azure.join("nationaldata").join("timeAtHomeIncreaseCTY.csv")).await?;
 
     let path = download(azure.join("nationaldata").join("MSOAS_shp.tar.gz")).await?;
-    untar(path)?;
+    untar(path, "raw_data/MSOAS_shp/".to_string())?;
 
     // TODO Some transformation of the lockdown file, "Dealing with the TimeAtHomeIncrease data".
     // It gets pickled later.
