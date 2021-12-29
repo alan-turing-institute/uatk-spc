@@ -5,7 +5,7 @@ use std::path::Path;
 use anyhow::Result;
 use serde::Deserialize;
 
-use crate::utilities::{basename, download, untar, unzip};
+use crate::utilities::{basename, download, print_count, untar, unzip};
 use crate::{Input, MSOA};
 
 // TODO Just writes a bunch of output files to a fixed location
@@ -31,6 +31,12 @@ pub async fn grab_raw_data(input: &Input) -> Result<()> {
             osm_needed.insert(rec.osm);
         }
     }
+    info!(
+        "From {} MSOAs, we need {} time use files and {} OSM files",
+        print_count(input.initial_cases_per_msoa.len()),
+        print_count(tus_needed.len()),
+        print_count(osm_needed.len())
+    );
     for tu in tus_needed {
         let path = download(azure.join("countydata").join(&format!("tus_hse_{}.gz", tu))).await?;
         untar(path, format!("raw_data/tus_hse_{}.csv", tu))?;

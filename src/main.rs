@@ -11,9 +11,9 @@ mod raw_data;
 mod utilities;
 
 use std::collections::HashMap;
+use std::fs::File;
 
 use anyhow::Result;
-use maplit::hashmap;
 use serde::Deserialize;
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
 
@@ -31,11 +31,10 @@ async fn main() -> Result<()> {
 
     // TODO Input from a .yml
     let input = Input {
-        initial_cases_per_msoa: hashmap! {
-            MSOA("E02002241".to_string()) => 5,
-            MSOA("E02002191".to_string()) => 5,
-            MSOA("E02002187".to_string()) => 5,
-        },
+        initial_cases_per_msoa: load_initial_cases_per_msoa(
+            //"/home/dabreegster/RAMP-UA/model_parameters/Input_Test_3.csv",
+            "/home/dabreegster/RAMP-UA/model_parameters/Input_WestYorkshire.csv",
+        )?,
     };
 
     if true {
@@ -44,6 +43,27 @@ async fn main() -> Result<()> {
     let _population = make_population::initialize()?;
 
     Ok(())
+}
+
+fn load_initial_cases_per_msoa(path: &str) -> Result<HashMap<MSOA, usize>> {
+    let mut cases = HashMap::new();
+    for rec in csv::Reader::from_reader(File::open(path)?).deserialize() {
+        let rec: InitialCaseRow = rec?;
+        cases.insert(rec.msoa, rec.cases);
+    }
+    Ok(cases)
+}
+
+#[derive(Deserialize)]
+struct InitialCaseRow {
+    #[serde(rename = "MSOA11CD")]
+    msoa: MSOA,
+    // It's just missing from some of the input files...
+    #[serde(default = "default_cases")]
+    cases: usize,
+}
+fn default_cases() -> usize {
+    5
 }
 
 // Equivalent to InitialisationCache

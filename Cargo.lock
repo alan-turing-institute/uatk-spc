@@ -902,7 +902,6 @@ dependencies = [
  "futures-util",
  "indicatif",
  "log",
- "maplit",
  "ndarray",
  "ndarray-npy",
  "ordered-float",
