@@ -15,10 +15,19 @@ use std::collections::HashMap;
 use anyhow::Result;
 use maplit::hashmap;
 use serde::Deserialize;
+use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    env_logger::Builder::from_env(env_logger::Env::default().default_filter_or("info")).init();
+    TermLogger::init(
+        LevelFilter::Debug,
+        ConfigBuilder::new()
+            .set_time_format_str("%H:%M:%S%.3f")
+            .set_location_level(LevelFilter::Error)
+            .build(),
+        TerminalMode::Stderr,
+        ColorChoice::Auto,
+    )?;
 
     // TODO Input from a .yml
     let input = Input {
