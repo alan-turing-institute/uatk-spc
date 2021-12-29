@@ -32,8 +32,16 @@ async fn main() -> Result<()> {
     // TODO Input from a .yml
     let input = Input {
         initial_cases_per_msoa: load_initial_cases_per_msoa(
+            // These two are a small and large slice of West Yorkshire
+            //
             //"/home/dabreegster/RAMP-UA/model_parameters/Input_Test_3.csv",
-            "/home/dabreegster/RAMP-UA/model_parameters/Input_WestYorkshire.csv",
+            //"/home/dabreegster/RAMP-UA/model_parameters/Input_WestYorkshire.csv",
+            //
+            // Here's a different region
+            "/home/dabreegster/RAMP-UA/model_parameters/Input_Devon.csv",
+            //
+            // Here's something across 2 regions
+            //"/home/dabreegster/RAMP-UA/model_parameters/Input_Test_accross.csv",
         )?,
     };
 
