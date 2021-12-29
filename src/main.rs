@@ -38,17 +38,15 @@ async fn main() -> Result<()> {
             //"/home/dabreegster/RAMP-UA/model_parameters/Input_WestYorkshire.csv",
             //
             // Here's a different region
-            "/home/dabreegster/RAMP-UA/model_parameters/Input_Devon.csv",
+            //"/home/dabreegster/RAMP-UA/model_parameters/Input_Devon.csv",
             //
             // Here's something across 2 regions
-            //"/home/dabreegster/RAMP-UA/model_parameters/Input_Test_accross.csv",
+            "/home/dabreegster/RAMP-UA/model_parameters/Input_Test_accross.csv",
         )?,
     };
 
-    if true {
-        raw_data::grab_raw_data(&input).await?;
-    }
-    let _population = make_population::initialize()?;
+    let raw_results = raw_data::grab_raw_data(&input).await?;
+    let _population = make_population::initialize(raw_results)?;
 
     Ok(())
 }

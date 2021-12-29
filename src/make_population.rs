@@ -7,17 +7,18 @@ use serde::{Deserialize, Deserializer};
 
 use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Population, VenueID};
 use crate::quant::{load_venues, quant_get_flows, Threshold};
+use crate::raw_data::RawData;
 use crate::utilities::print_count;
 use crate::MSOA;
 
 // population_initialisation.py
-pub fn initialize() -> Result<Population> {
+pub fn initialize(raw_data: RawData) -> Result<Population> {
     let mut population = Population {
         households: Vec::new(),
         people: Vec::new(),
         venues_per_activity: HashMap::new(),
     };
-    read_individual_time_use_and_health_data(&mut population)?;
+    read_individual_time_use_and_health_data(&mut population, raw_data)?;
 
     setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;
     setup_venue_flows(Activity::Nightclub, Threshold::TopN(10), &mut population)?;
@@ -37,45 +38,53 @@ pub fn initialize() -> Result<Population> {
     Ok(population)
 }
 
-fn read_individual_time_use_and_health_data(population: &mut Population) -> Result<()> {
-    // First read the raw CSV file and just group the raw rows by household (MSOA and hid)
+fn read_individual_time_use_and_health_data(
+    population: &mut Population,
+    raw_data: RawData,
+) -> Result<()> {
+    // First read the raw CSV files and just group the raw rows by household (MSOA and hid)
     // This isn't all that memory-intensive; the Population ultimately has to hold everyone anyway.
+    //
+    // If there are multiple time use files, we assume this grouping won't have any overlaps --
+    // MSOAs shouldn't be the same between different files.
     let mut people_per_household: BTreeMap<(MSOA, isize), Vec<TuPerson>> = BTreeMap::new();
     let mut no_household = 0;
 
-    // TODO Read from the combined TU file, not this hardcoded thing
-    info!("Reading {}", "raw_data/tus_hse_west-yorkshire.csv");
-    let file = File::open("raw_data/tus_hse_west-yorkshire.csv")?;
-    let pb = ProgressBar::new(file.metadata()?.len());
-    pb.set_style(
-        ProgressStyle::default_bar()
-            .template(
-                "{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({eta})",
-            )
-            .progress_chars("#-"),
-    );
+    // TODO Two-level progress bar. MultiProgress seems to demand two threads and calling join() :(
+    for path in raw_data.tus_files {
+        info!("Reading {}", path);
+        let file = File::open(path)?;
+        let pb = ProgressBar::new(file.metadata()?.len());
+        pb.set_style(
+            ProgressStyle::default_bar()
+                .template(
+                    "{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({eta})",
+                )
+                .progress_chars("#-"),
+        );
 
-    for rec in csv::Reader::from_reader(pb.wrap_read(file)).deserialize() {
-        if people_per_household.len() % 1000 == 0 {
-            pb.set_message(format!(
-                "{} households so far",
-                print_count(people_per_household.len())
-            ));
+        for rec in csv::Reader::from_reader(pb.wrap_read(file)).deserialize() {
+            if people_per_household.len() % 1000 == 0 {
+                pb.set_message(format!(
+                    "{} households so far",
+                    print_count(people_per_household.len())
+                ));
+            }
+
+            let rec: TuPerson = rec?;
+            // Strip out people that weren't matched to a household
+            // No such examples in this file:
+            // > xsv search -s hid '\-1' county_data/tus_hse_west-yorkshire.csv
+            if rec.hid == -1 {
+                no_household += 1;
+                continue;
+            }
+
+            people_per_household
+                .entry((rec.msoa.clone(), rec.hid))
+                .or_insert_with(Vec::new)
+                .push(rec);
         }
-
-        let rec: TuPerson = rec?;
-        // Strip out people that weren't matched to a household
-        // No such examples in this file:
-        // > xsv search -s hid '\-1' county_data/tus_hse_west-yorkshire.csv
-        if rec.hid == -1 {
-            no_household += 1;
-            continue;
-        }
-
-        people_per_household
-            .entry((rec.msoa.clone(), rec.hid))
-            .or_insert_with(Vec::new)
-            .push(rec);
     }
 
     if no_household > 0 {
@@ -117,6 +126,8 @@ fn read_individual_time_use_and_health_data(population: &mut Population) -> Resu
         population.households.push(household);
     }
 
+    // The MSOAs from the time-use files are usually a subset of the initial_cases_per_msoa. Is
+    // that intentional?
     info!(
         "{} people across {} households, and {} MSOAs",
         print_count(population.people.len()),

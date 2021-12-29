@@ -31,8 +31,8 @@ pub async fn download(url: PathBuf) -> Result<PathBuf> {
     Ok(output)
 }
 
-pub fn untar(file: PathBuf, expected_output: String) -> Result<()> {
-    if Path::new(&expected_output).exists() {
+pub fn untar(file: PathBuf, expected_output: &str) -> Result<()> {
+    if Path::new(expected_output).exists() {
         info!(
             "{} already exists, not untarring {}",
             expected_output,

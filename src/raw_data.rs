@@ -8,16 +8,25 @@ use serde::Deserialize;
 use crate::utilities::{basename, download, print_count, untar, unzip};
 use crate::{Input, MSOA};
 
+pub struct RawData {
+    // The Python implementation appends these into one dataframe, but we can logically do the same
+    // later on
+    pub tus_files: Vec<String>,
+}
+
 // TODO Just writes a bunch of output files to a fixed location
-pub async fn grab_raw_data(input: &Input) -> Result<()> {
+pub async fn grab_raw_data(input: &Input) -> Result<RawData> {
+    let mut results = RawData {
+        tus_files: Vec::new(),
+    };
+
     let azure = Path::new("https://ramp0storage.blob.core.windows.net/");
 
     // This maps MSOA IDs to things like OSM geofabrik URL
     // TODO Who creates/maintains this?
     let lookup_path = download(azure.join("referencedata").join("lookUp.csv")).await?;
 
-    // TODO TUS files. county_data/tus_hse_{xyz}.gz. MSOA ID -> NewTU
-    // TODO And who creates these?
+    // TODO Who creates these TUS?
     // tu = time use
     // This grabbed tus_hse_west-yorkshire.gz, which is an 800MB (!!) CSV that seems to be a
     // per-person model
@@ -38,8 +47,11 @@ pub async fn grab_raw_data(input: &Input) -> Result<()> {
         print_count(osm_needed.len())
     );
     for tu in tus_needed {
-        let path = download(azure.join("countydata").join(&format!("tus_hse_{}.gz", tu))).await?;
-        untar(path, format!("raw_data/tus_hse_{}.csv", tu))?;
+        let gzip_path =
+            download(azure.join("countydata").join(&format!("tus_hse_{}.gz", tu))).await?;
+        let output_path = format!("raw_data/tus_hse_{}.csv", tu);
+        untar(gzip_path, &output_path)?;
+        results.tus_files.push(output_path);
     }
     for osm_url in osm_needed {
         let path = download(osm_url.into()).await?;
@@ -52,7 +64,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<()> {
 
     // TODO Azure calls it nationaldata, local output seems to be national_data
     let path = download(azure.join("nationaldata").join("QUANT_RAMP.tar.gz")).await?;
-    untar(path, "raw_data/QUANT_RAMP/".to_string())?;
+    untar(path, "raw_data/QUANT_RAMP/")?;
 
     // CommutingOD is all commented out
 
@@ -61,12 +73,12 @@ pub async fn grab_raw_data(input: &Input) -> Result<()> {
     download(azure.join("nationaldata").join("timeAtHomeIncreaseCTY.csv")).await?;
 
     let path = download(azure.join("nationaldata").join("MSOAS_shp.tar.gz")).await?;
-    untar(path, "raw_data/MSOAS_shp/".to_string())?;
+    untar(path, "raw_data/MSOAS_shp/")?;
 
     // TODO Some transformation of the lockdown file, "Dealing with the TimeAtHomeIncrease data".
     // It gets pickled later.
 
-    Ok(())
+    Ok(results)
 }
 
 #[derive(Deserialize)]
