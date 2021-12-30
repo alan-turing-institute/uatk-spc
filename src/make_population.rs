@@ -1,7 +1,7 @@
 use std::collections::{BTreeMap, HashMap};
 
 use anyhow::Result;
-use ex::fs::File;
+use fs_err::File;
 use indicatif::{ProgressBar, ProgressStyle};
 use serde::{Deserialize, Deserializer};
 

@@ -13,7 +13,7 @@ mod utilities;
 use std::collections::HashMap;
 
 use anyhow::Result;
-use ex::fs::File;
+use fs_err::File;
 use serde::Deserialize;
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
 

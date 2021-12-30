@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 use std::path::Path;
 
 use anyhow::Result;
-use ex::fs::File;
+use fs_err::File;
 use indicatif::{ProgressBar, ProgressStyle};
 use ndarray::Array2;
 use ndarray_npy::ReadNpyExt;

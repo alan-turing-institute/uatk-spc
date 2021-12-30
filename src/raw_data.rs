@@ -2,7 +2,7 @@ use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 
 use anyhow::Result;
-use ex::fs::File;
+use fs_err::File;
 use serde::Deserialize;
 
 use crate::utilities::{basename, download, filename, print_count, untar, unzip};
