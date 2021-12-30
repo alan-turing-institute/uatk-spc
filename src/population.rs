@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 
 use crate::MSOA;
@@ -8,12 +8,12 @@ pub struct Population {
     pub people: Vec<Person>,
 
     // VenueID indexes into each list
-    pub venues_per_activity: HashMap<Activity, Vec<Venue>>,
+    pub venues_per_activity: BTreeMap<Activity, Vec<Venue>>,
 }
 
 impl Population {
-    pub fn unique_msoas(&self) -> HashSet<MSOA> {
-        let mut result = HashSet::new();
+    pub fn unique_msoas(&self) -> BTreeSet<MSOA> {
+        let mut result = BTreeSet::new();
         for h in &self.households {
             result.insert(h.msoa.clone());
         }
@@ -41,12 +41,12 @@ pub struct Person {
     pub age_years: usize,
 
     // The probabilities sum to 1 (TODO Make a distribution type or something)
-    pub flows_per_activity: HashMap<Activity, Vec<(VenueID, f64)>>,
+    pub flows_per_activity: BTreeMap<Activity, Vec<(VenueID, f64)>>,
     // These are unitless, or a fraction of a day? They sum to 1
-    pub duration_per_activity: HashMap<Activity, f64>,
+    pub duration_per_activity: BTreeMap<Activity, f64>,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
 pub enum Activity {
     Retail,
     PrimarySchool,

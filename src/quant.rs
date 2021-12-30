@@ -1,4 +1,4 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::path::Path;
 
 use anyhow::Result;
@@ -22,9 +22,9 @@ pub enum Threshold {
 
 pub fn quant_get_flows(
     activity: Activity,
-    msoas: HashSet<MSOA>,
+    msoas: BTreeSet<MSOA>,
     threshold: Threshold,
-) -> Result<HashMap<MSOA, Vec<(VenueID, f64)>>> {
+) -> Result<BTreeMap<MSOA, Vec<(VenueID, f64)>>> {
     // Build a mapping from MSOA to zonei
     let mut msoa_to_zonei: HashMap<MSOA, usize> = HashMap::new();
     let (population_csv, prob_sij) = match activity {
@@ -64,7 +64,7 @@ pub fn quant_get_flows(
             )
             .progress_chars("#-"),
     );
-    let mut result = HashMap::new();
+    let mut result = BTreeMap::new();
     // TODO This is no longer slow, but we could still parallelize
     for msoa in msoas {
         // TODO Defaulting to 0 when the MSOA is missing seems weird?!

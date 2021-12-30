@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::collections::BTreeSet;
 use std::path::{Path, PathBuf};
 
 use anyhow::Result;
@@ -40,8 +40,8 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawData> {
     // tu = time use
     // This grabbed tus_hse_west-yorkshire.gz, which is an 800MB (!!) CSV that seems to be a
     // per-person model
-    let mut tus_needed = HashSet::new();
-    let mut osm_needed = HashSet::new();
+    let mut tus_needed = BTreeSet::new();
+    let mut osm_needed = BTreeSet::new();
     // TODO This is much more heavyweight than the python one-liner
     for rec in csv::Reader::from_reader(File::open(lookup_path)?).deserialize() {
         let rec: MsoaLookupRow = rec?;
@@ -106,9 +106,9 @@ struct MsoaLookupRow {
 }
 
 /// Calculates all MSOAs nationally from the lookup table
-pub async fn all_msoas_nationally() -> Result<HashSet<MSOA>> {
+pub async fn all_msoas_nationally() -> Result<BTreeSet<MSOA>> {
     let lookup_path = download_file("referencedata", "lookUp.csv").await?;
-    let mut msoas = HashSet::new();
+    let mut msoas = BTreeSet::new();
     for rec in csv::Reader::from_reader(File::open(lookup_path)?).deserialize() {
         let rec: MsoaLookupRow = rec?;
         msoas.insert(rec.msoa);

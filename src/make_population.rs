@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, HashMap};
+use std::collections::BTreeMap;
 
 use anyhow::Result;
 use fs_err::File;
@@ -16,7 +16,7 @@ pub fn initialize(raw_data: RawData) -> Result<Population> {
     let mut population = Population {
         households: Vec::new(),
         people: Vec::new(),
-        venues_per_activity: HashMap::new(),
+        venues_per_activity: BTreeMap::new(),
     };
     read_individual_time_use_and_health_data(&mut population, raw_data)?;
 
@@ -184,7 +184,7 @@ fn parse_isize<'de, D: Deserializer<'de>>(d: D) -> Result<isize, D::Error> {
 
 impl TuPerson {
     fn create(self, household: HouseholdID, id: PersonID) -> Result<Person> {
-        let mut duration_per_activity: HashMap<Activity, f64> = HashMap::new();
+        let mut duration_per_activity: BTreeMap<Activity, f64> = BTreeMap::new();
         duration_per_activity.insert(Activity::Retail, self.pshop);
         duration_per_activity.insert(Activity::Home, self.phome);
         duration_per_activity.insert(Activity::Work, self.pwork);
@@ -212,7 +212,7 @@ impl TuPerson {
 
             age_years: self.age,
 
-            flows_per_activity: HashMap::new(),
+            flows_per_activity: BTreeMap::new(),
             duration_per_activity,
         })
     }
@@ -230,7 +230,7 @@ fn setup_venue_flows(
         .insert(activity, load_venues(activity)?);
 
     // Per MSOA, a list of venues and the probability of going from the MSOA to that venue
-    let flows_per_msoa: HashMap<MSOA, Vec<(VenueID, f64)>> =
+    let flows_per_msoa: BTreeMap<MSOA, Vec<(VenueID, f64)>> =
         quant_get_flows(activity, population.unique_msoas(), threshold)?;
 
     // Now let's assign these flows to the people. Near as I can tell, this just copies the flows
@@ -263,7 +263,7 @@ fn setup_venue_flows(
 }
 
 // If the durations don't sum to 1, pad Home
-fn pad_durations(durations: &mut HashMap<Activity, f64>) -> Result<()> {
+fn pad_durations(durations: &mut BTreeMap<Activity, f64>) -> Result<()> {
     let total: f64 = durations.values().sum();
     // TODO Check the rounding in the Python version
     let epsilon = 0.00001;

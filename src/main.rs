@@ -10,7 +10,7 @@ mod quant;
 mod raw_data;
 mod utilities;
 
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use anyhow::Result;
 use cap::Cap;
@@ -67,7 +67,7 @@ async fn main() -> Result<()> {
 impl InputDataset {
     async fn to_input(self) -> Result<Input> {
         let mut input = Input {
-            initial_cases_per_msoa: HashMap::new(),
+            initial_cases_per_msoa: BTreeMap::new(),
         };
 
         let csv_input = match self {
@@ -115,7 +115,7 @@ fn default_cases() -> usize {
 
 // Parts of model_parameters/default.yml
 pub struct Input {
-    initial_cases_per_msoa: HashMap<MSOA, usize>,
+    initial_cases_per_msoa: BTreeMap<MSOA, usize>,
 }
 
 // MSOA11CD
