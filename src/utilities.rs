@@ -1,10 +1,10 @@
 use std::cmp::min;
-use std::fs::File;
 use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
 use anyhow::Result;
+use ex::fs::File;
 use flate2::read::GzDecoder;
 use futures_util::StreamExt;
 use indicatif::{HumanBytes, ProgressBar, ProgressStyle};
@@ -25,7 +25,7 @@ pub async fn download<P1: AsRef<Path>, P2: Into<PathBuf>>(url: P1, output: P2) -
     }
 
     if let Some(parent) = output.parent() {
-        std::fs::create_dir_all(parent)?;
+        ex::fs::create_dir_all(parent)?;
     }
 
     download_file(&url.display().to_string(), &output.display().to_string()).await?;
@@ -67,7 +67,7 @@ pub fn untar(file: PathBuf, expected_output: &str) -> Result<()> {
 
 pub fn unzip(file: PathBuf, output_dir: String) -> Result<()> {
     info!("Unzipping {} to {}...", file.display(), output_dir);
-    std::fs::create_dir_all(&output_dir)?;
+    ex::fs::create_dir_all(&output_dir)?;
     let status = Command::new("unzip")
         .arg("-n") // Skip if it exists
         .arg(file)

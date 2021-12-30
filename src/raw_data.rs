@@ -1,8 +1,8 @@
 use std::collections::HashSet;
-use std::fs::File;
 use std::path::{Path, PathBuf};
 
 use anyhow::Result;
+use ex::fs::File;
 use serde::Deserialize;
 
 use crate::utilities::{basename, download, filename, print_count, untar, unzip};

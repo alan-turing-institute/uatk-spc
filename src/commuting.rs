@@ -1,7 +1,7 @@
 use std::collections::HashMap;
-use std::fs::File;
 
 use anyhow::Result;
+use ex::fs::File;
 use serde::Deserialize;
 
 use crate::population::VenueID;

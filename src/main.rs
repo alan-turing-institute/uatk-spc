@@ -11,9 +11,9 @@ mod raw_data;
 mod utilities;
 
 use std::collections::HashMap;
-use std::fs::File;
 
 use anyhow::Result;
+use ex::fs::File;
 use serde::Deserialize;
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
 
