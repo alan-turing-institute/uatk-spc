@@ -156,7 +156,7 @@ struct TuPerson {
     pleisure: f64,
     pshop: f64,
     pschool: f64,
-    age: usize,
+    age: u8,
 }
 
 fn parse_usize_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<Option<usize>, D::Error> {

@@ -38,7 +38,8 @@ pub struct Person {
     // Some kind of work-related ID
     pub sic1d07: Option<usize>,
 
-    pub age_years: usize,
+    // Nobody's older than 256 years
+    pub age_years: u8,
 
     // The probabilities sum to 1 (TODO Make a distribution type or something)
     pub flows_per_activity: BTreeMap<Activity, Vec<(VenueID, f64)>>,
