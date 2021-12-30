@@ -104,3 +104,14 @@ struct MsoaLookupRow {
     #[serde(rename = "OSM")]
     osm: String,
 }
+
+/// Calculates all MSOAs nationally from the lookup table
+pub async fn all_msoas_nationally() -> Result<HashSet<MSOA>> {
+    let lookup_path = download_file("referencedata", "lookUp.csv").await?;
+    let mut msoas = HashSet::new();
+    for rec in csv::Reader::from_reader(File::open(lookup_path)?).deserialize() {
+        let rec: MsoaLookupRow = rec?;
+        msoas.insert(rec.msoa);
+    }
+    Ok(msoas)
+}

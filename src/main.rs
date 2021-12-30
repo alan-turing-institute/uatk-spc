@@ -17,7 +17,6 @@ use clap::arg_enum;
 use fs_err::File;
 use serde::Deserialize;
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
-use std::path::Path;
 use structopt::StructOpt;
 
 #[derive(StructOpt)]
@@ -36,6 +35,7 @@ arg_enum! {
         WestYorkshireLarge,
         Devon,
         TwoCounties,
+        National,
     }
 }
 
@@ -53,33 +53,40 @@ async fn main() -> Result<()> {
 
     let args = Args::from_args();
 
-    // TODO Input from a .yml
-    let csv_input = match args.input {
-        InputDataset::WestYorkshireSmall => "Input_Test_3.csv",
-        InputDataset::WestYorkshireLarge => "Input_WestYorkshire.csv",
-        InputDataset::Devon => "Input_Devon.csv",
-        InputDataset::TwoCounties => "Input_Test_accross.csv",
-    };
-    // TODO This code depends on the main repo being cloned in a particular path. Move those files
-    // here
-    let csv_path = format!("/home/dabreegster/RAMP-UA/model_parameters/{}", csv_input);
-    let input = Input {
-        initial_cases_per_msoa: load_initial_cases_per_msoa(csv_path)?,
-    };
-
+    let input = args.input.to_input().await?;
     let raw_results = raw_data::grab_raw_data(&input).await?;
     let _population = make_population::initialize(raw_results)?;
 
     Ok(())
 }
 
-fn load_initial_cases_per_msoa<P: AsRef<Path>>(path: P) -> Result<HashMap<MSOA, usize>> {
-    let mut cases = HashMap::new();
-    for rec in csv::Reader::from_reader(File::open(path.as_ref())?).deserialize() {
-        let rec: InitialCaseRow = rec?;
-        cases.insert(rec.msoa, rec.cases);
+impl InputDataset {
+    async fn to_input(self) -> Result<Input> {
+        let mut input = Input {
+            initial_cases_per_msoa: HashMap::new(),
+        };
+
+        let csv_input = match self {
+            InputDataset::WestYorkshireSmall => "Input_Test_3.csv",
+            InputDataset::WestYorkshireLarge => "Input_WestYorkshire.csv",
+            InputDataset::Devon => "Input_Devon.csv",
+            InputDataset::TwoCounties => "Input_Test_accross.csv",
+            InputDataset::National => {
+                for msoa in raw_data::all_msoas_nationally().await? {
+                    input.initial_cases_per_msoa.insert(msoa, default_cases());
+                }
+                return Ok(input);
+            }
+        };
+        // TODO This code depends on the main repo being cloned in a particular path. Move those files
+        // here
+        let csv_path = format!("/home/dabreegster/RAMP-UA/model_parameters/{}", csv_input);
+        for rec in csv::Reader::from_reader(File::open(csv_path)?).deserialize() {
+            let rec: InitialCaseRow = rec?;
+            input.initial_cases_per_msoa.insert(rec.msoa, rec.cases);
+        }
+        Ok(input)
     }
-    Ok(cases)
 }
 
 #[derive(Deserialize)]
