@@ -141,6 +141,7 @@ fn read_individual_time_use_and_health_data(
 struct TuPerson {
     #[serde(rename = "MSOA11CD")]
     msoa: MSOA,
+    #[serde(deserialize_with = "parse_isize")]
     hid: isize,
     pid: isize,
     #[serde(deserialize_with = "parse_usize_or_na")]
@@ -167,6 +168,14 @@ fn parse_usize_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<Option<usize>, D
         "Not a usize or \"NA\": {}",
         raw
     )))
+}
+
+fn parse_isize<'de, D: Deserializer<'de>>(d: D) -> Result<isize, D::Error> {
+    // tus_hse_northamptonshire.csv expresses HID in scientific notation: 2.00563e+11
+    // Parse to f64, then cast
+    let float = <f64>::deserialize(d)?;
+    // TODO Is there a safety check we should do? Make sure it's already rounded?
+    Ok(float as isize)
 }
 
 impl TuPerson {
