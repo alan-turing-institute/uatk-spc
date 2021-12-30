@@ -9,7 +9,7 @@ use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Popu
 use crate::quant::{load_venues, quant_get_flows, Threshold};
 use crate::raw_data::RawData;
 use crate::utilities::print_count;
-use crate::MSOA;
+use crate::{memory_usage, MSOA};
 
 // population_initialisation.py
 pub fn initialize(raw_data: RawData) -> Result<Population> {
@@ -66,8 +66,9 @@ fn read_individual_time_use_and_health_data(
         for rec in csv::Reader::from_reader(pb.wrap_read(file)).deserialize() {
             if people_per_household.len() % 1000 == 0 {
                 pb.set_message(format!(
-                    "{} households so far",
-                    print_count(people_per_household.len())
+                    "{} households so far ({})",
+                    print_count(people_per_household.len()),
+                    memory_usage()
                 ));
             }
 
@@ -106,7 +107,7 @@ fn read_individual_time_use_and_health_data(
     }
 
     // Now create the people and households
-    info!("Creating households");
+    info!("Creating households ({})", memory_usage());
     // TODO Quick way to add a label, prettyprint the count?
     for ((msoa, orig_hid), raw_people) in people_per_household.into_iter().progress() {
         let household_id = HouseholdID(population.households.len());
@@ -131,10 +132,11 @@ fn read_individual_time_use_and_health_data(
     // The MSOAs from the time-use files are usually a subset of the initial_cases_per_msoa. Is
     // that intentional?
     info!(
-        "{} people across {} households, and {} MSOAs",
+        "{} people across {} households, and {} MSOAs ({})",
         print_count(population.people.len()),
         print_count(population.households.len()),
-        print_count(population.unique_msoas().len())
+        print_count(population.unique_msoas().len()),
+        memory_usage()
     );
     Ok(())
 }
@@ -235,9 +237,21 @@ fn setup_venue_flows(
     // to every person in the MSOA. That's loads of duplication -- we could just keep it by (MSOA x
     // activity), but let's follow the Python for now.
     info!("Copying {:?} flows to the people", activity);
+    let pb = ProgressBar::new(population.people.len() as u64);
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template("{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {pos}/{len} ({eta})")
+            .progress_chars("#-"),
+    );
     for person in &mut population.people {
+        pb.inc(1);
+        if pb.position() % 1000 == 0 {
+            pb.set_message(memory_usage());
+        }
+
         let msoa = &population.households[person.household.0].msoa;
         if let Some(flows) = flows_per_msoa.get(msoa) {
+            // TODO This OOMs.
             person.flows_per_activity.insert(activity, flows.clone());
         } else {
             // TODO I think this is an error; not happening for the small input

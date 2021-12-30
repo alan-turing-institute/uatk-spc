@@ -13,11 +13,15 @@ mod utilities;
 use std::collections::HashMap;
 
 use anyhow::Result;
+use cap::Cap;
 use clap::arg_enum;
 use fs_err::File;
 use serde::Deserialize;
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
 use structopt::StructOpt;
+
+#[global_allocator]
+static ALLOCATOR: Cap<std::alloc::System> = Cap::new(std::alloc::System, usize::max_value());
 
 #[derive(StructOpt)]
 #[structopt(name = "rampfs", about = "Rapid Assistance in Modelling the Pandemic")]
@@ -121,3 +125,10 @@ pub struct Input {
 // - https://mapit.mysociety.org/area/36070.html (they have a paid API)
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
 pub struct MSOA(String);
+
+fn memory_usage() -> String {
+    format!(
+        "Memory usage: {}",
+        indicatif::HumanBytes(ALLOCATOR.allocated() as u64)
+    )
+}
