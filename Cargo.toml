@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 anyhow = "1.0.51"
+clap = "2.34.0"
 csv = "1.1.6"
 flate2 = "1.0.22"
 fs-err = "2.6.0"
@@ -17,6 +18,7 @@ ordered-float = "2.8.0"
 reqwest = { version = "0.11.8", features = ["stream"] }
 serde = { version = "1.0.132", features = ["derive"] }
 simplelog = "0.11.1"
+structopt = "0.3.25"
 tar = "0.4.38"
 tokio = { version = "1.15.0", features = ["full"] }
 

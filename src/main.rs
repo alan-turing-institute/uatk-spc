@@ -13,9 +13,31 @@ mod utilities;
 use std::collections::HashMap;
 
 use anyhow::Result;
+use clap::arg_enum;
 use fs_err::File;
 use serde::Deserialize;
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
+use std::path::Path;
+use structopt::StructOpt;
+
+#[derive(StructOpt)]
+#[structopt(name = "rampfs", about = "Rapid Assistance in Modelling the Pandemic")]
+struct Args {
+    /// The path to a CSV file with aggregated origin/destination data
+    #[structopt(possible_values = &InputDataset::variants(), case_insensitive = true)]
+    input: InputDataset,
+}
+
+arg_enum! {
+    #[derive(Debug)]
+    /// Which counties to operate on
+    enum InputDataset {
+        WestYorkshireSmall,
+        WestYorkshireLarge,
+        Devon,
+        TwoCounties,
+    }
+}
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -29,20 +51,20 @@ async fn main() -> Result<()> {
         ColorChoice::Auto,
     )?;
 
+    let args = Args::from_args();
+
     // TODO Input from a .yml
+    let csv_input = match args.input {
+        InputDataset::WestYorkshireSmall => "Input_Test_3.csv",
+        InputDataset::WestYorkshireLarge => "Input_WestYorkshire.csv",
+        InputDataset::Devon => "Input_Devon.csv",
+        InputDataset::TwoCounties => "Input_Test_accross.csv",
+    };
+    // TODO This code depends on the main repo being cloned in a particular path. Move those files
+    // here
+    let csv_path = format!("/home/dabreegster/RAMP-UA/model_parameters/{}", csv_input);
     let input = Input {
-        initial_cases_per_msoa: load_initial_cases_per_msoa(
-            // These two are a small and large slice of West Yorkshire
-            //
-            //"/home/dabreegster/RAMP-UA/model_parameters/Input_Test_3.csv",
-            //"/home/dabreegster/RAMP-UA/model_parameters/Input_WestYorkshire.csv",
-            //
-            // Here's a different region
-            //"/home/dabreegster/RAMP-UA/model_parameters/Input_Devon.csv",
-            //
-            // Here's something across 2 regions
-            "/home/dabreegster/RAMP-UA/model_parameters/Input_Test_accross.csv",
-        )?,
+        initial_cases_per_msoa: load_initial_cases_per_msoa(csv_path)?,
     };
 
     let raw_results = raw_data::grab_raw_data(&input).await?;
@@ -51,9 +73,9 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-fn load_initial_cases_per_msoa(path: &str) -> Result<HashMap<MSOA, usize>> {
+fn load_initial_cases_per_msoa<P: AsRef<Path>>(path: P) -> Result<HashMap<MSOA, usize>> {
     let mut cases = HashMap::new();
-    for rec in csv::Reader::from_reader(File::open(path)?).deserialize() {
+    for rec in csv::Reader::from_reader(File::open(path.as_ref())?).deserialize() {
         let rec: InitialCaseRow = rec?;
         cases.insert(rec.msoa, rec.cases);
     }
