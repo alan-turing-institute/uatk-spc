@@ -90,3 +90,7 @@ multi language, potentially
 - determinism (hashmaps, RNG seeds, pinning to software versions, pinning to data versions like OSM extracts)
 - f64 headaches: sorting, rounding, serializing
 - No such file or directory (bad errors by default)
+
+## Dependency on proj
+
+Sadface, make sure cmake installed

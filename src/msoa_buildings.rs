@@ -1,8 +1,10 @@
 use std::collections::{BTreeMap, BTreeSet};
+use std::io::BufReader;
 
 use anyhow::Result;
+use geo::map_coords::MapCoordsInplace;
 use geo::{MultiPolygon, Point};
-use std::io::BufReader;
+use proj::Proj;
 
 use crate::MSOA;
 
@@ -11,9 +13,6 @@ use crate::MSOA;
 /// Lots of caveats about what counts as a home or work building!
 pub fn get_buildings_per_msoa(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, Vec<Point<f64>>>> {
     let msoa_shapes = load_msoa_shapes(msoas)?;
-    // TODO I think we need to reproject.
-    // https://docs.rs/geo/0.18.0/geo/algorithm/map_coords/trait.TryMapCoords.html#advanced-example-geometry-coordinate-conversion-using-proj
-
     // Debug the MSOA we loaded by writing a new geojson
     // TODO If this is ever removed, cleanup dependencies on geojson and serde_json
     if true {
@@ -34,7 +33,7 @@ pub fn get_buildings_per_msoa(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, Ve
         write!(file, "{}", serde_json::to_string_pretty(&gj)?)?;
     }
 
-    let mut results = BTreeMap::new();
+    let results = BTreeMap::new();
     Ok(results)
 }
 
@@ -59,9 +58,22 @@ fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, MultiPolygon
             if !msoas.contains(&msoa) {
                 continue;
             }
-            let geo_polygon: MultiPolygon<f64> = shape.try_into()?;
+            let mut geo_polygon: MultiPolygon<f64> = shape.try_into()?;
+            reproject(&mut geo_polygon)?;
             results.insert(msoa, geo_polygon);
         }
     }
     Ok(results)
+}
+
+fn reproject(polygon: &mut MultiPolygon<f64>) -> Result<()> {
+    // I opened the file in QGIS to figure out the source CRS
+    let reproject = Proj::new_known_crs("EPSG:27700", "EPSG:4326", None)
+        .ok_or(anyhow!("Couldn't set up CRS projection"))?;
+    polygon.map_coords_inplace(|&(x, y)| {
+        // TODO Error prop inside here is weird
+        let pt = reproject.convert((x, y)).unwrap();
+        (pt.x(), pt.y())
+    });
+    Ok(())
 }
