@@ -13,11 +13,10 @@ use tar::Archive;
 
 // TODO I'm not happy at all about any of this, just temporary.
 
-/// Returns the filename
-pub async fn download(url: PathBuf) -> Result<PathBuf> {
-    let filename = filename(&url);
-    let output = Path::new("raw_data").join(filename);
-
+/// Returns the output path
+pub async fn download<P1: AsRef<Path>, P2: Into<PathBuf>>(url: P1, output: P2) -> Result<PathBuf> {
+    let url = url.as_ref();
+    let output = output.into();
     info!("Downloading {} to {}", url.display(), output.display());
 
     if output.exists() {
@@ -25,7 +24,9 @@ pub async fn download(url: PathBuf) -> Result<PathBuf> {
         return Ok(output);
     }
 
-    std::fs::create_dir_all("raw_data")?;
+    if let Some(parent) = output.parent() {
+        std::fs::create_dir_all(parent)?;
+    }
 
     download_file(&url.display().to_string(), &output.display().to_string()).await?;
     Ok(output)
@@ -58,7 +59,7 @@ pub fn untar(file: PathBuf, expected_output: &str) -> Result<()> {
         );
         // TODO This implements Read, we could have a granular progress bar
         // TODO Make sure this path is correct
-        entry.unpack_in("raw_data")?;
+        entry.unpack_in(Path::new(expected_output).parent().unwrap())?;
     }
 
     Ok(())
@@ -80,17 +81,19 @@ pub fn unzip(file: PathBuf, output_dir: String) -> Result<()> {
     }
 }
 
-pub fn filename(path: &PathBuf) -> String {
-    path.file_name()
+pub fn filename<P: AsRef<Path>>(path: P) -> String {
+    path.as_ref()
+        .file_name()
         .unwrap()
         .to_os_string()
         .into_string()
         .unwrap()
 }
 
-pub fn basename(path: &PathBuf) -> String {
+pub fn basename<P: AsRef<Path>>(path: P) -> String {
     // TODO .shp.zip results in .shp
-    path.file_stem()
+    path.as_ref()
+        .file_stem()
         .unwrap()
         .to_os_string()
         .into_string()
@@ -138,6 +141,7 @@ async fn download_file(url: &str, path: &str) -> Result<()> {
         pb.set_position(new);
     }
 
+    // TODO It'd almost be nice to print a summary of the time and size, and use the logging format
     pb.finish_with_message(format!("Downloaded {} to {}", url, path));
     Ok(())
 }

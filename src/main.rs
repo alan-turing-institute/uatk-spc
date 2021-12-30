@@ -20,7 +20,7 @@ use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMod
 #[tokio::main]
 async fn main() -> Result<()> {
     TermLogger::init(
-        LevelFilter::Debug,
+        LevelFilter::Info,
         ConfigBuilder::new()
             .set_time_format_str("%H:%M:%S%.3f")
             .set_location_level(LevelFilter::Error)

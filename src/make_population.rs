@@ -74,7 +74,7 @@ fn read_individual_time_use_and_health_data(
             let rec: TuPerson = rec?;
             // Strip out people that weren't matched to a household
             // No such examples in this file:
-            // > xsv search -s hid '\-1' county_data/tus_hse_west-yorkshire.csv
+            // > xsv search -s hid '\-1' countydata/tus_hse_west-yorkshire.csv
             if rec.hid == -1 {
                 no_household += 1;
                 continue;

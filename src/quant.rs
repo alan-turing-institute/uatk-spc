@@ -37,7 +37,7 @@ pub fn quant_get_flows(
         Activity::Home | Activity::Work => unreachable!(),
     };
     for rec in csv::Reader::from_reader(File::open(
-        Path::new("raw_data/QUANT_RAMP").join(population_csv),
+        Path::new("raw_data/nationaldata/QUANT_RAMP").join(population_csv),
     )?)
     .deserialize()
     {
@@ -49,9 +49,10 @@ pub fn quant_get_flows(
     //
     // import pickle
     // import numpy
-    // x = pickle.load(open("national_data/QUANT_RAMP/retailpointsProbSij.bin", "rb"))
-    // numpy.save('national_data/QUANT_RAMP/retailpointsProbSij.npy', x)
-    let table_path = format!("raw_data/QUANT_RAMP/{}", prob_sij).replace(".bin", ".npy");
+    // x = pickle.load(open("nationaldata/QUANT_RAMP/retailpointsProbSij.bin", "rb"))
+    // numpy.save('nationaldata/QUANT_RAMP/retailpointsProbSij.npy', x)
+    let table_path =
+        format!("raw_data/nationaldata/QUANT_RAMP/{}", prob_sij).replace(".bin", ".npy");
     let table = Array2::<f64>::read_npy(File::open(table_path)?)?;
 
     // TODO Verbose
@@ -131,7 +132,7 @@ fn get_venue_flows(
     min_threshold: f64,
 ) -> Result<Vec<(VenueID, f64)>> {
     let mut results = Vec::new();
-    // raw_data/QUANT_RAMP/retailpointsZones.csv has 14,228 rows representing venues.
+    // raw_data/nationaldata/QUANT_RAMP/retailpointsZones.csv has 14,228 rows representing venues.
     // n is 14,228 so hey that's good! one per venue.
     for venue in 0..table.shape()[1] {
         // TODO Check if this is row- or column-major in memory. Are we playing with the cache
@@ -158,8 +159,11 @@ pub fn load_venues(activity: Activity) -> Result<Vec<Venue>> {
         Activity::Home | Activity::Work => unreachable!(),
     };
     let mut venues = Vec::new();
-    for rec in csv::Reader::from_reader(File::open(format!("raw_data/QUANT_RAMP/{}", csv_path))?)
-        .deserialize()
+    for rec in csv::Reader::from_reader(File::open(format!(
+        "raw_data/nationaldata/QUANT_RAMP/{}",
+        csv_path
+    ))?)
+    .deserialize()
     {
         let rec: ZoneRow = rec?;
         // Let's check this while we're at it

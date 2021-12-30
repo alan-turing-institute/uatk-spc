@@ -9,7 +9,8 @@ use crate::MSOA;
 
 /// The work activity flows come from a different source, not QUANT data like everything else.
 pub fn get_commuting_flows() -> Result<HashMap<MSOA, Vec<(VenueID, f64)>>> {
-    for rec in csv::Reader::from_reader(File::open("raw_data/businessRegistry.csv")?).deserialize()
+    for rec in csv::Reader::from_reader(File::open("raw_data/nationaldata/businessRegistry.csv")?)
+        .deserialize()
     {
         let _rec: Row = rec?;
     }

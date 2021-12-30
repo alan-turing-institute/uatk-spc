@@ -1,11 +1,11 @@
 use std::collections::HashSet;
 use std::fs::File;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use anyhow::Result;
 use serde::Deserialize;
 
-use crate::utilities::{basename, download, print_count, untar, unzip};
+use crate::utilities::{basename, download, filename, print_count, untar, unzip};
 use crate::{Input, MSOA};
 
 pub struct RawData {
@@ -14,17 +14,27 @@ pub struct RawData {
     pub tus_files: Vec<String>,
 }
 
+async fn download_file<P: AsRef<str>>(dir: &str, file: P) -> Result<PathBuf> {
+    let azure = Path::new("https://ramp0storage.blob.core.windows.net/");
+    // TODO Azure uses nationaldata, countydata, etc. Local output in Python inserts an underscore.
+    // Meh?
+    let file = file.as_ref();
+    download(
+        azure.join(dir).join(file),
+        Path::new("raw_data").join(dir).join(file),
+    )
+    .await
+}
+
 // TODO Just writes a bunch of output files to a fixed location
 pub async fn grab_raw_data(input: &Input) -> Result<RawData> {
     let mut results = RawData {
         tus_files: Vec::new(),
     };
 
-    let azure = Path::new("https://ramp0storage.blob.core.windows.net/");
-
     // This maps MSOA IDs to things like OSM geofabrik URL
     // TODO Who creates/maintains this?
-    let lookup_path = download(azure.join("referencedata").join("lookUp.csv")).await?;
+    let lookup_path = download_file("referencedata", "lookUp.csv").await?;
 
     // TODO Who creates these TUS?
     // tu = time use
@@ -47,33 +57,37 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawData> {
         print_count(osm_needed.len())
     );
     for tu in tus_needed {
-        let gzip_path =
-            download(azure.join("countydata").join(&format!("tus_hse_{}.gz", tu))).await?;
-        let output_path = format!("raw_data/tus_hse_{}.csv", tu);
+        let gzip_path = download_file("countydata", format!("tus_hse_{}.gz", tu)).await?;
+        let output_path = format!("raw_data/countydata/tus_hse_{}.csv", tu);
         untar(gzip_path, &output_path)?;
         results.tus_files.push(output_path);
     }
     for osm_url in osm_needed {
-        let path = download(osm_url.into()).await?;
-        let output_dir = format!("raw_data/osm/{}", basename(&path));
-        unzip(path, output_dir)?;
+        let zip_path = download(
+            &osm_url,
+            format!("raw_data/countydata/OSM/{}", filename(&osm_url)),
+        )
+        .await?;
+        // TODO .shp.zip, so we have to do basename twice
+        unzip(
+            zip_path,
+            format!("raw_data/countydata/OSM/{}/", basename(&basename(&osm_url))),
+        )?;
     }
 
-    // TODO combine all the TU files
     // TODO combine all the OSM shapefiles files
 
-    // TODO Azure calls it nationaldata, local output seems to be national_data
-    let path = download(azure.join("nationaldata").join("QUANT_RAMP.tar.gz")).await?;
-    untar(path, "raw_data/QUANT_RAMP/")?;
+    let path = download_file("nationaldata", "QUANT_RAMP.tar.gz").await?;
+    untar(path, "raw_data/nationaldata/QUANT_RAMP/")?;
 
     // CommutingOD is all commented out
 
-    download(azure.join("nationaldata").join("businessRegistry.csv")).await?;
+    download_file("nationaldata", "businessRegistry.csv").await?;
 
-    download(azure.join("nationaldata").join("timeAtHomeIncreaseCTY.csv")).await?;
+    download_file("nationaldata", "timeAtHomeIncreaseCTY.csv").await?;
 
-    let path = download(azure.join("nationaldata").join("MSOAS_shp.tar.gz")).await?;
-    untar(path, "raw_data/MSOAS_shp/")?;
+    let path = download_file("nationaldata", "MSOAS_shp.tar.gz").await?;
+    untar(path, "raw_data/nationaldata/MSOAS_shp/")?;
 
     // TODO Some transformation of the lockdown file, "Dealing with the TimeAtHomeIncrease data".
     // It gets pickled later.
