@@ -5,6 +5,7 @@ extern crate log;
 
 mod commuting;
 mod make_population;
+mod msoa_buildings;
 mod population;
 mod quant;
 mod raw_data;
@@ -58,8 +59,12 @@ async fn main() -> Result<()> {
     let args = Args::from_args();
 
     let input = args.input.to_input().await?;
-    let raw_results = raw_data::grab_raw_data(&input).await?;
-    let _population = make_population::initialize(raw_results)?;
+    /*let raw_results = raw_data::grab_raw_data(&input).await?;
+    let _population = make_population::initialize(raw_results)?;*/
+
+    let _buildings_per_msoa = msoa_buildings::get_buildings_per_msoa(
+        input.initial_cases_per_msoa.keys().cloned().collect(),
+    )?;
 
     Ok(())
 }
