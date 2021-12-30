@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, HashMap};
 
 use anyhow::Result;
 use fs_err::File;
-use indicatif::{ProgressBar, ProgressStyle};
+use indicatif::{ProgressBar, ProgressIterator, ProgressStyle};
 use serde::{Deserialize, Deserializer};
 
 use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Population, VenueID};
@@ -106,7 +106,9 @@ fn read_individual_time_use_and_health_data(
     }
 
     // Now create the people and households
-    for ((msoa, orig_hid), raw_people) in people_per_household {
+    info!("Creating households");
+    // TODO Quick way to add a label, prettyprint the count?
+    for ((msoa, orig_hid), raw_people) in people_per_household.into_iter().progress() {
         let household_id = HouseholdID(population.households.len());
         let mut household = Household {
             id: household_id,
