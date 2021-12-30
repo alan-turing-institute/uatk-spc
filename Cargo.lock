@@ -164,6 +164,7 @@ dependencies = [
  "encode_unicode",
  "libc",
  "once_cell",
+ "regex",
  "terminal_size",
  "winapi",
 ]
@@ -515,14 +516,11 @@ dependencies = [
 
 [[package]]
 name = "indicatif"
-version = "0.16.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2d207dc617c7a380ab07ff572a6e52fa202a2a8f355860ac9c38e23f8196be1b"
+version = "0.17.0-beta.1"
+source = "git+https://github.com/dabreegster/indicatif?branch=human_count#6329dbb3cff69da13fb98c5bde195c1bffb54863"
 dependencies = [
  "console",
- "lazy_static",
  "number_prefix",
- "regex",
 ]
 
 [[package]]

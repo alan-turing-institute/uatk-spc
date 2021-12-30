@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use anyhow::Result;
 use fs_err::File;
-use indicatif::{ProgressBar, ProgressIterator, ProgressStyle};
+use indicatif::{ProgressBar, ProgressStyle};
 use serde::{Deserialize, Deserializer};
 
 use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Population, VenueID};
@@ -108,8 +108,16 @@ fn read_individual_time_use_and_health_data(
 
     // Now create the people and households
     info!("Creating households ({})", memory_usage());
+    let pb = ProgressBar::new(people_per_household.len() as u64);
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} ({eta})")
+            .progress_chars("#-"),
+    );
+
     // TODO Quick way to add a label, prettyprint the count?
-    for ((msoa, orig_hid), raw_people) in people_per_household.into_iter().progress() {
+    for ((msoa, orig_hid), raw_people) in people_per_household {
+        pb.inc(1);
         let household_id = HouseholdID(population.households.len());
         let mut household = Household {
             id: household_id,
@@ -240,7 +248,7 @@ fn setup_venue_flows(
     let pb = ProgressBar::new(population.people.len() as u64);
     pb.set_style(
         ProgressStyle::default_bar()
-            .template("{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {pos}/{len} ({eta})")
+            .template("{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} ({eta})")
             .progress_chars("#-"),
     );
     for person in &mut population.people {
