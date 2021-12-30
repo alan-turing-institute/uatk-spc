@@ -1,5 +1,7 @@
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeSet;
 use std::fmt;
+
+use enum_map::{Enum, EnumMap};
 
 use crate::MSOA;
 
@@ -8,7 +10,7 @@ pub struct Population {
     pub people: Vec<Person>,
 
     // VenueID indexes into each list
-    pub venues_per_activity: BTreeMap<Activity, Vec<Venue>>,
+    pub venues_per_activity: EnumMap<Activity, Vec<Venue>>,
 }
 
 impl Population {
@@ -42,12 +44,12 @@ pub struct Person {
     pub age_years: u8,
 
     // The probabilities sum to 1 (TODO Make a distribution type or something)
-    pub flows_per_activity: BTreeMap<Activity, Vec<(VenueID, f64)>>,
+    pub flows_per_activity: EnumMap<Activity, Vec<(VenueID, f64)>>,
     // These are unitless, or a fraction of a day? They sum to 1
-    pub duration_per_activity: BTreeMap<Activity, f64>,
+    pub duration_per_activity: EnumMap<Activity, f64>,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Enum)]
 pub enum Activity {
     Retail,
     PrimarySchool,

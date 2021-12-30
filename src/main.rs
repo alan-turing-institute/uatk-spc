@@ -126,6 +126,7 @@ pub struct Input {
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
 pub struct MSOA(String);
 
+// TODO I don't trust the results...
 fn memory_usage() -> String {
     format!(
         "Memory usage: {}",

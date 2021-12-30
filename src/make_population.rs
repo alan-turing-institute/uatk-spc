@@ -1,6 +1,7 @@
 use std::collections::BTreeMap;
 
 use anyhow::Result;
+use enum_map::EnumMap;
 use fs_err::File;
 use indicatif::{ProgressBar, ProgressStyle};
 use serde::{Deserialize, Deserializer};
@@ -16,7 +17,7 @@ pub fn initialize(raw_data: RawData) -> Result<Population> {
     let mut population = Population {
         households: Vec::new(),
         people: Vec::new(),
-        venues_per_activity: BTreeMap::new(),
+        venues_per_activity: EnumMap::default(),
     };
     read_individual_time_use_and_health_data(&mut population, raw_data)?;
 
@@ -137,8 +138,9 @@ fn read_individual_time_use_and_health_data(
         population.households.push(household);
     }
 
-    // The MSOAs from the time-use files are usually a subset of the initial_cases_per_msoa. Is
+    // The MSOAs from the time-use files are usually a superset of the initial_cases_per_msoa. Is
     // that intentional?
+    // TODO The long line gets truncated somehow?
     info!(
         "{} people across {} households, and {} MSOAs ({})",
         print_count(population.people.len()),
@@ -192,23 +194,23 @@ fn parse_isize<'de, D: Deserializer<'de>>(d: D) -> Result<isize, D::Error> {
 
 impl TuPerson {
     fn create(self, household: HouseholdID, id: PersonID) -> Result<Person> {
-        let mut duration_per_activity: BTreeMap<Activity, f64> = BTreeMap::new();
-        duration_per_activity.insert(Activity::Retail, self.pshop);
-        duration_per_activity.insert(Activity::Home, self.phome);
-        duration_per_activity.insert(Activity::Work, self.pwork);
-        duration_per_activity.insert(Activity::Nightclub, self.pleisure);
+        let mut duration_per_activity: EnumMap<Activity, f64> = EnumMap::default();
+        duration_per_activity[Activity::Retail] = self.pshop;
+        duration_per_activity[Activity::Home] = self.phome;
+        duration_per_activity[Activity::Work] = self.pwork;
+        duration_per_activity[Activity::Nightclub] = self.pleisure;
 
         // Use pschool and age to calculate primary/secondary school
         if self.age < 11 {
-            duration_per_activity.insert(Activity::PrimarySchool, self.pschool);
-            duration_per_activity.insert(Activity::SecondarySchool, 0.0);
+            duration_per_activity[Activity::PrimarySchool] = self.pschool;
+            duration_per_activity[Activity::SecondarySchool] = 0.0;
         } else if self.age < 19 {
-            duration_per_activity.insert(Activity::PrimarySchool, 0.0);
-            duration_per_activity.insert(Activity::SecondarySchool, self.pschool);
+            duration_per_activity[Activity::PrimarySchool] = 0.0;
+            duration_per_activity[Activity::SecondarySchool] = self.pschool;
         } else {
             // TODO Seems like we need a University activity
-            duration_per_activity.insert(Activity::PrimarySchool, 0.0);
-            duration_per_activity.insert(Activity::SecondarySchool, 0.0);
+            duration_per_activity[Activity::PrimarySchool] = 0.0;
+            duration_per_activity[Activity::SecondarySchool] = 0.0;
         }
         pad_durations(&mut duration_per_activity)?;
 
@@ -220,7 +222,7 @@ impl TuPerson {
 
             age_years: self.age,
 
-            flows_per_activity: BTreeMap::new(),
+            flows_per_activity: EnumMap::default(),
             duration_per_activity,
         })
     }
@@ -233,9 +235,7 @@ fn setup_venue_flows(
 ) -> Result<()> {
     info!("Reading {:?} flow data...", activity);
 
-    population
-        .venues_per_activity
-        .insert(activity, load_venues(activity)?);
+    population.venues_per_activity[activity] = load_venues(activity)?;
 
     // Per MSOA, a list of venues and the probability of going from the MSOA to that venue
     let flows_per_msoa: BTreeMap<MSOA, Vec<(VenueID, f64)>> =
@@ -260,7 +260,7 @@ fn setup_venue_flows(
         let msoa = &population.households[person.household.0].msoa;
         if let Some(flows) = flows_per_msoa.get(msoa) {
             // TODO This OOMs.
-            person.flows_per_activity.insert(activity, flows.clone());
+            person.flows_per_activity[activity] = flows.clone();
         } else {
             // TODO I think this is an error; not happening for the small input
             warn!("No flows for {:?} in {}", activity, msoa.0);
@@ -271,14 +271,14 @@ fn setup_venue_flows(
 }
 
 // If the durations don't sum to 1, pad Home
-fn pad_durations(durations: &mut BTreeMap<Activity, f64>) -> Result<()> {
+fn pad_durations(durations: &mut EnumMap<Activity, f64>) -> Result<()> {
     let total: f64 = durations.values().sum();
     // TODO Check the rounding in the Python version
     let epsilon = 0.00001;
     if total > 1.0 + epsilon {
         bail!("Someone's durations sum to {}", total);
     } else if total < 1.0 {
-        durations.insert(Activity::Home, 1.0 - total);
+        durations[Activity::Home] = 1.0 - total;
     }
     Ok(())
 }
