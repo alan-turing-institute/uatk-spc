@@ -2,36 +2,36 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::io::BufReader;
 
 use anyhow::Result;
+use geo::algorithm::centroid::Centroid;
 use geo::map_coords::MapCoordsInplace;
 use geo::{MultiPolygon, Point};
 use proj::Proj;
 
+use crate::utilities::print_count;
 use crate::MSOA;
 
 /// For each MSOA, return all building centroids within.
 ///
 /// Lots of caveats about what counts as a home or work building!
-pub fn get_buildings_per_msoa(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, Vec<Point<f64>>>> {
+pub fn get_buildings_per_msoa(
+    msoas: BTreeSet<MSOA>,
+    osm_directories: Vec<String>,
+) -> Result<BTreeMap<MSOA, Vec<Point<f64>>>> {
+    info!("Loading MSOA shapes");
     let msoa_shapes = load_msoa_shapes(msoas)?;
-    // Debug the MSOA we loaded by writing a new geojson
-    // TODO If this is ever removed, cleanup dependencies on geojson and serde_json
-    if true {
-        use std::io::Write;
-
-        let geom_collection: geo::GeometryCollection<f64> =
-            msoa_shapes.values().map(|geom| geom.clone()).collect();
-        let mut feature_collection = geojson::FeatureCollection::from(&geom_collection);
-        for (feature, msoa) in feature_collection
-            .features
-            .iter_mut()
-            .zip(msoa_shapes.into_keys())
-        {
-            feature.set_property("msoa11cd", msoa.0);
-        }
-        let gj = geojson::GeoJson::from(feature_collection);
-        let mut file = fs_err::File::create("msoas.geojson")?;
-        write!(file, "{}", serde_json::to_string_pretty(&gj)?)?;
+    if false {
+        dump_msoa_shapes(&msoa_shapes)?;
     }
+    let mut building_centroids: Vec<Point<f64>> = Vec::new();
+    for dir in osm_directories {
+        // TODO Progress bars
+        info!("Loading buildings from {}", dir);
+        building_centroids.extend(load_building_centroids(&format!(
+            "{}gis_osm_buildings_a_free_1.shp",
+            dir
+        ))?);
+    }
+    // TODO Match em up
 
     let results = BTreeMap::new();
     Ok(results)
@@ -76,4 +76,40 @@ fn reproject(polygon: &mut MultiPolygon<f64>) -> Result<()> {
         (pt.x(), pt.y())
     });
     Ok(())
+}
+
+// TODO If this is ever removed, cleanup dependencies on geojson and serde_json
+fn dump_msoa_shapes(msoa_shapes: &BTreeMap<MSOA, MultiPolygon<f64>>) -> Result<()> {
+    use std::io::Write;
+
+    let geom_collection: geo::GeometryCollection<f64> =
+        msoa_shapes.values().map(|geom| geom.clone()).collect();
+    let mut feature_collection = geojson::FeatureCollection::from(&geom_collection);
+    for (feature, msoa) in feature_collection
+        .features
+        .iter_mut()
+        .zip(msoa_shapes.keys())
+    {
+        feature.set_property("msoa11cd", msoa.0.clone());
+    }
+    let gj = geojson::GeoJson::from(feature_collection);
+    let mut file = fs_err::File::create("msoas.geojson")?;
+    write!(file, "{}", serde_json::to_string_pretty(&gj)?)?;
+    Ok(())
+}
+
+fn load_building_centroids(path: &str) -> Result<Vec<Point<f64>>> {
+    let mut results = Vec::new();
+    for shape in shapefile::read_shapes_as::<_, shapefile::Polygon>(path)? {
+        let geo_polygon: MultiPolygon<f64> = shape.try_into()?;
+        if let Some(pt) = geo_polygon.centroid() {
+            results.push(pt);
+        }
+    }
+    info!(
+        "Found {} buildings from {}",
+        print_count(results.len()),
+        path
+    );
+    Ok(results)
 }

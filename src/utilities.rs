@@ -65,9 +65,9 @@ pub fn untar(file: PathBuf, expected_output: &str) -> Result<()> {
     Ok(())
 }
 
-pub fn unzip(file: PathBuf, output_dir: String) -> Result<()> {
+pub fn unzip(file: PathBuf, output_dir: &str) -> Result<()> {
     info!("Unzipping {} to {}...", file.display(), output_dir);
-    fs_err::create_dir_all(&output_dir)?;
+    fs_err::create_dir_all(output_dir)?;
     let status = Command::new("unzip")
         .arg("-n") // Skip if it exists
         .arg(file)

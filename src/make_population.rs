@@ -8,18 +8,17 @@ use serde::{Deserialize, Deserializer};
 
 use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Population, VenueID};
 use crate::quant::{load_venues, quant_get_flows, Threshold};
-use crate::raw_data::RawData;
 use crate::utilities::print_count;
 use crate::{memory_usage, MSOA};
 
 // population_initialisation.py
-pub fn initialize(raw_data: RawData) -> Result<Population> {
+pub fn initialize(tus_files: Vec<String>) -> Result<Population> {
     let mut population = Population {
         households: Vec::new(),
         people: Vec::new(),
         venues_per_activity: EnumMap::default(),
     };
-    read_individual_time_use_and_health_data(&mut population, raw_data)?;
+    read_individual_time_use_and_health_data(&mut population, tus_files)?;
 
     setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;
     setup_venue_flows(Activity::Nightclub, Threshold::TopN(10), &mut population)?;
@@ -41,7 +40,7 @@ pub fn initialize(raw_data: RawData) -> Result<Population> {
 
 fn read_individual_time_use_and_health_data(
     population: &mut Population,
-    raw_data: RawData,
+    tus_files: Vec<String>,
 ) -> Result<()> {
     // First read the raw CSV files and just group the raw rows by household (MSOA and hid)
     // This isn't all that memory-intensive; the Population ultimately has to hold everyone anyway.
@@ -52,7 +51,7 @@ fn read_individual_time_use_and_health_data(
     let mut no_household = 0;
 
     // TODO Two-level progress bar. MultiProgress seems to demand two threads and calling join() :(
-    for path in raw_data.tus_files {
+    for path in tus_files {
         info!("Reading {}", path);
         let file = File::open(path)?;
         let pb = ProgressBar::new(file.metadata()?.len());

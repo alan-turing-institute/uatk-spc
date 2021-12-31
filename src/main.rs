@@ -60,10 +60,11 @@ async fn main() -> Result<()> {
 
     let input = args.input.to_input().await?;
     let raw_results = raw_data::grab_raw_data(&input).await?;
-    let _population = make_population::initialize(raw_results)?;
+    let population = make_population::initialize(raw_results.tus_files)?;
 
     let _buildings_per_msoa = msoa_buildings::get_buildings_per_msoa(
-        input.initial_cases_per_msoa.keys().cloned().collect(),
+        population.unique_msoas(),
+        raw_results.osm_directories,
     )?;
 
     Ok(())

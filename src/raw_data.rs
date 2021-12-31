@@ -12,6 +12,7 @@ pub struct RawData {
     // The Python implementation appends these into one dataframe, but we can logically do the same
     // later on
     pub tus_files: Vec<String>,
+    pub osm_directories: Vec<String>,
 }
 
 async fn download_file<P: AsRef<str>>(dir: &str, file: P) -> Result<PathBuf> {
@@ -30,6 +31,7 @@ async fn download_file<P: AsRef<str>>(dir: &str, file: P) -> Result<PathBuf> {
 pub async fn grab_raw_data(input: &Input) -> Result<RawData> {
     let mut results = RawData {
         tus_files: Vec::new(),
+        osm_directories: Vec::new(),
     };
 
     // This maps MSOA IDs to things like OSM geofabrik URL
@@ -69,10 +71,9 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawData> {
         )
         .await?;
         // TODO .shp.zip, so we have to do basename twice
-        unzip(
-            zip_path,
-            format!("raw_data/countydata/OSM/{}/", basename(&basename(&osm_url))),
-        )?;
+        let output_dir = format!("raw_data/countydata/OSM/{}/", basename(&basename(&osm_url)));
+        unzip(zip_path, &output_dir)?;
+        results.osm_directories.push(output_dir);
     }
 
     // TODO combine all the OSM shapefiles files
