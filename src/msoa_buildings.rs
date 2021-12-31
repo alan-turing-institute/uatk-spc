@@ -3,8 +3,10 @@ use std::io::BufReader;
 
 use anyhow::Result;
 use geo::algorithm::centroid::Centroid;
+use geo::algorithm::contains::Contains;
 use geo::map_coords::MapCoordsInplace;
 use geo::{MultiPolygon, Point};
+use indicatif::{ProgressBar, ProgressStyle};
 use proj::Proj;
 
 use crate::utilities::print_count;
@@ -31,10 +33,7 @@ pub fn get_buildings_per_msoa(
             dir
         ))?);
     }
-    // TODO Match em up
-
-    let results = BTreeMap::new();
-    Ok(results)
+    Ok(points_per_polygon(building_centroids, &msoa_shapes))
 }
 
 fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, MultiPolygon<f64>>> {
@@ -112,4 +111,36 @@ fn load_building_centroids(path: &str) -> Result<Vec<Point<f64>>> {
         path
     );
     Ok(results)
+}
+
+// TODO Share with odjitter
+fn points_per_polygon<K: Clone + Ord>(
+    points: Vec<Point<f64>>,
+    polygons: &BTreeMap<K, MultiPolygon<f64>>,
+) -> BTreeMap<K, Vec<Point<f64>>> {
+    info!(
+        "Matching {} points to {} polygons",
+        print_count(points.len()),
+        print_count(polygons.len())
+    );
+
+    let mut output = BTreeMap::new();
+    for (key, _) in polygons {
+        output.insert(key.clone(), Vec::new());
+    }
+    let pb = ProgressBar::new(points.len() as u64);
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} ({eta})")
+            .progress_chars("#-"),
+    );
+    for point in points {
+        pb.inc(1);
+        for (key, polygon) in polygons {
+            if polygon.contains(&point) {
+                output.get_mut(key).unwrap().push(point);
+            }
+        }
+    }
+    return output;
 }
