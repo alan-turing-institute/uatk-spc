@@ -1,13 +1,15 @@
 use std::collections::{BTreeMap, BTreeSet};
-use std::io::BufReader;
+use std::io::{BufReader, Write};
 
 use anyhow::Result;
+use geo::algorithm::bounding_rect::BoundingRect;
 use geo::algorithm::centroid::Centroid;
 use geo::algorithm::contains::Contains;
 use geo::map_coords::MapCoordsInplace;
 use geo::{MultiPolygon, Point};
 use indicatif::{ProgressBar, ProgressStyle};
 use proj::Proj;
+use rstar::{RTree, AABB};
 
 use crate::utilities::print_count;
 use crate::MSOA;
@@ -33,7 +35,7 @@ pub fn get_buildings_per_msoa(
             dir
         ))?);
     }
-    Ok(points_per_polygon(building_centroids, &msoa_shapes))
+    Ok(points_per_polygon(building_centroids, msoa_shapes))
 }
 
 fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, MultiPolygon<f64>>> {
@@ -79,8 +81,6 @@ fn reproject(polygon: &mut MultiPolygon<f64>) -> Result<()> {
 
 // TODO If this is ever removed, cleanup dependencies on geojson and serde_json
 fn dump_msoa_shapes(msoa_shapes: &BTreeMap<MSOA, MultiPolygon<f64>>) -> Result<()> {
-    use std::io::Write;
-
     let geom_collection: geo::GeometryCollection<f64> =
         msoa_shapes.values().map(|geom| geom.clone()).collect();
     let mut feature_collection = geojson::FeatureCollection::from(&geom_collection);
@@ -114,33 +114,41 @@ fn load_building_centroids(path: &str) -> Result<Vec<Point<f64>>> {
 }
 
 // TODO Share with odjitter
-fn points_per_polygon<K: Clone + Ord>(
+fn points_per_polygon<K: std::fmt::Debug + Ord>(
     points: Vec<Point<f64>>,
-    polygons: &BTreeMap<K, MultiPolygon<f64>>,
+    polygons: BTreeMap<K, MultiPolygon<f64>>,
 ) -> BTreeMap<K, Vec<Point<f64>>> {
     info!(
-        "Matching {} points to {} polygons",
+        "Matching {} points to {} polygons. Building R-Tree...",
         print_count(points.len()),
         print_count(polygons.len())
     );
+    let tree = RTree::bulk_load(points);
 
     let mut output = BTreeMap::new();
-    for (key, _) in polygons {
-        output.insert(key.clone(), Vec::new());
-    }
-    let pb = ProgressBar::new(points.len() as u64);
+    let pb = ProgressBar::new(polygons.len() as u64);
     pb.set_style(
         ProgressStyle::default_bar()
             .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} ({eta})")
             .progress_chars("#-"),
     );
-    for point in points {
+    for (key, polygon) in polygons {
         pb.inc(1);
-        for (key, polygon) in polygons {
-            if polygon.contains(&point) {
-                output.get_mut(key).unwrap().push(point);
+        let mut pts_inside = Vec::new();
+        let bounds = polygon.bounding_rect().unwrap();
+        let envelope: AABB<Point<f64>> =
+            AABB::from_corners(bounds.min().into(), bounds.max().into());
+        for pt in tree.locate_in_envelope(&envelope) {
+            if polygon.contains(pt) {
+                pts_inside.push(*pt);
             }
         }
+        pb.println(format!(
+            "{:?} has {} points",
+            key,
+            print_count(pts_inside.len())
+        ));
+        output.insert(key, pts_inside);
     }
-    return output;
+    output
 }
