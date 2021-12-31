@@ -7,11 +7,10 @@ use geo::algorithm::centroid::Centroid;
 use geo::algorithm::contains::Contains;
 use geo::map_coords::MapCoordsInplace;
 use geo::{MultiPolygon, Point};
-use indicatif::{ProgressBar, ProgressStyle};
 use proj::Proj;
 use rstar::{RTree, AABB};
 
-use crate::utilities::print_count;
+use crate::utilities::{print_count, progress_count};
 use crate::MSOA;
 
 /// For each MSOA, return all building centroids within.
@@ -114,7 +113,7 @@ fn load_building_centroids(path: &str) -> Result<Vec<Point<f64>>> {
 }
 
 // TODO Share with odjitter
-fn points_per_polygon<K: std::fmt::Debug + Ord>(
+fn points_per_polygon<K: Ord>(
     points: Vec<Point<f64>>,
     polygons: BTreeMap<K, MultiPolygon<f64>>,
 ) -> BTreeMap<K, Vec<Point<f64>>> {
@@ -126,12 +125,7 @@ fn points_per_polygon<K: std::fmt::Debug + Ord>(
     let tree = RTree::bulk_load(points);
 
     let mut output = BTreeMap::new();
-    let pb = ProgressBar::new(polygons.len() as u64);
-    pb.set_style(
-        ProgressStyle::default_bar()
-            .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} ({eta})")
-            .progress_chars("#-"),
-    );
+    let pb = progress_count(polygons.len());
     for (key, polygon) in polygons {
         pb.inc(1);
         let mut pts_inside = Vec::new();
@@ -143,11 +137,6 @@ fn points_per_polygon<K: std::fmt::Debug + Ord>(
                 pts_inside.push(*pt);
             }
         }
-        pb.println(format!(
-            "{:?} has {} points",
-            key,
-            print_count(pts_inside.len())
-        ));
         output.insert(key, pts_inside);
     }
     output

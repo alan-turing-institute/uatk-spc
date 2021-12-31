@@ -147,3 +147,31 @@ pub fn write_binary<T: Serialize, P: AsRef<Path>>(object: &T, path: P) -> Result
     bincode::serialize_into(file, object)?;
     Ok(())
 }
+
+// TODO Can we further improve the API? Ideally just a '.wrap_progress_count()' on iterators, with
+// automatic inc(1). If we want to set messages every 1000 iterations, any way to include a
+// callback?
+
+/// Creates a nicely-styled progress bar for iterating over some number of items. No messages are
+/// supported.
+pub fn progress_count(len: usize) -> ProgressBar {
+    let pb = ProgressBar::new(len as u64);
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} ({eta})")
+            .progress_chars("#-"),
+    );
+    pb
+}
+
+/// Creates a nicely-styled progress bar for iterating over some number of items. Messages are
+/// supported.
+pub fn progress_count_with_msg(len: usize) -> ProgressBar {
+    let pb = ProgressBar::new(len as u64);
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} ({eta})")
+            .progress_chars("#-"),
+    );
+    pb
+}

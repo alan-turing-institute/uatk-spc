@@ -8,7 +8,7 @@ use serde::{Deserialize, Deserializer};
 
 use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Population, VenueID};
 use crate::quant::{load_venues, quant_get_flows, Threshold};
-use crate::utilities::print_count;
+use crate::utilities::{print_count, progress_count, progress_count_with_msg};
 use crate::{memory_usage, MSOA};
 
 // population_initialisation.py
@@ -108,14 +108,7 @@ fn read_individual_time_use_and_health_data(
 
     // Now create the people and households
     info!("Creating households ({})", memory_usage());
-    let pb = ProgressBar::new(people_per_household.len() as u64);
-    pb.set_style(
-        ProgressStyle::default_bar()
-            .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} ({eta})")
-            .progress_chars("#-"),
-    );
-
-    // TODO Quick way to add a label, prettyprint the count?
+    let pb = progress_count(people_per_household.len());
     for ((msoa, orig_hid), raw_people) in people_per_household {
         pb.inc(1);
         let household_id = HouseholdID(population.households.len());
@@ -244,12 +237,7 @@ fn setup_venue_flows(
     // to every person in the MSOA. That's loads of duplication -- we could just keep it by (MSOA x
     // activity), but let's follow the Python for now.
     info!("Copying {:?} flows to the people", activity);
-    let pb = ProgressBar::new(population.people.len() as u64);
-    pb.set_style(
-        ProgressStyle::default_bar()
-            .template("{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} ({eta})")
-            .progress_chars("#-"),
-    );
+    let pb = progress_count_with_msg(population.people.len());
     for person in &mut population.people {
         pb.inc(1);
         if pb.position() % 1000 == 0 {

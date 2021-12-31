@@ -3,13 +3,13 @@ use std::path::Path;
 
 use anyhow::Result;
 use fs_err::File;
-use indicatif::{ProgressBar, ProgressStyle};
 use ndarray::Array2;
 use ndarray_npy::ReadNpyExt;
 use ordered_float::NotNan;
 use serde::Deserialize;
 
 use crate::population::{Activity, Venue, VenueID};
+use crate::utilities::progress_count_with_msg;
 use crate::MSOA;
 
 pub enum Threshold {
@@ -55,15 +55,7 @@ pub fn quant_get_flows(
         format!("raw_data/nationaldata/QUANT_RAMP/{}", prob_sij).replace(".bin", ".npy");
     let table = Array2::<f64>::read_npy(File::open(table_path)?)?;
 
-    // TODO Verbose
-    let pb = ProgressBar::new(msoas.len().try_into().unwrap());
-    pb.set_style(
-        ProgressStyle::default_bar()
-            .template(
-                "{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({eta})",
-            )
-            .progress_chars("#-"),
-    );
+    let pb = progress_count_with_msg(msoas.len());
     let mut result = BTreeMap::new();
     // TODO This is no longer slow, but we could still parallelize
     for msoa in msoas {
