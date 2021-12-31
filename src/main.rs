@@ -17,7 +17,7 @@ use anyhow::Result;
 use cap::Cap;
 use clap::arg_enum;
 use fs_err::File;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
 use structopt::StructOpt;
 
@@ -33,7 +33,7 @@ struct Args {
 }
 
 arg_enum! {
-    #[derive(Debug)]
+    #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
     /// Which counties to operate on
     enum InputDataset {
         WestYorkshireSmall,
@@ -61,11 +61,17 @@ async fn main() -> Result<()> {
     let input = args.input.to_input().await?;
     let raw_results = raw_data::grab_raw_data(&input).await?;
     let population = make_population::initialize(raw_results.tus_files)?;
-
-    let _buildings_per_msoa = msoa_buildings::get_buildings_per_msoa(
+    let buildings_per_msoa = msoa_buildings::get_buildings_per_msoa(
         population.unique_msoas(),
         raw_results.osm_directories,
     )?;
+
+    let cache = StudyAreaCache {
+        population,
+        buildings_per_msoa,
+    };
+    info!("Writing study area cache for {}", input.dataset);
+    utilities::write_binary(&cache, format!("processed_data/{}.bin", input.dataset))?;
 
     Ok(())
 }
@@ -73,6 +79,7 @@ async fn main() -> Result<()> {
 impl InputDataset {
     async fn to_input(self) -> Result<Input> {
         let mut input = Input {
+            dataset: self,
             initial_cases_per_msoa: BTreeMap::new(),
         };
 
@@ -112,15 +119,16 @@ fn default_cases() -> usize {
 }
 
 // Equivalent to InitialisationCache
-/*struct StudyAreaCache {
-    // individuals.pkl
-    // activity_locations.pkl
+#[derive(Serialize, Deserialize)]
+struct StudyAreaCache {
+    population: population::Population,
+    buildings_per_msoa: BTreeMap<MSOA, Vec<geo::Point<f64>>>,
     // lockdown.csv
-    // msoa_building_coordinates.json
-}*/
+}
 
 // Parts of model_parameters/default.yml
 pub struct Input {
+    dataset: InputDataset,
     initial_cases_per_msoa: BTreeMap<MSOA, usize>,
 }
 
@@ -129,7 +137,7 @@ pub struct Input {
 // TODO Given one of these, how do we look it up?
 // - http://statistics.data.gov.uk/id/statistical-geography/E02002191
 // - https://mapit.mysociety.org/area/36070.html (they have a paid API)
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct MSOA(String);
 
 // TODO I don't trust the results...

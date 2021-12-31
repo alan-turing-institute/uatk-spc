@@ -2,9 +2,11 @@ use std::collections::BTreeSet;
 use std::fmt;
 
 use enum_map::{Enum, EnumMap};
+use serde::{Deserialize, Serialize};
 
 use crate::MSOA;
 
+#[derive(Serialize, Deserialize)]
 pub struct Population {
     pub households: Vec<Household>,
     pub people: Vec<Person>,
@@ -23,6 +25,7 @@ impl Population {
     }
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct Household {
     pub id: HouseholdID,
     pub msoa: MSOA,
@@ -33,6 +36,7 @@ pub struct Household {
     pub disease_danger: f64,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct Person {
     pub id: PersonID,
     pub household: HouseholdID,
@@ -49,7 +53,7 @@ pub struct Person {
     pub duration_per_activity: EnumMap<Activity, f64>,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Enum)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Enum, Serialize, Deserialize)]
 pub enum Activity {
     Retail,
     PrimarySchool,
@@ -60,6 +64,7 @@ pub enum Activity {
     // TODO I see quant files for hospitals, why not incorporated yet?
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct Venue {
     pub id: VenueID,
     pub activity: Activity,
@@ -72,7 +77,7 @@ pub struct Venue {
     pub urn: Option<usize>,
 }
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct HouseholdID(pub usize);
 impl fmt::Display for HouseholdID {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -80,7 +85,7 @@ impl fmt::Display for HouseholdID {
     }
 }
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct PersonID(pub usize);
 impl fmt::Display for PersonID {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -89,7 +94,7 @@ impl fmt::Display for PersonID {
 }
 
 // TODO These're also scoped by an activity, like retail!
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct VenueID(pub usize);
 impl fmt::Display for VenueID {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

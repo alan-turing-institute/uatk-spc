@@ -1,5 +1,5 @@
 use std::cmp::min;
-use std::io::Write;
+use std::io::{BufWriter, Write};
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
@@ -9,6 +9,7 @@ use fs_err::File;
 use futures_util::StreamExt;
 use indicatif::{HumanBytes, ProgressBar, ProgressStyle};
 use reqwest::Client;
+use serde::Serialize;
 use tar::Archive;
 
 // TODO I'm not happy at all about any of this, just temporary.
@@ -134,5 +135,15 @@ async fn download_file(url: &str, path: &str) -> Result<()> {
 
     // TODO It'd almost be nice to print a summary of the time and size, and use the logging format
     pb.finish_with_message(format!("Downloaded {} to {}", url, path));
+    Ok(())
+}
+
+pub fn write_binary<T: Serialize, P: AsRef<Path>>(object: &T, path: P) -> Result<()> {
+    let path = path.as_ref();
+    if let Some(parent) = path.parent() {
+        fs_err::create_dir_all(parent)?;
+    }
+    let file = BufWriter::new(File::create(path)?);
+    bincode::serialize_into(file, object)?;
     Ok(())
 }
