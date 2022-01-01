@@ -15,33 +15,30 @@ use std::collections::BTreeMap;
 
 use anyhow::Result;
 use cap::Cap;
-use clap::arg_enum;
+use clap::Parser;
 use fs_err::File;
 use serde::{Deserialize, Serialize};
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
-use structopt::StructOpt;
 
 #[global_allocator]
 static ALLOCATOR: Cap<std::alloc::System> = Cap::new(std::alloc::System, usize::max_value());
 
-#[derive(StructOpt)]
-#[structopt(name = "rampfs", about = "Rapid Assistance in Modelling the Pandemic")]
+#[derive(Parser)]
+#[clap(about, version, author)]
 struct Args {
     /// The path to a CSV file with aggregated origin/destination data
-    #[structopt(possible_values = &InputDataset::variants(), case_insensitive = true)]
+    #[clap(arg_enum)]
     input: InputDataset,
 }
 
-arg_enum! {
-    #[derive(Clone, Copy, Debug, Serialize, Deserialize)]
-    /// Which counties to operate on
-    enum InputDataset {
-        WestYorkshireSmall,
-        WestYorkshireLarge,
-        Devon,
-        TwoCounties,
-        National,
-    }
+#[derive(clap::ArgEnum, Clone, Copy, Debug, Serialize, Deserialize)]
+/// Which counties to operate on
+enum InputDataset {
+    WestYorkshireSmall,
+    WestYorkshireLarge,
+    Devon,
+    TwoCounties,
+    National,
 }
 
 #[tokio::main]
@@ -56,7 +53,7 @@ async fn main() -> Result<()> {
         ColorChoice::Auto,
     )?;
 
-    let args = Args::from_args();
+    let args = Args::parse();
 
     let input = args.input.to_input().await?;
     let raw_results = raw_data::grab_raw_data(&input).await?;
@@ -70,8 +67,8 @@ async fn main() -> Result<()> {
         population,
         buildings_per_msoa,
     };
-    info!("Writing study area cache for {}", input.dataset);
-    utilities::write_binary(&cache, format!("processed_data/{}.bin", input.dataset))?;
+    info!("Writing study area cache for {:?}", input.dataset);
+    utilities::write_binary(&cache, format!("processed_data/{:?}.bin", input.dataset))?;
 
     Ok(())
 }
