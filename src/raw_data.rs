@@ -1,4 +1,4 @@
-use std::collections::BTreeSet;
+use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 
 use anyhow::Result;
@@ -6,13 +6,14 @@ use fs_err::File;
 use serde::Deserialize;
 
 use crate::utilities::{basename, download, filename, print_count, untar, unzip};
-use crate::{Input, MSOA};
+use crate::{Input, CTY20, MSOA};
 
 pub struct RawData {
     // The Python implementation appends these into one dataframe, but we can logically do the same
     // later on
     pub tus_files: Vec<String>,
     pub osm_directories: Vec<String>,
+    pub msoas_per_google_mobility: BTreeMap<CTY20, Vec<MSOA>>,
 }
 
 async fn download_file<P: AsRef<str>>(dir: &str, file: P) -> Result<PathBuf> {
@@ -32,6 +33,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawData> {
     let mut results = RawData {
         tus_files: Vec::new(),
         osm_directories: Vec::new(),
+        msoas_per_google_mobility: BTreeMap::new(),
     };
 
     // This maps MSOA IDs to things like OSM geofabrik URL
@@ -50,6 +52,11 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawData> {
         if input.initial_cases_per_msoa.contains_key(&rec.msoa) {
             tus_needed.insert(rec.new_tu);
             osm_needed.insert(rec.osm);
+            results
+                .msoas_per_google_mobility
+                .entry(rec.google_mobility)
+                .or_insert_with(Vec::new)
+                .push(rec.msoa);
         }
     }
     info!(
@@ -99,6 +106,8 @@ struct MsoaLookupRow {
     new_tu: String,
     #[serde(rename = "OSM")]
     osm: String,
+    #[serde(rename = "GoogleMob")]
+    google_mobility: CTY20,
 }
 
 /// Calculates all MSOAs nationally from the lookup table

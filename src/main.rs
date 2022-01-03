@@ -61,11 +61,16 @@ async fn main() -> Result<()> {
     let population = make_population::initialize(raw_results.tus_files)?;
     let info_per_msoa =
         msoas::get_info_per_msoa(population.unique_msoas(), raw_results.osm_directories)?;
-    lockdown::calculate()?;
+    let lockdown_per_day = lockdown::calculate_lockdown_per_day(
+        raw_results.msoas_per_google_mobility,
+        &info_per_msoa,
+        &population,
+    )?;
 
     let cache = StudyAreaCache {
         population,
         info_per_msoa,
+        lockdown_per_day,
     };
     info!("Writing study area cache for {:?}", input.dataset);
     utilities::write_binary(&cache, format!("processed_data/{:?}.bin", input.dataset))?;
@@ -120,7 +125,7 @@ fn default_cases() -> usize {
 struct StudyAreaCache {
     population: population::Population,
     info_per_msoa: BTreeMap<MSOA, msoas::InfoPerMSOA>,
-    // lockdown.csv
+    lockdown_per_day: Vec<f64>,
 }
 
 // Parts of model_parameters/default.yml
@@ -136,6 +141,10 @@ pub struct Input {
 // - https://mapit.mysociety.org/area/36070.html (they have a paid API)
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct MSOA(String);
+
+// No idea what this stands for. It's a larger region name, used in Google mobility data.
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+pub struct CTY20(String);
 
 // TODO I don't trust the results...
 fn memory_usage() -> String {
