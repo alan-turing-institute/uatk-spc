@@ -30,6 +30,10 @@ struct Args {
     /// The path to a CSV file with aggregated origin/destination data
     #[clap(arg_enum)]
     input: InputDataset,
+    /// When present, only read the first few households, to run more quickly. Be warned, the
+    /// results will be strange
+    #[clap(long)]
+    max_households: Option<usize>,
 }
 
 #[derive(clap::ArgEnum, Clone, Copy, Debug, Serialize, Deserialize)]
@@ -56,9 +60,9 @@ async fn main() -> Result<()> {
 
     let args = Args::parse();
 
-    let input = args.input.to_input().await?;
+    let input = args.to_input().await?;
     let raw_results = raw_data::grab_raw_data(&input).await?;
-    let population = make_population::initialize(raw_results.tus_files)?;
+    let population = make_population::initialize(raw_results.tus_files, input.max_households)?;
     let info_per_msoa =
         msoas::get_info_per_msoa(population.unique_msoas(), raw_results.osm_directories)?;
     let lockdown_per_day = lockdown::calculate_lockdown_per_day(
@@ -78,14 +82,15 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-impl InputDataset {
+impl Args {
     async fn to_input(self) -> Result<Input> {
         let mut input = Input {
-            dataset: self,
+            dataset: self.input,
             initial_cases_per_msoa: BTreeMap::new(),
+            max_households: self.max_households,
         };
 
-        let csv_input = match self {
+        let csv_input = match self.input {
             InputDataset::WestYorkshireSmall => "Input_Test_3.csv",
             InputDataset::WestYorkshireLarge => "Input_WestYorkshire.csv",
             InputDataset::Devon => "Input_Devon.csv",
@@ -132,6 +137,7 @@ struct StudyAreaCache {
 pub struct Input {
     dataset: InputDataset,
     initial_cases_per_msoa: BTreeMap<MSOA, usize>,
+    max_households: Option<usize>,
 }
 
 // MSOA11CD

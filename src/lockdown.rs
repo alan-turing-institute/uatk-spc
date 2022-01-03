@@ -23,7 +23,8 @@ pub fn calculate_lockdown_per_day(
                 google_mobility,
                 msoas
                     .iter()
-                    .map(|msoa| info_per_msoa[msoa].population)
+                    // Allow some MSOAs to be missing, for when we sample_households
+                    .filter_map(|msoa| info_per_msoa.get(msoa).map(|info| info.population))
                     .sum(),
             )
         })

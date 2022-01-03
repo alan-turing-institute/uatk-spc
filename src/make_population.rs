@@ -12,13 +12,13 @@ use crate::utilities::{print_count, progress_count, progress_count_with_msg};
 use crate::{memory_usage, MSOA};
 
 // population_initialisation.py
-pub fn initialize(tus_files: Vec<String>) -> Result<Population> {
+pub fn initialize(tus_files: Vec<String>, max_households: Option<usize>) -> Result<Population> {
     let mut population = Population {
         households: Vec::new(),
         people: Vec::new(),
         venues_per_activity: EnumMap::default(),
     };
-    read_individual_time_use_and_health_data(&mut population, tus_files)?;
+    read_individual_time_use_and_health_data(&mut population, tus_files, max_households)?;
 
     setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;
     setup_venue_flows(Activity::Nightclub, Threshold::TopN(10), &mut population)?;
@@ -41,6 +41,7 @@ pub fn initialize(tus_files: Vec<String>) -> Result<Population> {
 fn read_individual_time_use_and_health_data(
     population: &mut Population,
     tus_files: Vec<String>,
+    max_households: Option<usize>,
 ) -> Result<()> {
     // First read the raw CSV files and just group the raw rows by household (MSOA and hid)
     // This isn't all that memory-intensive; the Population ultimately has to hold everyone anyway.
@@ -64,6 +65,12 @@ fn read_individual_time_use_and_health_data(
         );
 
         for rec in csv::Reader::from_reader(pb.wrap_read(file)).deserialize() {
+            if let Some(max) = max_households {
+                if people_per_household.len() == max {
+                    break;
+                }
+            }
+
             if people_per_household.len() % 1000 == 0 {
                 pb.set_message(format!(
                     "{} households so far ({})",
