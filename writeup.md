@@ -33,7 +33,8 @@ re-learning everything!
 There's lots of **acronyms** without any definitions. It's fine to use these
 through the code, but we should define them in a `dev.md` document or somewhere
 obvious in the code. I've figured out `tu` is "time-use", but I still have no
-idea what `CTY20` or `sic1d07` are!
+idea what `CTY20` or `sic1d07` are! And with the QUANT data, what's the
+difference between `PiJ`, `SiJ`, `HiJ`?
 
 **Consistent terminology** is also helpful. It took me a while to realize that
 all of these are the same: shop, venue, retail point, location.
@@ -93,14 +94,35 @@ the same code.
 I've started switching RAMP to Poetry
 [here](https://github.com/dabreegster/RAMP-UA/tree/dcarlino_ecotwins_poetry).
 
-### Dataframes
+### Dataframes vs types
 
-- the big one -- numpy/pandas
-  - typesafety
-  - trying to reason about everything as a 2D matrix is problematic, because
-    there's so many types of data that isnt
-  - perf (getting flows is slow I think bc of the repeated one lookup, which
-    could just be a pure python dict)
+The biggest problem seems to be forcing the use of numpy and pandas.
+
+#### Not everything is a 2D matrix
+
+examples
+
+#### Just use normal Python
+
+In many cases, using regular Python lists and dictionaries would be way simpler
+and faster. An example in
+[quant_api.py](https://github.com/Urban-Analytics/RAMP-UA/blob/3cf45d225501ef64ad6439c9e4c330f052708853/coding/initialise/quant_api.py#L72):
+
+```python
+zonei = int(dfPrimaryPopulation.loc[dfPrimaryPopulation['msoaiz'] == msoa_iz,'zonei'])
+```
+
+This is difficult to read and slow. Logically, it's just mapping the MSOA ID to
+some `zonei` ID. But working with dataframes forces us to extract a scalar
+result. Even worse, these lookups happen with the lookup for every MSOA. We
+could just iterate through the CSV file and build up a dictionary once, then
+just transform MSOA to zonei with normal Python.
+
+#### Wait though
+
+But playing the devil's advocate, maybe the problem is that I'm really not used
+to reasoning in terms of dataframes and matching up indices. So for anybody
+working on this codebase, what's your experience like?
 
 ### OpenStreetMap buildings
 
@@ -153,3 +175,33 @@ the memory requirements, so we could comfortably run initialisation nationally
 on a single machine. The biggest opportunity is not copying QUANT flows to each
 person. As far as I can tell from the Python, this data varies by MSOA and
 activity, and there's no variation with all of the people in each MSOA.
+
+## Picking a language
+
+In terms of line count, the Rust codebase is currently around 1,000 LoC, and
+Python (just `coding/initialise`, no `constants.py` or `main_initialisation.py`)
+at 1,400.
+
+In terms of runtime performance, I think the Rust version is a clear winner, but
+I need to run the Python pipeline again.
+
+Setting up a project like this in Rust takes a little bit more effort, but it's
+well worth it for performance and improved debugging and developer experience.
+We can make it impossible to hit certain types of problems, like confusing MSOA
+IDs with CTY20 or having indices not match up. And I'm more than happy to pay
+that up-front cost, extract reusable libraries to make the next projects easier,
+and teach people these new approaches.
+
+### The best of both worlds
+
+I hope I've argued that writing complex pipelines and simulations in a language
+like Rust is worthwhile. But one major limitation of Rust is the lack of an
+interactive shell (aka REPL) or notebook environment. Python and R are great for
+interactive dataviz, stats, and exploration. Can we use the right tool for the
+job?
+
+I propose something simple -- make it extremely easy to dump data from anywhere
+in the Rust code to a file in some common format (CSV, JSON, GeoJSON, etc) and
+load that with Python. I'm not exactly sure what this'll look like yet, but we
+could maybe even add some kind of "breakpoint" debugging method that opens up a
+Python REPL in one step. Exploration ongoing.

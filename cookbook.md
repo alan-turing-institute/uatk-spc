@@ -17,3 +17,29 @@ hashmaps, RNG seeds, pinning to software versions, pinning to data versions like
 - Rust specific: No such file or directory, use fs-err
 
 ## ID wrapper types
+
+## File management
+
+- managing paths, organizing in the code
+- manifests
+- syncing somewhere
+	- how to manage with a large team
+
+## Offline import vs online run
+
+## Idempotent data prep
+
+- downloading
+- extracting
+
+## Logging
+
+Multi-level progress bars? Flamecharts? Notes and debug output?
+
+## Measuring memory usage
+
+## Tools for data exploration
+
+xsv
+tad
+jq

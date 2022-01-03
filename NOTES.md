@@ -1,12 +1,5 @@
 # Unorganized notes (fold into the write-up)
 
-getting the best of both worlds
-
-- rust: EDL, simulation, etc
-- python/r: interactive data exploration, stats
-- proposal: generate files in std formats from rust, open with any tool
-  - how easy could we make this?
-
 ## Dataframes vs types
 
 ```
@@ -48,15 +41,6 @@ this. Why not just reason about (VenueID, probability) tuples? Forcing
 everything into a 2D array with zeroed out values and indices having to match up
 is easy to get wrong.
 
-## Comparisons
-
-- LoC
-- build env setup, portability
-- what kind of mistakes are impossible to make? (msoa IDs)
-
-- I'm not used to reasoning with dataframes; how comfortable are people working
-  on the current codebase?
-
 ## Individual files vs consolidated
 
 - have to maintain paths
@@ -89,8 +73,3 @@ worlflow is compatible with any other format
 
 What if the same hid has different lat/lng? Lots of paranoia checks everywhere,
 or just make it impossible to represent this situation in the first place
-
-## Rust vs python tradeoffs
-
-- lines of code
-- setup experience
