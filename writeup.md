@@ -100,7 +100,21 @@ The biggest problem seems to be forcing the use of numpy and pandas.
 
 #### Not everything is a 2D matrix
 
-examples
+Let's take
+[add_individual_flows](https://github.com/Urban-Analytics/RAMP-UA/blob/3cf45d225501ef64ad6439c9e4c330f052708853/coding/initialise/population_initialisation.py#L1008)
+as an example. There's a lengthy comment, a fair bit of paranoia checks, and
+shuffling around indices to make things line up. Compare with the
+[Rust version](https://github.com/dabreegster/rampfs/blob/a401e4f68a21421e0a228fad1721a261eaeb699f/src/make_population.rs#L243).
+All we need to do is go through each person, figure out which MSOA they live in
+(by first looking up their household), and copying the flows for that activity
+to the person. The flows are expressed as the Rust type
+`EnumMap<Activity, Vec<(VenueID, f64)>>`. Breaking this down a bit, we have some
+flows per activity (work, home, nightclubs, etc). The flows are a list of pairs
+-- venue IDs and some floating point number -- with the numbers summing to 1.
+
+We don't need a matrix relating all venues and all MSOAs, with a bunch of cells
+set to 0. We don't need to ensure the row of one dataframe lines up with the
+column of another. We can just have a small list of venue IDs in any order.
 
 #### Just use normal Python
 
@@ -113,10 +127,70 @@ zonei = int(dfPrimaryPopulation.loc[dfPrimaryPopulation['msoaiz'] == msoa_iz,'zo
 ```
 
 This is difficult to read and slow. Logically, it's just mapping the MSOA ID to
-some `zonei` ID. But working with dataframes forces us to extract a scalar
-result. Even worse, these lookups happen with the lookup for every MSOA. We
-could just iterate through the CSV file and build up a dictionary once, then
-just transform MSOA to zonei with normal Python.
+some `zonei` ID. But working with dataframes forces us to filter, then coerce
+the result into a scalar value. Even worse, these lookups happen with the lookup
+for every MSOA. We could just iterate through the CSV file and build up a
+dictionary once, then just transform MSOA to zonei with normal Python.
+
+#### The code is trying to express a schema
+
+A common criticism of languages with static types is that declaring a schema is
+too verbose. Except... data really does have a schema behind it, and effort can
+be spent explaining that schema in documentation, or with a type system that a
+compiler helps enforce. A codebase like RAMP spends
+[lots of code](https://github.com/Urban-Analytics/RAMP-UA/blob/3cf45d225501ef64ad6439c9e4c330f052708853/coding/initialise/population_initialisation.py#L976)
+trying to make the dataframes match up with a schema.
+
+#### The power of explicit schemas
+
+Let's take a step back. What're the different "nouns" we want to simulate in
+RAMP? We've got households, people, and venues, to start.
+
+A household has:
+
+- a list of people who live there
+- a geographic location
+- the MSOA it belongs to
+- during simulation, some changing state, like disease status
+
+A venue has a geographic location, and all of them are grouped by the activity
+they host.
+
+A person has:
+
+- a household
+- demographic metadata, like age
+- for each activity, a probability distribution for how long they spend daily on
+  it
+- for each activity, "flows" -- a probability distribution for which venue
+  they're likely to do that activity at
+
+We can declare all of this up-front in a schema like
+[this](https://github.com/dabreegster/rampfs/blob/a401e4f68a21421e0a228fad1721a261eaeb699f/src/population.rs#L10).
+
+It took me quite a while to piece together this view from the Python code; I
+would've been totally lost
+[without this long comment](https://github.com/Urban-Analytics/RAMP-UA/blob/3cf45d225501ef64ad6439c9e4c330f052708853/coding/initialise/population_initialisation.py#L111).
+When everything's a dataframe where the number of rows in one table has to match
+up with the columns of another, nothing's explicit. Lengthy docstrings are
+necessary. There are so many opportunities to mix things up. In the Rust
+implementation, we can deal with `MSOA`s and `CTY20`s -- not strings that're
+easy to mix up. We have lots of numeric IDs around -- so let's reason in terms
+of `PersonID`s, `HouseholdID`s, and `VenueID`s.
+
+#### Get rid of the original columns as soon as possible
+
+Data from the outside world is always messy. RAMP is already nicely split into
+two steps, an initialisation per study area and actually running the simulation.
+So let's use the first step to clean up and validate the input data, then take
+advantage of stronger assumptions during the simulation.
+
+For example, the time-use data uses `hid` (household ID) and `pid` (person ID)
+to uniquely identify people and map them to a household. A tremendous amount of
+code in
+[population_initialisation.py](https://github.com/Urban-Analytics/RAMP-UA/blob/3cf45d225501ef64ad6439c9e4c330f052708853/coding/initialise/population_initialisation.py#L386)
+is spent verifying no houses have too many people, every person has a house
+assigned, there are no empty houses, assigning new IDs, etc.
 
 #### Wait though
 
