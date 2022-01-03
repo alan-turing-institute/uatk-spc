@@ -102,9 +102,7 @@ impl Args {
                 return Ok(input);
             }
         };
-        // TODO This code depends on the main repo being cloned in a particular path. Move those files
-        // here
-        let csv_path = format!("/home/dabreegster/RAMP-UA/model_parameters/{}", csv_input);
+        let csv_path = format!("model_parameters/{}", csv_input);
         for rec in csv::Reader::from_reader(File::open(csv_path)?).deserialize() {
             let rec: InitialCaseRow = rec?;
             input.initial_cases_per_msoa.insert(rec.msoa, rec.cases);
