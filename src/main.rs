@@ -75,6 +75,7 @@ async fn main() -> Result<()> {
         info_per_msoa,
         lockdown_per_day,
     };
+    info!("Memory currently at {}", memory_usage());
     info!("Writing study area cache for {:?}", input.dataset);
     utilities::write_binary(&cache, format!("processed_data/{:?}.bin", input.dataset))?;
 

@@ -2,9 +2,167 @@
 
 ## Purpose
 
-- a learning exercise for me; rewriting something forces me to understand it
-- rapidly prototype different ideas for scaling the model in a dev env I'm more familiar with
-- identify common SWE practices that may be to useful to share
+I had two goals starting out:
+
+1.  Understand how the model works -- there's no better way than re-creating it!
+2.  Identify useful software engineering practices that may be unfamiliar to the
+    team
+
+Going forward, what should we do with this rewrite?
+
+1.  Switch over to it. See the section below arguing why.
+2.  Just replace the initialisation step, but keep the existing Python/OpenCL
+    model for part 2
+3.  Nothing -- keep iterating on the Python version, but apply lessons from this
+    code-base
+
+## A code review of the Python model
+
+These're my observations from reading the
+[Ecotwins-withCommuting](https://github.com/Urban-Analytics/RAMP-UA/tree/Ecotwins-withCommuting)
+branch.
+
+An underlying theme: even in "research code," it's useful to work under the
+assumption that somebody else will work with your code later and have to figure
+everything out. This is already true for this team -- and even if you'e working
+alone, you might return to old code a year later and have the same experience of
+re-learning everything!
+
+### Simple issues
+
+There's lots of **acronyms** without any definitions. It's fine to use these
+through the code, but we should define them in a `dev.md` document or somewhere
+obvious in the code. I've figured out `tu` is "time-use", but I still have no
+idea what `CTY20` or `sic1d07` are!
+
+**Consistent terminology** is also helpful. It took me a while to realize that
+all of these are the same: shop, venue, retail point, location.
+
+I had to skip past lots of **commented code**, like
+[here](https://github.com/Urban-Analytics/RAMP-UA/blob/3cf45d225501ef64ad6439c9e4c330f052708853/coding/initialise/population_initialisation.py#L241).
+Some comments were very helpful, and others were just older versions of some
+code, and it's hard to distinguish. If something's experimental, keep it in a
+separate branch.
+
+There's lots of **copied code** in
+[quant_api.py](https://github.com/Urban-Analytics/RAMP-UA/blob/Ecotwins-withCommuting/coding/initialise/quant_api.py).
+These methods are all the same -- `getProbablePrimarySchoolsByMSOAIZ`,
+`getProbableSecondarySchoolsByMSOAIZ`, `getProbableRetailByMSOAIZ`, and
+`getProbableHospitalByMSOAIZ` (which is unused). Somebody refactored them to
+take input files at some point, but then never took advantage of that!
+
+The QUANT code also appears to do extra lookup work, but then throw away the
+results -- see
+[here](https://github.com/Urban-Analytics/RAMP-UA/blob/3cf45d225501ef64ad6439c9e4c330f052708853/coding/initialise/quant_api.py#L77).
+I have no idea what this code is meant to do. I haven't benchmarked it yet, but
+these extra lookups may be causing substantial slowdown. (I'll note that the
+Rust compiler warns for unused variables, which is helpful for detecting things
+like this.)
+
+### Conda
+
+The project uses [Conda](https://docs.conda.io/en/latest/) to manage
+dependencies. There are two major problems with it.
+
+**It's slow** -- on my fast Linux laptop, initially resolving the environment
+took **3 hours**! On Mac, it took about 10 minutes. I have no idea why this
+difference exists, but it doesn't matter -- both of these are completely
+unusable from a developer experience perspective. If it takes more than a few
+seconds to decide what version of packages to use in any language, something's
+very wrong.
+
+**It's not reproducible** --
+[environment.yml](https://github.com/Urban-Analytics/RAMP-UA/blob/Ecotwins-withCommuting/environment.yml)
+specifies [semver](https://semver.org/) constraints on packages, but depending
+when you build the conda environment, you'll get **different results**, because
+there's a newer version of some package. I don't think this is acceptable from a
+scientific reproducibility perspective -- we should be able to pick up a project
+years later, build it, and get exactly the same results. This isn't just a
+philosophical point -- I've spent hours trying unsuccessfully to get
+[another conda project](https://github.com/psrc/soundcast/) to run, because the
+code didn't actually work with newer versions of some packages, and none of the
+developers were able to share exactly the versions of packages they were using.
+
+Luckily, there's a simple solution here -- I strongly recommend we switch to
+[Poetry](https://python-poetry.org) for all Python projects. It's much easier to
+use, fast to set up, and uses
+[lockfiles](https://python-poetry.org/docs/basic-usage/#commit-your-poetrylock-file-to-version-control).
+Recording exactly which package versions we depend on means anybody can build
+the same code.
+
+I've started switching RAMP to Poetry
+[here](https://github.com/dabreegster/RAMP-UA/tree/dcarlino_ecotwins_poetry).
+
+### Dataframes
+
+- the big one -- numpy/pandas
+  - typesafety
+  - trying to reason about everything as a 2D matrix is problematic, because
+    there's so many types of data that isnt
+  - perf (getting flows is slow I think bc of the repeated one lookup, which
+    could just be a pure python dict)
+
+### OpenStreetMap buildings
+
+The pipeline extracts building centroids from a Geofabrik dump of OpenStreetMap
+data, then uses these for people's homes. There's a major correctness problem
+here -- in many parts of the UK, OpenStreetMap doesn't have any buildings mapped
+at all. See
+[Nunhead, London](https://www.openstreetmap.org/#map=15/51.4611/-0.0448) for an
+example where the buildings just cut off. If a MSOA has few or no buildings
+within it, this could really skew our results.
+
+Some possible solutions:
+
+- Use Ordnance Survey [data](https://data.gov.uk/dataset/os-buildings-data). I
+  haven't checked the license or coverage yet, but it's probably better.
+- Procedurally generate houses along empty residential streets. I've
+  [done this before](https://github.com/cyipt/actdev/issues/53#issuecomment-774732839)
+  for the ActDev project.
+
+## Results
+
+How does the Rust pipeline work so far for different study areas? All of these
+timings were taken after all the raw data was downloaded and unpacked.
+
+NOTE: I took these measurements at the current version of the code (see git),
+which doesn't have every part of the initialisation ported yet -- commuting and
+assigning specific homes isn't done yet.
+
+| Study area     | Runtime | Peak memory usage | Output file size | People      | Households   | MSOAs |
+| -------------- | ------- | ----------------- | ---------------- | ----------- | ------------ | ----- |
+| West Yorkshire | 51s     | 1.45GB            | 1.2GB            | 1.9 million | 954 thousand | 300   |
+| Devon          | 28s     | 774MB             | 632MB            | 1 million   | 518 thousand | 156   |
+
+(Currently we have a small and large version of West Yorkshire --
+`Input_Test_3.csv` and `Input_WestYorkshire.csv` -- but they're equivalent,
+except for the number of MSOAs initially seeded with cases.)
+
+### Scaling nationally
+
+The code's already set up to run nationally -- just set the study area to
+`national`. It uses all MSOAs from the lookup table, with a hardcoded 5 initial
+cases per MSOA. Initial results are 42 million people across 21 million
+households and 6.7k MSOAs.
+
+Running on my laptop with 32GB RAM, I run out of memory when copying nightclub
+flows to people. Getting to this point (reading all the time-use files, creating
+the population, and handling retail QUANT flows) takes about 9 minutes.
+
+I have [some ideas](https://github.com/dabreegster/rampfs/issues/1) to decrease
+the memory requirements, so we could comfortably run initialisation nationally
+on a single machine. The biggest opportunity is not copying QUANT flows to each
+person. As far as I can tell from the Python, this data varies by MSOA and
+activity, and there's no variation with all of the people in each MSOA.
+
+# havent organized these notes yet
+
+getting the best of both worlds
+
+- rust: EDL, simulation, etc
+- python/r: interactive data exploration, stats
+- proposal: generate files in std formats from rust, open with any tool
+  - how easy could we make this?
 
 ## Dataframes vs types
 
@@ -24,9 +182,12 @@ initial_cases_per_msoa: HashMap<MSOA, usize>,
 population_initialisation.py the main example
 
 Don't want to keep around a bunch of old columns:
+
 - perf
-- some of them we use/transform/validate and then get rid of (the hid, pid index)
-- data from the outside world is messy. deal with that once, then work in your cleaned up representation
+- some of them we use/transform/validate and then get rid of (the hid, pid
+  index)
+- data from the outside world is messy. deal with that once, then work in your
+  cleaned up representation
 - keep around original IDs to debug if needed
 
 ### CSV files
@@ -39,7 +200,10 @@ https://github.com/BurntSushi/xsv useful
 
 ### IDs matching up
 
-add_individual_flows doc is perfect example -- I need two coffees to understand this. Why not just reason about (VenueID, probability) tuples? Forcing everything into a 2D array with zeroed out values and indices having to match up is easy to get wrong.
+add_individual_flows doc is perfect example -- I need two coffees to understand
+this. Why not just reason about (VenueID, probability) tuples? Forcing
+everything into a 2D array with zeroed out values and indices having to match up
+is easy to get wrong.
 
 ## Comparisons
 
@@ -47,7 +211,8 @@ add_individual_flows doc is perfect example -- I need two coffees to understand 
 - build env setup, portability
 - what kind of mistakes are impossible to make? (msoa IDs)
 
-- I'm not used to reasoning with dataframes; how comfortable are people working on the current codebase?
+- I'm not used to reasoning with dataframes; how comfortable are people working
+  on the current codebase?
 
 ## Individual files vs consolidated
 
@@ -56,11 +221,13 @@ add_individual_flows doc is perfect example -- I need two coffees to understand 
 
 ## Direct code vs refactoring
 
-How many places do I need to look to actually figure out the URL that it downloads?
+How many places do I need to look to actually figure out the URL that it
+downloads?
 
 vs
 
-How many places in the code do I need to update when something changes? (If it's one file, is search/replace painful?)
+How many places in the code do I need to update when something changes? (If it's
+one file, is search/replace painful?)
 
 ```
 RawDataHandler.download_data(remote_folder="referencedata", # name of the folder online in Azure
@@ -72,25 +239,24 @@ RawDataHandler.download_data(remote_folder="referencedata", # name of the folder
 
 tus_hse_west-yorkshire.csv is 800MB, we should consider binary formats
 
-What tooling do people use to explore gigantic CSV files now? Make sure the worlflow is compatible with any other format
+What tooling do people use to explore gigantic CSV files now? Make sure the
+worlflow is compatible with any other format
 
 ## Treating everything as a table
 
-What if the same hid has different lat/lng? Lots of paranoia checks everywhere, or just make it impossible to represent this situation in the first place
-
-## Code smells
-
-- why is getProbablePrimarySchoolsByMSOAIZ, getProbableSecondarySchoolsByMSOAIZ, etc copied?! makes the code look scarier than it is
-	- and why the unused variables there? (having the compiler complain is useful here)
+What if the same hid has different lat/lng? Lots of paranoia checks everywhere,
+or just make it impossible to represent this situation in the first place
 
 ## Cookbook / tricks
 
 multi language, potentially
 
-- determinism (hashmaps, RNG seeds, pinning to software versions, pinning to data versions like OSM extracts)
+- determinism (hashmaps, RNG seeds, pinning to software versions, pinning to
+  data versions like OSM extracts)
 - f64 headaches: sorting, rounding, serializing
 - No such file or directory (bad errors by default)
 
-## Dependency on proj
+## Rust vs python tradeoffs
 
-Sadface, make sure cmake installed
+- lines of code
+- setup experience

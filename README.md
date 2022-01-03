@@ -1,11 +1,12 @@
 # RAMP from scratch
 
 This is a rewrite of the RAMP (Rapid Assistance in Modelling the Pandemic)
-model, based on the [EcoTwins
-branch](https://github.com/Urban-Analytics/RAMP-UA/tree/EcoTwins), in Rust.
+model, based on the
+[EcoTwins-withCommuting branch](https://github.com/Urban-Analytics/RAMP-UA/tree/Ecotwins-withCommuting),
+in Rust.
 
-Only the initialisation phase, which builds up a cache per study area, is
-ported right now.
+Only the initialisation phase, which builds up a cache per study area, is ported
+right now.
 
 ## Running the code
 
@@ -30,6 +31,13 @@ intermediate files in `raw_data/`.
 
 TODO: The .bin -> .npy step is still manual
 
+### Troubleshooting
+
+The code depends on [proj](https://proj.org) to transform coordinates. You may
+need to install additional dependencies to build it, like `cmake`. Please
+[open an issue](https://github.com/dabreegster/rampfs/issues) if you have any
+trouble!
+
 ### Some tips for working with Rust
 
 There are two equivalent ways to rebuild and then run the code. First:
@@ -47,7 +55,7 @@ cargo build --release
 ```
 
 You can build the code in two ways -- **debug** and **release**. There's a
-simple tradeoff -- debug mode is fast to build, but slow to run. Release mode
-is slow to build, but fast to run. For the RAMP codebase, since the input data
-is so large and the codebase so small, I'd recommend always using `--release`.
-If you want to use debug mode, just omit the flag.
+simple tradeoff -- debug mode is fast to build, but slow to run. Release mode is
+slow to build, but fast to run. For the RAMP codebase, since the input data is
+so large and the codebase so small, I'd recommend always using `--release`. If
+you want to use debug mode, just omit the flag.
