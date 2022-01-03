@@ -27,7 +27,7 @@ static ALLOCATOR: Cap<std::alloc::System> = Cap::new(std::alloc::System, usize::
 #[derive(Parser)]
 #[clap(about, version, author)]
 struct Args {
-    /// The path to a CSV file with aggregated origin/destination data
+    /// Which counties to operate on
     #[clap(arg_enum)]
     input: InputDataset,
     /// When present, only read the first few households, to run more quickly. Be warned, the
@@ -37,7 +37,6 @@ struct Args {
 }
 
 #[derive(clap::ArgEnum, Clone, Copy, Debug, Serialize, Deserialize)]
-/// Which counties to operate on
 enum InputDataset {
     WestYorkshireSmall,
     WestYorkshireLarge,
