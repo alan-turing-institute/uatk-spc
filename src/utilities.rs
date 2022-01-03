@@ -170,7 +170,7 @@ pub fn progress_count_with_msg(len: usize) -> ProgressBar {
     let pb = ProgressBar::new(len as u64);
     pb.set_style(
         ProgressStyle::default_bar()
-            .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} ({eta})")
+            .template("{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} ({eta})")
             .progress_chars("#-"),
     );
     pb

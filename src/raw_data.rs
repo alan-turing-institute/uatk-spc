@@ -27,7 +27,7 @@ async fn download_file<P: AsRef<str>>(dir: &str, file: P) -> Result<PathBuf> {
     .await
 }
 
-// TODO Just writes a bunch of output files to a fixed location
+// Just writes a bunch of output files to a fixed location
 pub async fn grab_raw_data(input: &Input) -> Result<RawData> {
     let mut results = RawData {
         tus_files: Vec::new(),
@@ -76,8 +76,6 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawData> {
         results.osm_directories.push(output_dir);
     }
 
-    // TODO combine all the OSM shapefiles files
-
     let path = download_file("nationaldata", "QUANT_RAMP.tar.gz").await?;
     untar(path, "raw_data/nationaldata/QUANT_RAMP/")?;
 
@@ -89,9 +87,6 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawData> {
 
     let path = download_file("nationaldata", "MSOAS_shp.tar.gz").await?;
     untar(path, "raw_data/nationaldata/MSOAS_shp/")?;
-
-    // TODO Some transformation of the lockdown file, "Dealing with the TimeAtHomeIncrease data".
-    // It gets pickled later.
 
     Ok(results)
 }

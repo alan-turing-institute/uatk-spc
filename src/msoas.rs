@@ -9,24 +9,30 @@ use geo::map_coords::MapCoordsInplace;
 use geo::{MultiPolygon, Point};
 use proj::Proj;
 use rstar::{RTree, AABB};
+use serde::{Deserialize, Serialize};
 
 use crate::utilities::{print_count, progress_count};
 use crate::MSOA;
 
-/// For each MSOA, return all building centroids within. Also return the MSOA shapes.
-///
-/// Lots of caveats about what counts as a home or work building!
-pub fn get_buildings_per_msoa(
+#[derive(Serialize, Deserialize)]
+pub struct InfoPerMSOA {
+    pub shape: MultiPolygon<f64>,
+    pub population: usize,
+    /// All building centroids within this MSOA.
+    ///
+    /// Note there are many caveats about building data in OpenStreetMap -- what counts as
+    /// residential, commercial? And some areas don't have any buildings mapped yet!
+    pub buildings: Vec<Point<f64>>,
+}
+
+pub fn get_info_per_msoa(
     msoas: BTreeSet<MSOA>,
     osm_directories: Vec<String>,
-) -> Result<(
-    BTreeMap<MSOA, Vec<Point<f64>>>,
-    BTreeMap<MSOA, MultiPolygon<f64>>,
-)> {
+) -> Result<BTreeMap<MSOA, InfoPerMSOA>> {
     info!("Loading MSOA shapes");
-    let msoa_shapes = load_msoa_shapes(msoas)?;
+    let mut info_per_msoa = load_msoa_shapes(msoas)?;
     if false {
-        dump_msoa_shapes(&msoa_shapes)?;
+        dump_msoa_shapes(&info_per_msoa)?;
     }
     let mut building_centroids: Vec<Point<f64>> = Vec::new();
     for dir in osm_directories {
@@ -37,13 +43,11 @@ pub fn get_buildings_per_msoa(
             dir
         ))?);
     }
-    Ok((
-        points_per_polygon(building_centroids, &msoa_shapes),
-        msoa_shapes,
-    ))
+    match_points_to_shapes(building_centroids, &mut info_per_msoa);
+    Ok(info_per_msoa)
 }
 
-fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, MultiPolygon<f64>>> {
+fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA>> {
     // We can't use from_path, because the file isn't named .shp.dbf as expected
     let shape_reader =
         shapefile::ShapeReader::from_path("raw_data/nationaldata/MSOAS_shp/msoas.shp")?;
@@ -64,9 +68,19 @@ fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, MultiPolygon
             if !msoas.contains(&msoa) {
                 continue;
             }
-            let mut geo_polygon: MultiPolygon<f64> = shape.try_into()?;
-            reproject(&mut geo_polygon)?;
-            results.insert(msoa, geo_polygon);
+            if let Some(shapefile::dbase::FieldValue::Numeric(Some(population))) = record.get("pop")
+            {
+                let mut geo_polygon: MultiPolygon<f64> = shape.try_into()?;
+                reproject(&mut geo_polygon)?;
+                results.insert(
+                    msoa,
+                    InfoPerMSOA {
+                        shape: geo_polygon,
+                        population: *population as usize,
+                        buildings: Vec::new(),
+                    },
+                );
+            }
         }
     }
     Ok(results)
@@ -85,15 +99,11 @@ fn reproject(polygon: &mut MultiPolygon<f64>) -> Result<()> {
 }
 
 // TODO If this is ever removed, cleanup dependencies on geojson and serde_json
-fn dump_msoa_shapes(msoa_shapes: &BTreeMap<MSOA, MultiPolygon<f64>>) -> Result<()> {
+fn dump_msoa_shapes(msoas: &BTreeMap<MSOA, InfoPerMSOA>) -> Result<()> {
     let geom_collection: geo::GeometryCollection<f64> =
-        msoa_shapes.values().map(|geom| geom.clone()).collect();
+        msoas.values().map(|info| info.shape.clone()).collect();
     let mut feature_collection = geojson::FeatureCollection::from(&geom_collection);
-    for (feature, msoa) in feature_collection
-        .features
-        .iter_mut()
-        .zip(msoa_shapes.keys())
-    {
+    for (feature, msoa) in feature_collection.features.iter_mut().zip(msoas.keys()) {
         feature.set_property("msoa11cd", msoa.0.clone());
     }
     let gj = geojson::GeoJson::from(feature_collection);
@@ -116,6 +126,16 @@ fn load_building_centroids(path: &str) -> Result<Vec<Point<f64>>> {
         path
     );
     Ok(results)
+}
+
+fn match_points_to_shapes(points: Vec<Point<f64>>, msoas: &mut BTreeMap<MSOA, InfoPerMSOA>) {
+    let polygons = msoas
+        .iter()
+        .map(|(k, v)| (k.clone(), v.shape.clone()))
+        .collect::<BTreeMap<_, _>>();
+    for (key, points) in points_per_polygon(points, &polygons) {
+        msoas.get_mut(&key).unwrap().buildings = points;
+    }
 }
 
 // TODO Share with odjitter
