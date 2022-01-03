@@ -58,7 +58,7 @@ async fn main() -> Result<()> {
     let input = args.input.to_input().await?;
     let raw_results = raw_data::grab_raw_data(&input).await?;
     let population = make_population::initialize(raw_results.tus_files)?;
-    let buildings_per_msoa = msoa_buildings::get_buildings_per_msoa(
+    let (buildings_per_msoa, msoa_boundaries) = msoa_buildings::get_buildings_per_msoa(
         population.unique_msoas(),
         raw_results.osm_directories,
     )?;
@@ -66,6 +66,7 @@ async fn main() -> Result<()> {
     let cache = StudyAreaCache {
         population,
         buildings_per_msoa,
+        msoa_boundaries,
     };
     info!("Writing study area cache for {:?}", input.dataset);
     utilities::write_binary(&cache, format!("processed_data/{:?}.bin", input.dataset))?;
@@ -120,6 +121,7 @@ fn default_cases() -> usize {
 struct StudyAreaCache {
     population: population::Population,
     buildings_per_msoa: BTreeMap<MSOA, Vec<geo::Point<f64>>>,
+    msoa_boundaries: BTreeMap<MSOA, geo::MultiPolygon<f64>>,
     // lockdown.csv
 }
 

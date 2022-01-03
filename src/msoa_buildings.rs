@@ -13,13 +13,16 @@ use rstar::{RTree, AABB};
 use crate::utilities::{print_count, progress_count};
 use crate::MSOA;
 
-/// For each MSOA, return all building centroids within.
+/// For each MSOA, return all building centroids within. Also return the MSOA shapes.
 ///
 /// Lots of caveats about what counts as a home or work building!
 pub fn get_buildings_per_msoa(
     msoas: BTreeSet<MSOA>,
     osm_directories: Vec<String>,
-) -> Result<BTreeMap<MSOA, Vec<Point<f64>>>> {
+) -> Result<(
+    BTreeMap<MSOA, Vec<Point<f64>>>,
+    BTreeMap<MSOA, MultiPolygon<f64>>,
+)> {
     info!("Loading MSOA shapes");
     let msoa_shapes = load_msoa_shapes(msoas)?;
     if false {
@@ -34,7 +37,10 @@ pub fn get_buildings_per_msoa(
             dir
         ))?);
     }
-    Ok(points_per_polygon(building_centroids, msoa_shapes))
+    Ok((
+        points_per_polygon(building_centroids, &msoa_shapes),
+        msoa_shapes,
+    ))
 }
 
 fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, MultiPolygon<f64>>> {
@@ -113,9 +119,9 @@ fn load_building_centroids(path: &str) -> Result<Vec<Point<f64>>> {
 }
 
 // TODO Share with odjitter
-fn points_per_polygon<K: Ord>(
+fn points_per_polygon<K: Clone + Ord>(
     points: Vec<Point<f64>>,
-    polygons: BTreeMap<K, MultiPolygon<f64>>,
+    polygons: &BTreeMap<K, MultiPolygon<f64>>,
 ) -> BTreeMap<K, Vec<Point<f64>>> {
     info!(
         "Matching {} points to {} polygons. Building R-Tree...",
@@ -137,7 +143,7 @@ fn points_per_polygon<K: Ord>(
                 pts_inside.push(*pt);
             }
         }
-        output.insert(key, pts_inside);
+        output.insert(key.clone(), pts_inside);
     }
     output
 }
