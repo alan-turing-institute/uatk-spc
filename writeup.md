@@ -236,6 +236,12 @@ assigning specific homes isn't done yet.
 `Input_Test_3.csv` and `Input_WestYorkshire.csv` -- but they're equivalent,
 except for the number of MSOAs initially seeded with cases.)
 
+To compare, running the Python pipeline for 3 MSOAs in West Yorkshire
+(`Input_Test_3.csv`) takes 2 minutes, and Devon is over 30 minutes just reading
+in QUANT flows. The Rust version is orders of magnitude faster. (I also want to
+optimize the Python QUANT reader, since I think there are some basic
+improvements possible there.)
+
 ### Scaling nationally
 
 The code's already set up to run nationally -- just set the study area to
@@ -258,8 +264,8 @@ Python (just `coding/initialise`, no `constants.py` or `main_initialisation.py`)
 at 1,400. (Measured using [tokei](https://github.com/XAMPPRocky/tokei), which
 handles whitespace, comments, etc.)
 
-In terms of runtime performance, I think the Rust version is a clear winner, but
-I need to run the Python pipeline again.
+In terms of runtime performance, the Rust version is orders of magnitude faster
+-- 30 seconds for Devon, versus over 30 minutes.
 
 Setting up a project like this in Rust takes a little bit more effort, but it's
 well worth it for performance and improved debugging and developer experience.
