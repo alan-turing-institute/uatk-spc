@@ -1,5 +1,7 @@
 # RAMP rewrite write-up
 
+I ported most of the RAMP initialisation code from Python to Rust.
+
 ## Purpose
 
 I had two goals starting out:
@@ -10,10 +12,8 @@ I had two goals starting out:
 
 Going forward, what should we do with this rewrite?
 
-1.  Switch over to it. See the section below arguing why.
-2.  Just replace the initialisation step, but keep the existing Python/OpenCL
-    model for part 2
-3.  Nothing -- keep iterating on the Python version, but apply lessons from this
+1.  Switch over to it. See the last section arguing why.
+2.  Nothing -- keep iterating on the Python version, but apply lessons from this
     code-base
 
 ## A code review of the Python model
@@ -31,10 +31,10 @@ re-learning everything!
 ### Simple issues
 
 There's lots of **acronyms** without any definitions. It's fine to use these
-through the code, but we should define them in a `dev.md` document or somewhere
-obvious in the code. I've figured out `tu` is "time-use", but I still have no
-idea what `CTY20` or `sic1d07` are! And with the QUANT data, what's the
-difference between `PiJ`, `SiJ`, `HiJ`?
+through the code, but we should define them in the README or somewhere obvious
+in the code. I've figured out `tu` is "time-use", but I still have no idea what
+`CTY20` or `sic1d07` are! And with the QUANT data, what's the difference between
+`PiJ`, `SiJ`, `HiJ` in the filenames?
 
 **Consistent terminology** is also helpful. It took me a while to realize that
 all of these are the same: shop, venue, retail point, location.
@@ -43,7 +43,7 @@ I had to skip past lots of **commented code**, like
 [here](https://github.com/Urban-Analytics/RAMP-UA/blob/3cf45d225501ef64ad6439c9e4c330f052708853/coding/initialise/population_initialisation.py#L241).
 Some comments were very helpful, and others were just older versions of some
 code, and it's hard to distinguish. If something's experimental, keep it in a
-separate branch.
+separate git branch.
 
 There's lots of **copied code** in
 [quant_api.py](https://github.com/Urban-Analytics/RAMP-UA/blob/Ecotwins-withCommuting/coding/initialise/quant_api.py).
@@ -66,11 +66,12 @@ The project uses [Conda](https://docs.conda.io/en/latest/) to manage
 dependencies. There are two major problems with it.
 
 **It's slow** -- on my fast Linux laptop, initially resolving the environment
-took **3 hours**! On Mac, it took about 10 minutes. I have no idea why this
-difference exists, but it doesn't matter -- both of these are completely
-unusable from a developer experience perspective. If it takes more than a few
-seconds to decide what version of packages to use in any language, something's
-very wrong.
+took **3 hours**! On Mac, it took about 10 minutes. This was just running the
+[SAT solver](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem), not
+downloading packages. I have no idea why this difference exists, but it doesn't
+matter -- both of these are completely unusable from a developer experience
+perspective. If it takes more than a few seconds to decide what version of
+packages to use in any language, something's very wrong.
 
 **It's not reproducible** --
 [environment.yml](https://github.com/Urban-Analytics/RAMP-UA/blob/Ecotwins-withCommuting/environment.yml)
@@ -78,7 +79,7 @@ specifies [semver](https://semver.org/) constraints on packages, but depending
 when you build the conda environment, you'll get **different results**, because
 there's a newer version of some package. I don't think this is acceptable from a
 scientific reproducibility perspective -- we should be able to pick up a project
-years later, build it, and get exactly the same results. This isn't just a
+months later, build it, and get exactly the same results. This isn't just a
 philosophical point -- I've spent hours trying unsuccessfully to get
 [another conda project](https://github.com/psrc/soundcast/) to run, because the
 code didn't actually work with newer versions of some packages, and none of the
@@ -170,7 +171,7 @@ We can declare all of this up-front in a schema like
 
 It took me quite a while to piece together this view from the Python code; I
 would've been totally lost
-[without this long comment](https://github.com/Urban-Analytics/RAMP-UA/blob/3cf45d225501ef64ad6439c9e4c330f052708853/coding/initialise/population_initialisation.py#L111).
+[without this comment](https://github.com/Urban-Analytics/RAMP-UA/blob/3cf45d225501ef64ad6439c9e4c330f052708853/coding/initialise/population_initialisation.py#L111).
 When everything's a dataframe where the number of rows in one table has to match
 up with the columns of another, nothing's explicit. Lengthy docstrings are
 necessary. There are so many opportunities to mix things up. In the Rust
@@ -254,7 +255,8 @@ activity, and there's no variation with all of the people in each MSOA.
 
 In terms of line count, the Rust codebase is currently around 1,000 LoC, and
 Python (just `coding/initialise`, no `constants.py` or `main_initialisation.py`)
-at 1,400.
+at 1,400. (Measured using [tokei](https://github.com/XAMPPRocky/tokei), which
+handles whitespace, comments, etc.)
 
 In terms of runtime performance, I think the Rust version is a clear winner, but
 I need to run the Python pipeline again.
