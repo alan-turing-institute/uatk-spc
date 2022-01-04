@@ -42,9 +42,11 @@ pub fn calculate_lockdown_per_day(
         if rec.day >= total_change_per_day.len() {
             total_change_per_day.resize(rec.day + 1, 0.0);
         }
-        let pop = population_per_google_mobility[&rec.cty20];
-        // Weight by the population in this area
-        total_change_per_day[rec.day] += rec.change * (pop as f64);
+        // We only have some Google mobility regions
+        if let Some(pop) = population_per_google_mobility.get(&rec.cty20) {
+            // Weight by the population in this area
+            total_change_per_day[rec.day] += rec.change * (*pop as f64);
+        }
     }
 
     // Find the mean probability of staying at home, over the entire population
