@@ -8,9 +8,8 @@ use ndarray_npy::ReadNpyExt;
 use ordered_float::NotNan;
 use serde::Deserialize;
 
-use crate::population::{Activity, Venue, VenueID};
 use crate::utilities::progress_count_with_msg;
-use crate::MSOA;
+use crate::{Activity, Venue, VenueID, MSOA};
 
 pub enum Threshold {
     // Take the top values until we hit a sum

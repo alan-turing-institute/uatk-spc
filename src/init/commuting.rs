@@ -4,8 +4,7 @@ use anyhow::Result;
 use fs_err::File;
 use serde::Deserialize;
 
-use crate::population::VenueID;
-use crate::MSOA;
+use crate::{VenueID, MSOA};
 
 /// The work activity flows come from a different source, not QUANT data like everything else.
 pub fn get_commuting_flows() -> Result<BTreeMap<MSOA, Vec<(VenueID, f64)>>> {

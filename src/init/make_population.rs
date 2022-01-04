@@ -7,9 +7,8 @@ use indicatif::{ProgressBar, ProgressStyle};
 use serde::{Deserialize, Deserializer};
 
 use super::quant::{load_venues, quant_get_flows, Threshold};
-use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Population, VenueID};
 use crate::utilities::{memory_usage, print_count, progress_count, progress_count_with_msg};
-use crate::MSOA;
+use crate::{Activity, Household, HouseholdID, Person, PersonID, Population, VenueID, MSOA};
 
 // population_initialisation.py
 pub fn initialize(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<Population> {
