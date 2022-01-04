@@ -13,6 +13,7 @@ pub fn calculate_lockdown_per_day(
     population: &Population,
 ) -> Result<Vec<f64>> {
     info!("Calculating per-day lockdown values");
+
     // First get the total population per Google mobility area (which is a bunch of MSOAs)
     let population_per_google_mobility: BTreeMap<CTY20, usize> = msoas_per_google_mobility
         .into_iter()
@@ -21,8 +22,7 @@ pub fn calculate_lockdown_per_day(
                 google_mobility,
                 msoas
                     .iter()
-                    // Allow some MSOAs to be missing, for when we sample_households
-                    .filter_map(|msoa| info_per_msoa.get(msoa).map(|info| info.population))
+                    .map(|msoa| info_per_msoa[msoa].population)
                     .sum(),
             )
         })
@@ -42,11 +42,9 @@ pub fn calculate_lockdown_per_day(
         if rec.day >= total_change_per_day.len() {
             total_change_per_day.resize(rec.day + 1, 0.0);
         }
-        // We only have some Google mobility regions
-        if let Some(pop) = population_per_google_mobility.get(&rec.cty20) {
-            // Weight by the population in this area
-            total_change_per_day[rec.day] += rec.change * (*pop as f64);
-        }
+        let pop = population_per_google_mobility[&rec.cty20];
+        // Weight by the population in this area
+        total_change_per_day[rec.day] += rec.change * (pop as f64);
     }
 
     // Find the mean probability of staying at home, over the entire population

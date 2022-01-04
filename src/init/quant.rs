@@ -19,7 +19,7 @@ pub enum Threshold {
     TopN(usize),
 }
 
-pub fn quant_get_flows(
+pub fn get_flows(
     activity: Activity,
     msoas: BTreeSet<MSOA>,
     threshold: Threshold,

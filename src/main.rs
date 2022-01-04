@@ -1,3 +1,5 @@
+//! This is the command-line interface to RAMP.
+
 #[macro_use]
 extern crate log;
 
@@ -14,6 +16,7 @@ use ramp::{Input, StudyAreaCache, MSOA};
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    // Specify the logging format
     TermLogger::init(
         LevelFilter::Info,
         ConfigBuilder::new()
@@ -28,9 +31,10 @@ async fn main() -> Result<()> {
     let input = args.to_input().await?;
     let cache = StudyAreaCache::create(input).await?;
 
-    info!("Memory currently at {}", utilities::memory_usage());
-    info!("Writing study area cache for {:?}", args.dataset);
-    utilities::write_binary(&cache, format!("processed_data/{:?}.bin", args.dataset))?;
+    info!("By the end, {}", utilities::memory_usage());
+    let output = format!("processed_data/{:?}.bin", args.dataset);
+    info!("Writing study area cache to {}", output);
+    utilities::write_binary(&cache, output)?;
 
     Ok(())
 }
@@ -58,6 +62,7 @@ impl Args {
             initial_cases_per_msoa: BTreeMap::new(),
         };
 
+        // Determine the MSOAs to operate on using CSV files from the original repo
         let csv_input = match self.dataset {
             InputDataset::WestYorkshireSmall => "Input_Test_3.csv",
             InputDataset::WestYorkshireLarge => "Input_WestYorkshire.csv",
@@ -83,10 +88,11 @@ impl Args {
 struct InitialCaseRow {
     #[serde(rename = "MSOA11CD")]
     msoa: MSOA,
-    // It's just missing from some of the input files...
+    // This field is missing from some of the input files
     #[serde(default = "default_cases")]
     cases: usize,
 }
+
 fn default_cases() -> usize {
     5
 }

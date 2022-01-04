@@ -1,3 +1,9 @@
+//! This is a Rust implementation of RAMP (Rapid Assistance in Modelling the Pandemic).
+//!
+//! It's split into several stages:
+//! 1) init -- from raw data, build an activity model for a study area
+//! 2) TODO -- simulate COVID in the population
+
 #[macro_use]
 extern crate anyhow;
 #[macro_use]
@@ -15,32 +21,37 @@ use enum_map::{Enum, EnumMap};
 use geo::{MultiPolygon, Point};
 use serde::{Deserialize, Serialize};
 
-// So that utilities::memory_usage works
+// Override the memory allocator, so utilities::memory_usage can take measurements
 #[global_allocator]
 static ALLOCATOR: Cap<std::alloc::System> = Cap::new(std::alloc::System, usize::max_value());
 
-// Equivalent to InitialisationCache
+/// After running the initialization for a study area, this one file carries all data needed for
+/// the simulation.
 #[derive(Serialize, Deserialize)]
 pub struct StudyAreaCache {
     pub population: Population,
     pub info_per_msoa: BTreeMap<MSOA, InfoPerMSOA>,
+    /// A number in [0, 1] for each day, representing... TODO
     pub lockdown_per_day: Vec<f64>,
 }
 
-// Parts of model_parameters/default.yml
 pub struct Input {
+    /// Only people living in MSOAs filled out here will be part of the population
     pub initial_cases_per_msoa: BTreeMap<MSOA, usize>,
 }
 
-// MSOA11CD
-//
+/// Represents a region of the UK.
+///
+/// See https://en.wikipedia.org/wiki/ONS_coding_system. This is usually called `MSOA11CD`.
 // TODO Given one of these, how do we look it up?
 // - http://statistics.data.gov.uk/id/statistical-geography/E02002191
 // - https://mapit.mysociety.org/area/36070.html (they have a paid API)
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct MSOA(String);
 
-// No idea what this stands for. It's a larger region name, used in Google mobility data.
+/// This represents a larger region than an MSOA. It's used in Google mobility data.
+///
+/// TODO What does it stand for?
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct CTY20(String);
 
@@ -66,12 +77,14 @@ pub struct Population {
     pub households: Vec<Household>,
     pub people: Vec<Person>,
 
-    // VenueID indexes into each list
+    /// Per activity, a list of venues. VenueID indexes into this list.
     pub venues_per_activity: EnumMap<Activity, Vec<Venue>>,
 }
 
 impl Population {
-    // Just store this explicitly? Will it ever not match the input set?
+    /// All the MSOAs of people in this population.
+    // TODO Should we just store this set? It'll be a subset of initial_cases_per_msoa, only
+    // different if there are no people for some MSOA.
     pub fn unique_msoas(&self) -> BTreeSet<MSOA> {
         let mut result = BTreeSet::new();
         for h in &self.households {
@@ -85,27 +98,28 @@ impl Population {
 pub struct Household {
     pub id: HouseholdID,
     pub msoa: MSOA,
+    /// An ID from the original data, kept around for debugging
     pub orig_hid: isize,
     pub members: Vec<PersonID>,
-
-    // TODO Actually, this should probably be separate
-    pub disease_danger: f64,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct Person {
     pub id: PersonID,
     pub household: HouseholdID,
+    /// An ID from the original data, kept around for debugging
     pub orig_pid: isize,
-    // Some kind of work-related ID
+    /// Some kind of work-related ID
     pub sic1d07: Option<usize>,
 
     // Nobody's older than 256 years
     pub age_years: u8,
 
-    // The probabilities sum to 1 (TODO Make a distribution type or something)
+    /// Per activity, a list of venues where this person is likely to go do that activity. The
+    /// probabilities sum to 1.
+    // TODO Consider a distribution type to represent this
     pub flows_per_activity: EnumMap<Activity, Vec<(VenueID, f64)>>,
-    // These are unitless, or a fraction of a day? They sum to 1
+    /// These sum to 1, representing a fraction of a day
     pub duration_per_activity: EnumMap<Activity, f64>,
 }
 
@@ -120,6 +134,7 @@ pub enum Activity {
     // TODO I see quant files for hospitals, why not incorporated yet?
 }
 
+/// Represents a place where people do an activity
 #[derive(Serialize, Deserialize)]
 pub struct Venue {
     pub id: VenueID,
@@ -132,6 +147,9 @@ pub struct Venue {
     /// https://en.wikipedia.org/wiki/Unique_Reference_Number
     pub urn: Option<usize>,
 }
+
+// These are unsigned integers, used to index into different vectors. They're wrapped in a type, so
+// we never accidentally confuse a VenueID with a PersonID.
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct HouseholdID(pub usize);
@@ -149,7 +167,9 @@ impl fmt::Display for PersonID {
     }
 }
 
-// TODO These're also scoped by an activity, like retail!
+/// These IDs are scoped by Activity. This means two VenueIDs may be equal, but represent different
+/// places!
+// TODO Just encode Activity in here too
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct VenueID(pub usize);
 impl fmt::Display for VenueID {

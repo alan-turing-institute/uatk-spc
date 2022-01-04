@@ -3,15 +3,16 @@ use std::collections::{BTreeMap, BTreeSet};
 use anyhow::Result;
 use enum_map::EnumMap;
 use fs_err::File;
-use indicatif::{ProgressBar, ProgressStyle};
 use serde::{Deserialize, Deserializer};
 
-use super::quant::{load_venues, quant_get_flows, Threshold};
-use crate::utilities::{memory_usage, print_count, progress_count, progress_count_with_msg};
+use super::quant::{get_flows, load_venues, Threshold};
+use crate::utilities::{
+    memory_usage, print_count, progress_count, progress_count_with_msg, progress_file_with_msg,
+};
 use crate::{Activity, Household, HouseholdID, Person, PersonID, Population, VenueID, MSOA};
 
-// population_initialisation.py
-pub fn initialize(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<Population> {
+/// Create a population from some time-use files, only keeping people in the specified MSOAs.
+pub fn create(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<Population> {
     let mut population = Population {
         households: Vec::new(),
         people: Vec::new(),
@@ -29,10 +30,9 @@ pub fn initialize(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<
     )?;
 
     // Commuting is special-cased
-    // TODO Share logic with setup_venue_flows?
     let _commuting_flows = super::commuting::get_commuting_flows()?;
 
-    // TODO Lots of commented stuff, then rounding
+    // TODO The Python implementation has lots of commented stuff, then some rounding
 
     Ok(population)
 }
@@ -54,15 +54,7 @@ fn read_individual_time_use_and_health_data(
     for path in tus_files {
         info!("Reading {}", path);
         let file = File::open(path)?;
-        let pb = ProgressBar::new(file.metadata()?.len());
-        pb.set_style(
-            ProgressStyle::default_bar()
-                .template(
-                    "{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({eta})",
-                )
-                .progress_chars("#-"),
-        );
-
+        let pb = progress_file_with_msg(&file)?;
         for rec in csv::Reader::from_reader(pb.wrap_read(file)).deserialize() {
             if people_per_household.len() % 1000 == 0 {
                 pb.set_message(format!(
@@ -73,9 +65,8 @@ fn read_individual_time_use_and_health_data(
             }
 
             let rec: TuPerson = rec?;
-            // Strip out people that weren't matched to a household
-            // No such examples in this file:
-            // > xsv search -s hid '\-1' countydata/tus_hse_west-yorkshire.csv
+
+            // Skip people that weren't matched to a household
             if rec.hid == -1 {
                 no_household += 1;
                 continue;
@@ -122,8 +113,6 @@ fn read_individual_time_use_and_health_data(
             msoa,
             orig_hid,
             members: Vec::new(),
-
-            disease_danger: 0.0,
         };
         for raw_person in raw_people {
             let person_id = PersonID(population.people.len());
@@ -135,9 +124,7 @@ fn read_individual_time_use_and_health_data(
         population.households.push(household);
     }
 
-    // The MSOAs from the time-use files are usually a superset of the initial_cases_per_msoa. Is
-    // that intentional?
-    // TODO The long line gets truncated somehow?
+    // TODO This long line gets truncated sometimes by a later progress bar?
     info!(
         "{} people across {} households, and {} MSOAs ({})",
         print_count(population.people.len()),
@@ -166,6 +153,7 @@ struct TuPerson {
     age: u8,
 }
 
+/// Parses either an unsigned integer or the string "NA"
 fn parse_usize_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<Option<usize>, D::Error> {
     // We have to parse it as a string first, or we lose the chance to check that it's "NA" later
     let raw = <String>::deserialize(d)?;
@@ -181,6 +169,7 @@ fn parse_usize_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<Option<usize>, D
     )))
 }
 
+/// Parses a signed integer, handling scientific notation
 fn parse_isize<'de, D: Deserializer<'de>>(d: D) -> Result<isize, D::Error> {
     // tus_hse_northamptonshire.csv expresses HID in scientific notation: 2.00563e+11
     // Parse to f64, then cast
@@ -225,6 +214,19 @@ impl TuPerson {
     }
 }
 
+// If the durations don't sum to 1, pad Home
+fn pad_durations(durations: &mut EnumMap<Activity, f64>) -> Result<()> {
+    let total: f64 = durations.values().sum();
+    // TODO Check the rounding in the Python version
+    let epsilon = 0.00001;
+    if total > 1.0 + epsilon {
+        bail!("Someone's durations sum to {}", total);
+    } else if total < 1.0 {
+        durations[Activity::Home] = 1.0 - total;
+    }
+    Ok(())
+}
+
 fn setup_venue_flows(
     activity: Activity,
     threshold: Threshold,
@@ -236,7 +238,7 @@ fn setup_venue_flows(
 
     // Per MSOA, a list of venues and the probability of going from the MSOA to that venue
     let flows_per_msoa: BTreeMap<MSOA, Vec<(VenueID, f64)>> =
-        quant_get_flows(activity, population.unique_msoas(), threshold)?;
+        get_flows(activity, population.unique_msoas(), threshold)?;
 
     // Now let's assign these flows to the people. Near as I can tell, this just copies the flows
     // to every person in the MSOA. That's loads of duplication -- we could just keep it by (MSOA x
@@ -251,26 +253,13 @@ fn setup_venue_flows(
 
         let msoa = &population.households[person.household.0].msoa;
         if let Some(flows) = flows_per_msoa.get(msoa) {
-            // TODO This OOMs.
+            // TODO On the natonal run, we run out of memory around here.
             person.flows_per_activity[activity] = flows.clone();
         } else {
-            // TODO I think this is an error; not happening for the small input
-            warn!("No flows for {:?} in {}", activity, msoa.0);
+            // I've never observed this, so crash if it ever happens
+            panic!("No flows for {:?} in {}", activity, msoa.0);
         }
     }
 
-    Ok(())
-}
-
-// If the durations don't sum to 1, pad Home
-fn pad_durations(durations: &mut EnumMap<Activity, f64>) -> Result<()> {
-    let total: f64 = durations.values().sum();
-    // TODO Check the rounding in the Python version
-    let epsilon = 0.00001;
-    if total > 1.0 + epsilon {
-        bail!("Someone's durations sum to {}", total);
-    } else if total < 1.0 {
-        durations[Activity::Home] = 1.0 - total;
-    }
     Ok(())
 }

@@ -1,3 +1,6 @@
+//! Useful for working with files, downloading, creating progress bars, etc. Ultimately most of
+//! these will become a proper crate for idempotently working with external datasets.
+
 use std::cmp::min;
 use std::io::{BufWriter, Write};
 use std::path::{Path, PathBuf};
@@ -12,9 +15,7 @@ use reqwest::Client;
 use serde::Serialize;
 use tar::Archive;
 
-// TODO I'm not happy at all about any of this, just temporary.
-
-/// Returns the output path
+/// Downloads a file and writes it to the output path. Skips if the output already exists. Returns the output path.
 pub async fn download<P1: AsRef<Path>, P2: Into<PathBuf>>(url: P1, output: P2) -> Result<PathBuf> {
     let url = url.as_ref();
     let output = output.into();
@@ -33,6 +34,8 @@ pub async fn download<P1: AsRef<Path>, P2: Into<PathBuf>>(url: P1, output: P2) -
     Ok(output)
 }
 
+/// Extract a tar.gz file somewhere. If the expected_output exists, skip. This could be a single
+/// file or a directory.
 pub fn untar(file: PathBuf, expected_output: &str) -> Result<()> {
     if Path::new(expected_output).exists() {
         info!(
@@ -66,6 +69,7 @@ pub fn untar(file: PathBuf, expected_output: &str) -> Result<()> {
     Ok(())
 }
 
+/// Unzip a file into an output_dir.
 pub fn unzip(file: PathBuf, output_dir: &str) -> Result<()> {
     info!("Unzipping {} to {}...", file.display(), output_dir);
     fs_err::create_dir_all(output_dir)?;
@@ -82,6 +86,7 @@ pub fn unzip(file: PathBuf, output_dir: &str) -> Result<()> {
     }
 }
 
+/// Extract the filename from a path -- for example, "foo.txt.gz" from "/home/someone/foo.txt.gz"
 pub fn filename<P: AsRef<Path>>(path: P) -> String {
     path.as_ref()
         .file_name()
@@ -91,8 +96,10 @@ pub fn filename<P: AsRef<Path>>(path: P) -> String {
         .unwrap()
 }
 
+/// Extract the basename from a path -- for example, "foo" from "/home/someone/foo.txt".
+///
+/// TODO Note it doesn't strip file extensions repeatedly -- basename(foo.shp.zip) is foo.shp.
 pub fn basename<P: AsRef<Path>>(path: P) -> String {
-    // TODO .shp.zip results in .shp
     path.as_ref()
         .file_stem()
         .unwrap()
@@ -101,6 +108,7 @@ pub fn basename<P: AsRef<Path>>(path: P) -> String {
         .unwrap()
 }
 
+/// Prints a count with commas -- ie, 12345 becomes "12,345"
 pub fn print_count(x: usize) -> String {
     // TODO Ask about adjusting their API to take usizes...
     indicatif::HumanCount(x as u64).to_string()
@@ -138,6 +146,7 @@ async fn download_file(url: &str, path: &str) -> Result<()> {
     Ok(())
 }
 
+/// Serializes an object using the bincode format
 pub fn write_binary<T: Serialize, P: AsRef<Path>>(object: &T, path: P) -> Result<()> {
     let path = path.as_ref();
     if let Some(parent) = path.parent() {
@@ -176,7 +185,22 @@ pub fn progress_count_with_msg(len: usize) -> ProgressBar {
     pb
 }
 
-// TODO I don't trust the results...
+/// Creates a nicely-styled progress bar for reading a file. Messages are supported.
+pub fn progress_file_with_msg(file: &File) -> Result<ProgressBar> {
+    let pb = ProgressBar::new(file.metadata()?.len());
+    pb.set_style(
+        ProgressStyle::default_bar()
+            .template(
+                "{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({eta})",
+            )
+            .progress_chars("#-"),
+    );
+    Ok(pb)
+}
+
+/// Describes the current memory usage of this program.
+///
+/// TODO The results are questionable, though
 pub fn memory_usage() -> String {
     format!(
         "Memory usage: {}",
