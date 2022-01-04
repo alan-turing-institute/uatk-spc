@@ -12,6 +12,7 @@ use fs_err::File;
 use futures_util::StreamExt;
 use indicatif::{HumanBytes, ProgressBar, ProgressStyle};
 use reqwest::Client;
+use serde::de::DeserializeOwned;
 use serde::Serialize;
 use tar::Archive;
 
@@ -155,6 +156,12 @@ pub fn write_binary<T: Serialize, P: AsRef<Path>>(object: &T, path: P) -> Result
     let file = BufWriter::new(File::create(path)?);
     bincode::serialize_into(file, object)?;
     Ok(())
+}
+
+/// Deserializes an object from the bincode format
+pub fn read_binary<T: DeserializeOwned>(path: String) -> Result<T> {
+    let object = bincode::deserialize_from(File::open(path)?)?;
+    Ok(object)
 }
 
 // TODO Can we further improve the API? Ideally just a '.wrap_progress_count()' on iterators, with

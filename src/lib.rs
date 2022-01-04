@@ -2,7 +2,8 @@
 //!
 //! It's split into several stages:
 //! 1) init -- from raw data, build an activity model for a study area
-//! 2) TODO -- simulate COVID in the population
+//! 2) snapshot -- from an activity model, build a snapshot for the OpenCL simulation
+//! 3) TODO -- simulate COVID in the population
 
 #[macro_use]
 extern crate anyhow;
@@ -10,6 +11,7 @@ extern crate anyhow;
 extern crate log;
 
 mod init;
+mod snapshot;
 pub mod utilities;
 
 use std::collections::{BTreeMap, BTreeSet};
@@ -20,6 +22,8 @@ use cap::Cap;
 use enum_map::{Enum, EnumMap};
 use geo::{MultiPolygon, Point};
 use serde::{Deserialize, Serialize};
+
+pub use self::snapshot::Snapshot;
 
 // Override the memory allocator, so utilities::memory_usage can take measurements
 #[global_allocator]

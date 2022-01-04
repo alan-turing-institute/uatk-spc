@@ -12,7 +12,7 @@ use serde::Deserialize;
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
 
 use ramp::utilities;
-use ramp::{Input, StudyAreaCache, MSOA};
+use ramp::{Input, Snapshot, StudyAreaCache, MSOA};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -28,13 +28,28 @@ async fn main() -> Result<()> {
     )?;
 
     let args = Args::parse();
-    let input = args.to_input().await?;
-    let cache = StudyAreaCache::create(input).await?;
+    match args.action {
+        Action::Init { region } => {
+            let input = region.to_input().await?;
+            let cache = StudyAreaCache::create(input).await?;
 
-    info!("By the end, {}", utilities::memory_usage());
-    let output = format!("processed_data/{:?}.bin", args.dataset);
-    info!("Writing study area cache to {}", output);
-    utilities::write_binary(&cache, output)?;
+            info!("By the end, {}", utilities::memory_usage());
+            let output = format!("processed_data/{:?}.bin", region);
+            info!("Writing study area cache to {}", output);
+            utilities::write_binary(&cache, output)?;
+        }
+        Action::Snapshot { region } => {
+            info!("Loading study area cache");
+            let cache = utilities::read_binary::<StudyAreaCache>(format!(
+                "processed_data/{:?}.bin",
+                region
+            ))?;
+            let snapshot = Snapshot::generate(cache)?;
+            let output = format!("processed_data/snapshot_{:?}.bin", region);
+            info!("Writing snapshot to {}", output);
+            utilities::write_binary(&snapshot, output)?;
+        }
+    }
 
     Ok(())
 }
@@ -42,13 +57,13 @@ async fn main() -> Result<()> {
 #[derive(Parser)]
 #[clap(about, version, author)]
 struct Args {
-    /// Which counties to operate on
-    #[clap(arg_enum)]
-    dataset: InputDataset,
+    #[clap(subcommand)]
+    action: Action,
 }
 
-#[derive(clap::ArgEnum, Clone, Debug)]
-enum InputDataset {
+#[derive(clap::ArgEnum, Clone, Copy, Debug)]
+/// Which counties to operate on
+enum Region {
     WestYorkshireSmall,
     WestYorkshireLarge,
     Devon,
@@ -56,19 +71,33 @@ enum InputDataset {
     National,
 }
 
-impl Args {
-    async fn to_input(&self) -> Result<Input> {
+#[derive(clap::Subcommand, Clone)]
+enum Action {
+    /// Import raw data and build an activity model for a region
+    Init {
+        #[clap(arg_enum)]
+        region: Region,
+    },
+    /// Transform a StudyAreaCache into a Snapshot
+    Snapshot {
+        #[clap(arg_enum)]
+        region: Region,
+    },
+}
+
+impl Region {
+    async fn to_input(self) -> Result<Input> {
         let mut input = Input {
             initial_cases_per_msoa: BTreeMap::new(),
         };
 
         // Determine the MSOAs to operate on using CSV files from the original repo
-        let csv_input = match self.dataset {
-            InputDataset::WestYorkshireSmall => "Input_Test_3.csv",
-            InputDataset::WestYorkshireLarge => "Input_WestYorkshire.csv",
-            InputDataset::Devon => "Input_Devon.csv",
-            InputDataset::TwoCounties => "Input_Test_accross.csv",
-            InputDataset::National => {
+        let csv_input = match self {
+            Region::WestYorkshireSmall => "Input_Test_3.csv",
+            Region::WestYorkshireLarge => "Input_WestYorkshire.csv",
+            Region::Devon => "Input_Devon.csv",
+            Region::TwoCounties => "Input_Test_accross.csv",
+            Region::National => {
                 for msoa in MSOA::all_msoas_nationally().await? {
                     input.initial_cases_per_msoa.insert(msoa, default_cases());
                 }

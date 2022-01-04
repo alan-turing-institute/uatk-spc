@@ -22,7 +22,7 @@ cd rampfs
 cargo build --release
 # The executable on Linux and Mac is in ./target/release/ramp. On Windows, you
 # probably have to add .exe
-./target/release/ramp west-yorkshire-small
+./target/release/ramp init west-yorkshire-small
 ```
 
 This will download some large files the first time. If all succeeds, you should
@@ -44,7 +44,7 @@ trouble!
 There are two equivalent ways to rebuild and then run the code. First:
 
 ```shell
-cargo run --release -- devon
+cargo run --release -- init devon
 ```
 
 The `--` separates arguments to `cargo`, the Rust build tool, and arguments to
@@ -52,7 +52,7 @@ the program itself. The second way:
 
 ```shell
 cargo build --release
-./target/debug/ramp devon
+./target/debug/ramp init devon
 ```
 
 You can build the code in two ways -- **debug** and **release**. There's a
