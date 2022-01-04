@@ -4,9 +4,8 @@ use anyhow::Result;
 use fs_err::File;
 use serde::Deserialize;
 
-use crate::msoas::InfoPerMSOA;
 use crate::population::{Activity, Population};
-use crate::{CTY20, MSOA};
+use crate::{InfoPerMSOA, CTY20, MSOA};
 
 /// The result is in [0, 1]
 pub fn calculate_lockdown_per_day(

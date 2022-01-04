@@ -9,21 +9,9 @@ use geo::map_coords::MapCoordsInplace;
 use geo::{MultiPolygon, Point};
 use proj::Proj;
 use rstar::{RTree, AABB};
-use serde::{Deserialize, Serialize};
 
 use crate::utilities::{print_count, progress_count};
-use crate::MSOA;
-
-#[derive(Serialize, Deserialize)]
-pub struct InfoPerMSOA {
-    pub shape: MultiPolygon<f64>,
-    pub population: usize,
-    /// All building centroids within this MSOA.
-    ///
-    /// Note there are many caveats about building data in OpenStreetMap -- what counts as
-    /// residential, commercial? And some areas don't have any buildings mapped yet!
-    pub buildings: Vec<Point<f64>>,
-}
+use crate::{InfoPerMSOA, MSOA};
 
 pub fn get_info_per_msoa(
     msoas: BTreeSet<MSOA>,

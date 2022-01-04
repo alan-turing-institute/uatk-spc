@@ -6,8 +6,8 @@ use fs_err::File;
 use indicatif::{ProgressBar, ProgressStyle};
 use serde::{Deserialize, Deserializer};
 
+use super::quant::{load_venues, quant_get_flows, Threshold};
 use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Population, VenueID};
-use crate::quant::{load_venues, quant_get_flows, Threshold};
 use crate::utilities::{memory_usage, print_count, progress_count, progress_count_with_msg};
 use crate::MSOA;
 
@@ -31,7 +31,7 @@ pub fn initialize(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<
 
     // Commuting is special-cased
     // TODO Share logic with setup_venue_flows?
-    let _commuting_flows = crate::commuting::get_commuting_flows()?;
+    let _commuting_flows = super::commuting::get_commuting_flows()?;
 
     // TODO Lots of commented stuff, then rounding
 

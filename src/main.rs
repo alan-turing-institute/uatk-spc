@@ -64,7 +64,7 @@ impl Args {
             InputDataset::Devon => "Input_Devon.csv",
             InputDataset::TwoCounties => "Input_Test_accross.csv",
             InputDataset::National => {
-                for msoa in ramp::raw_data::all_msoas_nationally().await? {
+                for msoa in MSOA::all_msoas_nationally().await? {
                     input.initial_cases_per_msoa.insert(msoa, default_cases());
                 }
                 return Ok(input);
