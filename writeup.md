@@ -226,15 +226,12 @@ NOTE: I took these measurements at the current version of the code (see git),
 which doesn't have every part of the initialisation ported yet -- commuting and
 assigning specific homes isn't done yet.
 
-| Study area     | Runtime  | Peak memory usage | Output file size | People      | Households   | MSOAs |
-| -------------- | -------- | ----------------- | ---------------- | ----------- | ------------ | ----- |
-| West Yorkshire | 51s      | 1.45GB            | 1.2GB            | 1.9 million | 954 thousand | 300   |
-| Devon          | 28s      | 774MB             | 632MB            | 1 million   | 518 thousand | 156   |
-| National       | 8m30s \* | 28GB (out of RAM) | unknown          | 42 million  | 21 million   | 6.7k  |
-
-(Currently we have a small and large version of West Yorkshire --
-`Input_Test_3.csv` and `Input_WestYorkshire.csv` -- but they're equivalent,
-except for the number of MSOAs initially seeded with cases.)
+| Study area             | Runtime  | Peak memory usage | Output file size | People      | Households | MSOAs |
+| ---------------------- | -------- | ----------------- | ---------------- | ----------- | ---------- | ----- |
+| West Yorkshire (small) | 6s       | 23MB              | 16MB             | 23k         | 11k        | 3     |
+| West Yorkshire (large) | 51s      | 1.45GB            | 1.2GB            | 1.9 million | 954k       | 300   |
+| Devon                  | 28s      | 774MB             | 632MB            | 1 million   | 518k       | 156   |
+| National               | 8m30s \* | 28GB (out of RAM) | unknown          | 42 million  | 21 million | 6.7k  |
 
 To compare, running the Python pipeline for 3 MSOAs in West Yorkshire
 (`Input_Test_3.csv`) takes 2 minutes, and Devon is over 30 minutes just reading

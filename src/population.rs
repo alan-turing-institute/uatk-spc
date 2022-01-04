@@ -16,6 +16,7 @@ pub struct Population {
 }
 
 impl Population {
+    // Just store this explicitly? Will it ever not match the input set?
     pub fn unique_msoas(&self) -> BTreeSet<MSOA> {
         let mut result = BTreeSet::new();
         for h in &self.households {

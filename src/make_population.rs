@@ -1,4 +1,4 @@
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, BTreeSet};
 
 use anyhow::Result;
 use enum_map::EnumMap;
@@ -12,13 +12,13 @@ use crate::utilities::{print_count, progress_count, progress_count_with_msg};
 use crate::{memory_usage, MSOA};
 
 // population_initialisation.py
-pub fn initialize(tus_files: Vec<String>, max_households: Option<usize>) -> Result<Population> {
+pub fn initialize(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<Population> {
     let mut population = Population {
         households: Vec::new(),
         people: Vec::new(),
         venues_per_activity: EnumMap::default(),
     };
-    read_individual_time_use_and_health_data(&mut population, tus_files, max_households)?;
+    read_individual_time_use_and_health_data(&mut population, tus_files, keep_msoas)?;
 
     setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;
     setup_venue_flows(Activity::Nightclub, Threshold::TopN(10), &mut population)?;
@@ -41,7 +41,7 @@ pub fn initialize(tus_files: Vec<String>, max_households: Option<usize>) -> Resu
 fn read_individual_time_use_and_health_data(
     population: &mut Population,
     tus_files: Vec<String>,
-    max_households: Option<usize>,
+    keep_msoas: BTreeSet<MSOA>,
 ) -> Result<()> {
     // First read the raw CSV files and just group the raw rows by household (MSOA and hid)
     // This isn't all that memory-intensive; the Population ultimately has to hold everyone anyway.
@@ -65,12 +65,6 @@ fn read_individual_time_use_and_health_data(
         );
 
         for rec in csv::Reader::from_reader(pb.wrap_read(file)).deserialize() {
-            if let Some(max) = max_households {
-                if people_per_household.len() == max {
-                    break;
-                }
-            }
-
             if people_per_household.len() % 1000 == 0 {
                 pb.set_message(format!(
                     "{} households so far ({})",
@@ -85,6 +79,11 @@ fn read_individual_time_use_and_health_data(
             // > xsv search -s hid '\-1' countydata/tus_hse_west-yorkshire.csv
             if rec.hid == -1 {
                 no_household += 1;
+                continue;
+            }
+
+            // Only keep people in the input set of MSOAs
+            if !keep_msoas.contains(&rec.msoa) {
                 continue;
             }
 
