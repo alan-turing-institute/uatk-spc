@@ -79,7 +79,7 @@ fn reproject(polygon: &mut MultiPolygon<f64>) -> Result<()> {
     let reproject = Proj::new_known_crs("EPSG:27700", "EPSG:4326", None)
         .ok_or(anyhow!("Couldn't set up CRS projection"))?;
     polygon.map_coords_inplace(|&(x, y)| {
-        // TODO Error prop inside here is weird
+        // TODO Error handling inside here is weird
         let pt = reproject.convert((x, y)).unwrap();
         (pt.x(), pt.y())
     });
@@ -87,6 +87,7 @@ fn reproject(polygon: &mut MultiPolygon<f64>) -> Result<()> {
 }
 
 // TODO If this is ever removed, cleanup dependencies on geojson and serde_json
+// TODO Also, there should be a less verbose way to do this sort of thing
 fn dump_msoa_shapes(msoas: &BTreeMap<MSOA, InfoPerMSOA>) -> Result<()> {
     let geom_collection: geo::GeometryCollection<f64> =
         msoas.values().map(|info| info.shape.clone()).collect();
@@ -126,6 +127,9 @@ fn match_points_to_shapes(points: Vec<Point<f64>>, msoas: &mut BTreeMap<MSOA, In
     }
 }
 
+/// Find all of the points contained within each polygon.
+///
+/// This uses an R*-tree for speedup; it works well for many points and far fewer polygons.
 // TODO Share with odjitter
 fn points_per_polygon<K: Clone + Ord>(
     points: Vec<Point<f64>>,

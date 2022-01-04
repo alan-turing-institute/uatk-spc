@@ -1,3 +1,6 @@
+//! QUANT is http://quant.casa.ucl.ac.uk. RAMP uses it to get a probability distribution of how
+//! likely people are to travel from their home MSOA to different venues for various activities.
+
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::path::Path;
 
@@ -12,13 +15,16 @@ use crate::utilities::progress_count_with_msg;
 use crate::{Activity, Venue, VenueID, MSOA};
 
 pub enum Threshold {
-    // Take the top values until we hit a sum
+    /// Take the top values until we hit a sum
     #[allow(unused)]
     Sum(f64),
-    // TODO What did NR stand for?
+    /// Take the top values.
+    // TODO In the Python code, what did NR stand for?
     TopN(usize),
 }
 
+/// For a given activity, find the probability of somebody living in different MSOAs going to
+/// different venues for that activity.
 pub fn get_flows(
     activity: Activity,
     msoas: BTreeSet<MSOA>,
@@ -44,21 +50,26 @@ pub fn get_flows(
         msoa_to_zonei.insert(rec.msoaiz, rec.zonei);
     }
 
-    // TODO Unpickling is going to be hard. In python...
+    // TODO We can't read the .bin file written with pickle easily. But we have a Rust crate that
+    // handles the numpy serialization format just fine.
+    //
+    // In the meantime, I manually did the transformation in python. I should at least script this
+    // part.
     //
     // import pickle
     // import numpy
     // x = pickle.load(open("nationaldata/QUANT_RAMP/retailpointsProbSij.bin", "rb"))
     // numpy.save('nationaldata/QUANT_RAMP/retailpointsProbSij.npy', x)
+    //
+    // Repeat for all the files
     let table_path =
         format!("raw_data/nationaldata/QUANT_RAMP/{}", prob_sij).replace(".bin", ".npy");
     let table = Array2::<f64>::read_npy(File::open(table_path)?)?;
 
     let pb = progress_count_with_msg(msoas.len());
     let mut result = BTreeMap::new();
-    // TODO This is no longer slow, but we could still parallelize
     for msoa in msoas {
-        // TODO Defaulting to 0 when the MSOA is missing seems weird?!
+        // TODO The Python code defaults to 0 when the MSOA is missing; this seems problematic?
         let zonei = msoa_to_zonei.get(&msoa).cloned().unwrap_or(0);
         pb.set_message(format!(
             "Get {:?} flows for {} (zonei {})",
@@ -66,30 +77,27 @@ pub fn get_flows(
         ));
         pb.inc(1);
 
-        let mut pr_visit_venue = match activity {
-            // TODO These're treated exactly the same?!
-            Activity::Retail | Activity::Nightclub => {
-                get_venue_flows(zonei, &table, "retailpointsZones.csv", 0.0)?
-            }
-            Activity::PrimarySchool => get_venue_flows(zonei, &table, "primaryZones.csv", 0.0)?,
-            Activity::SecondarySchool => get_venue_flows(zonei, &table, "secondaryZones.csv", 0.0)?,
+        let pr_visit_venue = match activity {
+            // TODO These're treated exactly the same?
+            Activity::Retail | Activity::Nightclub => get_venue_flows(zonei, &table, 0.0)?,
+            Activity::PrimarySchool => get_venue_flows(zonei, &table, 0.0)?,
+            Activity::SecondarySchool => get_venue_flows(zonei, &table, 0.0)?,
             // Something else must handle these
             Activity::Home | Activity::Work => unreachable!(),
         };
 
-        // Sort ascending by probability
-        // TODO We're going to want a probability type
-        pr_visit_venue.sort_by_key(|pair| NotNan::new(pair.1).unwrap());
-
-        // Filter the venues
+        // There are lots of venues! Just keep some of them
         result.insert(msoa, normalize(threshold.apply(pr_visit_venue)));
     }
     Ok(result)
 }
 
 impl Threshold {
-    // flows must be sorted ascending by probability
     fn apply(&self, mut flows: Vec<(VenueID, f64)>) -> Vec<(VenueID, f64)> {
+        // First sort ascending by probability
+        // TODO We're going to want a probability type
+        flows.sort_by_key(|pair| NotNan::new(pair.1).unwrap());
+
         match self {
             Threshold::Sum(sum_needed) => {
                 let mut sum = 0.0;
@@ -118,30 +126,19 @@ impl Threshold {
 fn get_venue_flows(
     zonei: usize,
     table: &Array2<f64>,
-    // TODO This is only passed in for the commented out work in the inner loop
-    _zones_csv: &str,
     min_threshold: f64,
 ) -> Result<Vec<(VenueID, f64)>> {
     let mut results = Vec::new();
-    // raw_data/nationaldata/QUANT_RAMP/retailpointsZones.csv has 14,228 rows representing venues.
-    // n is 14,228 so hey that's good! one per venue.
     for venue in 0..table.shape()[1] {
-        // TODO Check if this is row- or column-major in memory. Are we playing with the cache
-        // nicely?
         let p = table[[zonei, venue]];
         if p >= min_threshold {
             results.push((VenueID(venue), p));
-            // TODO Why the extra work here?
         }
         // TODO If not, we won't match up with venues?
     }
-
-    //info!("MSOA {} mapped to zonei {}. m is {}, n is {}, we got {} results", msoa.0, zonei, m, n, results.len());
-
     Ok(results)
 }
 
-// TODO Let's settle terminology -- shop? venue? retail point? location?
 pub fn load_venues(activity: Activity) -> Result<Vec<Venue>> {
     let csv_path = match activity {
         Activity::Retail | Activity::Nightclub => "retailpointsZones.csv",
@@ -185,7 +182,7 @@ struct ZoneRow {
     urn: Option<usize>,
 }
 
-// Make things sum to 1ish
+// Make things sum to 1
 fn normalize(mut flows: Vec<(VenueID, f64)>) -> Vec<(VenueID, f64)> {
     let sum: f64 = flows.iter().map(|pair| pair.1).sum();
     for (_, pr) in &mut flows {
