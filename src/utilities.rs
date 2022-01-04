@@ -175,3 +175,11 @@ pub fn progress_count_with_msg(len: usize) -> ProgressBar {
     );
     pb
 }
+
+// TODO I don't trust the results...
+pub fn memory_usage() -> String {
+    format!(
+        "Memory usage: {}",
+        indicatif::HumanBytes(crate::ALLOCATOR.allocated() as u64)
+    )
+}

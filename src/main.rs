@@ -1,19 +1,16 @@
 #[macro_use]
 extern crate log;
 
+use std::collections::BTreeMap;
+
 use anyhow::Result;
 use clap::Parser;
+use fs_err::File;
+use serde::Deserialize;
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
 
-use ramp::{InputDataset, StudyAreaCache};
-
-#[derive(Parser)]
-#[clap(about, version, author)]
-struct Args {
-    /// Which counties to operate on
-    #[clap(arg_enum)]
-    input: InputDataset,
-}
+use ramp::utilities;
+use ramp::{Input, StudyAreaCache, MSOA};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -28,29 +25,68 @@ async fn main() -> Result<()> {
     )?;
 
     let args = Args::parse();
+    let input = args.to_input().await?;
+    let cache = StudyAreaCache::create(input).await?;
 
-    let input = args.input.to_input().await?;
-    let raw_results = ramp::raw_data::grab_raw_data(&input).await?;
-    let population = ramp::make_population::initialize(
-        raw_results.tus_files,
-        input.initial_cases_per_msoa.keys().cloned().collect(),
-    )?;
-    let info_per_msoa =
-        ramp::msoas::get_info_per_msoa(population.unique_msoas(), raw_results.osm_directories)?;
-    let lockdown_per_day = ramp::lockdown::calculate_lockdown_per_day(
-        raw_results.msoas_per_google_mobility,
-        &info_per_msoa,
-        &population,
-    )?;
-
-    let cache = StudyAreaCache {
-        population,
-        info_per_msoa,
-        lockdown_per_day,
-    };
-    info!("Memory currently at {}", ramp::memory_usage());
-    info!("Writing study area cache for {:?}", input.dataset);
-    ramp::utilities::write_binary(&cache, format!("processed_data/{:?}.bin", input.dataset))?;
+    info!("Memory currently at {}", utilities::memory_usage());
+    info!("Writing study area cache for {:?}", args.dataset);
+    utilities::write_binary(&cache, format!("processed_data/{:?}.bin", args.dataset))?;
 
     Ok(())
+}
+
+#[derive(Parser)]
+#[clap(about, version, author)]
+struct Args {
+    /// Which counties to operate on
+    #[clap(arg_enum)]
+    dataset: InputDataset,
+}
+
+#[derive(clap::ArgEnum, Clone, Debug)]
+enum InputDataset {
+    WestYorkshireSmall,
+    WestYorkshireLarge,
+    Devon,
+    TwoCounties,
+    National,
+}
+
+impl Args {
+    async fn to_input(&self) -> Result<Input> {
+        let mut input = Input {
+            initial_cases_per_msoa: BTreeMap::new(),
+        };
+
+        let csv_input = match self.dataset {
+            InputDataset::WestYorkshireSmall => "Input_Test_3.csv",
+            InputDataset::WestYorkshireLarge => "Input_WestYorkshire.csv",
+            InputDataset::Devon => "Input_Devon.csv",
+            InputDataset::TwoCounties => "Input_Test_accross.csv",
+            InputDataset::National => {
+                for msoa in ramp::raw_data::all_msoas_nationally().await? {
+                    input.initial_cases_per_msoa.insert(msoa, default_cases());
+                }
+                return Ok(input);
+            }
+        };
+        let csv_path = format!("model_parameters/{}", csv_input);
+        for rec in csv::Reader::from_reader(File::open(csv_path)?).deserialize() {
+            let rec: InitialCaseRow = rec?;
+            input.initial_cases_per_msoa.insert(rec.msoa, rec.cases);
+        }
+        Ok(input)
+    }
+}
+
+#[derive(Deserialize)]
+struct InitialCaseRow {
+    #[serde(rename = "MSOA11CD")]
+    msoa: MSOA,
+    // It's just missing from some of the input files...
+    #[serde(default = "default_cases")]
+    cases: usize,
+}
+fn default_cases() -> usize {
+    5
 }

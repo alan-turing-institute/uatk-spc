@@ -8,8 +8,8 @@ use serde::{Deserialize, Deserializer};
 
 use crate::population::{Activity, Household, HouseholdID, Person, PersonID, Population, VenueID};
 use crate::quant::{load_venues, quant_get_flows, Threshold};
-use crate::utilities::{print_count, progress_count, progress_count_with_msg};
-use crate::{memory_usage, MSOA};
+use crate::utilities::{memory_usage, print_count, progress_count, progress_count_with_msg};
+use crate::MSOA;
 
 // population_initialisation.py
 pub fn initialize(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<Population> {
