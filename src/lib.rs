@@ -33,6 +33,7 @@ static ALLOCATOR: Cap<std::alloc::System> = Cap::new(std::alloc::System, usize::
 /// the simulation.
 #[derive(Serialize, Deserialize)]
 pub struct StudyAreaCache {
+    // TODO Maybe simpler to flatten the 3 fields of Population into here
     pub population: Population,
     pub info_per_msoa: BTreeMap<MSOA, InfoPerMSOA>,
     /// A number in [0, 1] for each day, representing... TODO
@@ -141,6 +142,19 @@ pub enum Activity {
     Work,
     Nightclub,
     // TODO I see quant files for hospitals, why not incorporated yet?
+}
+
+impl Activity {
+    pub fn all() -> Vec<Activity> {
+        vec![
+            Activity::Retail,
+            Activity::PrimarySchool,
+            Activity::SecondarySchool,
+            Activity::Home,
+            Activity::Work,
+            Activity::Nightclub,
+        ]
+    }
 }
 
 /// Represents a place where people do an activity
