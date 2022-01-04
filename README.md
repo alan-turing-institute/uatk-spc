@@ -29,16 +29,8 @@ This will download some large files the first time. If all succeeds, you should
 have `processed_data/WestYorkshireSmall.bin` as output, as well as lots of
 intermediate files in `raw_data/`.
 
-WARNING: The pipeline will fail, because you also need to manually transform the
-QUANT tables from the pickled format to the regular numpy format. I need to
-automate this better. You can do something like this:
-
-```python
-import pickle
-import numpy
-x = pickle.load(open("nationaldata/QUANT_RAMP/retailpointsProbSij.bin", "rb"))
-numpy.save('nationaldata/QUANT_RAMP/retailpointsProbSij.npy', x)
-```
+(Note it'll fail the first time through and prompt you to manually run a Python
+script to get some QUANT data in a different format.)
 
 ### Troubleshooting
 

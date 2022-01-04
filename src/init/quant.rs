@@ -50,21 +50,14 @@ pub fn get_flows(
         msoa_to_zonei.insert(rec.msoaiz, rec.zonei);
     }
 
-    // TODO We can't read the .bin file written with pickle easily. But we have a Rust crate that
-    // handles the numpy serialization format just fine.
-    //
-    // In the meantime, I manually did the transformation in python. I should at least script this
-    // part.
-    //
-    // import pickle
-    // import numpy
-    // x = pickle.load(open("nationaldata/QUANT_RAMP/retailpointsProbSij.bin", "rb"))
-    // numpy.save('nationaldata/QUANT_RAMP/retailpointsProbSij.npy', x)
-    //
-    // Repeat for all the files
     let table_path =
         format!("raw_data/nationaldata/QUANT_RAMP/{}", prob_sij).replace(".bin", ".npy");
-    let table = Array2::<f64>::read_npy(File::open(table_path)?)?;
+    let table = match File::open(table_path) {
+        Ok(file) => Array2::<f64>::read_npy(file)?,
+        Err(err) => {
+            bail!("A QUANT file is missing. You need to manually run a Python script to convert from the pickle format t the regular numpy format:\n\npython3 fix_quant_data.py\n\n{}", err);
+        }
+    };
 
     let pb = progress_count_with_msg(msoas.len());
     let mut result = BTreeMap::new();
