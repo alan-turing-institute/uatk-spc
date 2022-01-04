@@ -118,6 +118,11 @@ pub struct Person {
 
     // Nobody's older than 256 years
     pub age_years: u8,
+    pub obesity: Obesity,
+    // Unclear what the values mean
+    pub cardiovascular_disease: u8,
+    pub diabetes: u8,
+    pub blood_pressure: u8,
 
     /// Per activity, a list of venues where this person is likely to go do that activity. The
     /// probabilities sum to 1.
@@ -150,6 +155,15 @@ pub struct Venue {
     /// This only exists for PrimarySchool and SecondarySchool. It's a
     /// https://en.wikipedia.org/wiki/Unique_Reference_Number
     pub urn: Option<usize>,
+}
+
+#[derive(Serialize, Deserialize)]
+pub enum Obesity {
+    Obese3,
+    Obese2,
+    Obese1,
+    Overweight,
+    Normal,
 }
 
 // These are unsigned integers, used to index into different vectors. They're wrapped in a type, so

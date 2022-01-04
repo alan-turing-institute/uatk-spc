@@ -9,7 +9,9 @@ use super::quant::{get_flows, load_venues, Threshold};
 use crate::utilities::{
     memory_usage, print_count, progress_count, progress_count_with_msg, progress_file_with_msg,
 };
-use crate::{Activity, Household, HouseholdID, Person, PersonID, Population, VenueID, MSOA};
+use crate::{
+    Activity, Household, HouseholdID, Obesity, Person, PersonID, Population, VenueID, MSOA,
+};
 
 /// Create a population from some time-use files, only keeping people in the specified MSOAs.
 pub fn create(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<Population> {
@@ -151,6 +153,11 @@ struct TuPerson {
     pshop: f64,
     pschool: f64,
     age: u8,
+    #[serde(rename = "BMIvg6", deserialize_with = "parse_obesity")]
+    obesity: Obesity,
+    cvd: u8,
+    diabetes: u8,
+    bloodpressure: u8,
 }
 
 /// Parses either an unsigned integer or the string "NA"
@@ -176,6 +183,24 @@ fn parse_isize<'de, D: Deserializer<'de>>(d: D) -> Result<isize, D::Error> {
     let float = <f64>::deserialize(d)?;
     // TODO Is there a safety check we should do? Make sure it's already rounded?
     Ok(float as isize)
+}
+
+fn parse_obesity<'de, D: Deserializer<'de>>(d: D) -> Result<Obesity, D::Error> {
+    let raw = <&str>::deserialize(d)?;
+    match raw {
+        "Obese III: 40 or more" => Ok(Obesity::Obese3),
+        "Obese II: 35 to less than 40" => Ok(Obesity::Obese2),
+        "Obese I: 30 to less than 35" => Ok(Obesity::Obese1),
+        "Overweight: 25 to less than 30" => Ok(Obesity::Overweight),
+        "Normal: 18.5 to less than 25" | "Not applicable" => Ok(Obesity::Normal),
+        // There are some additional values that the Python maps to normal. It's nice to explicitly
+        // list them
+        "Underweight: less than 18.5" => Ok(Obesity::Normal),
+        _ => Err(serde::de::Error::custom(format!(
+            "Unknown BMIvg6 value {}",
+            raw
+        ))),
+    }
 }
 
 impl TuPerson {
@@ -207,6 +232,10 @@ impl TuPerson {
             sic1d07: self.sic1d07,
 
             age_years: self.age,
+            obesity: self.obesity,
+            cardiovascular_disease: self.cvd,
+            diabetes: self.diabetes,
+            blood_pressure: self.bloodpressure,
 
             flows_per_activity: EnumMap::default(),
             duration_per_activity,
