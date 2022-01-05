@@ -4,6 +4,8 @@ use fs_err::File;
 use ndarray::{array, Array, Array1};
 use ndarray_npy::NpzWriter;
 use ordered_float::NotNan;
+use ndarray_rand::RandomExt;
+use ndarray_rand::rand_distr::Uniform;
 
 use crate::utilities::progress_count;
 use crate::{Activity, Obesity, Population, StudyAreaCache, VenueID};
@@ -122,8 +124,8 @@ impl Snapshot {
         npz.add_array("people_place_ids", &people_place_ids)?;
         npz.add_array("people_baseline_flows", &people_baseline_flows)?;
         npz.add_array("people_flows", &people_baseline_flows)?;
-        // TODO people_hazards
-        // TODO people_prngs
+        npz.add_array("people_hazards", &Array1::<f32>::zeros(num_people))?;
+        npz.add_array("people_prngs", &Array1::<u32>::random(4 * num_people, Uniform::new(0, u32::MAX)))?;
 
         // TODO params
 
