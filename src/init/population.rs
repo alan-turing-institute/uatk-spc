@@ -9,9 +9,7 @@ use super::quant::{get_flows, load_venues, Threshold};
 use crate::utilities::{
     memory_usage, print_count, progress_count, progress_count_with_msg, progress_file_with_msg,
 };
-use crate::{
-    Activity, Household, HouseholdID, Obesity, Person, PersonID, Population, VenueID, MSOA,
-};
+use crate::{Activity, Household, Obesity, Person, PersonID, Population, VenueID, MSOA};
 
 /// Create a population from some time-use files, only keeping people in the specified MSOAs.
 pub fn create(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<Population> {
@@ -109,7 +107,7 @@ fn read_individual_time_use_and_health_data(
     let pb = progress_count(people_per_household.len());
     for ((msoa, orig_hid), raw_people) in people_per_household {
         pb.inc(1);
-        let household_id = HouseholdID(population.households.len());
+        let household_id = VenueID(population.households.len());
         let mut household = Household {
             id: household_id,
             msoa,
@@ -204,7 +202,7 @@ fn parse_obesity<'de, D: Deserializer<'de>>(d: D) -> Result<Obesity, D::Error> {
 }
 
 impl TuPerson {
-    fn create(self, household: HouseholdID, id: PersonID) -> Result<Person> {
+    fn create(self, household: VenueID, id: PersonID) -> Result<Person> {
         let mut duration_per_activity: EnumMap<Activity, f64> = EnumMap::default();
         duration_per_activity[Activity::Retail] = self.pshop;
         duration_per_activity[Activity::Home] = self.phome;
@@ -225,6 +223,10 @@ impl TuPerson {
         }
         pad_durations(&mut duration_per_activity)?;
 
+        let mut flows_per_activity = EnumMap::default();
+        // People only have one home
+        flows_per_activity[Activity::Home] = vec![(household, 1.0)];
+
         Ok(Person {
             id,
             household,
@@ -237,7 +239,7 @@ impl TuPerson {
             diabetes: self.diabetes,
             blood_pressure: self.bloodpressure,
 
-            flows_per_activity: EnumMap::default(),
+            flows_per_activity,
             duration_per_activity,
         })
     }

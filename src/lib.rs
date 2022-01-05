@@ -79,10 +79,12 @@ pub struct InfoPerMSOA {
 
 #[derive(Serialize, Deserialize)]
 pub struct Population {
+    /// VenueIDs for `Activity::Home` index into this
     pub households: Vec<Household>,
     pub people: Vec<Person>,
 
     /// Per activity, a list of venues. VenueID indexes into this list.
+    /// This is not filled out for `Activity::Home`; see `households` for that.
     pub venues_per_activity: EnumMap<Activity, Vec<Venue>>,
 }
 
@@ -99,9 +101,10 @@ impl Population {
     }
 }
 
+/// A special type of venue where people live
 #[derive(Serialize, Deserialize)]
 pub struct Household {
-    pub id: HouseholdID,
+    pub id: VenueID,
     pub msoa: MSOA,
     /// An ID from the original data, kept around for debugging
     pub orig_hid: isize,
@@ -111,7 +114,7 @@ pub struct Household {
 #[derive(Serialize, Deserialize)]
 pub struct Person {
     pub id: PersonID,
-    pub household: HouseholdID,
+    pub household: VenueID,
     /// An ID from the original data, kept around for debugging
     pub orig_pid: isize,
     /// Some kind of work-related ID
@@ -182,14 +185,6 @@ pub enum Obesity {
 
 // These are unsigned integers, used to index into different vectors. They're wrapped in a type, so
 // we never accidentally confuse a VenueID with a PersonID.
-
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
-pub struct HouseholdID(pub usize);
-impl fmt::Display for HouseholdID {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        write!(f, "Household #{}", self.0)
-    }
-}
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
 pub struct PersonID(pub usize);
