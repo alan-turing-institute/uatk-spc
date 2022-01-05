@@ -58,8 +58,7 @@ fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA>
             }
             if let Some(shapefile::dbase::FieldValue::Numeric(Some(population))) = record.get("pop")
             {
-                let mut geo_polygon: MultiPolygon<f64> = shape.try_into()?;
-                reproject(&mut geo_polygon)?;
+                let geo_polygon: MultiPolygon<f64> = shape.try_into()?;
                 results.insert(
                     msoa,
                     InfoPerMSOA {
@@ -71,6 +70,14 @@ fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA>
             }
         }
     }
+
+    info!("Reprojecting MSOA shapes");
+    let pb = progress_count(results.len());
+    for info in results.values_mut() {
+        pb.inc(1);
+        reproject(&mut info.shape)?;
+    }
+
     Ok(results)
 }
 
