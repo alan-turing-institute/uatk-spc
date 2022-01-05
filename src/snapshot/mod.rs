@@ -1,27 +1,43 @@
 use anyhow::Result;
 use enum_map::EnumMap;
 use fs_err::File;
-use ndarray::{Array, Array1};
+use ndarray::{array, Array, Array1};
 use ndarray_npy::NpzWriter;
 use ordered_float::NotNan;
 
 use crate::utilities::progress_count;
 use crate::{Activity, Obesity, Population, StudyAreaCache, VenueID};
 
+// A slot is a place somebody could visit
+const SLOTS: usize = 100;
+
 /// This is the input into the OpenCL simulation. See
 /// https://github.com/Urban-Analytics/RAMP-UA/blob/master/microsim/opencl/doc/model_design.md
 pub struct Snapshot {
+    nplaces: u32,
+    npeople: u32,
+    nslots: u32,
+    time: u32,
+    // area_codes
+    // not_home_probs
+    // lockdown_multipliers
+
+    // place_activities
+    // place_coords
+    // place_hazards
+    // place_counts
     people_ages: Array1<u16>,
     people_obesity: Array1<u16>,
     people_cvd: Array1<u8>,
     people_diabetes: Array1<u8>,
     people_blood_pressure: Array1<u8>,
-    // area_codes
-    // not_home_probs
+    people_statuses: Array1<u32>,
+    people_transition_times: Array1<u32>,
     people_place_ids: Array1<u32>,
     people_baseline_flows: Array1<f32>,
-    // place_activities
-    // place_coordinates
+    people_flows: Array1<f32>,
+    // people_hazards
+    // people_prngs
 }
 
 /// Unlike VenueID, these aren't scoped to an activity -- they represent every possible place in
@@ -32,6 +48,7 @@ struct GlobalPlaceID(u32);
 /// Maps an Activity and VenueID to a GlobalPlaceID
 struct IDMapping {
     id_offset_per_activity: EnumMap<Activity, u32>,
+    total_places: u32,
 }
 
 impl IDMapping {
@@ -50,6 +67,7 @@ impl IDMapping {
         }
         Some(IDMapping {
             id_offset_per_activity,
+            total_places: offset,
         })
     }
 
@@ -59,7 +77,12 @@ impl IDMapping {
 }
 
 impl Snapshot {
+    // TODO Is it useful to have an intermediate struct, just to turn around and write it to npz?
+    // Not sure if this is kept in memory and otherwise used
     pub fn generate(input: StudyAreaCache) -> Result<Snapshot> {
+        let id_mapping = IDMapping::new(&input.population)
+            .ok_or_else(|| anyhow!("More than 2**32 place IDs"))?;
+
         let people_ages = input
             .population
             .people
@@ -91,38 +114,71 @@ impl Snapshot {
             .iter()
             .map(|p| p.blood_pressure)
             .collect();
-        let (people_place_ids, people_baseline_flows) = get_baseline_flows(&input.population)?;
+        let people_statuses = Array::zeros(input.population.people.len());
+        let people_transition_times = Array::zeros(input.population.people.len());
+        let (people_place_ids, people_baseline_flows) =
+            get_baseline_flows(&input.population, &id_mapping)?;
+        let people_flows = people_baseline_flows.clone();
         Ok(Snapshot {
+            nplaces: id_mapping.total_places,
+            npeople: input.population.people.len().try_into()?,
+            nslots: SLOTS as u32,
+            time: 0,
+
             people_ages,
             people_obesity,
             people_cvd,
             people_diabetes,
             people_blood_pressure,
+            people_statuses,
+            people_transition_times,
             people_place_ids,
             people_baseline_flows,
+            people_flows,
         })
     }
 
     pub fn write_npz(self, path: String) -> Result<()> {
         let mut npz = NpzWriter::new(File::create(path)?);
+        // TODO I'm not sure how to write scalars
+        npz.add_array("nplaces", &array![self.nplaces])?;
+        npz.add_array("npeople", &array![self.npeople])?;
+        npz.add_array("nslots", &array![self.nslots])?;
+        npz.add_array("time", &array![self.time])?;
+        // area_codes
+        // not_home_probs
+        // lockdown_multipliers
+
+        // place_activities
+        // place_coords
+        // place_hazards
+        // place_counts
+
         npz.add_array("people_ages", &self.people_ages)?;
         npz.add_array("people_obesity", &self.people_obesity)?;
         npz.add_array("people_cvd", &self.people_cvd)?;
         npz.add_array("people_diabetes", &self.people_diabetes)?;
         npz.add_array("people_blood_pressure", &self.people_blood_pressure)?;
+        npz.add_array("people_statuses", &self.people_statuses)?;
+        npz.add_array("people_transition_times", &self.people_transition_times)?;
         npz.add_array("people_place_ids", &self.people_place_ids)?;
         npz.add_array("people_baseline_flows", &self.people_baseline_flows)?;
+        npz.add_array("people_flows", &self.people_flows)?;
+        // people_hazards
+        // people_prngs
+
+        // params
         npz.finish()?;
         Ok(())
     }
 }
 
-fn get_baseline_flows(pop: &Population) -> Result<(Array1<u32>, Array1<f32>)> {
-    let id_mapping = IDMapping::new(pop).ok_or_else(|| anyhow!("More than 2**32 place IDs"))?;
-
-    // Not sure why these aren't the same
-    let max_places_per_person = 100;
+fn get_baseline_flows(
+    pop: &Population,
+    id_mapping: &IDMapping,
+) -> Result<(Array1<u32>, Array1<f32>)> {
     let places_to_keep_per_person = 16;
+    let max_places_per_person = SLOTS;
 
     // We ultimately want a 1D array for flows and place IDs. It's a flattened list, with
     // max_places_per_person entries per person.
