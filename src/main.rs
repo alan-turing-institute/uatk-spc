@@ -44,10 +44,9 @@ async fn main() -> Result<()> {
                 "processed_data/{:?}.bin",
                 region
             ))?;
-            let snapshot = Snapshot::generate(cache)?;
             let output = format!("processed_data/snapshot_{:?}.npz", region);
             info!("Writing snapshot to {}", output);
-            snapshot.write_npz(output)?;
+            Snapshot::convert_to_npz(cache, output)?;
         }
     }
 

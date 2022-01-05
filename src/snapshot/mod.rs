@@ -13,32 +13,7 @@ const SLOTS: usize = 100;
 
 /// This is the input into the OpenCL simulation. See
 /// https://github.com/Urban-Analytics/RAMP-UA/blob/master/microsim/opencl/doc/model_design.md
-pub struct Snapshot {
-    nplaces: u32,
-    npeople: u32,
-    nslots: u32,
-    time: u32,
-    // area_codes
-    // not_home_probs
-    // lockdown_multipliers
-
-    // place_activities
-    // place_coords
-    // place_hazards
-    // place_counts
-    people_ages: Array1<u16>,
-    people_obesity: Array1<u16>,
-    people_cvd: Array1<u8>,
-    people_diabetes: Array1<u8>,
-    people_blood_pressure: Array1<u8>,
-    people_statuses: Array1<u32>,
-    people_transition_times: Array1<u32>,
-    people_place_ids: Array1<u32>,
-    people_baseline_flows: Array1<f32>,
-    people_flows: Array1<f32>,
-    // people_hazards
-    // people_prngs
-}
+pub struct Snapshot;
 
 /// Unlike VenueID, these aren't scoped to an activity -- they represent every possible place in
 /// the model.
@@ -79,95 +54,79 @@ impl IDMapping {
 impl Snapshot {
     // TODO Is it useful to have an intermediate struct, just to turn around and write it to npz?
     // Not sure if this is kept in memory and otherwise used
-    pub fn generate(input: StudyAreaCache) -> Result<Snapshot> {
+    pub fn convert_to_npz(input: StudyAreaCache, path: String) -> Result<()> {
         let id_mapping = IDMapping::new(&input.population)
             .ok_or_else(|| anyhow!("More than 2**32 place IDs"))?;
+        let people = &input.population.people;
+        let num_people = people.len();
 
-        let people_ages = input
-            .population
-            .people
-            .iter()
-            .map(|p| p.age_years.into())
-            .collect();
-        let people_obesity = input
-            .population
-            .people
-            .iter()
-            .map(|p| match p.obesity {
-                Obesity::Obese3 => 4,
-                Obesity::Obese2 => 3,
-                Obesity::Obese1 => 2,
-                Obesity::Overweight => 1,
-                Obesity::Normal => 0,
-            })
-            .collect();
-        let people_cvd = input
-            .population
-            .people
-            .iter()
-            .map(|p| p.cardiovascular_disease)
-            .collect();
-        let people_diabetes = input.population.people.iter().map(|p| p.diabetes).collect();
-        let people_blood_pressure = input
-            .population
-            .people
-            .iter()
-            .map(|p| p.blood_pressure)
-            .collect();
-        let people_statuses = Array::zeros(input.population.people.len());
-        let people_transition_times = Array::zeros(input.population.people.len());
+        let mut npz = NpzWriter::new(File::create(path)?);
+
+        // TODO I'm not sure how to write scalars
+        npz.add_array("nplaces", &array![id_mapping.total_places])?;
+        npz.add_array("npeople", &array![num_people as u32])?;
+        npz.add_array("nslots", &array![SLOTS as u32])?;
+        npz.add_array("time", &array![0])?;
+        // TODO area_codes
+        // TODO not_home_probs
+        // TODO lockdown_multipliers
+
+        // TODO place_activities
+        // TODO place_coords
+        // TODO place_hazards
+        // TODO place_counts
+
+        npz.add_array(
+            "people_ages",
+            &people
+                .iter()
+                .map(|p| p.age_years.into())
+                .collect::<Array1<u16>>(),
+        )?;
+        npz.add_array(
+            "people_obesity",
+            &people
+                .iter()
+                .map(|p| match p.obesity {
+                    Obesity::Obese3 => 4,
+                    Obesity::Obese2 => 3,
+                    Obesity::Obese1 => 2,
+                    Obesity::Overweight => 1,
+                    Obesity::Normal => 0,
+                })
+                .collect::<Array1<u16>>(),
+        )?;
+        npz.add_array(
+            "people_cvd",
+            &people
+                .iter()
+                .map(|p| p.cardiovascular_disease)
+                .collect::<Array1<u8>>(),
+        )?;
+        npz.add_array(
+            "people_diabetes",
+            &people.iter().map(|p| p.diabetes).collect::<Array1<u8>>(),
+        )?;
+        npz.add_array(
+            "people_blood_pressure",
+            &people
+                .iter()
+                .map(|p| p.blood_pressure)
+                .collect::<Array1<u8>>(),
+        )?;
+        npz.add_array("people_statuses", &Array1::<u32>::zeros(num_people))?;
+        npz.add_array("people_transition_times", &Array1::<u32>::zeros(num_people))?;
+
         let (people_place_ids, people_baseline_flows) =
             get_baseline_flows(&input.population, &id_mapping)?;
-        let people_flows = people_baseline_flows.clone();
-        Ok(Snapshot {
-            nplaces: id_mapping.total_places,
-            npeople: input.population.people.len().try_into()?,
-            nslots: SLOTS as u32,
-            time: 0,
+        npz.add_array("people_place_ids", &people_place_ids)?;
+        npz.add_array("people_baseline_flows", &people_baseline_flows)?;
+        npz.add_array("people_flows", &people_baseline_flows)?;
+        // TODO people_hazards
+        // TODO people_prngs
 
-            people_ages,
-            people_obesity,
-            people_cvd,
-            people_diabetes,
-            people_blood_pressure,
-            people_statuses,
-            people_transition_times,
-            people_place_ids,
-            people_baseline_flows,
-            people_flows,
-        })
-    }
+        // TODO params
 
-    pub fn write_npz(self, path: String) -> Result<()> {
-        let mut npz = NpzWriter::new(File::create(path)?);
-        // TODO I'm not sure how to write scalars
-        npz.add_array("nplaces", &array![self.nplaces])?;
-        npz.add_array("npeople", &array![self.npeople])?;
-        npz.add_array("nslots", &array![self.nslots])?;
-        npz.add_array("time", &array![self.time])?;
-        // area_codes
-        // not_home_probs
-        // lockdown_multipliers
-
-        // place_activities
-        // place_coords
-        // place_hazards
-        // place_counts
-
-        npz.add_array("people_ages", &self.people_ages)?;
-        npz.add_array("people_obesity", &self.people_obesity)?;
-        npz.add_array("people_cvd", &self.people_cvd)?;
-        npz.add_array("people_diabetes", &self.people_diabetes)?;
-        npz.add_array("people_blood_pressure", &self.people_blood_pressure)?;
-        npz.add_array("people_statuses", &self.people_statuses)?;
-        npz.add_array("people_transition_times", &self.people_transition_times)?;
-        npz.add_array("people_place_ids", &self.people_place_ids)?;
-        npz.add_array("people_baseline_flows", &self.people_baseline_flows)?;
-        npz.add_array("people_flows", &self.people_flows)?;
-        // people_hazards
-        // people_prngs
-
-        // params
         npz.finish()?;
         Ok(())
     }
