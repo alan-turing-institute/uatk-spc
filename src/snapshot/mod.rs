@@ -3,9 +3,9 @@ use enum_map::EnumMap;
 use fs_err::File;
 use ndarray::{array, Array, Array1};
 use ndarray_npy::NpzWriter;
-use ordered_float::NotNan;
-use ndarray_rand::RandomExt;
 use ndarray_rand::rand_distr::Uniform;
+use ndarray_rand::RandomExt;
+use ordered_float::NotNan;
 
 use crate::utilities::progress_count;
 use crate::{Activity, Obesity, Population, StudyAreaCache, VenueID};
@@ -69,8 +69,22 @@ impl Snapshot {
         npz.add_array("npeople", &array![num_people as u32])?;
         npz.add_array("nslots", &array![SLOTS as u32])?;
         npz.add_array("time", &array![0])?;
-        // TODO area_codes
-        // TODO not_home_probs
+        // TODO No support for arbitrary objects yet. This should be a pickled string?
+        // dtype=np.object
+        /*npz.add_array(
+            "area_codes",
+            &people
+                .iter()
+                .map(|p| input.population.households[p.household.0].msoa.0)
+                .collect::<Array1<String>>(),
+        )?;*/
+        npz.add_array(
+            "not_home_probs",
+            &people
+                .iter()
+                .map(|p| p.pr_not_home)
+                .collect::<Array1<f32>>(),
+        )?;
         // TODO lockdown_multipliers
 
         // TODO place_activities
@@ -125,7 +139,10 @@ impl Snapshot {
         npz.add_array("people_baseline_flows", &people_baseline_flows)?;
         npz.add_array("people_flows", &people_baseline_flows)?;
         npz.add_array("people_hazards", &Array1::<f32>::zeros(num_people))?;
-        npz.add_array("people_prngs", &Array1::<u32>::random(4 * num_people, Uniform::new(0, u32::MAX)))?;
+        npz.add_array(
+            "people_prngs",
+            &Array1::<u32>::random(4 * num_people, Uniform::new(0, u32::MAX)),
+        )?;
 
         // TODO params
 

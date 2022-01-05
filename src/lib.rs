@@ -128,6 +128,9 @@ pub struct Person {
     pub diabetes: u8,
     pub blood_pressure: u8,
 
+    // TODO This seems like it should be equivalent to 1 - duration_per_activity[Activity::Home]
+    pub pr_not_home: f32,
+
     /// Per activity, a list of venues where this person is likely to go do that activity. The
     /// probabilities sum to 1.
     // TODO Consider a distribution type to represent this

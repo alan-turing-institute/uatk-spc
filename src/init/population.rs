@@ -156,6 +156,7 @@ struct TuPerson {
     cvd: u8,
     diabetes: u8,
     bloodpressure: u8,
+    pnothome: f32,
 }
 
 /// Parses either an unsigned integer or the string "NA"
@@ -238,6 +239,8 @@ impl TuPerson {
             cardiovascular_disease: self.cvd,
             diabetes: self.diabetes,
             blood_pressure: self.bloodpressure,
+
+            pr_not_home: self.pnothome,
 
             flows_per_activity,
             duration_per_activity,
