@@ -47,6 +47,10 @@ fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA>
     .unwrap();
     let mut reader = shapefile::Reader::new(shape_reader, dbf_reader);
 
+    // I opened the file in QGIS to figure out the source CRS
+    let reproject = Proj::new_known_crs("EPSG:27700", "EPSG:4326", None)
+        .ok_or(anyhow!("Couldn't set up CRS projection"))?;
+
     let mut results = BTreeMap::new();
     for pair in reader.iter_shapes_and_records_as::<shapefile::Polygon, shapefile::dbase::Record>()
     {
@@ -58,7 +62,12 @@ fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA>
             }
             if let Some(shapefile::dbase::FieldValue::Numeric(Some(population))) = record.get("pop")
             {
-                let geo_polygon: MultiPolygon<f64> = shape.try_into()?;
+                let mut geo_polygon: MultiPolygon<f64> = shape.try_into()?;
+                geo_polygon.map_coords_inplace(|&(x, y)| {
+                    // TODO Error handling inside here is weird
+                    let pt = reproject.convert((x, y)).unwrap();
+                    (pt.x(), pt.y())
+                });
                 results.insert(
                     msoa,
                     InfoPerMSOA {
@@ -71,26 +80,7 @@ fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA>
         }
     }
 
-    info!("Reprojecting MSOA shapes");
-    let pb = progress_count(results.len());
-    for info in results.values_mut() {
-        pb.inc(1);
-        reproject(&mut info.shape)?;
-    }
-
     Ok(results)
-}
-
-fn reproject(polygon: &mut MultiPolygon<f64>) -> Result<()> {
-    // I opened the file in QGIS to figure out the source CRS
-    let reproject = Proj::new_known_crs("EPSG:27700", "EPSG:4326", None)
-        .ok_or(anyhow!("Couldn't set up CRS projection"))?;
-    polygon.map_coords_inplace(|&(x, y)| {
-        // TODO Error handling inside here is weird
-        let pt = reproject.convert((x, y)).unwrap();
-        (pt.x(), pt.y())
-    });
-    Ok(())
 }
 
 // TODO If this is ever removed, cleanup dependencies on geojson and serde_json
