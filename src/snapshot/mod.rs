@@ -76,13 +76,12 @@ impl IDMapping {
 }
 
 impl Snapshot {
-    // TODO Is it useful to have an intermediate struct, just to turn around and write it to npz?
-    // Not sure if this is kept in memory and otherwise used
     pub fn convert_to_npz(input: StudyAreaCache, path: String) -> Result<()> {
         let id_mapping = IDMapping::new(&input.population)
             .ok_or_else(|| anyhow!("More than 2**32 place IDs"))?;
         let people = &input.population.people;
         let num_people = people.len();
+        let num_places = id_mapping.total_places as usize;
 
         let mut npz = NpzWriter::new(File::create(path)?);
 
@@ -111,8 +110,8 @@ impl Snapshot {
 
         npz.add_array("place_activities", &id_mapping.place_activities)?;
         npz.add_array("place_coords", &get_place_coordinates(&input, &id_mapping)?)?;
-        // TODO place_hazards
-        // TODO place_counts
+        npz.add_array("place_hazards", &Array1::<u32>::zeros(num_places))?;
+        npz.add_array("place_counts", &Array1::<u32>::zeros(num_places))?;
 
         npz.add_array(
             "people_ages",

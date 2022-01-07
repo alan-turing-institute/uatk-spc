@@ -160,6 +160,7 @@ pub fn write_binary<T: Serialize, P: AsRef<Path>>(object: &T, path: P) -> Result
 
 /// Deserializes an object from the bincode format
 pub fn read_binary<T: DeserializeOwned>(path: String) -> Result<T> {
+    // TODO Progress bar with wrap_read looks nice, but dramatically slows down reading
     let object = bincode::deserialize_from(File::open(path)?)?;
     Ok(object)
 }
