@@ -19,7 +19,7 @@ pub fn get_info_per_msoa(
 ) -> Result<BTreeMap<MSOA, InfoPerMSOA>> {
     info!("Loading MSOA shapes");
     let mut info_per_msoa = load_msoa_shapes(msoas)?;
-    if false {
+    if true {
         dump_msoa_shapes(&info_per_msoa)?;
     }
     let mut building_centroids: Vec<Point<f64>> = Vec::new();
@@ -84,15 +84,16 @@ fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA>
 }
 
 // TODO If this is ever removed, cleanup dependencies on geojson and serde_json
-// TODO Also, there should be a less verbose way to do this sort of thing
 fn dump_msoa_shapes(msoas: &BTreeMap<MSOA, InfoPerMSOA>) -> Result<()> {
-    let geom_collection: geo::GeometryCollection<f64> =
-        msoas.values().map(|info| info.shape.clone()).collect();
-    let mut feature_collection = geojson::FeatureCollection::from(&geom_collection);
-    for (feature, msoa) in feature_collection.features.iter_mut().zip(msoas.keys()) {
-        feature.set_property("msoa11cd", msoa.0.clone());
-    }
-    let gj = geojson::GeoJson::from(feature_collection);
+    let fc: geojson::FeatureCollection = msoas
+        .iter()
+        .map(|(msoa, info)| {
+            let feature: geojson::Feature = info.shape.into();
+            feature.set_property("msoa11cd", msoa.0.clone());
+            feature
+        })
+        .collect();
+    let gj = geojson::GeoJson::from(fc);
     let mut file = fs_err::File::create("msoas.geojson")?;
     write!(file, "{}", serde_json::to_string_pretty(&gj)?)?;
     Ok(())
