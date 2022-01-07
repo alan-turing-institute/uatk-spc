@@ -70,6 +70,7 @@ enum Region {
     National,
 }
 
+// TODO Reading in the StudyAreaCache is slow; just combine the two actions
 #[derive(clap::Subcommand, Clone)]
 enum Action {
     /// Import raw data and build an activity model for a region

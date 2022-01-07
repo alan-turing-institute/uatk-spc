@@ -9,6 +9,7 @@ use fs_err::File;
 use ndarray::Array2;
 use ndarray_npy::ReadNpyExt;
 use ordered_float::NotNan;
+use proj::Proj;
 use serde::Deserialize;
 
 use crate::utilities::progress_count_with_msg;
@@ -133,6 +134,10 @@ fn get_venue_flows(
 }
 
 pub fn load_venues(activity: Activity) -> Result<Vec<Venue>> {
+    // From OSG36 (https://epsg.io/4277)
+    let reproject = Proj::new_known_crs("EPSG:4277", "EPSG:4326", None)
+        .ok_or(anyhow!("Couldn't set up CRS projection"))?;
+
     let csv_path = match activity {
         Activity::Retail | Activity::Nightclub => "retailpointsZones.csv",
         Activity::PrimarySchool => "primaryZones.csv",
@@ -150,18 +155,13 @@ pub fn load_venues(activity: Activity) -> Result<Vec<Venue>> {
         // Let's check this while we're at it
         assert_eq!(venues.len(), rec.zonei);
 
-        // The Python implementation actually uses a wrapper around this crate!
-        // TODO Should we just use proj, have less dependencies?
-        let (longitude, latitude) = match lonlat_bng::convert_osgb36_to_ll(rec.east, rec.north) {
-            Ok((lon, lat)) => (lon as f32, lat as f32),
-            Err(()) => bail!("Couldn't convert coordinates for {:?}", rec),
-        };
+        let pt = reproject.convert((rec.east, rec.north))?;
 
         venues.push(Venue {
             id: VenueID(venues.len()),
             activity,
-            latitude,
-            longitude,
+            latitude: pt.lat() as f32,
+            longitude: pt.lng() as f32,
             urn: rec.urn,
         });
     }
