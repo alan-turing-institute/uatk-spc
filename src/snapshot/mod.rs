@@ -101,6 +101,11 @@ impl Snapshot {
                 .map(|p| input.population.households[p.household.0].msoa.0)
                 .collect::<Array1<String>>(),
         )?;*/
+        // TODO Just fill out something nonsensical now, to get the file to initially parse
+        npz.add_array(
+            "area_codes",
+            &people.iter().map(|_| 42.0).collect::<Array1<f32>>(),
+        )?;
         npz.add_array(
             "not_home_probs",
             &people
@@ -108,7 +113,14 @@ impl Snapshot {
                 .map(|p| p.pr_not_home)
                 .collect::<Array1<f32>>(),
         )?;
-        // TODO lockdown_multipliers
+        npz.add_array(
+            "lockdown_multipliers",
+            &input
+                .lockdown_per_day
+                .iter()
+                .map(|x| *x as f32)
+                .collect::<Array1<f32>>(),
+        )?;
 
         npz.add_array("place_activities", &id_mapping.place_activities)?;
         npz.add_array("place_coords", &get_place_coordinates(&input, &id_mapping)?)?;

@@ -44,6 +44,7 @@ async fn main() -> Result<()> {
                 "processed_data/{:?}.bin",
                 region
             ))?;
+            // TODO Based on input parameters like start-date, maybe trim the lockdown list
             let output = format!("processed_data/snapshot_{:?}.npz", region);
             info!("Writing snapshot to {}", output);
             Snapshot::convert_to_npz(cache, output)?;
