@@ -3,7 +3,7 @@ mod params;
 use anyhow::Result;
 use enum_map::EnumMap;
 use fs_err::File;
-use ndarray::{array, Array, Array1, Array2};
+use ndarray::{arr0, Array, Array1, Array2};
 use ndarray_npy::NpzWriter;
 use ndarray_rand::rand_distr::Uniform;
 use ndarray_rand::RandomExt;
@@ -87,11 +87,10 @@ impl Snapshot {
 
         let mut npz = NpzWriter::new(File::create(path)?);
 
-        // TODO I'm not sure how to write scalars
-        npz.add_array("nplaces", &array![id_mapping.total_places])?;
-        npz.add_array("npeople", &array![num_people as u32])?;
-        npz.add_array("nslots", &array![SLOTS as u32])?;
-        npz.add_array("time", &array![0])?;
+        npz.add_array("nplaces", &arr0(id_mapping.total_places))?;
+        npz.add_array("npeople", &arr0(num_people as u32))?;
+        npz.add_array("nslots", &arr0(SLOTS as u32))?;
+        npz.add_array("time", &arr0(0))?;
         // TODO No support for arbitrary objects yet. This should be a pickled string?
         // dtype=np.object
         /*npz.add_array(
