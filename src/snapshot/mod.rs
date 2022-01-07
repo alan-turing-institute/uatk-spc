@@ -1,3 +1,5 @@
+mod params;
+
 use anyhow::Result;
 use enum_map::EnumMap;
 use fs_err::File;
@@ -165,7 +167,7 @@ impl Snapshot {
             &Array1::<u32>::random(4 * num_people, Uniform::new(0, u32::MAX)),
         )?;
 
-        // TODO params
+        npz.add_array("params", &params::Params::new().get_flattened_array())?;
 
         npz.finish()?;
         Ok(())
