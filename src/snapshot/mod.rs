@@ -1,11 +1,12 @@
 use anyhow::Result;
 use enum_map::EnumMap;
 use fs_err::File;
-use ndarray::{array, Array, Array1};
+use ndarray::{array, Array, Array1, Array2};
 use ndarray_npy::NpzWriter;
 use ndarray_rand::rand_distr::Uniform;
 use ndarray_rand::RandomExt;
 use ordered_float::NotNan;
+use rand::seq::SliceRandom;
 
 use crate::utilities::progress_count;
 use crate::{Activity, Obesity, Population, StudyAreaCache, VenueID};
@@ -26,11 +27,21 @@ struct GlobalPlaceID(u32);
 struct IDMapping {
     id_offset_per_activity: EnumMap<Activity, u32>,
     total_places: u32,
+    place_activities: Array1<u32>,
 }
 
 impl IDMapping {
     /// This'll fail if we overflow u32
     fn new(pop: &Population) -> Option<IDMapping> {
+        let total_places = pop
+            .venues_per_activity
+            .values()
+            .map(|list| list.len())
+            .sum::<usize>()
+            + pop.households.len();
+        // Per place, the activity associated with it
+        let mut place_activities = Array1::<u32>::zeros(total_places);
+
         let mut id_offset_per_activity = EnumMap::default();
         let mut offset: u32 = 0;
         for activity in Activity::all() {
@@ -40,11 +51,22 @@ impl IDMapping {
                 pop.venues_per_activity[activity].len().try_into().ok()?
             };
             id_offset_per_activity[activity] = offset;
+            let start = offset;
             offset = offset.checked_add(num_venues)?;
+
+            // TODO Make sure the order matches Python -- they use the order of
+            // activity_locations.keys()
+            let activity_idx = activity as u32;
+            // TODO Figure out slicing
+            for i in (start as usize)..(offset as usize) {
+                place_activities[i] = activity_idx;
+            }
         }
+        assert_eq!(total_places, offset as usize);
         Some(IDMapping {
             id_offset_per_activity,
-            total_places: offset,
+            total_places: total_places.try_into().ok()?,
+            place_activities,
         })
     }
 
@@ -87,8 +109,8 @@ impl Snapshot {
         )?;
         // TODO lockdown_multipliers
 
-        // TODO place_activities
-        // TODO place_coords
+        npz.add_array("place_activities", &id_mapping.place_activities)?;
+        npz.add_array("place_coords", &get_place_coordinates(&input, &id_mapping)?)?;
         // TODO place_hazards
         // TODO place_counts
 
@@ -200,4 +222,46 @@ fn get_baseline_flows(
     }
 
     Ok((people_place_ids, people_baseline_flows))
+}
+
+fn get_place_coordinates(input: &StudyAreaCache, id_mapping: &IDMapping) -> Result<Array2<f32>> {
+    let mut result = Array2::<f32>::zeros((id_mapping.total_places as usize, 2));
+
+    for activity in Activity::all() {
+        // Not stored as venues
+        if activity == Activity::Home {
+            continue;
+        }
+
+        for venue in &input.population.venues_per_activity[activity] {
+            let place = id_mapping.to_place(activity, &venue.id);
+            // TODO Again, how to slice?
+            result[(place.0 as usize, 0)] = venue.latitude;
+            result[(place.0 as usize, 1)] = venue.longitude;
+        }
+    }
+
+    // TODO Plumb through options to set a seed
+    let mut rng = rand::thread_rng();
+
+    // For homes, we just pick a random building in the MSOA area. This is just used for
+    // visualization, so lack of buildings mapped in some areas isn't critical.
+    for household in &input.population.households {
+        let place = id_mapping.to_place(Activity::Home, &household.id);
+        match input.info_per_msoa[&household.msoa]
+            .buildings
+            .choose(&mut rng)
+        {
+            Some(pt) => {
+                result[(place.0 as usize, 0)] = pt.lat() as f32;
+                result[(place.0 as usize, 1)] = pt.lng() as f32;
+            }
+            None => {
+                // TODO Should we fail, or just pick a random point in the shape?
+                bail!("MSOA {:?} has no buildings", household.msoa);
+            }
+        }
+    }
+
+    Ok(result)
 }

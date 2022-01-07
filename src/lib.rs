@@ -74,6 +74,8 @@ pub struct InfoPerMSOA {
     ///
     /// Note there are many caveats about building data in OpenStreetMap -- what counts as
     /// residential, commercial? And some areas don't have any buildings mapped yet!
+    // TODO Not guaranteed to be non-empty
+    // TODO Probably easier to use f32
     pub buildings: Vec<Point<f64>>,
 }
 
@@ -169,9 +171,8 @@ pub struct Venue {
     pub id: VenueID,
     pub activity: Activity,
 
-    // TODO Turn this into WGS84 from whatever coordinate system this is...
-    pub east: f64,
-    pub north: f64,
+    pub latitude: f32,
+    pub longitude: f32,
     /// This only exists for PrimarySchool and SecondarySchool. It's a
     /// https://en.wikipedia.org/wiki/Unique_Reference_Number
     pub urn: Option<usize>,

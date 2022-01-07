@@ -19,11 +19,14 @@ geo = { version = "0.18.0", features = ["use-proj", "use-serde"] }
 geojson = { version = "0.22.2", features = ["geo-types"] }
 indicatif = { git = "https://github.com/mitsuhiko/indicatif", rev = "0e57b21e7ab1752d3796f41fa310bbf96ce5f4ac" }
 log = "0.4.14"
+# https://github.com/urschrei/lonlat_bng/issues/12
+lonlat_bng = { git = "https://github.com/urschrei/lonlat_bng" }
 ndarray = "0.15.4"
 ndarray-npy = "0.8.1"
 ndarray-rand = "0.14.0"
 ordered-float = "2.8.0"
 proj = "0.20.5"
+rand = "0.8.4"
 reqwest = { version = "0.11.8", features = ["stream"] }
 rstar = "0.8.4"
 serde = { version = "1.0.132", features = ["derive"] }
