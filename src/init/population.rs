@@ -3,6 +3,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use anyhow::Result;
 use enum_map::EnumMap;
 use fs_err::File;
+use geo::Point;
 use serde::{Deserialize, Deserializer};
 
 use super::quant::{get_flows, load_venues, Threshold};
@@ -146,6 +147,8 @@ struct TuPerson {
     pid: isize,
     #[serde(deserialize_with = "parse_usize_or_na")]
     sic1d07: Option<usize>,
+    lat: f64,
+    lng: f64,
 
     phome: f64,
     pwork: f64,
@@ -159,7 +162,6 @@ struct TuPerson {
     diabetes: u8,
     bloodpressure: u8,
     pnothome: f32,
-    // Note the lat/lng in this file represents the MSOA centroid. No need for us to scrape it.
 }
 
 /// Parses either an unsigned integer or the string "NA"
@@ -236,6 +238,7 @@ impl TuPerson {
             household,
             orig_pid: self.pid,
             sic1d07: self.sic1d07,
+            location: Point::new(self.lng, self.lat),
 
             age_years: self.age,
             obesity: self.obesity,

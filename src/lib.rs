@@ -111,6 +111,9 @@ pub struct Household {
 pub struct Person {
     pub id: PersonID,
     pub household: VenueID,
+    /// This is the centroid of the household's MSOA. It's redundant to store it per person, but
+    /// very convenient.
+    pub location: Point<f64>,
     /// An ID from the original data, kept around for debugging
     pub orig_pid: isize,
     /// The Standard Industry Classification for where this person works

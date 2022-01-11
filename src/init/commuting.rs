@@ -59,16 +59,12 @@ pub fn create_commuting_flows(population: &mut Population) -> Result<()> {
         }
         // TODO Handle people without an assigned SIC
         if let Some(sic) = person.sic1d07 {
-            // TODO When does the Python assign a place for the person? Let's use the center of
-            // their MSOA for now -- but we haven't loaded that yet. Temporarily...
-            let person_location = Point::new(51.4845077, -0.1144666);
-
             // Each person could work at any business matching their SIC. Weight the choice by the
             // size of the business and the distance between the person and business.
             let mut choices: Vec<(&str, f64)> = Vec::new();
             if let Some(list) = businesses_per_sic.get(&sic) {
                 for business in list {
-                    let dist = person_location.haversine_distance(&business.location);
+                    let dist = person.location.haversine_distance(&business.location);
                     choices.push((&business.id, dist * (business.num_workers as f64)));
                 }
             } else {
