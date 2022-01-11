@@ -7,22 +7,25 @@ use geo::Point;
 use rand::seq::SliceRandom;
 use serde::Deserialize;
 
-use crate::utilities::print_count;
 use crate::{Activity, Population, VenueID, MSOA};
 
 pub fn create_commuting_flows(population: &mut Population) -> Result<()> {
     // TODO Plumb through and set from a seed
     let mut rng = rand::thread_rng();
 
-    // Only keep businesses in MSOAs where somebody lives
-    // TODO Only people who work -- does it matter?
-    // TODO I guess if we're restricting the study area, we don't want to send people far away,
-    // because we're not modeling people who live far away
+    // Only keep businesses in MSOAs where somebody lives.
+    //
+    // The rationale: if we're restricting the study area, we don't want to send people to work far
+    // away, where the only activity occuring is work.
+    //
+    // TODO Only people who work -- does that matter?
     let msoas = population.unique_msoas();
 
-    // Find all of the businesses, grouped by the Standard Industry Classification
+    // Find all of the businesses, grouped by the Standard Industry Classification.
     info!("Finding all businesses");
-    let mut businesses_per_sic: HashMap<usize, Vec<Business>> = HashMap::new();
+    let mut businesses_per_sic: HashMap<usize, Vec<BusinessID>> = HashMap::new();
+    let mut business_locations: HashMap<BusinessID, Point<f64>> = HashMap::new();
+    let mut available_jobs_per_business: HashMap<BusinessID, usize> = HashMap::new();
     for rec in csv::Reader::from_reader(File::open("raw_data/nationaldata/businessRegistry.csv")?)
         .deserialize()
     {
@@ -31,26 +34,14 @@ pub fn create_commuting_flows(population: &mut Population) -> Result<()> {
             businesses_per_sic
                 .entry(rec.sic1d07)
                 .or_insert_with(Vec::new)
-                .push(Business {
-                    id: rec.id,
-                    location: Point::new(rec.lng, rec.lat),
-                    num_workers: rec.size,
-                });
+                .push(rec.id.clone());
+            business_locations.insert(rec.id.clone(), Point::new(rec.lng, rec.lat));
+            available_jobs_per_business.insert(rec.id, rec.size);
         }
     }
 
-    // Just to understand the data
-    for (sic, businesses) in &businesses_per_sic {
-        info!(
-            "SIC {} has {} businesses",
-            sic,
-            print_count(businesses.len())
-        );
-    }
-
-    // Assign numeric VenueIDs as we decide to use a business. Note we assume the 'id' field in the
-    // CSV is already unique!
-    let mut id_to_venue: HashMap<String, VenueID> = HashMap::new();
+    // Assign numeric VenueIDs as we decide to use a business.
+    let mut business_to_venue: HashMap<BusinessID, VenueID> = HashMap::new();
 
     info!("Assigning workplaces");
     for person in &mut population.people {
@@ -60,55 +51,61 @@ pub fn create_commuting_flows(population: &mut Population) -> Result<()> {
         // TODO Handle people without an assigned SIC
         if let Some(sic) = person.sic1d07 {
             // Each person could work at any business matching their SIC. Weight the choice by the
-            // size of the business and the inverse square distance between the person and business.
-            let mut choices: Vec<(&str, f64)> = Vec::new();
+            // number of available jobs there and the inverse square distance between the person
+            // and business.
+            let mut choices: Vec<(&BusinessID, f64)> = Vec::new();
             if let Some(list) = businesses_per_sic.get(&sic) {
-                for business in list {
-                    let dist = person.location.haversine_distance(&business.location);
-                    choices.push((&business.id, (business.num_workers as f64) / dist.powi(2)));
+                for id in list {
+                    let jobs_available = available_jobs_per_business[id];
+                    let dist = person.location.haversine_distance(&business_locations[id]);
+                    if jobs_available > 0 {
+                        choices.push((id, (jobs_available as f64) / dist.powi(2)));
+                    }
                 }
-            } else {
-                // TODO Very spammy, but I'm still looking into why these're missing -- I guess
-                // that job doesn't exist in the few MSOAs where people live
-                //warn!("No businesses for SIC {}", sic);
-                continue;
             }
-            let (business_id, _) = choices.choose_weighted(&mut rng, |pair| pair.1).unwrap();
+            if let Ok((business_id, _)) = choices.choose_weighted(&mut rng, |pair| pair.1) {
+                let business_id = *business_id;
+                // Do the ID lookup, creating new ones as needed
+                // TODO This is a common pattern
+                let venue_id = match business_to_venue.get(business_id) {
+                    Some(id) => *id,
+                    None => {
+                        let venue_id = VenueID(business_to_venue.len());
+                        business_to_venue.insert(business_id.clone(), venue_id);
+                        venue_id
+                    }
+                };
 
-            // Do the ID lookup, creating new ones as needed
-            // TODO This is a common pattern
-            let venue_id = match id_to_venue.get(&business_id.to_string()) {
-                Some(id) => *id,
-                None => {
-                    let id = VenueID(id_to_venue.len());
-                    id_to_venue.insert(business_id.to_string(), id);
-                    id
-                }
-            };
+                // Assign the one and only workplace
+                person.flows_per_activity[Activity::Work] = vec![(venue_id, 1.0)];
 
-            // Assign the one and only workplace
-            person.flows_per_activity[Activity::Work] = vec![(venue_id, 1.0)];
+                // This job is gone
+                available_jobs_per_business.insert(
+                    business_id.clone(),
+                    available_jobs_per_business[business_id] - 1,
+                );
+            } else {
+                // There were no remaining jobs for this SIC.
+                // TODO What should we do?
+            }
         }
     }
 
     Ok(())
 }
 
-#[allow(unused)]
 #[derive(Deserialize)]
 struct Row {
     #[serde(rename = "MSOA11CD")]
     msoa: MSOA,
-    id: String,
+    id: BusinessID,
     // Represents the centroid of an LSOA
     lng: f64,
     lat: f64,
+    // The number of workers
     size: usize,
     sic1d07: usize,
 }
 
-struct Business {
-    id: String,
-    location: Point<f64>,
-    num_workers: usize,
-}
+#[derive(Clone, PartialEq, Eq, Hash, Deserialize)]
+struct BusinessID(String);
