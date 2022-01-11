@@ -60,12 +60,12 @@ pub fn create_commuting_flows(population: &mut Population) -> Result<()> {
         // TODO Handle people without an assigned SIC
         if let Some(sic) = person.sic1d07 {
             // Each person could work at any business matching their SIC. Weight the choice by the
-            // size of the business and the distance between the person and business.
+            // size of the business and the inverse square distance between the person and business.
             let mut choices: Vec<(&str, f64)> = Vec::new();
             if let Some(list) = businesses_per_sic.get(&sic) {
                 for business in list {
                     let dist = person.location.haversine_distance(&business.location);
-                    choices.push((&business.id, dist * (business.num_workers as f64)));
+                    choices.push((&business.id, (business.num_workers as f64) / dist.powi(2)));
                 }
             } else {
                 // TODO Very spammy, but I'm still looking into why these're missing -- I guess
