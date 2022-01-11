@@ -12,7 +12,7 @@ use serde::Deserialize;
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
 
 use ramp::utilities;
-use ramp::{Input, Snapshot, StudyAreaCache, MSOA};
+use ramp::{Input, Population, Snapshot, MSOA};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -31,23 +31,21 @@ async fn main() -> Result<()> {
     match args.action {
         Action::Init { region } => {
             let input = region.to_input().await?;
-            let cache = StudyAreaCache::create(input).await?;
+            let population = Population::create(input).await?;
 
             info!("By the end, {}", utilities::memory_usage());
             let output = format!("processed_data/{:?}.bin", region);
-            info!("Writing study area cache to {}", output);
-            utilities::write_binary(&cache, output)?;
+            info!("Writing population to {}", output);
+            utilities::write_binary(&population, output)?;
         }
         Action::Snapshot { region } => {
-            info!("Loading study area cache");
-            let cache = utilities::read_binary::<StudyAreaCache>(format!(
-                "processed_data/{:?}.bin",
-                region
-            ))?;
+            info!("Loading population");
+            let population =
+                utilities::read_binary::<Population>(format!("processed_data/{:?}.bin", region))?;
             // TODO Based on input parameters like start-date, maybe trim the lockdown list
             let output = format!("processed_data/snapshot_{:?}.npz", region);
             info!("Writing snapshot to {}", output);
-            Snapshot::convert_to_npz(cache, output)?;
+            Snapshot::convert_to_npz(population, output)?;
         }
     }
 
@@ -71,7 +69,7 @@ enum Region {
     National,
 }
 
-// TODO Reading in the StudyAreaCache is slow; just combine the two actions
+// TODO Reading in the Population is slow; just combine the two actions
 #[derive(clap::Subcommand, Clone)]
 enum Action {
     /// Import raw data and build an activity model for a region
@@ -79,7 +77,7 @@ enum Action {
         #[clap(arg_enum)]
         region: Region,
     },
-    /// Transform a StudyAreaCache into a Snapshot
+    /// Transform a Population into a Snapshot
     Snapshot {
         #[clap(arg_enum)]
         region: Region,

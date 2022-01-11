@@ -17,6 +17,8 @@ pub fn create(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<Popu
         households: Vec::new(),
         people: Vec::new(),
         venues_per_activity: EnumMap::default(),
+        info_per_msoa: BTreeMap::new(),
+        lockdown_per_day: Vec::new(),
     };
     read_individual_time_use_and_health_data(&mut population, tus_files, keep_msoas)?;
 
@@ -157,6 +159,7 @@ struct TuPerson {
     diabetes: u8,
     bloodpressure: u8,
     pnothome: f32,
+    // Note the lat/lng in this file represents the MSOA centroid. No need for us to scrape it.
 }
 
 /// Parses either an unsigned integer or the string "NA"

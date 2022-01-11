@@ -6,19 +6,19 @@ use fs_err::File;
 use serde::Deserialize;
 
 use crate::utilities::{basename, download, filename, print_count, untar, unzip};
-use crate::{Input, CTY20, MSOA};
+use crate::{County, Input, MSOA};
 
 pub struct RawDataResults {
     pub tus_files: Vec<String>,
     pub osm_directories: Vec<String>,
-    pub msoas_per_google_mobility: BTreeMap<CTY20, Vec<MSOA>>,
+    pub msoas_per_county: BTreeMap<County, Vec<MSOA>>,
 }
 
 pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     let mut results = RawDataResults {
         tus_files: Vec::new(),
         osm_directories: Vec::new(),
-        msoas_per_google_mobility: BTreeMap::new(),
+        msoas_per_county: BTreeMap::new(),
     };
 
     // This maps MSOA IDs to things like OSM geofabrik URL
@@ -35,8 +35,8 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
             tus_needed.insert(rec.new_tu);
             osm_needed.insert(rec.osm);
             results
-                .msoas_per_google_mobility
-                .entry(rec.google_mobility)
+                .msoas_per_county
+                .entry(rec.county)
                 .or_insert_with(Vec::new)
                 .push(rec.msoa);
         }
@@ -91,7 +91,7 @@ struct MsoaLookupRow {
     #[serde(rename = "OSM")]
     osm: String,
     #[serde(rename = "GoogleMob")]
-    google_mobility: CTY20,
+    county: County,
 }
 
 /// Calculates all MSOAs nationally from the lookup table

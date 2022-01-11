@@ -104,6 +104,7 @@ struct Row {
     #[serde(rename = "MSOA11CD")]
     msoa: MSOA,
     id: String,
+    // Represents the centroid of an LSOA
     lng: f64,
     lat: f64,
     size: usize,

@@ -11,7 +11,7 @@ use ordered_float::NotNan;
 use rand::seq::SliceRandom;
 
 use crate::utilities::progress_count;
-use crate::{Activity, Obesity, Population, StudyAreaCache, VenueID};
+use crate::{Activity, Obesity, Population, VenueID};
 
 // A slot is a place somebody could visit
 const SLOTS: usize = 100;
@@ -78,10 +78,10 @@ impl IDMapping {
 }
 
 impl Snapshot {
-    pub fn convert_to_npz(input: StudyAreaCache, path: String) -> Result<()> {
-        let id_mapping = IDMapping::new(&input.population)
-            .ok_or_else(|| anyhow!("More than 2**32 place IDs"))?;
-        let people = &input.population.people;
+    pub fn convert_to_npz(input: Population, path: String) -> Result<()> {
+        let id_mapping =
+            IDMapping::new(&input).ok_or_else(|| anyhow!("More than 2**32 place IDs"))?;
+        let people = &input.people;
         let num_people = people.len();
         let num_places = id_mapping.total_places as usize;
 
@@ -97,7 +97,7 @@ impl Snapshot {
             "area_codes",
             &people
                 .iter()
-                .map(|p| input.population.households[p.household.0].msoa.0)
+                .map(|p| input.households[p.household.0].msoa.0)
                 .collect::<Array1<String>>(),
         )?;*/
         // TODO Just fill out something nonsensical now, to get the file to initially parse
@@ -167,8 +167,7 @@ impl Snapshot {
         npz.add_array("people_statuses", &Array1::<u32>::zeros(num_people))?;
         npz.add_array("people_transition_times", &Array1::<u32>::zeros(num_people))?;
 
-        let (people_place_ids, people_baseline_flows) =
-            get_baseline_flows(&input.population, &id_mapping)?;
+        let (people_place_ids, people_baseline_flows) = get_baseline_flows(&input, &id_mapping)?;
         npz.add_array("people_place_ids", &people_place_ids)?;
         npz.add_array("people_baseline_flows", &people_baseline_flows)?;
         npz.add_array("people_flows", &people_baseline_flows)?;
@@ -236,7 +235,7 @@ fn get_baseline_flows(
     Ok((people_place_ids, people_baseline_flows))
 }
 
-fn get_place_coordinates(input: &StudyAreaCache, id_mapping: &IDMapping) -> Result<Array2<f32>> {
+fn get_place_coordinates(input: &Population, id_mapping: &IDMapping) -> Result<Array2<f32>> {
     let mut result = Array2::<f32>::zeros((id_mapping.total_places as usize, 2));
 
     for activity in Activity::all() {
@@ -245,7 +244,7 @@ fn get_place_coordinates(input: &StudyAreaCache, id_mapping: &IDMapping) -> Resu
             continue;
         }
 
-        for venue in &input.population.venues_per_activity[activity] {
+        for venue in &input.venues_per_activity[activity] {
             let place = id_mapping.to_place(activity, &venue.id);
             // TODO Again, how to slice?
             result[(place.0 as usize, 0)] = venue.latitude;
@@ -258,7 +257,7 @@ fn get_place_coordinates(input: &StudyAreaCache, id_mapping: &IDMapping) -> Resu
 
     // For homes, we just pick a random building in the MSOA area. This is just used for
     // visualization, so lack of buildings mapped in some areas isn't critical.
-    for household in &input.population.households {
+    for household in &input.households {
         let place = id_mapping.to_place(Activity::Home, &household.id);
         match input.info_per_msoa[&household.msoa]
             .buildings

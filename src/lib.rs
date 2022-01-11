@@ -32,9 +32,15 @@ static ALLOCATOR: Cap<std::alloc::System> = Cap::new(std::alloc::System, usize::
 /// After running the initialization for a study area, this one file carries all data needed for
 /// the simulation.
 #[derive(Serialize, Deserialize)]
-pub struct StudyAreaCache {
-    // TODO Maybe simpler to flatten the 3 fields of Population into here
-    pub population: Population,
+pub struct Population {
+    /// VenueIDs for `Activity::Home` index into this
+    pub households: Vec<Household>,
+    pub people: Vec<Person>,
+
+    /// Per activity, a list of venues. VenueID indexes into this list.
+    /// This is not filled out for `Activity::Home`; see `households` for that.
+    pub venues_per_activity: EnumMap<Activity, Vec<Venue>>,
+
     pub info_per_msoa: BTreeMap<MSOA, InfoPerMSOA>,
     /// A number in [0, 1] for each day, representing... TODO
     pub lockdown_per_day: Vec<f64>,
@@ -54,11 +60,10 @@ pub struct Input {
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
 pub struct MSOA(String);
 
-/// This represents a larger region than an MSOA. It's used in Google mobility data.
-///
-/// TODO What does it stand for?
+/// This represents a 2020 county boundary, which contains several MSOAs. It's used in Google
+/// mobility data. It's not the same county as defined by ONS.
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
-pub struct CTY20(String);
+pub struct County(String);
 
 impl MSOA {
     pub async fn all_msoas_nationally() -> Result<BTreeSet<MSOA>> {
@@ -77,17 +82,6 @@ pub struct InfoPerMSOA {
     // TODO Not guaranteed to be non-empty
     // TODO Probably easier to use f32
     pub buildings: Vec<Point<f64>>,
-}
-
-#[derive(Serialize, Deserialize)]
-pub struct Population {
-    /// VenueIDs for `Activity::Home` index into this
-    pub households: Vec<Household>,
-    pub people: Vec<Person>,
-
-    /// Per activity, a list of venues. VenueID indexes into this list.
-    /// This is not filled out for `Activity::Home`; see `households` for that.
-    pub venues_per_activity: EnumMap<Activity, Vec<Venue>>,
 }
 
 impl Population {
