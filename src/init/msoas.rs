@@ -2,10 +2,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::io::{BufReader, Write};
 
 use anyhow::Result;
-use geo::algorithm::bounding_rect::BoundingRect;
-use geo::algorithm::centroid::Centroid;
-use geo::algorithm::contains::Contains;
 use geo::map_coords::MapCoordsInplace;
+use geo::prelude::{BoundingRect, Centroid, Contains};
 use geo::{MultiPolygon, Point};
 use proj::Proj;
 use rstar::{RTree, AABB};

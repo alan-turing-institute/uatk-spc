@@ -30,7 +30,7 @@ pub fn create(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<Popu
     )?;
 
     // Commuting is special-cased
-    let _commuting_flows = super::commuting::get_commuting_flows()?;
+    super::commuting::create_commuting_flows(&mut population)?;
 
     // TODO The Python implementation has lots of commented stuff, then some rounding
 

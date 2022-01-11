@@ -119,7 +119,7 @@ pub struct Person {
     pub household: VenueID,
     /// An ID from the original data, kept around for debugging
     pub orig_pid: isize,
-    /// Some kind of work-related ID
+    /// The Standard Industry Classification for where this person works
     pub sic1d07: Option<usize>,
 
     // Nobody's older than 256 years
