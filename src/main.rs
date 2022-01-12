@@ -38,6 +38,14 @@ async fn main() -> Result<()> {
             info!("Writing population to {}", output);
             utilities::write_binary(&population, output)?;
         }
+        Action::PythonCache { region } => {
+            info!("Loading population");
+            let population =
+                utilities::read_binary::<Population>(format!("processed_data/{:?}.bin", region))?;
+            let output = format!("processed_data/python_cache_{:?}", region);
+            info!("Writing Python cache files to {}", output);
+            population.write_python_cache(output)?;
+        }
         Action::Snapshot { region } => {
             info!("Loading population");
             let population =
@@ -74,6 +82,11 @@ enum Region {
 enum Action {
     /// Import raw data and build an activity model for a region
     Init {
+        #[clap(arg_enum)]
+        region: Region,
+    },
+    /// Transform a Population to the Python InitialisationCache format
+    PythonCache {
         #[clap(arg_enum)]
         region: Region,
     },
