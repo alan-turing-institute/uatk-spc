@@ -10,7 +10,7 @@ use super::quant::{get_flows, load_venues, Threshold};
 use crate::utilities::{
     memory_usage, print_count, progress_count, progress_count_with_msg, progress_file_with_msg,
 };
-use crate::{Activity, Household, Obesity, Person, PersonID, Population, VenueID, MSOA};
+use crate::{Activity, Events, Household, Obesity, Person, PersonID, Population, VenueID, MSOA};
 
 /// Create a population from some time-use files, only keeping people in the specified MSOAs.
 pub fn create(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<Population> {
@@ -20,6 +20,7 @@ pub fn create(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<Popu
         venues_per_activity: EnumMap::default(),
         info_per_msoa: BTreeMap::new(),
         lockdown_per_day: Vec::new(),
+        events: Events::empty(),
     };
     read_individual_time_use_and_health_data(&mut population, tus_files, keep_msoas)?;
 

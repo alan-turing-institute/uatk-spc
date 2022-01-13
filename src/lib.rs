@@ -24,6 +24,7 @@ use enum_map::{Enum, EnumMap};
 use geo::{MultiPolygon, Point};
 use serde::{Deserialize, Serialize};
 
+pub use self::init::Events;
 pub use self::snapshot::Snapshot;
 
 // Override the memory allocator, so utilities::memory_usage can take measurements
@@ -45,6 +46,7 @@ pub struct Population {
     pub info_per_msoa: BTreeMap<MSOA, InfoPerMSOA>,
     /// A number in [0, 1] for each day, representing... TODO
     pub lockdown_per_day: Vec<f64>,
+    pub events: Events,
 }
 
 pub struct Input {

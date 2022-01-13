@@ -1,0 +1,87 @@
+use anyhow::Result;
+use fs_err::File;
+use serde::{Deserialize, Deserializer, Serialize};
+
+use crate::{PersonID, Population};
+
+// TODO This maybe doesn't belong buried in init -- it's used while the model runs
+
+/// Represents one-time events, like concerts and sports matches, that many people attend.
+#[derive(Serialize, Deserialize)]
+pub struct Events {
+    events: Vec<Row>,
+}
+
+#[derive(Serialize, Deserialize)]
+struct Row {
+    #[serde(rename = "EId")]
+    event_id: String,
+    /// YYYY-MM-DD
+    date: String,
+    /// estimated number of individual contacts per person per contact cycle
+    contacts: usize,
+    /// transmission risk associated to a typical contact at the event (one-to-one, normalised to one minute)
+    risk: f64,
+    /// maximum attendance size of the venue
+    size: usize,
+    /// a percentage in [0, 1] of the size, giving the number of actual visitors at the event
+    attendance: f64,
+    // Location
+    long: f64,
+    lat: f64,
+    #[serde(rename = "type")]
+    event_type: String,
+    /// total length of the event in minutes
+    duration: usize,
+    /// typical length of a contact cycle in minutes
+    #[serde(rename = "typTime")]
+    typical_time: usize,
+    /// If false, draw per individual. If true, draw per individual
+    #[serde(deserialize_with = "parse_bool")]
+    family: bool,
+    /// key to indicate several events attended by the exact same list of visitors
+    #[serde(rename = "sim", deserialize_with = "parse_bool")]
+    simultaneous_with_previous_event: bool,
+}
+
+/// 0 = false, 1 = true
+fn parse_bool<'de, D: Deserializer<'de>>(d: D) -> Result<bool, D::Error> {
+    let string = <String>::deserialize(d)?;
+    if string == "0" {
+        Ok(false)
+    } else if string == "1" {
+        Ok(true)
+    } else {
+        Err(serde::de::Error::custom(format!(
+            "boolean isn't 0 or 1: {}",
+            string
+        )))
+    }
+}
+
+impl Events {
+    pub fn empty() -> Events {
+        Events { events: Vec::new() }
+    }
+
+    pub fn load(path: &str) -> Result<Events> {
+        info!("Loading events data");
+        let mut events = Vec::new();
+        for rec in csv::Reader::from_reader(File::open(path)?).deserialize() {
+            let rec: Row = rec?;
+            events.push(rec);
+        }
+        Ok(Events { events })
+    }
+
+    pub fn get_newly_infected(&self, _date: String, _pop: &Population) -> Vec<PersonID> {
+        // Find all matching events
+        // Per event:
+        // - if sim = 0, find visitors based on event type, location, attendance
+        // - otherwise, maybe need to remember the visitors from an event that we already
+        //   calculated? maybe need to process them in order then
+        //
+        // - plug in champ or tupper formula to find newly infected
+        Vec::new()
+    }
+}
