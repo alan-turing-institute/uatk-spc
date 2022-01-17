@@ -203,6 +203,7 @@ fn get_baseline_flows(
     for person in &pop.people {
         pq.inc(1);
         // Per person, flatten all the flows, regardless of activity
+        // TODO Dedupe with get_baseline_flows in the Model
         let mut flows: Vec<(GlobalPlaceID, f64)> = Vec::new();
         for activity in Activity::all() {
             let duration = person.duration_per_activity[activity];

@@ -7,7 +7,7 @@ use crate::Activity;
 pub enum SymptomStatus {
     Presymptomatic,
     Asymptomatic,
-    Symtopmatic,
+    Symptomatic,
 }
 
 /// Fields defined in
@@ -51,7 +51,7 @@ impl Params {
             individual_hazard_multipliers: enum_map! {
                 SymptomStatus::Presymptomatic => 1.0,
                 SymptomStatus::Asymptomatic => 0.75,
-                SymptomStatus::Symtopmatic => 1.0,
+                SymptomStatus::Symptomatic => 1.0,
             },
 
             symptomatic_multiplier: 0.5,
@@ -101,7 +101,7 @@ impl Params {
             array![
                 self.individual_hazard_multipliers[SymptomStatus::Presymptomatic],
                 self.individual_hazard_multipliers[SymptomStatus::Asymptomatic],
-                self.individual_hazard_multipliers[SymptomStatus::Symtopmatic],
+                self.individual_hazard_multipliers[SymptomStatus::Symptomatic],
             ],
             self.mortality_probs,
             self.obesity_multipliers,
