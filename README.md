@@ -10,7 +10,7 @@ right now.
 
 ## Running the code
 
-You will first need to install the latest version of Rust (1.57):
+You will first need to install the latest version of Rust (1.58):
 <https://www.rust-lang.org/tools/install>
 
 You can then build and run the project:

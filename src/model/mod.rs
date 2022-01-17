@@ -4,9 +4,11 @@ use anyhow::Result;
 use enum_map::EnumMap;
 use ordered_float::NotNan;
 use rand::rngs::StdRng;
+use rand::seq::SliceRandom;
 use rand::{Rng, SeedableRng};
+use rand_distr::{Distribution, LogNormal};
 
-use crate::{Activity, Obesity, Person, Population, VenueID};
+use crate::{Activity, Obesity, Person, PersonID, Population, VenueID};
 pub use params::Params;
 use params::SymptomStatus;
 
@@ -97,12 +99,58 @@ impl Model {
 
             pop,
         };
-        // Not really necessary; we do this at the beginning of every timestep anyway
-        model.reset_place_state();
+        model.seed_with_initial_cases(&mut rng)?;
         Ok(model)
     }
 
-    // TODO Decide where/how to do the initial seeding
+    fn seed_with_initial_cases(&mut self, rng: &mut StdRng) -> Result<()> {
+        let mut initially_infected: Vec<PersonID> = Vec::new();
+        for (msoa, num_cases) in &self.pop.input.initial_cases_per_msoa {
+            let high_risk: Vec<PersonID> = self
+                .pop
+                .people
+                .iter()
+                .filter_map(|person| {
+                    if person.pr_not_home > 0.3
+                        && &self.pop.households[person.household.0].msoa == msoa
+                    {
+                        Some(person.id)
+                    } else {
+                        None
+                    }
+                })
+                .collect();
+            if high_risk.len() < *num_cases {
+                warn!("{msoa:?} has {num_cases} initial cases, but we only found {} high-risk people there", high_risk.len());
+            }
+            initially_infected.extend(high_risk.choose_multiple(rng, *num_cases));
+        }
+
+        // Change peoples' initial status
+        for id in initially_infected {
+            let person = self.people_state.get_mut(id.0).unwrap();
+            let person_info = &self.pop.people[id.0];
+            person.status = DiseaseStatus::Asymptomatic;
+            // TODO Duplicates some of the transition code
+            let mut symptomatic_prob =
+                get_symptomatic_prob_for_age(&self.params, person_info.age_years);
+            // TODO Python code uses > 2, transiton function does >= 2
+            if matches!(person_info.obesity, Obesity::Obese3 | Obesity::Obese2) {
+                symptomatic_prob *= self.params.overweight_sympt_mplier;
+                symptomatic_prob = symptomatic_prob.clamp(0.0, 1.0);
+            }
+            if person.rng.gen_bool(symptomatic_prob.into()) {
+                person.status = DiseaseStatus::Symptomatic;
+            }
+            let transition_time = LogNormal::new(
+                self.params.infection_log_scale.powi(2) + self.params.infection_mode.ln(),
+                self.params.infection_log_scale,
+            )?
+            .sample(&mut person.rng);
+            person.transition_time = person.rng.gen_range(0..transition_time.floor() as usize);
+        }
+        Ok(())
+    }
 
     pub fn run(&mut self) {
         let total_days = 100; // TODO

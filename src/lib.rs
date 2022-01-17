@@ -49,8 +49,10 @@ pub struct Population {
     /// A number in [0, 1] for each day, representing... TODO
     pub lockdown_per_day: Vec<f64>,
     pub events: Events,
+    pub input: Input,
 }
 
+#[derive(Serialize, Deserialize)]
 pub struct Input {
     /// Only people living in MSOAs filled out here will be part of the population
     pub initial_cases_per_msoa: BTreeMap<MSOA, usize>,
