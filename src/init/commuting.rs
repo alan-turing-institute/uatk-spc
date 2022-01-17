@@ -8,6 +8,7 @@ use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 use serde::Deserialize;
 
+use crate::utilities::progress_count;
 use crate::{Activity, Population, Venue, VenueID, MSOA};
 
 pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> Result<()> {
@@ -43,7 +44,9 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
     let mut venues = Vec::new();
 
     info!("Assigning workplaces");
+    let pb = progress_count(population.people.len());
     for person in &mut population.people {
+        pb.inc(1);
         if person.duration_per_activity[Activity::Work] == 0.0 {
             continue;
         }
@@ -56,8 +59,8 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
             if let Some(list) = businesses_per_sic.get(&sic) {
                 for id in list {
                     let jobs_available = available_jobs_per_business[id];
-                    let dist = person.location.haversine_distance(&business_locations[id]);
                     if jobs_available > 0 {
+                        let dist = person.location.haversine_distance(&business_locations[id]);
                         choices.push((id, (jobs_available as f64) / dist.powi(2)));
                     }
                 }

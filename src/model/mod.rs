@@ -8,6 +8,7 @@ use rand::seq::SliceRandom;
 use rand::{Rng, SeedableRng};
 use rand_distr::{Distribution, LogNormal};
 
+use crate::utilities::print_count;
 use crate::{Activity, Obesity, Person, PersonID, Population, VenueID};
 pub use params::Params;
 use params::SymptomStatus;
@@ -197,7 +198,7 @@ impl Model {
                 }
             }
         }
-        println!("  {} susceptible, {} exposed, {} presymptomatic, {} asymptomatic, {} symptomatic, {} recovered, {} dead", s, e, i_p, i_a, i_s, r, d);
+        println!("  {} susceptible, {} exposed, {} presymptomatic, {} asymptomatic, {} symptomatic, {} recovered, {} dead", print_count(s), print_count(e), print_count(i_p), print_count(i_a), print_count(i_s), print_count(r), print_count(d));
     }
 
     fn simulate_day(&mut self, day: usize) {
@@ -267,7 +268,15 @@ impl Model {
                 }
                 new_flows.push(flow);
             }
-            new_flows[home_idx.unwrap()].weight = 1.0 - total_non_home;
+            if let Some(idx) = home_idx {
+                new_flows[idx].weight = 1.0 - total_non_home;
+            } else {
+                // It's not in their top 16?
+                /*warn!(
+                    "Someone doesn't go home! Baseline flows {:?}",
+                    person.baseline_flows
+                );*/
+            }
             person.flows = new_flows;
         }
     }
