@@ -173,6 +173,7 @@ pub struct Venue {
     pub id: VenueID,
     pub activity: Activity,
 
+    // TODO Store a geo::Point
     pub latitude: f32,
     pub longitude: f32,
     /// This only exists for PrimarySchool and SecondarySchool. It's a

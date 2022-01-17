@@ -7,7 +7,7 @@ use geo::Point;
 use rand::seq::SliceRandom;
 use serde::Deserialize;
 
-use crate::{Activity, Population, VenueID, MSOA};
+use crate::{Activity, Population, Venue, VenueID, MSOA};
 
 pub fn create_commuting_flows(population: &mut Population) -> Result<()> {
     // TODO Plumb through and set from a seed
@@ -42,6 +42,7 @@ pub fn create_commuting_flows(population: &mut Population) -> Result<()> {
 
     // Assign numeric VenueIDs as we decide to use a business.
     let mut business_to_venue: HashMap<BusinessID, VenueID> = HashMap::new();
+    let mut venues = Vec::new();
 
     info!("Assigning workplaces");
     for person in &mut population.people {
@@ -72,6 +73,14 @@ pub fn create_commuting_flows(population: &mut Population) -> Result<()> {
                     None => {
                         let venue_id = VenueID(business_to_venue.len());
                         business_to_venue.insert(business_id.clone(), venue_id);
+                        let location = &business_locations[&business_id];
+                        venues.push(Venue {
+                            id: venue_id,
+                            activity: Activity::Work,
+                            latitude: location.lat() as f32,
+                            longitude: location.lng() as f32,
+                            urn: None,
+                        });
                         venue_id
                     }
                 };
@@ -90,6 +99,9 @@ pub fn create_commuting_flows(population: &mut Population) -> Result<()> {
             }
         }
     }
+
+    // Create venues
+    population.venues_per_activity[Activity::Work] = venues;
 
     Ok(())
 }

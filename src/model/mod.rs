@@ -248,10 +248,6 @@ impl Model {
             }
             let mut hazard = 0.0;
             for flow in &person.flows {
-                if flow.activity == Activity::Work {
-                    // TODO Oops, need to go create those venues
-                    continue;
-                }
                 hazard += self.places_per_activity[flow.activity][flow.venue.0].hazards;
             }
             person.status = DiseaseStatus::Susceptible { hazard };
