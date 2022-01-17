@@ -1,9 +1,12 @@
 mod params;
 
+use anyhow::Result;
 use enum_map::EnumMap;
 use ordered_float::NotNan;
+use rand::rngs::{StdRng, ThreadRng};
+use rand::{Rng, SeedableRng};
 
-use crate::{Activity, Person, Population, VenueID};
+use crate::{Activity, Obesity, Person, Population, VenueID};
 pub use params::Params;
 use params::SymptomStatus;
 
@@ -49,8 +52,8 @@ impl DiseaseStatus {
 struct PersonState {
     status: DiseaseStatus,
     // How many days left until somebody transitions to their next disease status
-    transition_time: Option<usize>,
-    // TODO rng
+    transition_time: usize,
+    rng: StdRng,
     // Don't assume any sorting for the lists of flows
     flows: Vec<Flow>,
     // These never change
@@ -73,20 +76,18 @@ struct PlaceState {
 
 impl Model {
     // Everybody starts Susceptible; seeding happens later
-    pub fn new(pop: Population) -> Model {
-        let people_state = pop
-            .people
-            .iter()
-            .map(|person| {
-                let flows = get_baseline_flows(person);
-                PersonState {
-                    status: DiseaseStatus::Susceptible { hazard: 0.0 },
-                    transition_time: None,
-                    baseline_flows: flows.clone(),
-                    flows,
-                }
-            })
-            .collect();
+    pub fn new(pop: Population, mut rng: ThreadRng) -> Result<Model> {
+        let mut people_state = Vec::new();
+        for person in &pop.people {
+            let flows = get_baseline_flows(person);
+            people_state.push(PersonState {
+                status: DiseaseStatus::Susceptible { hazard: 0.0 },
+                transition_time: 0,
+                rng: StdRng::from_rng(&mut rng)?,
+                baseline_flows: flows.clone(),
+                flows,
+            });
+        }
         let mut model = Model {
             day: 0,
             params: Params::new(),
@@ -98,7 +99,7 @@ impl Model {
         };
         // Not really necessary; we do this at the beginning of every timestep anyway
         model.reset_place_state();
-        model
+        Ok(model)
     }
 
     // TODO Decide where/how to do the initial seeding
@@ -213,7 +214,88 @@ impl Model {
         }
     }
 
-    fn update_status(&mut self) {}
+    fn update_status(&mut self) {
+        for (idx, person) in self.people_state.iter_mut().enumerate() {
+            if person.transition_time > 0 {
+                person.transition_time -= 1;
+                continue;
+            }
+
+            // TODO Better names
+            let person_info = &self.pop.people[idx];
+
+            match person.status {
+                DiseaseStatus::Susceptible { hazard } => {
+                    let infection_prob = 1.0 - (-hazard).exp();
+                    if person.rng.gen_bool(infection_prob.into()) {
+                        person.status = DiseaseStatus::Exposed;
+                        // TODO sample_exposed_duration
+                        // rand_weibull(rng, params->exposed_scale, params->exposed_shape)
+                        // Use https://docs.rs/rand_distr/0.4.2/rand_distr/struct.Weibull.html
+                        person.transition_time = 3;
+                    }
+
+                    // TODO Then immediately do the Exposed logic, which seems to clobber
+                    // transition_time?
+                }
+                DiseaseStatus::Exposed => {
+                    let mut symptomatic_prob =
+                        get_symptomatic_prob_for_age(&self.params, person_info.age_years);
+                    // TODO >= 2, double check values
+                    if matches!(person_info.obesity, Obesity::Obese3 | Obesity::Obese2) {
+                        symptomatic_prob *= self.params.overweight_sympt_mplier;
+                        symptomatic_prob = symptomatic_prob.clamp(0.0, 1.0);
+                    }
+
+                    if person.rng.gen_bool(symptomatic_prob.into()) {
+                        person.status = DiseaseStatus::Presymptomatic;
+                        // TODO sample_presymptomatic_duration
+                        person.transition_time = 3;
+                    } else {
+                        person.status = DiseaseStatus::Asymptomatic;
+                        // TODO sample_infection_duration
+                        person.transition_time = 3;
+                    };
+                }
+                DiseaseStatus::Presymptomatic => {
+                    // TODO Immediately?
+                    person.status = DiseaseStatus::Symptomatic;
+                    // TODO sample_infection_duration
+                    person.transition_time = 3;
+                }
+                DiseaseStatus::Asymptomatic => {
+                    person.status = DiseaseStatus::Recovered;
+                }
+                DiseaseStatus::Symptomatic => {
+                    let mut mortality_prob =
+                        get_mortality_prob_for_age(&self.params, person_info.age_years);
+                    // TODO >= 2, double check values
+                    if matches!(person_info.obesity, Obesity::Obese3 | Obesity::Obese2) {
+                        // TODO Multiply by get_obesity_multiplier. But in the params I'm seeing,
+                        // it's always just 1
+                    }
+
+                    // TODO All of these values just look like booleans. Seriously...
+                    if person_info.cardiovascular_disease > 0 {
+                        mortality_prob *= self.params.cvd_multiplier;
+                    }
+                    if person_info.diabetes > 0 {
+                        mortality_prob *= self.params.diabetes_multiplier;
+                    }
+                    if person_info.blood_pressure > 0 {
+                        mortality_prob *= self.params.bloodpressure_multiplier;
+                    }
+
+                    if person.rng.gen_bool(mortality_prob.into()) {
+                        person.status = DiseaseStatus::Dead;
+                    } else {
+                        person.status = DiseaseStatus::Recovered;
+                    }
+                }
+                DiseaseStatus::Recovered | DiseaseStatus::Dead => {}
+            }
+        }
+    }
 }
 
 // Per person, flatten all the flows, regardless of activity
@@ -242,4 +324,22 @@ fn get_baseline_flows(person: &Person) -> Vec<Flow> {
     flows.truncate(places_to_keep_per_person);
 
     flows
+}
+
+fn get_symptomatic_prob_for_age(params: &Params, age_years: u8) -> f32 {
+    // Years per bin
+    let bin_size = 10;
+    // Largest bin covers 80+
+    let max_bin_idx = 8;
+    let idx = (age_years / bin_size).min(max_bin_idx);
+    params.symptomatic_probs[idx as usize]
+}
+
+fn get_mortality_prob_for_age(params: &Params, age_years: u8) -> f32 {
+    // Years per bin
+    let bin_size = 5;
+    // Largest bin covers 80+
+    let max_bin_idx = 18;
+    let idx = (age_years / bin_size).min(max_bin_idx);
+    params.mortality_probs[idx as usize]
 }

@@ -59,7 +59,8 @@ async fn main() -> Result<()> {
             info!("Loading population");
             let population =
                 utilities::read_binary::<Population>(format!("processed_data/{:?}.bin", region))?;
-            let mut model = Model::new(population);
+            // TODO Control seed
+            let mut model = Model::new(population, rand::thread_rng())?;
             model.run();
         }
     }
