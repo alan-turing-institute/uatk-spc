@@ -12,7 +12,7 @@ use serde::Deserialize;
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
 
 use ramp::utilities;
-use ramp::{Input, Population, Snapshot, MSOA};
+use ramp::{Input, Model, Population, Snapshot, MSOA};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -55,6 +55,13 @@ async fn main() -> Result<()> {
             info!("Writing snapshot to {}", output);
             Snapshot::convert_to_npz(population, output)?;
         }
+        Action::RunModel { region } => {
+            info!("Loading population");
+            let population =
+                utilities::read_binary::<Population>(format!("processed_data/{:?}.bin", region))?;
+            let mut model = Model::new(population);
+            model.run();
+        }
     }
 
     Ok(())
@@ -92,6 +99,11 @@ enum Action {
     },
     /// Transform a Population into a Snapshot
     Snapshot {
+        #[clap(arg_enum)]
+        region: Region,
+    },
+    /// Run the model, for a fixed number of days
+    RunModel {
         #[clap(arg_enum)]
         region: Region,
     },

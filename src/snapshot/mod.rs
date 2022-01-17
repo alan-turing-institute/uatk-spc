@@ -1,5 +1,3 @@
-mod params;
-
 use anyhow::Result;
 use enum_map::EnumMap;
 use fs_err::File;
@@ -10,6 +8,7 @@ use ndarray_rand::RandomExt;
 use ordered_float::NotNan;
 use rand::seq::SliceRandom;
 
+use crate::model::Params;
 use crate::utilities::progress_count;
 use crate::{Activity, Obesity, Population, VenueID};
 
@@ -177,7 +176,7 @@ impl Snapshot {
             &Array1::<u32>::random(4 * num_people, Uniform::new(0, u32::MAX)),
         )?;
 
-        npz.add_array("params", &params::Params::new().get_flattened_array())?;
+        npz.add_array("params", &Params::new().get_flattened_array())?;
 
         npz.finish()?;
         Ok(())

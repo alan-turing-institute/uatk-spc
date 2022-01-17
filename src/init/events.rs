@@ -137,7 +137,7 @@ impl Events {
                 continue;
             }
 
-            let attendees: Vec<PersonID> = if event.family {
+            let _attendees: Vec<PersonID> = if event.family {
                 // TODO Haven't deciphered the index magic yet
                 todo!()
             } else {

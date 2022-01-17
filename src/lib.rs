@@ -11,6 +11,7 @@ extern crate anyhow;
 extern crate log;
 
 mod init;
+mod model;
 mod python_cache;
 mod snapshot;
 pub mod utilities;
@@ -25,6 +26,7 @@ use geo::{MultiPolygon, Point};
 use serde::{Deserialize, Serialize};
 
 pub use self::init::Events;
+pub use self::model::Model;
 pub use self::snapshot::Snapshot;
 
 // Override the memory allocator, so utilities::memory_usage can take measurements
