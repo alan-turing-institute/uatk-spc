@@ -8,6 +8,8 @@ use std::collections::BTreeMap;
 use anyhow::Result;
 use clap::Parser;
 use fs_err::File;
+use rand::rngs::StdRng;
+use rand::SeedableRng;
 use serde::Deserialize;
 use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
 
@@ -28,10 +30,17 @@ async fn main() -> Result<()> {
     )?;
 
     let args = Args::parse();
+
+    let mut rng = if let Some(seed) = args.rng_seed {
+        StdRng::seed_from_u64(seed)
+    } else {
+        StdRng::from_entropy()
+    };
+
     match args.action {
         Action::Init { region } => {
             let input = region.to_input().await?;
-            let population = Population::create(input).await?;
+            let population = Population::create(input, &mut rng).await?;
 
             info!("By the end, {}", utilities::memory_usage());
             let output = format!("processed_data/{:?}.bin", region);
@@ -53,14 +62,14 @@ async fn main() -> Result<()> {
             // TODO Based on input parameters like start-date, maybe trim the lockdown list
             let output = format!("processed_data/snapshot_{:?}.npz", region);
             info!("Writing snapshot to {}", output);
-            Snapshot::convert_to_npz(population, output)?;
+            Snapshot::convert_to_npz(population, output, &mut rng)?;
         }
         Action::RunModel { region } => {
             info!("Loading population");
             let population =
                 utilities::read_binary::<Population>(format!("processed_data/{:?}.bin", region))?;
             // TODO Control seed
-            let mut model = Model::new(population, rand::thread_rng())?;
+            let mut model = Model::new(population, rng)?;
             model.run();
         }
     }
@@ -73,6 +82,11 @@ async fn main() -> Result<()> {
 struct Args {
     #[clap(subcommand)]
     action: Action,
+    /// By default, the output will be different every time the tool is run, based on a different
+    /// random number generator seed. Specify this to get deterministic behavior, given the same
+    /// input.
+    #[clap(long)]
+    rng_seed: Option<u64>,
 }
 
 #[derive(clap::ArgEnum, Clone, Copy, Debug)]

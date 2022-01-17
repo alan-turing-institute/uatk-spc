@@ -6,6 +6,7 @@ use ndarray_npy::NpzWriter;
 use ndarray_rand::rand_distr::Uniform;
 use ndarray_rand::RandomExt;
 use ordered_float::NotNan;
+use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 
 use crate::model::Params;
@@ -77,7 +78,7 @@ impl IDMapping {
 }
 
 impl Snapshot {
-    pub fn convert_to_npz(input: Population, path: String) -> Result<()> {
+    pub fn convert_to_npz(input: Population, path: String, rng: &mut StdRng) -> Result<()> {
         let id_mapping =
             IDMapping::new(&input).ok_or_else(|| anyhow!("More than 2**32 place IDs"))?;
         let people = &input.people;
@@ -121,7 +122,10 @@ impl Snapshot {
         )?;
 
         npz.add_array("place_activities", &id_mapping.place_activities)?;
-        npz.add_array("place_coords", &get_place_coordinates(&input, &id_mapping)?)?;
+        npz.add_array(
+            "place_coords",
+            &get_place_coordinates(&input, &id_mapping, rng)?,
+        )?;
         npz.add_array("place_hazards", &Array1::<u32>::zeros(num_places))?;
         npz.add_array("place_counts", &Array1::<u32>::zeros(num_places))?;
 
@@ -235,7 +239,11 @@ fn get_baseline_flows(
     Ok((people_place_ids, people_baseline_flows))
 }
 
-fn get_place_coordinates(input: &Population, id_mapping: &IDMapping) -> Result<Array2<f32>> {
+fn get_place_coordinates(
+    input: &Population,
+    id_mapping: &IDMapping,
+    rng: &mut StdRng,
+) -> Result<Array2<f32>> {
     let mut result = Array2::<f32>::zeros((id_mapping.total_places as usize, 2));
 
     for activity in Activity::all() {
@@ -252,17 +260,11 @@ fn get_place_coordinates(input: &Population, id_mapping: &IDMapping) -> Result<A
         }
     }
 
-    // TODO Plumb through options to set a seed
-    let mut rng = rand::thread_rng();
-
     // For homes, we just pick a random building in the MSOA area. This is just used for
     // visualization, so lack of buildings mapped in some areas isn't critical.
     for household in &input.households {
         let place = id_mapping.to_place(Activity::Home, &household.id);
-        match input.info_per_msoa[&household.msoa]
-            .buildings
-            .choose(&mut rng)
-        {
+        match input.info_per_msoa[&household.msoa].buildings.choose(rng) {
             Some(pt) => {
                 result[(place.0 as usize, 0)] = pt.lat() as f32;
                 result[(place.0 as usize, 1)] = pt.lng() as f32;

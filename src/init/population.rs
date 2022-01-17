@@ -4,6 +4,7 @@ use anyhow::Result;
 use enum_map::EnumMap;
 use fs_err::File;
 use geo::Point;
+use rand::rngs::StdRng;
 use serde::{Deserialize, Deserializer};
 
 use super::quant::{get_flows, load_venues, Threshold};
@@ -13,7 +14,11 @@ use crate::utilities::{
 use crate::{Activity, Events, Household, Obesity, Person, PersonID, Population, VenueID, MSOA};
 
 /// Create a population from some time-use files, only keeping people in the specified MSOAs.
-pub fn create(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<Population> {
+pub fn create(
+    tus_files: Vec<String>,
+    keep_msoas: BTreeSet<MSOA>,
+    rng: &mut StdRng,
+) -> Result<Population> {
     let mut population = Population {
         households: Vec::new(),
         people: Vec::new(),
@@ -34,7 +39,7 @@ pub fn create(tus_files: Vec<String>, keep_msoas: BTreeSet<MSOA>) -> Result<Popu
     )?;
 
     // Commuting is special-cased
-    super::commuting::create_commuting_flows(&mut population)?;
+    super::commuting::create_commuting_flows(&mut population, rng)?;
 
     // TODO The Python implementation has lots of commented stuff, then some rounding
 

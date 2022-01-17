@@ -4,15 +4,13 @@ use anyhow::Result;
 use fs_err::File;
 use geo::prelude::HaversineDistance;
 use geo::Point;
+use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 use serde::Deserialize;
 
 use crate::{Activity, Population, Venue, VenueID, MSOA};
 
-pub fn create_commuting_flows(population: &mut Population) -> Result<()> {
-    // TODO Plumb through and set from a seed
-    let mut rng = rand::thread_rng();
-
+pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> Result<()> {
     // Only keep businesses in MSOAs where somebody lives.
     //
     // The rationale: if we're restricting the study area, we don't want to send people to work far
@@ -64,7 +62,7 @@ pub fn create_commuting_flows(population: &mut Population) -> Result<()> {
                     }
                 }
             }
-            if let Ok((business_id, _)) = choices.choose_weighted(&mut rng, |pair| pair.1) {
+            if let Ok((business_id, _)) = choices.choose_weighted(rng, |pair| pair.1) {
                 let business_id = *business_id;
                 // Do the ID lookup, creating new ones as needed
                 // TODO This is a common pattern

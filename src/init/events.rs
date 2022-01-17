@@ -2,7 +2,7 @@ use anyhow::Result;
 use fs_err::File;
 use geo::prelude::HaversineDistance;
 use geo::Point;
-use rand::rngs::ThreadRng;
+use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 use serde::{Deserialize, Deserializer, Serialize};
 
@@ -129,7 +129,7 @@ impl Events {
         &self,
         date: String,
         pop: &Population,
-        rng: &mut ThreadRng,
+        rng: &mut StdRng,
     ) -> Vec<PersonID> {
         for event in &self.events {
             // TODO We could also just index these by date, but if the list is small, meh

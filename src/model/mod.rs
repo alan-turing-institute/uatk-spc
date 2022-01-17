@@ -3,7 +3,7 @@ mod params;
 use anyhow::Result;
 use enum_map::EnumMap;
 use ordered_float::NotNan;
-use rand::rngs::{StdRng, ThreadRng};
+use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
 
 use crate::{Activity, Obesity, Person, Population, VenueID};
@@ -76,7 +76,7 @@ struct PlaceState {
 
 impl Model {
     // Everybody starts Susceptible; seeding happens later
-    pub fn new(pop: Population, mut rng: ThreadRng) -> Result<Model> {
+    pub fn new(pop: Population, mut rng: StdRng) -> Result<Model> {
         let mut people_state = Vec::new();
         for person in &pop.people {
             let flows = get_baseline_flows(person);
