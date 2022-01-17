@@ -60,7 +60,7 @@ struct PersonState {
     baseline_flows: Vec<Flow>,
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 struct Flow {
     activity: Activity,
     venue: VenueID,
@@ -108,8 +108,48 @@ impl Model {
         let total_days = 100; // TODO
 
         for day in 0..total_days {
+            println!("Day {}", day);
             self.simulate_day(day);
+            self.print_stats();
         }
+    }
+
+    fn print_stats(&self) {
+        // Count people by status
+        // TODO EnumMap would be way better
+        let mut s = 0;
+        let mut e = 0;
+        let mut i_p = 0;
+        let mut i_a = 0;
+        let mut i_s = 0;
+        let mut r = 0;
+        let mut d = 0;
+        for person in &self.people_state {
+            match person.status {
+                DiseaseStatus::Susceptible { .. } => {
+                    s += 1;
+                }
+                DiseaseStatus::Exposed => {
+                    e += 1;
+                }
+                DiseaseStatus::Presymptomatic => {
+                    i_p += 1;
+                }
+                DiseaseStatus::Asymptomatic => {
+                    i_a += 1;
+                }
+                DiseaseStatus::Symptomatic => {
+                    i_s += 1;
+                }
+                DiseaseStatus::Recovered => {
+                    r += 1;
+                }
+                DiseaseStatus::Dead => {
+                    d += 1;
+                }
+            }
+        }
+        println!("  {} susceptible, {} exposed, {} presymptomatic, {} asymptomatic, {} symptomatic, {} recovered, {} dead", s, e, i_p, i_a, i_s, r, d);
     }
 
     fn simulate_day(&mut self, day: usize) {
@@ -208,6 +248,10 @@ impl Model {
             }
             let mut hazard = 0.0;
             for flow in &person.flows {
+                if flow.activity == Activity::Work {
+                    // TODO Oops, need to go create those venues
+                    continue;
+                }
                 hazard += self.places_per_activity[flow.activity][flow.venue.0].hazards;
             }
             person.status = DiseaseStatus::Susceptible { hazard };
