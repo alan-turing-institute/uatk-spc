@@ -159,11 +159,15 @@ impl Model {
         for day in 0..total_days {
             println!("Day {}", day);
             self.simulate_day(day);
-            self.print_stats();
+            if self.print_stats() {
+                println!("Stopping early -- everyone's recovered or dead");
+                break;
+            }
         }
     }
 
-    fn print_stats(&self) {
+    /// If true, nothing's going to change -- everyone's in a terminal state
+    fn print_stats(&self) -> bool {
         // Count people by status
         // TODO EnumMap would be way better
         let mut s = 0;
@@ -199,6 +203,8 @@ impl Model {
             }
         }
         println!("  {} susceptible, {} exposed, {} presymptomatic, {} asymptomatic, {} symptomatic, {} recovered, {} dead", print_count(s), print_count(e), print_count(i_p), print_count(i_a), print_count(i_s), print_count(r), print_count(d));
+        // If everyone's recovered or dead, we're done
+        s + e + i_p + i_a + i_s == 0
     }
 
     fn simulate_day(&mut self, day: usize) {
