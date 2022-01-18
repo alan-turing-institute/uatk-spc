@@ -17,7 +17,7 @@ use crate::{Activity, Household, Input, Obesity, Person, PersonID, Population, V
 /// Create a population from some time-use files, only keeping people in the specified MSOAs.
 pub fn create(input: Input, tus_files: Vec<String>, rng: &mut StdRng) -> Result<Population> {
     let mut population = Population {
-        households: Vec::new(),
+        households: TiVec::new(),
         people: TiVec::new(),
         venues_per_activity: EnumMap::default(),
         info_per_msoa: BTreeMap::new(),
@@ -301,7 +301,7 @@ fn setup_venue_flows(
             pb.set_message(memory_usage());
         }
 
-        let msoa = &population.households[person.household.0].msoa;
+        let msoa = &population.households[person.household].msoa;
         if let Some(flows) = flows_per_msoa.get(msoa) {
             // TODO On the natonal run, we run out of memory around here.
             person.flows_per_activity[activity] = flows.clone();

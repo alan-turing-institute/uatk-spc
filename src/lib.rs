@@ -38,13 +38,13 @@ static ALLOCATOR: Cap<std::alloc::System> = Cap::new(std::alloc::System, usize::
 /// the simulation.
 #[derive(Serialize, Deserialize)]
 pub struct Population {
-    /// VenueIDs for `Activity::Home` index into this
-    pub households: Vec<Household>,
+    /// Only VenueIDs for `Activity::Home` index into this
+    pub households: TiVec<VenueID, Household>,
     pub people: TiVec<PersonID, Person>,
 
-    /// Per activity, a list of venues. VenueID indexes into this list.
-    /// This is not filled out for `Activity::Home`; see `households` for that.
-    pub venues_per_activity: EnumMap<Activity, Vec<Venue>>,
+    /// Per activity, a list of venues. VenueID for the appropriate Activity indexes into this
+    /// list. This is not filled out for `Activity::Home`; see `households` for that.
+    pub venues_per_activity: EnumMap<Activity, TiVec<VenueID, Venue>>,
 
     pub info_per_msoa: BTreeMap<MSOA, InfoPerMSOA>,
     /// A number in [0, 1] for each day. 0 means all time just spent at home
@@ -239,7 +239,9 @@ impl fmt::Display for PersonID {
 /// These IDs are scoped by Activity. This means two VenueIDs may be equal, but represent different
 /// places!
 // TODO Just encode Activity in here too
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into, Serialize, Deserialize,
+)]
 pub struct VenueID(pub usize);
 impl fmt::Display for VenueID {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

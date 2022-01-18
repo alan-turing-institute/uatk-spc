@@ -97,7 +97,7 @@ impl Snapshot {
             "area_codes",
             &people
                 .iter()
-                .map(|p| input.households[p.household.0].msoa.0)
+                .map(|p| input.households[p.household].msoa.0)
                 .collect::<Array1<String>>(),
         )?;*/
         // TODO Just fill out something nonsensical now, to get the file to initially parse

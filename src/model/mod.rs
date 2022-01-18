@@ -21,8 +21,7 @@ pub struct Model {
     params: Params,
 
     people: TiVec<PersonID, PersonState>,
-    // VenueID indexes this
-    places_per_activity: EnumMap<Activity, Vec<PlaceState>>,
+    places_per_activity: EnumMap<Activity, TiVec<VenueID, PlaceState>>,
 
     // Nest this here, but nothing in here changes
     pop: Population,
@@ -118,7 +117,7 @@ impl Model {
                 .iter()
                 .filter_map(|person| {
                     if person.pr_not_home > 0.3
-                        && &self.pop.households[person.household.0].msoa == msoa
+                        && &self.pop.households[person.household].msoa == msoa
                     {
                         Some(person.id)
                     } else {
@@ -314,7 +313,7 @@ impl Model {
                 for flow in &person.flows {
                     let place_multiplier = self.params.location_hazard_multipliers[flow.activity];
                     let place = self.places_per_activity[flow.activity]
-                        .get_mut(flow.venue.0)
+                        .get_mut(flow.venue)
                         .unwrap();
                     place.counts += 1;
                     place.hazards += flow.weight * place_multiplier * individual_multiplier;
@@ -330,7 +329,7 @@ impl Model {
             }
             let mut hazard = 0.0;
             for flow in &person.flows {
-                hazard += self.places_per_activity[flow.activity][flow.venue.0].hazards;
+                hazard += self.places_per_activity[flow.activity][flow.venue].hazards;
             }
             person.status = DiseaseStatus::Susceptible { hazard };
         }

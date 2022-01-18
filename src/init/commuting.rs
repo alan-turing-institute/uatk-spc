@@ -7,6 +7,7 @@ use geo::Point;
 use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 use serde::Deserialize;
+use typed_index_collections::TiVec;
 
 use crate::utilities::progress_count;
 use crate::{Activity, Population, Venue, VenueID, MSOA};
@@ -41,7 +42,7 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
 
     // Assign numeric VenueIDs as we decide to use a business.
     let mut business_to_venue: HashMap<BusinessID, VenueID> = HashMap::new();
-    let mut venues = Vec::new();
+    let mut venues = TiVec::new();
 
     info!("Assigning workplaces");
     let pb = progress_count(population.people.len());

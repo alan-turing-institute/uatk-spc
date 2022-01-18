@@ -11,6 +11,7 @@ use ndarray_npy::ReadNpyExt;
 use ordered_float::NotNan;
 use proj::Proj;
 use serde::Deserialize;
+use typed_index_collections::TiVec;
 
 use crate::utilities::progress_count_with_msg;
 use crate::{Activity, Venue, VenueID, MSOA};
@@ -133,7 +134,7 @@ fn get_venue_flows(
     Ok(results)
 }
 
-pub fn load_venues(activity: Activity) -> Result<Vec<Venue>> {
+pub fn load_venues(activity: Activity) -> Result<TiVec<VenueID, Venue>> {
     // From OSG36 (https://epsg.io/4277)
     let reproject = Proj::new_known_crs("EPSG:4277", "EPSG:4326", None)
         .ok_or(anyhow!("Couldn't set up CRS projection"))?;
@@ -144,7 +145,7 @@ pub fn load_venues(activity: Activity) -> Result<Vec<Venue>> {
         Activity::SecondarySchool => "secondaryZones.csv",
         Activity::Home | Activity::Work => unreachable!(),
     };
-    let mut venues = Vec::new();
+    let mut venues = TiVec::new();
     for rec in csv::Reader::from_reader(File::open(format!(
         "raw_data/nationaldata/QUANT_RAMP/{}",
         csv_path

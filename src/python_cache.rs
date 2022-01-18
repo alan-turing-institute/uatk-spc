@@ -76,7 +76,7 @@ struct Individual {
 fn convert_person(pop: &Population, person: &Person) -> Individual {
     Individual {
         id: person.id.0,
-        msoa: pop.households[person.household.0].msoa.0.clone(),
+        msoa: pop.households[person.household].msoa.0.clone(),
         age: person.age_years,
         sic1d07: person.sic1d07,
         cvd: person.cardiovascular_disease,
