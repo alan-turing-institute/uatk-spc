@@ -6,7 +6,7 @@ use ordered_float::NotNan;
 use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 use rand::{Rng, SeedableRng};
-use rand_distr::{Distribution, LogNormal};
+use rand_distr::{Distribution, LogNormal, Weibull};
 
 use crate::utilities::print_count;
 use crate::{Activity, Obesity, Person, PersonID, Population, VenueID};
@@ -153,17 +153,19 @@ impl Model {
         Ok(())
     }
 
-    pub fn run(&mut self) {
+    pub fn run(&mut self) -> Result<()> {
         let total_days = 100; // TODO
 
         for day in 0..total_days {
             println!("Day {}", day);
-            self.simulate_day(day);
+            self.simulate_day(day)?;
             if self.print_stats() {
                 println!("Stopping early -- everyone's recovered or dead");
                 break;
             }
         }
+
+        Ok(())
     }
 
     /// If true, nothing's going to change -- everyone's in a terminal state
@@ -207,7 +209,7 @@ impl Model {
         s + e + i_p + i_a + i_s == 0
     }
 
-    fn simulate_day(&mut self, day: usize) {
+    fn simulate_day(&mut self, day: usize) -> Result<()> {
         assert_eq!(day, self.day);
 
         // Reset hazards and counts for each place
@@ -225,9 +227,11 @@ impl Model {
         self.receive_hazards();
 
         // Update disease statuses. This might just set transition_time and wait.
-        self.update_status();
+        self.update_status()?;
 
         self.day += 1;
+
+        Ok(())
     }
 
     fn reset_place_state(&mut self) {
@@ -322,7 +326,7 @@ impl Model {
         }
     }
 
-    fn update_status(&mut self) {
+    fn update_status(&mut self) -> Result<()> {
         for (idx, person) in self.people_state.iter_mut().enumerate() {
             if person.transition_time > 0 {
                 person.transition_time -= 1;
@@ -337,10 +341,9 @@ impl Model {
                     let infection_prob = 1.0 - (-hazard).exp();
                     if person.rng.gen_bool(infection_prob.into()) {
                         person.status = DiseaseStatus::Exposed;
-                        // TODO sample_exposed_duration
-                        // rand_weibull(rng, params->exposed_scale, params->exposed_shape)
-                        // Use https://docs.rs/rand_distr/0.4.2/rand_distr/struct.Weibull.html
-                        person.transition_time = 3;
+                        person.transition_time =
+                            Weibull::new(self.params.exposed_scale, self.params.exposed_shape)?
+                                .sample(&mut person.rng) as usize;
                     }
 
                     // TODO Then immediately do the Exposed logic, which seems to clobber
@@ -357,19 +360,22 @@ impl Model {
 
                     if person.rng.gen_bool(symptomatic_prob.into()) {
                         person.status = DiseaseStatus::Presymptomatic;
-                        // TODO sample_presymptomatic_duration
-                        person.transition_time = 3;
+                        person.transition_time = Weibull::new(
+                            self.params.presymptomatic_scale,
+                            self.params.presymptomatic_shape,
+                        )?
+                        .sample(&mut person.rng)
+                            as usize;
                     } else {
                         person.status = DiseaseStatus::Asymptomatic;
-                        // TODO sample_infection_duration
-                        person.transition_time = 3;
+                        person.transition_time =
+                            sample_infection_duration(&self.params, &mut person.rng)?;
                     };
                 }
                 DiseaseStatus::Presymptomatic => {
-                    // TODO Immediately?
                     person.status = DiseaseStatus::Symptomatic;
-                    // TODO sample_infection_duration
-                    person.transition_time = 3;
+                    person.transition_time =
+                        sample_infection_duration(&self.params, &mut person.rng)?;
                 }
                 DiseaseStatus::Asymptomatic => {
                     person.status = DiseaseStatus::Recovered;
@@ -403,6 +409,7 @@ impl Model {
                 DiseaseStatus::Recovered | DiseaseStatus::Dead => {}
             }
         }
+        Ok(())
     }
 }
 
@@ -450,4 +457,11 @@ fn get_mortality_prob_for_age(params: &Params, age_years: u8) -> f32 {
     let max_bin_idx = 18;
     let idx = (age_years / bin_size).min(max_bin_idx);
     params.mortality_probs[idx as usize]
+}
+
+fn sample_infection_duration(params: &Params, rng: &mut StdRng) -> Result<usize> {
+    let mode = params.infection_mode;
+    let std_dev = params.infection_log_scale;
+    let mean_log = std_dev.powi(2) + mode.ln();
+    Ok(LogNormal::new(mean_log, std_dev)?.sample(rng) as usize)
 }
