@@ -10,7 +10,7 @@ use crate::{Activity, County, Population, MSOA};
 pub fn calculate_lockdown_per_day(
     msoas_per_county: BTreeMap<County, Vec<MSOA>>,
     population: &Population,
-) -> Result<Vec<f64>> {
+) -> Result<Vec<f32>> {
     info!("Calculating per-day lockdown values");
 
     // First get the total population per Google mobility area (which is a bunch of MSOAs)
@@ -28,7 +28,7 @@ pub fn calculate_lockdown_per_day(
         .collect();
 
     // Indexed by day
-    let mut total_change_per_day: Vec<f64> = Vec::new();
+    let mut total_change_per_day: Vec<f32> = Vec::new();
 
     for rec in csv::Reader::from_reader(File::open(
         "raw_data/nationaldata/timeAtHomeIncreaseCTY.csv",
@@ -44,7 +44,7 @@ pub fn calculate_lockdown_per_day(
         // We only have some Google mobility regions
         if let Some(pop) = population_per_county.get(&rec.county) {
             // Weight by the population in this area
-            total_change_per_day[rec.day] += rec.change * (*pop as f64);
+            total_change_per_day[rec.day] += rec.change * (*pop as f32);
         }
     }
 
@@ -52,12 +52,12 @@ pub fn calculate_lockdown_per_day(
     let mean_pr_home = population
         .people
         .iter()
-        .map(|person| person.duration_per_activity[Activity::Home])
-        .sum::<f64>()
-        / population.people.len() as f64;
+        .map(|person| person.duration_per_activity[Activity::Home] as f32)
+        .sum::<f32>()
+        / population.people.len() as f32;
 
     let mut lockdown_per_day = Vec::new();
-    let total_population: f64 = population_per_county.values().sum::<usize>() as f64;
+    let total_population = population_per_county.values().sum::<usize>() as f32;
     for change in total_change_per_day {
         // Re-scale the change by total population
         let x = change / total_population;
@@ -73,6 +73,6 @@ struct Row {
     #[serde(rename = "CTY20")]
     county: County,
     day: usize,
-    change: f64,
+    change: f32,
     // date doesn't matter
 }

@@ -27,7 +27,7 @@ pub struct Model {
     pop: Population,
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq)]
 enum DiseaseStatus {
     // TODO The hazard is 0 at the beginning of the day, and gets changed in receive_hazards, and
     // immediately used. We don't really need to keep it as state.
@@ -204,8 +204,6 @@ impl Model {
     fn simulate_day(&mut self, day: usize) {
         assert_eq!(day, self.day);
 
-        // Update lockdown multipliers
-
         // Reset hazards and counts for each place
         self.reset_place_state();
 
@@ -245,12 +243,19 @@ impl Model {
     }
 
     fn update_people_flows(&mut self) {
+        // If we're simulating more days than we have lockdown values, just keep repeating the last
+        // lockdown value -- which is presumably low
+        let lockdown_multiplier = *self
+            .pop
+            .lockdown_per_day
+            .get(self.day)
+            .unwrap_or_else(|| self.pop.lockdown_per_day.last().unwrap());
+
         for person in &mut self.people_state {
-            let non_home_multiplier = if matches!(person.status, DiseaseStatus::Susceptible { .. })
-            {
+            let non_home_multiplier = if person.status == DiseaseStatus::Symptomatic {
                 self.params.symptomatic_multiplier
             } else {
-                self.params.lockdown_multiplier
+                lockdown_multiplier
             };
 
             let mut total_non_home = 0.0;

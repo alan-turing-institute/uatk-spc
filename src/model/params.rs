@@ -25,6 +25,7 @@ pub struct Params {
     pub presymptomatic_shape: f32,
     pub infection_log_scale: f32,
     pub infection_mode: f32,
+    // TODO This changes daily. Not used in this codebase anymore
     pub lockdown_multiplier: f32,
 
     pub mortality_probs: Array1<f32>,

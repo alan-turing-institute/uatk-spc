@@ -46,8 +46,8 @@ pub struct Population {
     pub venues_per_activity: EnumMap<Activity, Vec<Venue>>,
 
     pub info_per_msoa: BTreeMap<MSOA, InfoPerMSOA>,
-    /// A number in [0, 1] for each day, representing... TODO
-    pub lockdown_per_day: Vec<f64>,
+    /// A number in [0, 1] for each day. 0 means all time just spent at home
+    pub lockdown_per_day: Vec<f32>,
     pub events: Events,
     pub input: Input,
 }
