@@ -10,7 +10,6 @@ use anyhow::Result;
 use rand::rngs::StdRng;
 
 use crate::{Input, Population};
-pub use events::Events;
 pub use raw_data::all_msoas_nationally;
 
 impl Population {
@@ -24,7 +23,7 @@ impl Population {
             msoas::get_info_per_msoa(population.unique_msoas(), raw_results.osm_directories)?;
         population.lockdown_per_day =
             lockdown::calculate_lockdown_per_day(raw_results.msoas_per_county, &population)?;
-        population.events = events::Events::load("model_parameters/eventDataConcerts.csv")?;
+        population.events = events::load("model_parameters/eventDataConcerts.csv")?;
         Ok(population)
     }
 }

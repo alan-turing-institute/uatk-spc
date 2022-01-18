@@ -25,7 +25,6 @@ use enum_map::{Enum, EnumMap};
 use geo::{MultiPolygon, Point};
 use serde::{Deserialize, Serialize};
 
-pub use self::init::Events;
 pub use self::model::Model;
 pub use self::snapshot::Snapshot;
 
@@ -48,7 +47,7 @@ pub struct Population {
     pub info_per_msoa: BTreeMap<MSOA, InfoPerMSOA>,
     /// A number in [0, 1] for each day. 0 means all time just spent at home
     pub lockdown_per_day: Vec<f32>,
-    pub events: Events,
+    pub events: Vec<Event>,
     pub input: Input,
 }
 
@@ -190,6 +189,36 @@ pub enum Obesity {
     Obese1,
     Overweight,
     Normal,
+}
+
+/// A one-time event attended by many people -- like a concert or sports match. Each event is
+/// broken into a sequence of contact cycles, involving the same people.
+#[derive(Serialize, Deserialize)]
+pub struct Event {
+    pub event_id: String,
+    /// YYYY-MM-DD
+    pub date: String,
+    pub number_attendees: usize,
+    pub location: Point<f64>,
+    pub event_type: String,
+    /// If false, draw per individual. If true, draw per individual
+    pub family: bool,
+    pub contact_cycles: Vec<ContactCycle>,
+}
+
+/// A single event is broken into different contact cycles, such as queuing, the main concert, an
+/// intermission, after-party, etc. Each one might have different risk parameters, but they involve
+/// the same people.
+#[derive(Serialize, Deserialize)]
+pub struct ContactCycle {
+    /// estimated number of individual contacts per person per contact cycle
+    pub contacts: usize,
+    /// transmission risk associated to a typical contact at the event (one-to-one, normalised to one minute)
+    pub risk: f64,
+    /// total length of the event in minutes
+    pub duration: usize,
+    /// typical length of a contact cycle in minutes
+    pub typical_time: usize,
 }
 
 // These are unsigned integers, used to index into different vectors. They're wrapped in a type, so

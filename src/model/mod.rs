@@ -1,3 +1,4 @@
+mod events;
 mod params;
 
 use anyhow::Result;
@@ -25,6 +26,8 @@ pub struct Model {
 
     // Nest this here, but nothing in here changes
     pop: Population,
+
+    rng: StdRng,
 }
 
 #[derive(Clone, PartialEq)]
@@ -99,12 +102,14 @@ impl Model {
             places_per_activity: EnumMap::default(),
 
             pop,
+
+            rng,
         };
-        model.seed_with_initial_cases(&mut rng)?;
+        model.seed_with_initial_cases()?;
         Ok(model)
     }
 
-    fn seed_with_initial_cases(&mut self, rng: &mut StdRng) -> Result<()> {
+    fn seed_with_initial_cases(&mut self) -> Result<()> {
         let mut initially_infected: Vec<PersonID> = Vec::new();
         for (msoa, num_cases) in &self.pop.input.initial_cases_per_msoa {
             let high_risk: Vec<PersonID> = self
@@ -124,7 +129,7 @@ impl Model {
             if high_risk.len() < *num_cases {
                 warn!("{msoa:?} has {num_cases} initial cases, but we only found {} high-risk people there", high_risk.len());
             }
-            initially_infected.extend(high_risk.choose_multiple(rng, *num_cases));
+            initially_infected.extend(high_risk.choose_multiple(&mut self.rng, *num_cases));
         }
 
         // Change peoples' initial status
@@ -225,6 +230,11 @@ impl Model {
         // Receive hazards. For susceptible people, sum total hazard of places they go, weighting
         // by their own flow there.
         self.receive_hazards();
+
+        for id in self.get_newly_infected_from_events() {
+            // TODO Transition them. Use the same math?
+            info!("{} was infected from an event", id);
+        }
 
         // Update disease statuses. This might just set transition_time and wait.
         self.update_status()?;
