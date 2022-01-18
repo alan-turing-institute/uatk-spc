@@ -28,7 +28,7 @@ impl Model {
                     .people
                     .iter()
                     .filter_map(|person| {
-                        if self.people_state[person.id.0].status == DiseaseStatus::Dead {
+                        if self.people[person.id].status == DiseaseStatus::Dead {
                             None
                         } else {
                             // TODO need to scrape their event interest
@@ -50,7 +50,7 @@ impl Model {
             for id in attendees {
                 // TODO Not Presymptomatic?
                 if matches!(
-                    self.people_state[id.0].status,
+                    self.people[id].status,
                     DiseaseStatus::Asymptomatic | DiseaseStatus::Symptomatic
                 ) {
                     num_infected += 1;

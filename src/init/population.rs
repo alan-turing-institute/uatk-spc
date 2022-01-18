@@ -6,6 +6,7 @@ use fs_err::File;
 use geo::Point;
 use rand::rngs::StdRng;
 use serde::{Deserialize, Deserializer};
+use typed_index_collections::TiVec;
 
 use super::quant::{get_flows, load_venues, Threshold};
 use crate::utilities::{
@@ -17,7 +18,7 @@ use crate::{Activity, Household, Input, Obesity, Person, PersonID, Population, V
 pub fn create(input: Input, tus_files: Vec<String>, rng: &mut StdRng) -> Result<Population> {
     let mut population = Population {
         households: Vec::new(),
-        people: Vec::new(),
+        people: TiVec::new(),
         venues_per_activity: EnumMap::default(),
         info_per_msoa: BTreeMap::new(),
         lockdown_per_day: Vec::new(),

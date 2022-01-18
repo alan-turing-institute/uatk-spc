@@ -11,6 +11,7 @@ bincode = "1.3.3"
 cap = "0.1.0"
 clap = { version = "3.0.0", features = ["derive"] }
 csv = "1.1.6"
+derive_more = "0.99.17"
 enum-map = { version = "1.1.1", features = ["serde"] }
 flate2 = "1.0.22"
 fs-err = "2.6.0"
@@ -34,6 +35,7 @@ shapefile = { version = "0.3.0", features = ["geo-types"] }
 simplelog = "0.11.1"
 tar = "0.4.38"
 tokio = { version = "1.15.0", features = ["full"] }
+typed-index-collections = { version = "3.0.3", features = ["serde-std"] }
 
 # See https://doc.rust-lang.org/cargo/reference/profiles.html#overrides. This
 # compiles all external dependencies in release mode, yielding great runtime

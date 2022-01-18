@@ -8,6 +8,7 @@ use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 use rand::{Rng, SeedableRng};
 use rand_distr::{Distribution, LogNormal, Weibull};
+use typed_index_collections::TiVec;
 
 use crate::utilities::print_count;
 use crate::{Activity, Obesity, Person, PersonID, Population, VenueID};
@@ -19,8 +20,7 @@ pub struct Model {
     day: usize,
     params: Params,
 
-    // PersonID indexes this
-    people_state: Vec<PersonState>,
+    people: TiVec<PersonID, PersonState>,
     // VenueID indexes this
     places_per_activity: EnumMap<Activity, Vec<PlaceState>>,
 
@@ -83,10 +83,10 @@ struct PlaceState {
 impl Model {
     // Everybody starts Susceptible; seeding happens later
     pub fn new(pop: Population, mut rng: StdRng) -> Result<Model> {
-        let mut people_state = Vec::new();
+        let mut people = TiVec::new();
         for person in &pop.people {
             let flows = get_baseline_flows(person);
-            people_state.push(PersonState {
+            people.push(PersonState {
                 status: DiseaseStatus::Susceptible { hazard: 0.0 },
                 transition_time: 0,
                 rng: StdRng::from_rng(&mut rng)?,
@@ -98,7 +98,7 @@ impl Model {
             day: 0,
             params: Params::new(),
 
-            people_state,
+            people,
             places_per_activity: EnumMap::default(),
 
             pop,
@@ -134,8 +134,8 @@ impl Model {
 
         // Change peoples' initial status
         for id in initially_infected {
-            let person = self.people_state.get_mut(id.0).unwrap();
-            let person_info = &self.pop.people[id.0];
+            let person = self.people.get_mut(id).unwrap();
+            let person_info = &self.pop.people[id];
             person.status = DiseaseStatus::Asymptomatic;
             // TODO Duplicates some of the transition code
             let mut symptomatic_prob =
@@ -184,7 +184,7 @@ impl Model {
         let mut i_s = 0;
         let mut r = 0;
         let mut d = 0;
-        for person in &self.people_state {
+        for person in &self.people {
             match person.status {
                 DiseaseStatus::Susceptible { .. } => {
                     s += 1;
@@ -271,7 +271,7 @@ impl Model {
             .get(self.day)
             .unwrap_or_else(|| self.pop.lockdown_per_day.last().unwrap());
 
-        for person in &mut self.people_state {
+        for person in &mut self.people {
             let non_home_multiplier = if person.status == DiseaseStatus::Symptomatic {
                 self.params.symptomatic_multiplier
             } else {
@@ -307,7 +307,7 @@ impl Model {
     }
 
     fn send_hazards(&mut self) {
-        for person in &self.people_state {
+        for person in &self.people {
             if let Some(symptom_status) = person.status.to_symptom_status() {
                 let individual_multiplier =
                     self.params.individual_hazard_multipliers[symptom_status];
@@ -324,7 +324,7 @@ impl Model {
     }
 
     fn receive_hazards(&mut self) {
-        for person in &mut self.people_state {
+        for person in &mut self.people {
             if !matches!(person.status, DiseaseStatus::Susceptible { .. }) {
                 continue;
             }
@@ -337,14 +337,11 @@ impl Model {
     }
 
     fn update_status(&mut self) -> Result<()> {
-        for (idx, person) in self.people_state.iter_mut().enumerate() {
+        for (person, person_info) in self.people.iter_mut().zip(self.pop.people.iter()) {
             if person.transition_time > 0 {
                 person.transition_time -= 1;
                 continue;
             }
-
-            // TODO Better names
-            let person_info = &self.pop.people[idx];
 
             match person.status {
                 DiseaseStatus::Susceptible { hazard } => {

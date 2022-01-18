@@ -16,8 +16,10 @@ mod python_cache;
 mod snapshot;
 pub mod utilities;
 
+use derive_more::{From, Into};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
+use typed_index_collections::TiVec;
 
 use anyhow::Result;
 use cap::Cap;
@@ -38,7 +40,7 @@ static ALLOCATOR: Cap<std::alloc::System> = Cap::new(std::alloc::System, usize::
 pub struct Population {
     /// VenueIDs for `Activity::Home` index into this
     pub households: Vec<Household>,
-    pub people: Vec<Person>,
+    pub people: TiVec<PersonID, Person>,
 
     /// Per activity, a list of venues. VenueID indexes into this list.
     /// This is not filled out for `Activity::Home`; see `households` for that.
@@ -224,7 +226,9 @@ pub struct ContactCycle {
 // These are unsigned integers, used to index into different vectors. They're wrapped in a type, so
 // we never accidentally confuse a VenueID with a PersonID.
 
-#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, Serialize, Deserialize)]
+#[derive(
+    Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into, Serialize, Deserialize,
+)]
 pub struct PersonID(pub usize);
 impl fmt::Display for PersonID {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
