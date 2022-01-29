@@ -9,7 +9,7 @@ use rand::seq::SliceRandom;
 use serde::Deserialize;
 use typed_index_collections::TiVec;
 
-use crate::utilities::progress_count;
+use crate::utilities::{print_count, progress_count};
 use crate::{Activity, Population, Venue, VenueID, MSOA};
 
 pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> Result<()> {
@@ -26,19 +26,29 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
     let mut businesses_per_sic: HashMap<usize, Vec<BusinessID>> = HashMap::new();
     let mut business_locations: HashMap<BusinessID, Point<f64>> = HashMap::new();
     let mut available_jobs_per_business: HashMap<BusinessID, usize> = HashMap::new();
+    let mut total_jobs = 0;
     for rec in csv::Reader::from_reader(File::open("raw_data/nationaldata/businessRegistry.csv")?)
         .deserialize()
     {
         let rec: Row = rec?;
         if msoas.contains(&rec.msoa) {
+            // The CSV has string IDs, but they're not used anywhere else. Use integer IDs,
+            // which're much faster to copy around.
+            let id = BusinessID(business_locations.len().try_into()?);
             businesses_per_sic
                 .entry(rec.sic1d07)
                 .or_insert_with(Vec::new)
-                .push(rec.id.clone());
-            business_locations.insert(rec.id.clone(), Point::new(rec.lng, rec.lat));
-            available_jobs_per_business.insert(rec.id, rec.size);
+                .push(id);
+            business_locations.insert(id, Point::new(rec.lng, rec.lat));
+            available_jobs_per_business.insert(id, rec.size);
+            total_jobs += rec.size;
         }
     }
+    info!(
+        "{} jobs available among {} businesses",
+        print_count(total_jobs),
+        print_count(business_locations.len())
+    );
 
     // Assign numeric VenueIDs as we decide to use a business.
     let mut business_to_venue: HashMap<BusinessID, VenueID> = HashMap::new();
@@ -56,18 +66,17 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
             // Each person could work at any business matching their SIC. Weight the choice by the
             // number of available jobs there and the inverse square distance between the person
             // and business.
-            let mut choices: Vec<(&BusinessID, f64)> = Vec::new();
+            let mut choices: Vec<(BusinessID, f64)> = Vec::new();
             if let Some(list) = businesses_per_sic.get(&sic) {
                 for id in list {
                     let jobs_available = available_jobs_per_business[id];
                     if jobs_available > 0 {
                         let dist = person.location.haversine_distance(&business_locations[id]);
-                        choices.push((id, (jobs_available as f64) / dist.powi(2)));
+                        choices.push((*id, (jobs_available as f64) / dist.powi(2)));
                     }
                 }
             }
             if let Ok((business_id, _)) = choices.choose_weighted(rng, |pair| pair.1) {
-                let business_id = *business_id;
                 // Do the ID lookup, creating new ones as needed
                 // TODO This is a common pattern
                 let venue_id = match business_to_venue.get(business_id) {
@@ -91,10 +100,8 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
                 person.flows_per_activity[Activity::Work] = vec![(venue_id, 1.0)];
 
                 // This job is gone
-                available_jobs_per_business.insert(
-                    business_id.clone(),
-                    available_jobs_per_business[business_id] - 1,
-                );
+                available_jobs_per_business
+                    .insert(*business_id, available_jobs_per_business[business_id] - 1);
             } else {
                 // There were no remaining jobs for this SIC.
                 // TODO What should we do?
@@ -112,7 +119,6 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
 struct Row {
     #[serde(rename = "MSOA11CD")]
     msoa: MSOA,
-    id: BusinessID,
     // Represents the centroid of an LSOA
     lng: f64,
     lat: f64,
@@ -121,5 +127,5 @@ struct Row {
     sic1d07: usize,
 }
 
-#[derive(Clone, PartialEq, Eq, Hash, Deserialize)]
-struct BusinessID(String);
+#[derive(Clone, Copy, PartialEq, Eq, Hash, Deserialize)]
+struct BusinessID(u32);
