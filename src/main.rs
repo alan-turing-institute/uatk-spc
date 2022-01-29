@@ -38,7 +38,7 @@ async fn main() -> Result<()> {
     };
 
     match args.action {
-        Action::Init { region } => {
+        Action::Init { region, snapshot } => {
             let input = region.to_input().await?;
             let population = Population::create(input, &mut rng).await?;
 
@@ -46,6 +46,12 @@ async fn main() -> Result<()> {
             let output = format!("processed_data/{:?}.bin", region);
             info!("Writing population to {}", output);
             utilities::write_binary(&population, output)?;
+
+            if snapshot {
+                let output = format!("processed_data/snapshot_{:?}.npz", region);
+                info!("Writing snapshot to {}", output);
+                Snapshot::convert_to_npz(population, output, &mut rng)?;
+            }
         }
         Action::PythonCache { region } => {
             info!("Loading population");
@@ -105,6 +111,10 @@ enum Action {
     Init {
         #[clap(arg_enum)]
         region: Region,
+        /// Also write a Snapshot file. This avoids the time needed to deserialize a Population
+        /// file.
+        #[clap(long)]
+        snapshot: bool,
     },
     /// Transform a Population to the Python InitialisationCache format
     PythonCache {
