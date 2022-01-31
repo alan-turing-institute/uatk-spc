@@ -1,3 +1,5 @@
+use std::io::Write;
+
 use anyhow::Result;
 use enum_map::EnumMap;
 use fs_err::File;
@@ -85,26 +87,12 @@ impl Snapshot {
         let num_people = people.len();
         let num_places = id_mapping.total_places as usize;
 
-        let mut npz = NpzWriter::new(File::create(path)?);
+        let mut npz = NpzWriter::new(File::create(&path)?);
 
         npz.add_array("nplaces", &arr0(id_mapping.total_places))?;
         npz.add_array("npeople", &arr0(num_people as u32))?;
         npz.add_array("nslots", &arr0(SLOTS as u32))?;
         npz.add_array("time", &arr0(0))?;
-        // TODO No support for arbitrary objects yet. This should be a pickled string?
-        // dtype=np.object
-        /*npz.add_array(
-            "area_codes",
-            &people
-                .iter()
-                .map(|p| input.households[p.household].msoa.0)
-                .collect::<Array1<String>>(),
-        )?;*/
-        // TODO Just fill out something nonsensical now, to get the file to initially parse
-        npz.add_array(
-            "area_codes",
-            &people.iter().map(|_| 42.0).collect::<Array1<f32>>(),
-        )?;
         npz.add_array(
             "not_home_probs",
             &people
@@ -183,6 +171,17 @@ impl Snapshot {
         npz.add_array("params", &Params::new().get_flattened_array())?;
 
         npz.finish()?;
+
+        // TODO We need to write the string area_codes as pickled objects, but ndarray_npy doesn't
+        // support arbitrary objects yet. Instead write a separate JSON file, and use a Python
+        // script to add the array.
+        let area_codes = people
+            .iter()
+            .map(|p| &input.households[p.household].msoa.0)
+            .collect::<Vec<_>>();
+        let mut file = File::create(format!("{}_area_codes.json", path))?;
+        write!(file, "{}", serde_json::to_string_pretty(&area_codes)?)?;
+
         Ok(())
     }
 }
