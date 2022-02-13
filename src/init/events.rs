@@ -46,8 +46,8 @@ struct Row {
     /// a percentage in [0, 1] of the size, giving the number of actual visitors at the event
     attendance: f64,
     // Location
-    long: f64,
-    lat: f64,
+    long: f32,
+    lat: f32,
     #[serde(rename = "type")]
     event_type: String,
     /// total length of the event in minutes

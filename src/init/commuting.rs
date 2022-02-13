@@ -24,7 +24,7 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
     // Find all of the businesses, grouped by the Standard Industry Classification.
     info!("Finding all businesses");
     let mut businesses_per_sic: HashMap<usize, Vec<BusinessID>> = HashMap::new();
-    let mut business_locations: HashMap<BusinessID, Point<f64>> = HashMap::new();
+    let mut business_locations: HashMap<BusinessID, Point<f32>> = HashMap::new();
     let mut available_jobs_per_business: HashMap<BusinessID, usize> = HashMap::new();
     let mut total_jobs = 0;
     for rec in csv::Reader::from_reader(File::open("raw_data/nationaldata/businessRegistry.csv")?)
@@ -66,13 +66,13 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
             // Each person could work at any business matching their SIC. Weight the choice by the
             // number of available jobs there and the inverse square distance between the person
             // and business.
-            let mut choices: Vec<(BusinessID, f64)> = Vec::new();
+            let mut choices: Vec<(BusinessID, f32)> = Vec::new();
             if let Some(list) = businesses_per_sic.get(&sic) {
                 for id in list {
                     let jobs_available = available_jobs_per_business[id];
                     if jobs_available > 0 {
                         let dist = person.location.haversine_distance(&business_locations[id]);
-                        choices.push((*id, (jobs_available as f64) / dist.powi(2)));
+                        choices.push((*id, (jobs_available as f32) / dist.powi(2)));
                     }
                 }
             }
@@ -88,8 +88,7 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
                         venues.push(Venue {
                             id: venue_id,
                             activity: Activity::Work,
-                            latitude: location.lat() as f32,
-                            longitude: location.lng() as f32,
+                            location: *location,
                             urn: None,
                         });
                         venue_id
@@ -120,8 +119,8 @@ struct Row {
     #[serde(rename = "MSOA11CD")]
     msoa: MSOA,
     // Represents the centroid of an LSOA
-    lng: f64,
-    lat: f64,
+    lng: f32,
+    lat: f32,
     // The number of workers
     size: usize,
     sic1d07: usize,

@@ -88,8 +88,7 @@ pub struct InfoPerMSOA {
     /// Note there are many caveats about building data in OpenStreetMap -- what counts as
     /// residential, commercial? And some areas don't have any buildings mapped yet!
     // TODO Not guaranteed to be non-empty
-    // TODO Probably easier to use f32
-    pub buildings: Vec<Point<f64>>,
+    pub buildings: Vec<Point<f32>>,
 }
 
 impl Population {
@@ -121,7 +120,7 @@ pub struct Person {
     pub household: VenueID,
     /// This is the centroid of the household's MSOA. It's redundant to store it per person, but
     /// very convenient.
-    pub location: Point<f64>,
+    pub location: Point<f32>,
     /// An ID from the original data, kept around for debugging
     pub orig_pid: isize,
     /// The Standard Industry Classification for where this person works
@@ -176,9 +175,7 @@ pub struct Venue {
     pub id: VenueID,
     pub activity: Activity,
 
-    // TODO Store a geo::Point
-    pub latitude: f32,
-    pub longitude: f32,
+    pub location: Point<f32>,
     /// This only exists for PrimarySchool and SecondarySchool. It's a
     /// https://en.wikipedia.org/wiki/Unique_Reference_Number
     pub urn: Option<usize>,
@@ -201,7 +198,7 @@ pub struct Event {
     /// YYYY-MM-DD
     pub date: String,
     pub number_attendees: usize,
-    pub location: Point<f64>,
+    pub location: Point<f32>,
     pub event_type: String,
     /// If false, draw per individual. If true, draw per individual
     pub family: bool,

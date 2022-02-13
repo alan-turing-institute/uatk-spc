@@ -30,7 +30,7 @@ impl Population {
     }
 
     fn write_buildings(&self, path: String) -> Result<()> {
-        let data: BTreeMap<&MSOA, &Vec<Point<f64>>> = self
+        let data: BTreeMap<&MSOA, &Vec<Point<f32>>> = self
             .info_per_msoa
             .iter()
             .map(|(msoa, info)| (msoa, &info.buildings))
@@ -67,8 +67,8 @@ struct Individual {
     diabetes: u8,
     bloodpressure: u8,
     // TODO BMI back as a string
-    lng: f64,
-    lat: f64,
+    lng: f32,
+    lat: f32,
     #[serde(rename = "House_ID")]
     house: usize,
 }

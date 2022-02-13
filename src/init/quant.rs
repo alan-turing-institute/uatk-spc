@@ -6,6 +6,7 @@ use std::path::Path;
 
 use anyhow::Result;
 use fs_err::File;
+use geo::Point;
 use ndarray::Array2;
 use ndarray_npy::ReadNpyExt;
 use ordered_float::NotNan;
@@ -161,8 +162,8 @@ pub fn load_venues(activity: Activity) -> Result<TiVec<VenueID, Venue>> {
         venues.push(Venue {
             id: VenueID(venues.len()),
             activity,
-            latitude: pt.lat() as f32,
-            longitude: pt.lng() as f32,
+            // TODO Weird geo_types version problem, possibly because of the f32/f64 problem
+            location: Point::new(pt.lng() as f32, pt.lat() as f32),
             urn: rec.urn,
         });
     }

@@ -253,8 +253,11 @@ fn get_place_coordinates(
 
         for venue in &input.venues_per_activity[activity] {
             let place = id_mapping.to_place(activity, &venue.id);
-            result[place.0 as usize * 2 + 0] = venue.latitude;
-            result[place.0 as usize * 2 + 1] = venue.longitude;
+            if place.0 == 0 {
+                panic!("venue at {:?}", venue.location);
+            }
+            result[place.0 as usize * 2 + 0] = venue.location.lat();
+            result[place.0 as usize * 2 + 1] = venue.location.lng();
         }
     }
 
@@ -264,8 +267,8 @@ fn get_place_coordinates(
         let place = id_mapping.to_place(Activity::Home, &household.id);
         match input.info_per_msoa[&household.msoa].buildings.choose(rng) {
             Some(pt) => {
-                result[place.0 as usize * 2 + 0] = pt.lat() as f32;
-                result[place.0 as usize * 2 + 1] = pt.lng() as f32;
+                result[place.0 as usize * 2 + 0] = pt.lat();
+                result[place.0 as usize * 2 + 1] = pt.lng();
             }
             None => {
                 // TODO Should we fail, or just pick a random point in the shape?

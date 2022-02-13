@@ -157,8 +157,8 @@ struct TuPerson {
     pid: isize,
     #[serde(deserialize_with = "parse_usize_or_na")]
     sic1d07: Option<usize>,
-    lat: f64,
-    lng: f64,
+    lat: f32,
+    lng: f32,
 
     phome: f64,
     pwork: f64,

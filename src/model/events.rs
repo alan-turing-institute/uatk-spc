@@ -23,7 +23,7 @@ impl Model {
             } else {
                 // Find all the people interested in this event type, and how far they are to the
                 // event
-                let candidates: Vec<(PersonID, f64)> = self
+                let candidates: Vec<(PersonID, f32)> = self
                     .pop
                     .people
                     .iter()

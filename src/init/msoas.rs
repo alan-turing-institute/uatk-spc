@@ -20,7 +20,7 @@ pub fn get_info_per_msoa(
     if false {
         dump_msoa_shapes(&info_per_msoa)?;
     }
-    let mut building_centroids: Vec<Point<f64>> = Vec::new();
+    let mut building_centroids: Vec<Point<f32>> = Vec::new();
     for dir in osm_directories {
         // TODO Progress bars
         info!("Loading buildings from {}", dir);
@@ -96,12 +96,13 @@ fn dump_msoa_shapes(msoas: &BTreeMap<MSOA, InfoPerMSOA>) -> Result<()> {
     Ok(())
 }
 
-fn load_building_centroids(path: &str) -> Result<Vec<Point<f64>>> {
+fn load_building_centroids(path: &str) -> Result<Vec<Point<f32>>> {
     let mut results = Vec::new();
     for shape in shapefile::read_shapes_as::<_, shapefile::Polygon>(path)? {
         let geo_polygon: MultiPolygon<f64> = shape.try_into()?;
         if let Some(pt) = geo_polygon.centroid() {
-            results.push(pt);
+            // TODO Urgh, casting everywhere
+            results.push(Point::new(pt.lng() as f32, pt.lat() as f32));
         }
     }
     info!(
@@ -112,7 +113,7 @@ fn load_building_centroids(path: &str) -> Result<Vec<Point<f64>>> {
     Ok(results)
 }
 
-fn match_points_to_shapes(points: Vec<Point<f64>>, msoas: &mut BTreeMap<MSOA, InfoPerMSOA>) {
+fn match_points_to_shapes(points: Vec<Point<f32>>, msoas: &mut BTreeMap<MSOA, InfoPerMSOA>) {
     let polygons = msoas
         .iter()
         .map(|(k, v)| (k.clone(), v.shape.clone()))
@@ -127,15 +128,20 @@ fn match_points_to_shapes(points: Vec<Point<f64>>, msoas: &mut BTreeMap<MSOA, In
 /// This uses an R*-tree for speedup; it works well for many points and far fewer polygons.
 // TODO Share with odjitter
 fn points_per_polygon<K: Clone + Ord>(
-    points: Vec<Point<f64>>,
+    points: Vec<Point<f32>>,
     polygons: &BTreeMap<K, MultiPolygon<f64>>,
-) -> BTreeMap<K, Vec<Point<f64>>> {
+) -> BTreeMap<K, Vec<Point<f32>>> {
     info!(
         "Matching {} points to {} polygons. Building R-Tree...",
         print_count(points.len()),
         print_count(polygons.len())
     );
-    let tree = RTree::bulk_load(points);
+    // TODO Arghhh
+    let cast_points: Vec<Point<f64>> = points
+        .into_iter()
+        .map(|pt| Point::new(pt.lng() as f64, pt.lat() as f64))
+        .collect();
+    let tree = RTree::bulk_load(cast_points);
 
     let mut output = BTreeMap::new();
     let pb = progress_count(polygons.len());
@@ -147,7 +153,8 @@ fn points_per_polygon<K: Clone + Ord>(
             AABB::from_corners(bounds.min().into(), bounds.max().into());
         for pt in tree.locate_in_envelope(&envelope) {
             if polygon.contains(pt) {
-                pts_inside.push(*pt);
+                // TODO Casting
+                pts_inside.push(Point::new(pt.lng() as f32, pt.lat() as f32));
             }
         }
         output.insert(key.clone(), pts_inside);
