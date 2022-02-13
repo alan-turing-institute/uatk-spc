@@ -16,7 +16,7 @@ use crate::utilities::progress_count;
 use crate::{Activity, Obesity, Population, VenueID};
 
 // A slot is a place somebody could visit
-const SLOTS: usize = 100;
+const SLOTS: usize = 16;
 
 /// This is the input into the OpenCL simulation. See
 /// https://github.com/Urban-Analytics/RAMP-UA/blob/master/microsim/opencl/doc/model_design.md
@@ -190,16 +190,18 @@ fn get_baseline_flows(
     pop: &Population,
     id_mapping: &IDMapping,
 ) -> Result<(Array1<u32>, Array1<f32>)> {
-    let places_to_keep_per_person = 16;
-    let max_places_per_person = SLOTS;
+    let places_to_keep_per_person = SLOTS;
+    // Note max_places_per_person in the original Python isn't needed here, because we have the
+    // magic of vectors
 
     // We ultimately want a 1D array for flows and place IDs. It's a flattened list, with
-    // max_places_per_person entries per person.
+    // places_to_keep_per_person entries per person.
     //
     // A helpful reference:
     // https://docs.rs/ndarray/latest/ndarray/doc/ndarray_for_numpy_users/index.html
-    let mut people_place_ids = Array::from_elem(pop.people.len() * max_places_per_person, u32::MAX);
-    let mut people_baseline_flows = Array::zeros(pop.people.len() * max_places_per_person);
+    let mut people_place_ids =
+        Array::from_elem(pop.people.len() * places_to_keep_per_person, u32::MAX);
+    let mut people_baseline_flows = Array::zeros(pop.people.len() * places_to_keep_per_person);
 
     info!("Merging flows for all activities");
     let pq = progress_count(pop.people.len());
@@ -224,9 +226,9 @@ fn get_baseline_flows(
         flows.truncate(places_to_keep_per_person);
 
         // Fill out the final arrays, flattened to the range [start_idx, end_idx)
-        let start_idx = person.id.0 * max_places_per_person;
+        let start_idx = person.id.0 * places_to_keep_per_person;
         // TODO Figure out how to do the slicing
-        //let end_idx = (person.id.0 + 1 ) * max_places_per_person;
+        //let end_idx = (person.id.0 + 1 ) * places_to_keep_per_person;
         //let slice = Slice::from(start_idx..end_idx);
         for (idx, (place, flow)) in flows.into_iter().enumerate() {
             people_place_ids[start_idx + idx] = place.0;
