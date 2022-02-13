@@ -253,9 +253,6 @@ fn get_place_coordinates(
 
         for venue in &input.venues_per_activity[activity] {
             let place = id_mapping.to_place(activity, &venue.id);
-            if place.0 == 0 {
-                panic!("venue at {:?}", venue.location);
-            }
             result[place.0 as usize * 2 + 0] = venue.location.lat();
             result[place.0 as usize * 2 + 1] = venue.location.lng();
         }

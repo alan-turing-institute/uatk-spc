@@ -136,8 +136,8 @@ fn get_venue_flows(
 }
 
 pub fn load_venues(activity: Activity) -> Result<TiVec<VenueID, Venue>> {
-    // From OSG36 (https://epsg.io/4277)
-    let reproject = Proj::new_known_crs("EPSG:4277", "EPSG:4326", None)
+    // I had the wrong CRS originally, but it's from "British National Grid"
+    let reproject = Proj::new_known_crs("EPSG:27700", "EPSG:4326", None)
         .ok_or(anyhow!("Couldn't set up CRS projection"))?;
 
     let csv_path = match activity {
@@ -181,7 +181,6 @@ struct ZoneRow {
     east: f64,
     north: f64,
     zonei: usize,
-    #[serde(rename = "urn")]
     urn: Option<usize>,
 }
 
