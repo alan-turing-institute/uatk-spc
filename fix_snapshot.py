@@ -15,6 +15,5 @@ area_codes_path = snapshot_path + '_area_codes.json'
 area_codes = json.load(open(area_codes_path))
 buffers['area_codes'] = numpy.asarray(area_codes, dtype=object)
 
-# Overwrite the .npz and delete the JSON file
+# Overwrite the .npz. Keep the JSON file around, so this script is idempotent and delete the JSON file
 numpy.savez(snapshot_path, **buffers)
-os.remove(area_codes_path)
