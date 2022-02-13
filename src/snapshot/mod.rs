@@ -3,7 +3,7 @@ use std::io::Write;
 use anyhow::Result;
 use enum_map::EnumMap;
 use fs_err::File;
-use ndarray::{arr0, Array, Array1, Array2};
+use ndarray::{arr0, Array, Array1};
 use ndarray_npy::NpzWriter;
 use ndarray_rand::rand_distr::Uniform;
 use ndarray_rand::RandomExt;
@@ -242,8 +242,8 @@ fn get_place_coordinates(
     input: &Population,
     id_mapping: &IDMapping,
     rng: &mut StdRng,
-) -> Result<Array2<f32>> {
-    let mut result = Array2::<f32>::zeros((id_mapping.total_places as usize, 2));
+) -> Result<Array1<f32>> {
+    let mut result = Array1::<f32>::zeros(id_mapping.total_places as usize * 2);
 
     for activity in Activity::all() {
         // Not stored as venues
@@ -253,9 +253,8 @@ fn get_place_coordinates(
 
         for venue in &input.venues_per_activity[activity] {
             let place = id_mapping.to_place(activity, &venue.id);
-            // TODO Again, how to slice?
-            result[(place.0 as usize, 0)] = venue.latitude;
-            result[(place.0 as usize, 1)] = venue.longitude;
+            result[place.0 as usize * 2 + 0] = venue.latitude;
+            result[place.0 as usize * 2 + 1] = venue.longitude;
         }
     }
 
@@ -265,8 +264,8 @@ fn get_place_coordinates(
         let place = id_mapping.to_place(Activity::Home, &household.id);
         match input.info_per_msoa[&household.msoa].buildings.choose(rng) {
             Some(pt) => {
-                result[(place.0 as usize, 0)] = pt.lat() as f32;
-                result[(place.0 as usize, 1)] = pt.lng() as f32;
+                result[place.0 as usize * 2 + 0] = pt.lat() as f32;
+                result[place.0 as usize * 2 + 1] = pt.lng() as f32;
             }
             None => {
                 // TODO Should we fail, or just pick a random point in the shape?
