@@ -12,7 +12,6 @@ extern crate log;
 
 mod init;
 mod model;
-mod python_cache;
 mod snapshot;
 pub mod utilities;
 

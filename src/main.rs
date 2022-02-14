@@ -43,27 +43,19 @@ async fn main() -> Result<()> {
             let population = Population::create(input, &mut rng).await?;
 
             // First clear the target directory
-            fs_err::remove_dir_all(format!("processed_data/{:?}", region))?;
-            fs_err::create_dir_all(format!("processed_data/{:?}/snapshot", region))?;
+            let target_dir = format!("processed_data/{:?}", region);
+            fs_err::remove_dir_all(&target_dir)?;
+            fs_err::create_dir_all(format!("{target_dir}/snapshot"))?;
 
             info!("By the end, {}", utilities::memory_usage());
             // Write all data to a file only readable from Rust (using Serde)
-            let output = format!("processed_data/{:?}/rust_cache.bin", region);
+            let output = format!("{target_dir}/rust_cache.bin");
             info!("Writing population to {}", output);
             utilities::write_binary(&population, output)?;
 
             // Write the snapshot in the format the Python pipeline expects
-            let output = format!("processed_data/{:?}/snapshot/cache.npz", region);
-            info!("Writing snapshot to {}", output);
-            Snapshot::convert_to_npz(population, output, &mut rng)?;
-        }
-        Action::PythonCache { region } => {
-            info!("Loading population");
-            let population =
-                utilities::read_binary::<Population>(format!("processed_data/{:?}.bin", region))?;
-            let output = format!("processed_data/python_cache_{:?}", region);
-            info!("Writing Python cache files to {}", output);
-            population.write_python_cache(output)?;
+            info!("Writing snapshot");
+            Snapshot::convert_to_npz(population, target_dir, &mut rng)?;
         }
         Action::RunModel { region } => {
             info!("Loading population");
@@ -103,11 +95,6 @@ enum Region {
 enum Action {
     /// Import raw data and build an activity model for a region
     Init {
-        #[clap(arg_enum)]
-        region: Region,
-    },
-    /// Transform a Population to the Python InitialisationCache format
-    PythonCache {
         #[clap(arg_enum)]
         region: Region,
     },

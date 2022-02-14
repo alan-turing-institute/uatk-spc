@@ -81,14 +81,14 @@ impl IDMapping {
 }
 
 impl Snapshot {
-    pub fn convert_to_npz(input: Population, path: String, rng: &mut StdRng) -> Result<()> {
+    pub fn convert_to_npz(input: Population, target_dir: String, rng: &mut StdRng) -> Result<()> {
         let id_mapping =
             IDMapping::new(&input).ok_or_else(|| anyhow!("More than 2**32 place IDs"))?;
         let people = &input.people;
         let num_people = people.len();
         let num_places = id_mapping.total_places as usize;
 
-        let mut npz = NpzWriter::new(File::create(&path)?);
+        let mut npz = NpzWriter::new(File::create(format!("{target_dir}/snapshot/cache.npz"))?);
 
         npz.add_array("nplaces", &arr0(id_mapping.total_places))?;
         npz.add_array("npeople", &arr0(num_people as u32))?;
@@ -180,17 +180,29 @@ impl Snapshot {
             .iter()
             .map(|p| &input.households[p.household].msoa.0)
             .collect::<Vec<_>>();
-        let mut file = File::create(format!("{}_area_codes.json", path))?;
+        let mut file = File::create(format!("{target_dir}/area_codes.json"))?;
         write!(file, "{}", serde_json::to_string_pretty(&area_codes)?)?;
 
         let status = Command::new("python3")
             .arg("scripts/fix_snapshot.py")
-            .arg(path)
+            .arg(&target_dir)
             .status()?;
         if !status.success() {
             bail!("fix_quant_data.py failed");
         }
 
+        Self::write_lockdown(&input, format!("{target_dir}/lockdown.csv"))?;
+
+        Ok(())
+    }
+
+    fn write_lockdown(input: &Population, path: String) -> Result<()> {
+        let mut f = File::create(path)?;
+        // Just directly match the Python format; the first column is unnamed, but means day
+        writeln!(f, ",change")?;
+        for (idx, change) in input.lockdown_per_day.iter().enumerate() {
+            writeln!(f, "{},{}", idx, change)?;
+        }
         Ok(())
     }
 }
