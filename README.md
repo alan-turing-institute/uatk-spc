@@ -24,6 +24,8 @@ One-time installation of things you may be missing:
 
 - The latest version of Rust (1.58): <https://www.rust-lang.org/tools/install>
 - [Poetry](https://python-poetry.org), for running a fork of the Python model
+- The instructions assume you'e running in a shell on Linux or Mac, and have
+  standard commands like `unzip` and `python3` available
 
 You can then compile this project and generate a snapshot for a small study area:
 
