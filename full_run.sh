@@ -3,11 +3,10 @@
 set -e
 set -x
 
-# cargo run --release -- init west-yorkshire-small --snapshot
+# cargo run --release -- init west-yorkshire-small
 
 rm -rf ~/RAMP-UA/data/processed_data/Test_3/
-mkdir -p ~/RAMP-UA/data/processed_data/Test_3/snapshot/
-cp processed_data/snapshot_WestYorkshireSmall.npz ~/RAMP-UA/data/processed_data/Test_3/snapshot/cache.npz
+cp -Rv processed_data/WestYorkshireSmall ~/RAMP-UA/data/processed_data/Test_3
 
 # TODO Temporary, until the Python code only reads the snapshot
 touch ~/RAMP-UA/data/processed_data/Test_3/lockdown.csv

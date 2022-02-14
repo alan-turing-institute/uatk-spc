@@ -38,20 +38,24 @@ async fn main() -> Result<()> {
     };
 
     match args.action {
-        Action::Init { region, snapshot } => {
+        Action::Init { region } => {
             let input = region.to_input().await?;
             let population = Population::create(input, &mut rng).await?;
 
+            // First clear the target directory
+            fs_err::remove_dir_all(format!("processed_data/{:?}", region))?;
+            fs_err::create_dir_all(format!("processed_data/{:?}/snapshot", region))?;
+
             info!("By the end, {}", utilities::memory_usage());
-            let output = format!("processed_data/{:?}.bin", region);
+            // Write all data to a file only readable from Rust (using Serde)
+            let output = format!("processed_data/{:?}/rust_cache.bin", region);
             info!("Writing population to {}", output);
             utilities::write_binary(&population, output)?;
 
-            if snapshot {
-                let output = format!("processed_data/snapshot_{:?}.npz", region);
-                info!("Writing snapshot to {}", output);
-                Snapshot::convert_to_npz(population, output, &mut rng)?;
-            }
+            // Write the snapshot in the format the Python pipeline expects
+            let output = format!("processed_data/{:?}/snapshot/cache.npz", region);
+            info!("Writing snapshot to {}", output);
+            Snapshot::convert_to_npz(population, output, &mut rng)?;
         }
         Action::PythonCache { region } => {
             info!("Loading population");
@@ -60,15 +64,6 @@ async fn main() -> Result<()> {
             let output = format!("processed_data/python_cache_{:?}", region);
             info!("Writing Python cache files to {}", output);
             population.write_python_cache(output)?;
-        }
-        Action::Snapshot { region } => {
-            info!("Loading population");
-            let population =
-                utilities::read_binary::<Population>(format!("processed_data/{:?}.bin", region))?;
-            // TODO Based on input parameters like start-date, maybe trim the lockdown list
-            let output = format!("processed_data/snapshot_{:?}.npz", region);
-            info!("Writing snapshot to {}", output);
-            Snapshot::convert_to_npz(population, output, &mut rng)?;
         }
         Action::RunModel { region } => {
             info!("Loading population");
@@ -104,25 +99,15 @@ enum Region {
     National,
 }
 
-// TODO Reading in the Population is slow; just combine the two actions
 #[derive(clap::Subcommand, Clone)]
 enum Action {
     /// Import raw data and build an activity model for a region
     Init {
         #[clap(arg_enum)]
         region: Region,
-        /// Also write a Snapshot file. This avoids the time needed to deserialize a Population
-        /// file.
-        #[clap(long)]
-        snapshot: bool,
     },
     /// Transform a Population to the Python InitialisationCache format
     PythonCache {
-        #[clap(arg_enum)]
-        region: Region,
-    },
-    /// Transform a Population into a Snapshot
-    Snapshot {
         #[clap(arg_enum)]
         region: Region,
     },
