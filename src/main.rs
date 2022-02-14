@@ -44,7 +44,8 @@ async fn main() -> Result<()> {
 
             // First clear the target directory
             let target_dir = format!("processed_data/{:?}", region);
-            fs_err::remove_dir_all(&target_dir)?;
+            // Ignore errors if this directory doesn't even exist
+            let _ = fs_err::remove_dir_all(&target_dir);
             fs_err::create_dir_all(format!("{target_dir}/snapshot"))?;
 
             info!("By the end, {}", utilities::memory_usage());
