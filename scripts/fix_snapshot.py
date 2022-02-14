@@ -3,6 +3,9 @@ import numpy
 import os
 import sys
 
+# The Rust library for writing numpy arrays doesn't handle strings, so use this
+# Python script to add area codes to the snapshot file.
+
 snapshot_path = sys.argv[1]
 
 # Load everything from the NPZ into memory again

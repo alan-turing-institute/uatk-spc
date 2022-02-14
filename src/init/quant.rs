@@ -3,6 +3,7 @@
 
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::path::Path;
+use std::process::Command;
 
 use anyhow::Result;
 use fs_err::File;
@@ -55,10 +56,25 @@ pub fn get_flows(
 
     let table_path =
         format!("raw_data/nationaldata/QUANT_RAMP/{}", prob_sij).replace(".bin", ".npy");
+
+    if File::open(&table_path).is_err() {
+        info!(
+            "Running a Python script to convert QUANT data from pickle to the regular numpy format"
+        );
+        let status = Command::new("python3")
+            .arg("scripts/fix_quant_data.py")
+            .status()?;
+        if !status.success() {
+            bail!("fix_quant_data.py failed");
+        }
+    }
     let table = match File::open(table_path) {
         Ok(file) => Array2::<f64>::read_npy(file)?,
         Err(err) => {
-            bail!("A QUANT file is missing. You need to manually run a Python script to convert from the pickle format t the regular numpy format:\n\npython3 fix_quant_data.py\n\n{}", err);
+            bail!(
+                "Even after fix_quant_data.py, a QUANT file is missing: {}",
+                err
+            );
         }
     };
 

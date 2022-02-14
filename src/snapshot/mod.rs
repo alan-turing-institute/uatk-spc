@@ -1,4 +1,5 @@
 use std::io::Write;
+use std::process::Command;
 
 use anyhow::Result;
 use enum_map::EnumMap;
@@ -172,7 +173,7 @@ impl Snapshot {
 
         npz.finish()?;
 
-        // TODO We need to write the string area_codes as pickled objects, but ndarray_npy doesn't
+        // We need to write the string area_codes as pickled objects, but ndarray_npy doesn't
         // support arbitrary objects yet. Instead write a separate JSON file, and use a Python
         // script to add the array.
         let area_codes = people
@@ -181,6 +182,14 @@ impl Snapshot {
             .collect::<Vec<_>>();
         let mut file = File::create(format!("{}_area_codes.json", path))?;
         write!(file, "{}", serde_json::to_string_pretty(&area_codes)?)?;
+
+        let status = Command::new("python3")
+            .arg("scripts/fix_snapshot.py")
+            .arg(path)
+            .status()?;
+        if !status.success() {
+            bail!("fix_quant_data.py failed");
+        }
 
         Ok(())
     }
