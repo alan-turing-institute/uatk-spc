@@ -3,9 +3,10 @@
 set -e
 set -x
 
-# cargo run --release -- init west-yorkshire-small
+#cargo run --release -- init west-yorkshire-small
+mkdir -p python/data/processed_data/Test_3/
+rm -rf python/data/processed_data/Test_3/
+cp -Rv processed_data/WestYorkshireSmall python/data/processed_data/Test_3
 
-rm -rf ~/RAMP-UA/data/processed_data/Test_3/
-cp -Rv processed_data/WestYorkshireSmall ~/RAMP-UA/data/processed_data/Test_3
-
-echo 'poetry run python main_model.py -p model_parameters/default.yml'
+cd python
+poetry run python main_model.py -p model_parameters/default.yml

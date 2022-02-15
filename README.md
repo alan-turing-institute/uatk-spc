@@ -5,6 +5,8 @@ Assistance in Modelling the Pandemic) model, based on the
 [EcoTwins-withCommuting
 branch](https://github.com/Urban-Analytics/RAMP-UA/tree/Ecotwins-withCommuting).
 
+TODO: Describe the hybrid Python/Rust repo now, license, how to run it, etc
+
 ## Status
 
 The initialisation phase, which builds a snapshot per study area, works. You

@@ -1,0 +1,72 @@
+###### Utility parameters for the microsimulation (python) part. #####
+###### These can also be passed as command line arguments   ##### REVIEW THIS!!!
+
+microsim:
+  study-area: "Test_3" # Name of directory inside data/processed_data (will be created if doesn't exist) Test_3
+  list-of-msoas: "Input_Test_3.csv" # Input data: a csv with the list of MSOAs in the study area and initial number of cases
+  scenario: "BaseScenario" # name for scenario directory
+  iterations: 80 # Number of model iterations. 0 means just initialise the model and create caches and snapshots, don't run it
+  repetitions: 1 # How many times to run the model
+  use-lockdown: TRUE # Whether to preload the lockdown scenario
+  start-date: 10 # Counted as number of days since 15/02/2020 (currently, max is 435)
+  sicThresh: 0 # min proportion of the population that must be preserved when using the sic1d07 classification for commuting modelling
+  initialise: FALSE # Legacy
+  output: TRUE # Whether to generate output or not
+  output-every-iteration: FALSE # Can optionally write output at every iteration, not just at the end
+  debug: FALSE # Whether to run some more expensive checks
+  use-cache: TRUE # Whether to cache the population data initialisation
+  opencl-model: TRUE # Run the OpenCL model
+  opencl-gui: TRUE # Run the OpenCL model with GUI visualisation for OpenCL model
+  opencl-gpu: TRUE # Run OpenCL model on the GPU (if false then run using CPU)
+
+
+# Parameters that are used to calibrate the model.
+# These can only be passed using the parameters file
+microsim_calibration:
+  # These multiply the amount of hazard that individuals pass on to shops etc:
+  hazard_individual_multipliers:
+    presymptomatic: 1
+    asymptomatic: 0.75
+    symptomatic: 1.0
+  # Different locations can also have their own multipliers (e.g. to make it easier to pass the disease on to shops than schools)
+  hazard_location_multipliers:
+    Retail: 1.0
+    Nightclubs: 1.0
+    PrimarySchool: 1.0
+    SecondarySchool: 1.0
+    Home: 1.0
+    Work: 1.0
+  # This multiplies the risk received as individuals visit shops etc.
+  risk_multiplier: 1.0
+
+
+disease: # This is where the parameter for the disease model (the R part) can go (same format the 'microsim_calibration' above)
+  current_risk_beta: 0.003
+  risk_cap: 5
+  seed_days: 10
+  exposed_dist: "weibull"
+  exposed_mean: 2.56
+  exposed_sd: 0.72
+  presymp_dist: "weibull"
+  presymp_mean: 2.3
+  presymp_sd: 0.35
+  infection_dist: "lognormal"
+  infection_mean: 7
+  infection_sd: 1.3
+  output_switch: TRUE
+  rank_assign: FALSE
+  local_outbreak_timestep: 7
+  local_outbreak: FALSE
+  msoa_infect: "E02004161"
+  number_people_local: 100
+  local_prob_increase: 1.0
+  overweight_sympt_mplier: 1
+  obesity_40: 1.48
+  obesity_35: 1.48
+  obesity_30: 1.48
+  overweight: 1
+  cvd: 1
+  diabetes: 1
+  bloodpressure: 1
+  improve_health: FALSE
+  set_seed: FALSE
