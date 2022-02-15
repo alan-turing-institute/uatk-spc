@@ -25,7 +25,7 @@ from coding.run import run_opencl
 from coding.snapshot_convertor import SnapshotConvertor
 from coding.snapshot import Snapshot
 from coding.params import Params, IndividualHazardMultipliers, LocationHazardMultipliers
-from coding.initialise.initialisation_cache import InitialisationCache
+from coding.initialisation_cache import InitialisationCache
 from coding.constants import Constants
 from coding.constants import ColumnNames
 
