@@ -17,13 +17,13 @@ import pickle
 from yaml import load, SafeLoader
 from shutil import copyfile
 
-from coding.run import run_opencl
-from coding.snapshot_convertor import SnapshotConvertor
-from coding.snapshot import Snapshot
-from coding.params import Params, IndividualHazardMultipliers, LocationHazardMultipliers
-from coding.initialisation_cache import InitialisationCache
-from coding.constants import Constants
-from coding.constants import ColumnNames
+from ramp.run import run_opencl
+from ramp.snapshot_convertor import SnapshotConvertor
+from ramp.snapshot import Snapshot
+from ramp.params import Params, IndividualHazardMultipliers, LocationHazardMultipliers
+from ramp.initialisation_cache import InitialisationCache
+from ramp.constants import Constants
+from ramp.constants import ColumnNames
 
 @click.command()
 @click.option('-p',

@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
-from coding.constants import Constants
+from ramp.constants import Constants
 from yaml import load, SafeLoader
 
 

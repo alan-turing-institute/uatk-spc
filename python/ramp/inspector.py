@@ -7,14 +7,14 @@ import copy
 from imgui.integrations.glfw import GlfwRenderer
 from OpenGL.GL import *
 
-from coding.activity import Activity
-from coding.params import Params
-from coding.projections import latlon_to_km
-from coding.shader import load_shader
-from coding.snapshot import Snapshot
-from coding.style import set_styles
-from coding.summary import Summary
-from coding.constants import Constants
+from ramp.activity import Activity
+from ramp.params import Params
+from ramp.projections import latlon_to_km
+from ramp.shader import load_shader
+from ramp.snapshot import Snapshot
+from ramp.style import set_styles
+from ramp.summary import Summary
+from ramp.constants import Constants
 
 default_flags = imgui.WINDOW_NO_RESIZE | imgui.WINDOW_NO_MOVE | imgui.WINDOW_NO_COLLAPSE
 

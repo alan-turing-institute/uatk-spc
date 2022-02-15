@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# -*- ramp: utf-8 -*-
 """
 Created on Thu Jun  4 16:22:57 2020
 

@@ -5,8 +5,8 @@ import json
 from tqdm import tqdm
 from convertbng.util import convert_lonlat
 
-from coding.snapshot import Snapshot
-from coding.constants import ColumnNames
+from ramp.snapshot import Snapshot
+from ramp.constants import ColumnNames
 
 sentinel_value = (1 << 31) - 1
 

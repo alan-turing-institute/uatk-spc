@@ -1,5 +1,5 @@
 from OpenGL.GL import *
-from coding.constants import Constants
+from ramp.constants import Constants
 import os
 
 

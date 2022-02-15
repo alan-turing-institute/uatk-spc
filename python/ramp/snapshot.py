@@ -1,7 +1,7 @@
 import numpy as np
 
-from coding.buffers import Buffers
-from coding.params import Params
+from ramp.buffers import Buffers
+from ramp.params import Params
 
 
 class Snapshot:

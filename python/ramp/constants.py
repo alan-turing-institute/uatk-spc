@@ -15,8 +15,8 @@ abspath = os.getcwd() # this one works when starting from working the project fo
 # Parameters: -p model_parameters/default.yml
 # Working directory: your project location
 parameters_folder = "model_parameters"
-# /coding/
-code_folder = "coding"
+# /ramp/
+code_folder = "ramp"
 initialise_folder = "initialise"
 r_python_model_folder = "microsim"
 opencl_fonts_folder = "fonts"
@@ -316,7 +316,7 @@ class Constants:
             # The following variable is used only by shader.py
             # OpenCL kernels are really sensible to the path provided
             # Specifically, you have to start from the current working directory
-            # that currently is abspath/project_folder/coding/ (see configurations)
+            # that currently is abspath/project_folder/ramp/ (see configurations)
             FOLDER_PATH_FOR_SHADERS = os.path.join(SHADERS_FOLDER)
 
         #<--<--<-- OPENCL

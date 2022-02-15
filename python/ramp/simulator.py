@@ -3,12 +3,12 @@ from numpy import random
 import pyopencl as cl
 import os
 import math
-from coding.buffers import Buffers
-from coding.kernels import Kernels
-from coding.params import Params
-from coding.snapshot import Snapshot
-from coding.initial_cases import InitialCases
-from coding.constants import Constants
+from ramp.buffers import Buffers
+from ramp.kernels import Kernels
+from ramp.params import Params
+from ramp.snapshot import Snapshot
+from ramp.initial_cases import InitialCases
+from ramp.constants import Constants
 
 
 class Simulator:

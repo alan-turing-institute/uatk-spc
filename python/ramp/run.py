@@ -6,12 +6,12 @@ import csv
 import numpy as np
 
 
-from coding.inspector import Inspector
-from coding.params import Params
-from coding.simulator import Simulator
-from coding.summary import Summary
-from coding.disease_statuses import DiseaseStatus
-from coding.constants import Constants
+from ramp.inspector import Inspector
+from ramp.params import Params
+from ramp.simulator import Simulator
+from ramp.summary import Summary
+from ramp.disease_statuses import DiseaseStatus
+from ramp.constants import Constants
 
 def run_opencl(snapshot,
                study_area,
