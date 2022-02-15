@@ -92,3 +92,11 @@ you want to use debug mode, just omit the flag.
 If you're working on the Rust code outside of an IDE like
 [VSCode](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust),
 then you can check if the code compiles much faster by doing `cargo check`.
+
+## Python
+
+This code was copied from
+https://github.com/dabreegster/RAMP-UA/tree/dcarlino_dev, then cleaned up by
+removing the initialisation phase, which is handled by Rust now. See that git
+repo for full lineage (from the EcoTwins branch of
+https://github.com/Urban-Analytics/RAMP-UA) and all authors
