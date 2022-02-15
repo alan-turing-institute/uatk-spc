@@ -22,9 +22,18 @@ default_flags = imgui.WINDOW_NO_RESIZE | imgui.WINDOW_NO_MOVE | imgui.WINDOW_NO_
 class Inspector:
     """User Interface: manager for all user input and rendering for the application."""
 
-    def __init__(self, simulator, snapshot, study_area_folder, nlines, window_name, width, height,
-                 # font_path="microsim/opencl/fonts/RobotoMono.ttf"):
-                 font_path=os.path.join(Constants.Paths.OPENCL_FONTS.FULL_PATH_ROBOTO)):
+    def __init__(
+        self,
+        simulator,
+        snapshot,
+        study_area_folder,
+        nlines,
+        window_name,
+        width,
+        height,
+        # font_path="microsim/opencl/fonts/RobotoMono.ttf"):
+        font_path=os.path.join(Constants.Paths.OPENCL_FONTS.FULL_PATH_ROBOTO),
+    ):
         """Create the window, imgui renderer, and all background renderers.
 
         Args:
@@ -65,9 +74,23 @@ class Inspector:
         impl.refresh_font_texture()
 
         # vertices representing corners of the screen
-        quad_vertices = np.array([
-            -1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, 1.0, 1.0, -1.0,
-        ], dtype=np.float32)
+        quad_vertices = np.array(
+            [
+                -1.0,
+                -1.0,
+                1.0,
+                1.0,
+                -1.0,
+                1.0,
+                -1.0,
+                -1.0,
+                1.0,
+                1.0,
+                1.0,
+                -1.0,
+            ],
+            dtype=np.float32,
+        )
 
         # Create vertex buffers on the GPU
         quad_vbo = glGenBuffers(1)
@@ -84,13 +107,15 @@ class Inspector:
 
         links_ebo = glGenBuffers(1)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, links_ebo)
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, 4 * 2 * npeople * nlines, None, GL_STATIC_DRAW)
+        glBufferData(
+            GL_ELEMENT_ARRAY_BUFFER, 4 * 2 * npeople * nlines, None, GL_STATIC_DRAW
+        )
 
         # Set up the vao for the point shader
         point_vao = glGenVertexArrays(1)
         glBindVertexArray(point_vao)
         glBindBuffer(GL_ARRAY_BUFFER, locations_vbo)
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*4, None)
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * 4, None)
         glEnableVertexAttribArray(0)
         glBindBuffer(GL_ARRAY_BUFFER, hazards_vbo)
         glVertexAttribIPointer(1, 1, GL_UNSIGNED_INT, 4, None)
@@ -101,7 +126,7 @@ class Inspector:
         glBindVertexArray(line_vao)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, links_ebo)
         glBindBuffer(GL_ARRAY_BUFFER, locations_vbo)
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*4, None)
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * 4, None)
         glEnableVertexAttribArray(0)
         glBindBuffer(GL_ARRAY_BUFFER, hazards_vbo)
         glVertexAttribIPointer(1, 1, GL_UNSIGNED_INT, 4, None)
@@ -111,7 +136,7 @@ class Inspector:
         quad_vao = glGenVertexArrays(1)
         glBindVertexArray(quad_vao)
         glBindBuffer(GL_ARRAY_BUFFER, quad_vbo)
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2*4, None)
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * 4, None)
         glEnableVertexAttribArray(0)
 
         glBindVertexArray(0)
@@ -169,9 +194,12 @@ class Inspector:
         self.zoom_multiplier = 1.01
         self.position = position
         # self.snapshot_dir = "microsim/opencl/snapshots"
-        self.snapshot_dir = os.path.join(study_area_folder,
-                                         Constants.Paths.SNAPSHOTS.FOLDER)
-        self.snapshots = [f for f in os.listdir(self.snapshot_dir) if f.endswith(".npz")]
+        self.snapshot_dir = os.path.join(
+            study_area_folder, Constants.Paths.SNAPSHOTS.FOLDER
+        )
+        self.snapshots = [
+            f for f in os.listdir(self.snapshot_dir) if f.endswith(".npz")
+        ]
         self.current_snapshot = self.snapshots.index(f"{snapshot.name}.npz")
         self.selected_snapshot = self.current_snapshot
         self.saveas_file = self.snapshots[self.current_snapshot]
@@ -254,30 +282,32 @@ class Inspector:
             lat: The latitude to transform the coordinates around.
             lon: The longitude to transform the coordinates around.
         """
-        #non_zero = np.count_nonzero(locations)
-        #print (non_zero)
-        new_arr_no_0 = locations[np.where(locations!=0)]
-        print (new_arr_no_0)
+        # non_zero = np.count_nonzero(locations)
+        # print (non_zero)
+        new_arr_no_0 = locations[np.where(locations != 0)]
+        print(new_arr_no_0)
         a = np.sort(new_arr_no_0)
         step = np.multiply(0.5, a.size)
-        print (step)
+        print(step)
         step = step.astype(int)
         b = np.mean(a.reshape(-1, step), axis=1)
-        print (b)
+        print(b)
         lat = b[1]
         lon = b[0]
-        #a = np.average(locations, 1)
-        #print (a)
-        #a = np.sort(locations)
-        #result = np.mean(a.reshape(-1, 421542), axis=1)
-        #lon = result[0]
-        #lat = result[1]
-        
-        #lat = np.max(locations)
-        #lon = np.min(locations)
-        
+        # a = np.average(locations, 1)
+        # print (a)
+        # a = np.sort(locations)
+        # result = np.mean(a.reshape(-1, 421542), axis=1)
+        # lon = result[0]
+        # lat = result[1]
+
+        # lat = np.max(locations)
+        # lon = np.min(locations)
+
         glBindBuffer(GL_ARRAY_BUFFER, self.locations_vbo)
-        glBufferSubData(GL_ARRAY_BUFFER, 0, 2*4*self.nplaces, latlon_to_km(locations, lat, lon))
+        glBufferSubData(
+            GL_ARRAY_BUFFER, 0, 2 * 4 * self.nplaces, latlon_to_km(locations, lat, lon)
+        )
 
     def upload_hazards(self, hazards):
         """Transfers the contents of hazards to the hazards vertex buffer.
@@ -286,7 +316,7 @@ class Inspector:
             hazards: A numpy array of nplaces uint32 hazards.
         """
         glBindBuffer(GL_ARRAY_BUFFER, self.hazards_vbo)
-        glBufferSubData(GL_ARRAY_BUFFER, 0, 4*self.nplaces, hazards)
+        glBufferSubData(GL_ARRAY_BUFFER, 0, 4 * self.nplaces, hazards)
 
     def upload_links(self, place_ids):
         """Transforms the 1D place_ids buffer into a 1d element buffer and uploads it.
@@ -294,15 +324,19 @@ class Inspector:
         Args:
             place_ids: A numpy array of npeople*nslots uint32 place IDs.
         """
-        place_mat = np.reshape(place_ids, (self.npeople, int(place_ids.size / self.npeople)))
-        place_mat = place_mat[:, 0:self.nlines]
+        place_mat = np.reshape(
+            place_ids, (self.npeople, int(place_ids.size / self.npeople))
+        )
+        place_mat = place_mat[:, 0 : self.nlines]
         starts = np.repeat(place_mat[:, 0], self.nlines)
         ends = place_mat.flatten()
-        links = np.empty(2*self.npeople*self.nlines, dtype=np.uint32)
+        links = np.empty(2 * self.npeople * self.nlines, dtype=np.uint32)
         links[0::2] = starts
         links[1::2] = ends
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, self.links_ebo)
-        glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, 2*4*self.npeople*self.nlines, links)
+        glBufferSubData(
+            GL_ELEMENT_ARRAY_BUFFER, 0, 2 * 4 * self.npeople * self.nlines, links
+        )
 
     def update_font_scale(self, font_scale):
         """Updates the imgui font scale, starts out at 0.5"""
@@ -310,7 +344,9 @@ class Inspector:
 
     def draw_grid(self):
         """Draws a full screen quad with a grid in the pixel shader."""
-        viewport = np.array([self.width, self.height], dtype=np.float32)  # Viewport size
+        viewport = np.array(
+            [self.width, self.height], dtype=np.float32
+        )  # Viewport size
         position = self.position[0:2]  # Position in km from origin
         scale = self.position[2]  # Scale in km per pixel
         if self.width * scale / self.spacing > 60.0:
@@ -329,9 +365,11 @@ class Inspector:
 
     def draw_points(self):
         """Draws a point for each location colored by its hazard."""
-        viewport = np.array([self.width, self.height], dtype=np.float32) # Viewport size
-        position = self.position[0:2] # Position in km from origin
-        scale = self.position[2] # Scale in km per pixel
+        viewport = np.array(
+            [self.width, self.height], dtype=np.float32
+        )  # Viewport size
+        position = self.position[0:2]  # Position in km from origin
+        scale = self.position[2]  # Scale in km per pixel
 
         glBindVertexArray(self.point_vao)
         glUseProgram(self.places_program)
@@ -343,9 +381,11 @@ class Inspector:
 
     def draw_lines(self):
         """Draws a line between each connected location colored by hazards."""
-        viewport = np.array([self.width, self.height], dtype=np.float32) # Viewport size
-        position = self.position[0:2] # Position in km from origin
-        scale = self.position[2] # Scale in km per pixel
+        viewport = np.array(
+            [self.width, self.height], dtype=np.float32
+        )  # Viewport size
+        position = self.position[0:2]  # Position in km from origin
+        scale = self.position[2]  # Scale in km per pixel
 
         glBindVertexArray(self.line_vao)
         glUseProgram(self.places_program)
@@ -357,8 +397,8 @@ class Inspector:
 
     def draw_platform_window(self, width, height):
         imgui.set_next_window_size(width / 6, height / 4)
-        imgui.set_next_window_position(width*5/6, 0)
-       
+        imgui.set_next_window_position(width * 5 / 6, 0)
+
         imgui.begin("Information", flags=default_flags)
         imgui.text(f"Platform:\n\t{self.platform}")
         imgui.text(f"Device: \n\t{self.device}")
@@ -368,7 +408,7 @@ class Inspector:
 
     def draw_controls_window(self, width, height):
         imgui.set_next_window_size(width / 6, height / 4)
-        imgui.set_next_window_position(width*5/6, height * 1/4)
+        imgui.set_next_window_position(width * 5 / 6, height * 1 / 4)
 
         imgui.begin("Controls", flags=default_flags)
         imgui.text("WASD to move around")
@@ -384,30 +424,40 @@ class Inspector:
             self.simulator.upload_all(self.snapshot.buffers)
             self.simulator.time = self.snapshot.time
         _, self.do_lockdown = imgui.checkbox("Lockdown", self.do_lockdown)
-        if imgui.button("Hide Parameters" if self.show_parameters else "Show Parameters"):
+        if imgui.button(
+            "Hide Parameters" if self.show_parameters else "Show Parameters"
+        ):
             self.show_parameters = not self.show_parameters
         imgui.end()
 
     def draw_layers_window(self, width, height):
         imgui.set_next_window_size(width / 6, height / 4)
-        imgui.set_next_window_position(width*5/6, height * 2/4)
+        imgui.set_next_window_position(width * 5 / 6, height * 2 / 4)
         imgui.begin("Layers", flags=default_flags)
         _, self.show_grid = imgui.checkbox("Show Grid", self.show_grid)
         _, self.show_points = imgui.checkbox("Show Places", self.show_points)
         _, self.show_lines = imgui.checkbox("Show Connections", self.show_lines)
-        _, self.point_size = imgui.slider_int("Point Size", self.point_size, min_value=1, max_value=6)
-        clicked, self.font_scale = imgui.slider_float("Font Scale", self.font_scale, 0.1, 0.9, "%.1f")
+        _, self.point_size = imgui.slider_int(
+            "Point Size", self.point_size, min_value=1, max_value=6
+        )
+        clicked, self.font_scale = imgui.slider_float(
+            "Font Scale", self.font_scale, 0.1, 0.9, "%.1f"
+        )
         if clicked:
             self.update_font_scale(self.font_scale)
         imgui.end()
 
     def draw_snapshots_window(self, width, height):
         imgui.set_next_window_size(width / 6, height / 4)
-        imgui.set_next_window_position(width*5/6, height * 3/4)
+        imgui.set_next_window_position(width * 5 / 6, height * 3 / 4)
         imgui.begin("Snapshots", flags=default_flags)
-        clicked, self.selected_snapshot = imgui.listbox("", self.selected_snapshot, self.snapshots)
+        clicked, self.selected_snapshot = imgui.listbox(
+            "", self.selected_snapshot, self.snapshots
+        )
         if imgui.button("Load Selected"):
-            self.snapshot = Snapshot.load_full_snapshot(f"snapshots/{self.snapshots[self.selected_snapshot]}")
+            self.snapshot = Snapshot.load_full_snapshot(
+                f"snapshots/{self.snapshots[self.selected_snapshot]}"
+            )
             self.simulator.upload_all(self.snapshot.buffers)
             self.simulator.time = self.snapshot.time
             self.upload_hazards(self.snapshot.buffers.place_hazards)
@@ -426,7 +476,7 @@ class Inspector:
         imgui.set_next_window_size(width / 10, height)
         imgui.set_next_window_position(0, 0)
         imgui.begin("Time Series", flags=default_flags)
-        graph_size = [width/11, height / 7.5]
+        graph_size = [width / 11, height / 7.5]
         self.summary.draw_plots(self.simulator.time, graph_size)
         imgui.end()
 
@@ -451,70 +501,97 @@ class Inspector:
         imgui.text("Behaviour Change")
 
         _, self.params.symptomatic_multiplier = imgui.slider_float(
-            "Symptomatic Multiplier", self.params.symptomatic_multiplier, 0.0, 1.0)
+            "Symptomatic Multiplier", self.params.symptomatic_multiplier, 0.0, 1.0
+        )
 
         imgui.text("Duration Distributions")
 
         _, self.params.exposed_scale = imgui.slider_float(
-            "Exposed Weibull Scale", self.params.exposed_scale, 1.0, 10.0)
+            "Exposed Weibull Scale", self.params.exposed_scale, 1.0, 10.0
+        )
         _, self.params.exposed_shape = imgui.slider_float(
-            "Exposed Weibull Shape", self.params.exposed_shape, 0.0, 10.0)
+            "Exposed Weibull Shape", self.params.exposed_shape, 0.0, 10.0
+        )
         _, self.params.presymptomatic_scale = imgui.slider_float(
-            "Presymptomatic Weibull Scale", self.params.presymptomatic_scale, 0.0, 10.0)
+            "Presymptomatic Weibull Scale", self.params.presymptomatic_scale, 0.0, 10.0
+        )
         _, self.params.presymptomatic_shape = imgui.slider_float(
-            "Presymptomatic Weibull Shape", self.params.presymptomatic_shape, 0.0, 10.0)
+            "Presymptomatic Weibull Shape", self.params.presymptomatic_shape, 0.0, 10.0
+        )
         _, self.params.infection_log_scale = imgui.slider_float(
-            "Infection Log-normal Scale", self.params.infection_log_scale, 0.0, 5.0)
+            "Infection Log-normal Scale", self.params.infection_log_scale, 0.0, 5.0
+        )
         _, self.params.infection_mode = imgui.slider_float(
-            "Infection Log-normal Mode", self.params.infection_mode, 0.0, 20.0)
+            "Infection Log-normal Mode", self.params.infection_mode, 0.0, 20.0
+        )
 
         imgui.text("Activity Hazard Multipliers")
 
         for i, activity in enumerate(list(Activity)):
             _, self.params.place_hazard_multipliers[i] = imgui.slider_float(
-                activity.name, self.params.place_hazard_multipliers[i], 0.0, 1.0, "%.4f")
+                activity.name, self.params.place_hazard_multipliers[i], 0.0, 1.0, "%.4f"
+            )
 
         imgui.text("Mortality Probabilities by Age")
 
         _, self.params.mortality_probs[0] = imgui.slider_float(
-            "0 to 4", self.params.mortality_probs[0], 0.0, 1.0, "%.7f")
+            "0 to 4", self.params.mortality_probs[0], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[1] = imgui.slider_float(
-            "5 to 9", self.params.mortality_probs[1], 0.0, 1.0, "%.7f")
+            "5 to 9", self.params.mortality_probs[1], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[2] = imgui.slider_float(
-            "10 to 14", self.params.mortality_probs[2], 0.0, 1.0, "%.7f")
+            "10 to 14", self.params.mortality_probs[2], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[3] = imgui.slider_float(
-            "15 to 19", self.params.mortality_probs[3], 0.0, 1.0, "%.7f")
+            "15 to 19", self.params.mortality_probs[3], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[4] = imgui.slider_float(
-            "20 to 24", self.params.mortality_probs[4], 0.0, 1.0, "%.7f")
+            "20 to 24", self.params.mortality_probs[4], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[5] = imgui.slider_float(
-            "25 to 29", self.params.mortality_probs[5], 0.0, 1.0, "%.7f")
+            "25 to 29", self.params.mortality_probs[5], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[6] = imgui.slider_float(
-            "30 to 34", self.params.mortality_probs[6], 0.0, 1.0, "%.7f")
+            "30 to 34", self.params.mortality_probs[6], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[7] = imgui.slider_float(
-            "35 to 39", self.params.mortality_probs[7], 0.0, 1.0, "%.7f")
+            "35 to 39", self.params.mortality_probs[7], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[8] = imgui.slider_float(
-            "40 to 44", self.params.mortality_probs[8], 0.0, 1.0, "%.7f")
+            "40 to 44", self.params.mortality_probs[8], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[9] = imgui.slider_float(
-            "45 to 49", self.params.mortality_probs[9], 0.0, 1.0, "%.7f")
+            "45 to 49", self.params.mortality_probs[9], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[10] = imgui.slider_float(
-            "50 to 54", self.params.mortality_probs[10], 0.0, 1.0, "%.7f")
+            "50 to 54", self.params.mortality_probs[10], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[11] = imgui.slider_float(
-            "55 to 59", self.params.mortality_probs[11], 0.0, 1.0, "%.7f")
+            "55 to 59", self.params.mortality_probs[11], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[12] = imgui.slider_float(
-            "60 to 64", self.params.mortality_probs[12], 0.0, 1.0, "%.7f")
+            "60 to 64", self.params.mortality_probs[12], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[13] = imgui.slider_float(
-            "65 to 69", self.params.mortality_probs[13], 0.0, 1.0, "%.7f")
+            "65 to 69", self.params.mortality_probs[13], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[14] = imgui.slider_float(
-            "70 to 74", self.params.mortality_probs[14], 0.0, 1.0, "%.7f")
+            "70 to 74", self.params.mortality_probs[14], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[15] = imgui.slider_float(
-            "75 to 79", self.params.mortality_probs[15], 0.0, 1.0, "%.7f")
+            "75 to 79", self.params.mortality_probs[15], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[16] = imgui.slider_float(
-            "80 to 84", self.params.mortality_probs[16], 0.0, 1.0, "%.7f")
+            "80 to 84", self.params.mortality_probs[16], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[17] = imgui.slider_float(
-            "85 to 89", self.params.mortality_probs[17], 0.0, 1.0, "%.7f")
+            "85 to 89", self.params.mortality_probs[17], 0.0, 1.0, "%.7f"
+        )
         _, self.params.mortality_probs[18] = imgui.slider_float(
-            "90 and above", self.params.mortality_probs[18], 0.0, 1.0, "%.7f")
-    
+            "90 and above", self.params.mortality_probs[18], 0.0, 1.0, "%.7f"
+        )
+
         if imgui.button("Reset to Defaults"):
             self.params = Params()
 
@@ -580,7 +657,9 @@ class Inspector:
 
         # Update the lockdown and upload params
         if self.do_lockdown:
-            self.params.set_lockdown_multiplier(self.snapshot.lockdown_multipliers, self.simulator.time)
+            self.params.set_lockdown_multiplier(
+                self.snapshot.lockdown_multipliers, self.simulator.time
+            )
         else:
             self.params.lockdown_multiplier = 1.0  # NB: Multiplier of 1.0 has no effect
         self.simulator.upload("params", self.params.asarray())
@@ -595,10 +674,14 @@ class Inspector:
         self.upload_hazards(self.snapshot.buffers.place_hazards)
 
         # Download status data from OpenCL to the host
-        self.simulator.download("people_statuses", self.snapshot.buffers.people_statuses)
+        self.simulator.download(
+            "people_statuses", self.snapshot.buffers.people_statuses
+        )
 
         # Compute summary statistics for hazards
-        self.summary.update(self.simulator.time-1, self.snapshot.buffers.people_statuses)
+        self.summary.update(
+            self.simulator.time - 1, self.snapshot.buffers.people_statuses
+        )
 
     def update(self):
         """Update loop for running the simulation and updating/rendering the UI."""

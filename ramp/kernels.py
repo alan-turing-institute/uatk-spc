@@ -8,6 +8,6 @@ Kernels = namedtuple(
         "people_update_flows",
         "people_send_hazards",
         "people_recv_hazards",
-        "people_update_statuses"
-    ]
+        "people_update_statuses",
+    ],
 )

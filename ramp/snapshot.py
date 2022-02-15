@@ -13,8 +13,18 @@ class Snapshot:
     which is not used in the runtime simulation but may be used for seeding infections at the snapshot stage.
     """
 
-    def __init__(self, nplaces, npeople, nslots, time, area_codes, not_home_probs, lockdown_multipliers, buffers,
-                 name="cache"):
+    def __init__(
+        self,
+        nplaces,
+        npeople,
+        nslots,
+        time,
+        area_codes,
+        not_home_probs,
+        lockdown_multipliers,
+        buffers,
+        name="cache",
+    ):
         self.name = name
         self.nplaces = nplaces
         self.npeople = npeople
@@ -32,17 +42,18 @@ class Snapshot:
         npeople = np.uint32(npeople)
         nslots = np.uint32(nslots)
         time = np.uint32(0)
-        area_codes = np.full(npeople, "E00000000") # "E02002371") # "E02004129")
+        area_codes = np.full(npeople, "E00000000")  # "E02002371") # "E02004129")
         not_home_probs = np.zeros(npeople).astype(np.float32)
 
-        lockdown_multipliers = np.ones(2000) # Random high number that should be higher than the length of the lockdown file
+        lockdown_multipliers = np.ones(
+            2000
+        )  # Random high number that should be higher than the length of the lockdown file
 
         buffers = Buffers(
             place_activities=np.zeros(nplaces, dtype=np.uint32),
             place_coords=np.zeros(nplaces * 2, dtype=np.float32),
             place_hazards=np.zeros(nplaces, dtype=np.uint32),
             place_counts=np.zeros(nplaces, dtype=np.uint32),
-
             people_ages=np.zeros(npeople, dtype=np.uint16),
             people_obesity=np.zeros(npeople, dtype=np.uint16),
             people_cvd=np.zeros(npeople, dtype=np.uint8),
@@ -55,11 +66,19 @@ class Snapshot:
             people_flows=np.zeros(npeople * nslots, dtype=np.float32),
             people_hazards=np.zeros(npeople, dtype=np.float32),
             people_prngs=np.zeros(npeople * 4, dtype=np.uint32),
-
             params=Params().asarray(),
         )
 
-        return cls(nplaces, npeople, nslots, time, area_codes, not_home_probs, lockdown_multipliers, buffers)
+        return cls(
+            nplaces,
+            npeople,
+            nslots,
+            time,
+            area_codes,
+            not_home_probs,
+            lockdown_multipliers,
+            buffers,
+        )
 
     @classmethod
     # def random(cls, nplaces, npeople, nslots, lat=50.7, lon=-3.5):
@@ -69,7 +88,7 @@ class Snapshot:
         npeople = np.uint32(npeople)
         nslots = np.uint32(nslots)
         time = np.uint32(0)
-        area_codes = np.full(npeople, "E02002371") # "E02004129")
+        area_codes = np.full(npeople, "E02002371")  # "E02004129")
         not_home_probs = np.random.rand(npeople).astype(np.float32)
 
         lockdown_multipliers = np.ones(2000)
@@ -79,7 +98,6 @@ class Snapshot:
             place_coords=np.random.randn(nplaces * 2).astype(np.float32),
             place_hazards=np.zeros(nplaces, dtype=np.uint32),
             place_counts=np.zeros(nplaces, dtype=np.uint32),
-
             people_ages=np.random.randint(100, size=npeople, dtype=np.uint16),
             people_obesity=np.zeros(npeople, dtype=np.uint16),
             people_cvd=np.zeros(npeople, dtype=np.uint8),
@@ -87,31 +105,59 @@ class Snapshot:
             people_blood_pressure=np.zeros(npeople, dtype=np.uint8),
             people_statuses=np.random.binomial(1, 0.001, npeople).astype(np.uint32),
             people_transition_times=np.ones(npeople, dtype=np.uint32),
-            people_place_ids=np.random.randint(nplaces, size=npeople * nslots, dtype=np.uint32),
+            people_place_ids=np.random.randint(
+                nplaces, size=npeople * nslots, dtype=np.uint32
+            ),
             people_baseline_flows=np.random.rand(npeople * nslots).astype(np.float32),
             people_flows=np.zeros(npeople * nslots, dtype=np.float32),
             people_hazards=np.zeros(npeople, dtype=np.float32),
-            people_prngs=np.random.randint(np.uint32((1 << 32) - 1), size=npeople * 4, dtype=np.uint32),
-
+            people_prngs=np.random.randint(
+                np.uint32((1 << 32) - 1), size=npeople * 4, dtype=np.uint32
+            ),
             params=Params().asarray(),
         )
 
         ids = np.reshape(np.tile(np.arange(nslots), npeople), (npeople, nslots))
         ids += np.reshape(np.arange(npeople), (npeople, 1))
-        buffers.people_place_ids[:] = np.clip(ids, 0, nplaces).flatten().astype(np.uint32)
+        buffers.people_place_ids[:] = (
+            np.clip(ids, 0, nplaces).flatten().astype(np.uint32)
+        )
 
-        buffers.place_coords[0::2] = np.mod(np.arange(nplaces), np.sqrt(nplaces)) / np.sqrt(nplaces)
+        buffers.place_coords[0::2] = np.mod(
+            np.arange(nplaces), np.sqrt(nplaces)
+        ) / np.sqrt(nplaces)
         buffers.place_coords[1::2] = np.arange(nplaces) / nplaces
         buffers.place_coords[0::2] += lat - 0.5
         buffers.place_coords[1::2] += lon - 0.5
         buffers.place_coords[:] += np.random.randn(2 * nplaces) / 100.0
 
-        return cls(nplaces, npeople, nslots, time, area_codes, not_home_probs, lockdown_multipliers, buffers)
+        return cls(
+            nplaces,
+            npeople,
+            nslots,
+            time,
+            area_codes,
+            not_home_probs,
+            lockdown_multipliers,
+            buffers,
+        )
 
     @classmethod
-    def from_arrays(cls, people_ages, people_obesity, people_cvd, people_diabetes, people_blood_pressure,
-                    people_place_ids, people_baseline_flows, area_codes, not_home_probs,
-                    place_activities, place_coords, lockdown_multipliers):
+    def from_arrays(
+        cls,
+        people_ages,
+        people_obesity,
+        people_cvd,
+        people_diabetes,
+        people_blood_pressure,
+        people_place_ids,
+        people_baseline_flows,
+        area_codes,
+        not_home_probs,
+        place_activities,
+        place_coords,
+        lockdown_multipliers,
+    ):
         nplaces = place_activities.shape[0]
         npeople = people_place_ids.shape[0]
         nslots = people_baseline_flows.shape[1]
@@ -131,7 +177,6 @@ class Snapshot:
             place_coords=place_coords,
             place_hazards=np.zeros(nplaces, dtype=np.uint32),
             place_counts=np.zeros(nplaces, dtype=np.uint32),
-
             people_ages=people_ages,
             people_obesity=people_obesity,
             people_cvd=people_cvd,
@@ -143,20 +188,32 @@ class Snapshot:
             people_baseline_flows=people_baseline_flows,
             people_flows=people_baseline_flows,
             people_hazards=np.zeros(npeople, dtype=np.float32),
-            people_prngs=np.random.randint(np.uint32((1 << 32) - 1), size=npeople * 4, dtype=np.uint32),
-
+            people_prngs=np.random.randint(
+                np.uint32((1 << 32) - 1), size=npeople * 4, dtype=np.uint32
+            ),
             params=Params().asarray(),
         )
 
-        return cls(nplaces, npeople, nslots, time, area_codes, not_home_probs, lockdown_multipliers, buffers)
+        return cls(
+            nplaces,
+            npeople,
+            nslots,
+            time,
+            area_codes,
+            not_home_probs,
+            lockdown_multipliers,
+            buffers,
+        )
 
     def update_params(self, new_params):
         try:
             self.buffers.params[:] = new_params.asarray()
         except ValueError as e:
-            print(f"Snapshot.py caused an exception '{str(e)}'. This can happen if the parameters in the model "
-                  f"have changed after a snapshot has been created. Try deleting the snapshot file "
-                  f"'microsim/opencl/snapshots/{self.name}.npz' and re-running the model.")
+            print(
+                f"Snapshot.py caused an exception '{str(e)}'. This can happen if the parameters in the model "
+                f"have changed after a snapshot has been created. Try deleting the snapshot file "
+                f"'microsim/opencl/snapshots/{self.name}.npz' and re-running the model."
+            )
             raise e
 
     def seed_prngs(self, seed):
@@ -167,7 +224,8 @@ class Snapshot:
         """
         np.random.seed(seed)
         self.buffers.people_prngs[:] = np.random.randint(
-            np.uint32((1 << 32) - 1), size=self.npeople * 4, dtype=np.uint32)
+            np.uint32((1 << 32) - 1), size=self.npeople * 4, dtype=np.uint32
+        )
 
     def switch_to_healthier_population(self):
         """
@@ -192,13 +250,30 @@ class Snapshot:
             lockdown_multipliers = file_data["lockdown_multipliers"]
 
             buffers = Buffers(**{name: file_data[name] for name in Buffers._fields})
-            return cls(nplaces, npeople, nslots, time, area_codes, not_home_probs, lockdown_multipliers, buffers)
+            return cls(
+                nplaces,
+                npeople,
+                nslots,
+                time,
+                area_codes,
+                not_home_probs,
+                lockdown_multipliers,
+                buffers,
+            )
 
     def save(self, path):
         """Saves this snapshot to the provided path as a .npz file."""
-        np.savez(path, nplaces=self.nplaces, npeople=self.npeople, nslots=self.nslots,
-                 time=self.time, area_codes=self.area_codes, not_home_probs=self.not_home_probs,
-                 lockdown_multipliers=self.lockdown_multipliers, **self.buffers._asdict())
+        np.savez(
+            path,
+            nplaces=self.nplaces,
+            npeople=self.npeople,
+            nslots=self.nslots,
+            time=self.time,
+            area_codes=self.area_codes,
+            not_home_probs=self.not_home_probs,
+            lockdown_multipliers=self.lockdown_multipliers,
+            **self.buffers._asdict(),
+        )
 
     def num_bytes(self):
         """Returns size in bytes of this snapshot."""
@@ -209,4 +284,6 @@ class Snapshot:
 
     def sanitize_coords(self):
         """Sets all zero coordinate to nan so they can be discarded by the renderer."""
-        self.buffers.place_coords[:] = np.where(self.buffers.place_coords == 0.0, np.nan, self.buffers.place_coords)
+        self.buffers.place_coords[:] = np.where(
+            self.buffers.place_coords == 0.0, np.nan, self.buffers.place_coords
+        )

@@ -17,7 +17,9 @@ def latlon_to_km(locations, lat, lon):
     # https://en.wikipedia.org/wiki/Latitude#Length_of_a_degree_of_latitude
     dlat = 110.574  # Approximate length in km of a degree of latitude
     # https://en.wikipedia.org/wiki/Longitude#Length_of_a_degree_of_longitude
-    dlon = 111.320 * cos(lat * pi / 180.0)  # Approximate length of a degree of longitude
+    dlon = 111.320 * cos(
+        lat * pi / 180.0
+    )  # Approximate length of a degree of longitude
     reproj_locs = np.empty_like(locations)
     reproj_locs[0::2] = (locations[1::2] - lon) * dlon
     reproj_locs[1::2] = (locations[0::2] - lat) * dlat

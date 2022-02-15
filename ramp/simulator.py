@@ -17,12 +17,13 @@ class Simulator:
     and a step() method to execute the kernels to calculate one timestep of the model.
     """
 
-    def __init__(self,
-                 snapshot,
-                 parameters_file,
-                 #selected_region_folder_full_path,
-                 gpu=False
-                 ):
+    def __init__(
+        self,
+        snapshot,
+        parameters_file,
+        # selected_region_folder_full_path,
+        gpu=False,
+    ):
         """Initialise OpenCL context, kernels, and buffers for the simulator.
 
         Args:
@@ -46,9 +47,9 @@ class Simulator:
                 break
         if platform is None:
             raise OSError("No compatible device found")
-        ctx = cl.Context(dev_type=dev_type,
-                         properties=[(cl.context_properties.PLATFORM,
-                                      platform)])
+        ctx = cl.Context(
+            dev_type=dev_type, properties=[(cl.context_properties.PLATFORM, platform)]
+        )
         queue = cl.CommandQueue(ctx)
 
         # Initialise the device buffers
@@ -57,29 +58,34 @@ class Simulator:
             place_coords=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, nplaces * 8),
             place_hazards=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, nplaces * 4),
             place_counts=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, nplaces * 4),
-
             people_ages=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, npeople * 2),
             people_obesity=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, npeople * 2),
             people_cvd=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, npeople),
             people_diabetes=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, npeople),
             people_blood_pressure=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, npeople),
             people_statuses=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, npeople * 4),
-            people_transition_times=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, npeople * 4),
-            people_place_ids=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, npeople * nslots * 4),
-            people_baseline_flows=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, npeople * nslots * 4),
+            people_transition_times=cl.Buffer(
+                ctx, cl.mem_flags.READ_WRITE, npeople * 4
+            ),
+            people_place_ids=cl.Buffer(
+                ctx, cl.mem_flags.READ_WRITE, npeople * nslots * 4
+            ),
+            people_baseline_flows=cl.Buffer(
+                ctx, cl.mem_flags.READ_WRITE, npeople * nslots * 4
+            ),
             people_flows=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, npeople * nslots * 4),
             people_hazards=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, npeople * 4),
             people_prngs=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, npeople * 16),
-
             params=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, Params().num_bytes()),
         )
         # kernel_dir = os.path.join(opencl_dir, "ramp/kernels/")
         kernel_dir = Constants.Paths.OPENCL_SOURCE.FOLDER_PATH_FOR_KERNEL
-        #kernel_dir = kernel_dir + "/"
+        # kernel_dir = kernel_dir + "/"
         print(f"Checking kernel_dir \t{kernel_dir}\n")
         # Load the OpenCL kernel programs
-        with open(os.path.join(kernel_dir,
-                               Constants.Paths.OPENCL_SOURCE.KERNEL_FILE)) as f:
+        with open(
+            os.path.join(kernel_dir, Constants.Paths.OPENCL_SOURCE.KERNEL_FILE)
+        ) as f:
             program = cl.Program(ctx, f.read())
             program.build(options=[f"-I {kernel_dir}"])
 
@@ -88,30 +94,62 @@ class Simulator:
             people_update_flows=program.people_update_flows,
             people_send_hazards=program.people_send_hazards,
             people_recv_hazards=program.people_recv_hazards,
-            people_update_statuses=program.people_update_statuses)
+            people_update_statuses=program.people_update_statuses,
+        )
 
         # Pass data buffers to the kernels using set_args
-        kernels.places_reset.set_args(nplaces, buffers.place_hazards, buffers.place_counts)
+        kernels.places_reset.set_args(
+            nplaces, buffers.place_hazards, buffers.place_counts
+        )
 
         kernels.people_update_flows.set_args(
-            npeople, nslots, buffers.people_statuses, buffers.people_baseline_flows,
-            buffers.people_flows, buffers.people_place_ids, buffers.place_activities,
-            buffers.params)
+            npeople,
+            nslots,
+            buffers.people_statuses,
+            buffers.people_baseline_flows,
+            buffers.people_flows,
+            buffers.people_place_ids,
+            buffers.place_activities,
+            buffers.params,
+        )
 
         kernels.people_send_hazards.set_args(
-            npeople, nslots, buffers.people_statuses, buffers.people_place_ids,
-            buffers.people_flows, buffers.people_hazards, buffers.place_hazards,
-            buffers.place_counts, buffers.place_activities, buffers.params)
+            npeople,
+            nslots,
+            buffers.people_statuses,
+            buffers.people_place_ids,
+            buffers.people_flows,
+            buffers.people_hazards,
+            buffers.place_hazards,
+            buffers.place_counts,
+            buffers.place_activities,
+            buffers.params,
+        )
 
         kernels.people_recv_hazards.set_args(
-            npeople, nslots, buffers.people_statuses, buffers.people_place_ids,
-            buffers.people_flows, buffers.people_hazards, buffers.place_hazards,
-            buffers.params)
+            npeople,
+            nslots,
+            buffers.people_statuses,
+            buffers.people_place_ids,
+            buffers.people_flows,
+            buffers.people_hazards,
+            buffers.place_hazards,
+            buffers.params,
+        )
 
         kernels.people_update_statuses.set_args(
-            npeople, buffers.people_ages, buffers.people_obesity, buffers.people_cvd, buffers.people_diabetes,
-            buffers.people_blood_pressure, buffers.people_hazards, buffers.people_statuses,
-            buffers.people_transition_times, buffers.people_prngs, buffers.params)
+            npeople,
+            buffers.people_ages,
+            buffers.people_obesity,
+            buffers.people_cvd,
+            buffers.people_diabetes,
+            buffers.people_blood_pressure,
+            buffers.people_hazards,
+            buffers.people_statuses,
+            buffers.people_transition_times,
+            buffers.people_prngs,
+            buffers.params,
+        )
 
         self.nplaces = nplaces
         self.npeople = npeople
@@ -121,16 +159,15 @@ class Simulator:
         self.platform = platform
         self.ctx = ctx
         self.queue = queue
-    
+
         self.start_snapshot = snapshot
         self.buffers = buffers
         self.kernels = kernels
 
         # data_dir = os.path.join(opencl_dir, "data/")
-        self.initial_cases = InitialCases(snapshot.area_codes,
-                                          snapshot.not_home_probs,
-                                          parameters_file)
-                                          
+        self.initial_cases = InitialCases(
+            snapshot.area_codes, snapshot.not_home_probs, parameters_file
+        )
 
         self.num_seed_days = 0
 
@@ -185,16 +222,32 @@ class Simulator:
     def step_all_kernels(self):
         """Runs each kernel in order and updates the time. Blocks until complete."""
         reset_event = cl.enqueue_nd_range_kernel(
-            self.queue, self.kernels.places_reset, (self.nplaces,), None)
+            self.queue, self.kernels.places_reset, (self.nplaces,), None
+        )
         update_flows_event = cl.enqueue_nd_range_kernel(
-            self.queue, self.kernels.people_update_flows, (self.npeople,), None)
+            self.queue, self.kernels.people_update_flows, (self.npeople,), None
+        )
         event = cl.enqueue_nd_range_kernel(
-            self.queue, self.kernels.people_send_hazards, (self.npeople,), None,
-            wait_for=[reset_event, update_flows_event])
+            self.queue,
+            self.kernels.people_send_hazards,
+            (self.npeople,),
+            None,
+            wait_for=[reset_event, update_flows_event],
+        )
         event = cl.enqueue_nd_range_kernel(
-            self.queue, self.kernels.people_recv_hazards, (self.npeople,), None, wait_for=[event])
+            self.queue,
+            self.kernels.people_recv_hazards,
+            (self.npeople,),
+            None,
+            wait_for=[event],
+        )
         event = cl.enqueue_nd_range_kernel(
-            self.queue, self.kernels.people_update_statuses, (self.npeople,), None, wait_for=[event])
+            self.queue,
+            self.kernels.people_update_statuses,
+            (self.npeople,),
+            None,
+            wait_for=[event],
+        )
         event.wait()
         self.time += np.uint32(1)
 
@@ -202,7 +255,9 @@ class Simulator:
         """Run a single kernel specified by name. NB: this is intended only to be used for testing."""
         if hasattr(self.kernels, name):
             dims = (self.nplaces,) if name == "places_reset" else (self.npeople,)
-            event = cl.enqueue_nd_range_kernel(self.queue, getattr(self.kernels, name), dims, None)
+            event = cl.enqueue_nd_range_kernel(
+                self.queue, getattr(self.kernels, name), dims, None
+            )
             event.wait()
         else:
             raise ValueError("No kernel with name {}".format(name))
@@ -227,7 +282,7 @@ class Simulator:
         self.time += np.uint32(1)
 
     def seeding_base(self):
-        """Different seeding: sets a number of people infected based on the MSOA cases data and decides their status 
+        """Different seeding: sets a number of people infected based on the MSOA cases data and decides their status
         (asymptomatic, symptomatic) according to the rules of the model."""
         initial_case_ids = self.initial_cases.get_seed_people_ids()
 
@@ -241,16 +296,24 @@ class Simulator:
 
         for i in initial_case_ids:
             # define random statuses
-            symptomatic_prob = cov_params.symptomatic_probs[min(math.floor(people_ages[i]/10), 8)]
-            if people_obesity[i]>2:
-                symptomatic_prob = symptomatic_prob*cov_params.overweight_sympt_mplier
+            symptomatic_prob = cov_params.symptomatic_probs[
+                min(math.floor(people_ages[i] / 10), 8)
+            ]
+            if people_obesity[i] > 2:
+                symptomatic_prob = symptomatic_prob * cov_params.overweight_sympt_mplier
             if random.random() < symptomatic_prob:
                 people_statuses[i] = 4
             # define random duration times
-            people_transition_times[i] = random.lognormal(pow(cov_params.infection_log_scale, 2) + math.log(cov_params.infection_mode), cov_params.infection_log_scale)
-            people_transition_times[i] = random.choice(range(math.floor(people_transition_times[i])))
+            people_transition_times[i] = random.lognormal(
+                pow(cov_params.infection_log_scale, 2)
+                + math.log(cov_params.infection_mode),
+                cov_params.infection_log_scale,
+            )
+            people_transition_times[i] = random.choice(
+                range(math.floor(people_transition_times[i]))
+            )
 
         people_statuses = people_statuses.astype(np.uint32)
         people_transition_times = people_transition_times.astype(np.uint32)
 
-        return [people_statuses,people_transition_times]
+        return [people_statuses, people_transition_times]

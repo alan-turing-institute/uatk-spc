@@ -29,7 +29,9 @@ class Summary:
         self.store_detailed_counts = store_detailed_counts
 
         # create empty arrays to hold total counts
-        self.total_counts = [np.zeros(max_time, np.float32) for _ in range(len(DiseaseStatus))]
+        self.total_counts = [
+            np.zeros(max_time, np.float32) for _ in range(len(DiseaseStatus))
+        ]
 
         if store_detailed_counts:
             # process age data into buckets
@@ -41,20 +43,35 @@ class Summary:
             # get integer ids for area code strings
             self.unique_area_codes = np.unique(snapshot.area_codes)
 
-            self.area_code_id_lookup = {area_code: i for (i, area_code) in enumerate(self.unique_area_codes)}
-            area_ids = np.array([self.area_code_id_lookup[area_code] for area_code in snapshot.area_codes],
-                                dtype=np.uint32)
+            self.area_code_id_lookup = {
+                area_code: i for (i, area_code) in enumerate(self.unique_area_codes)
+            }
+            area_ids = np.array(
+                [
+                    self.area_code_id_lookup[area_code]
+                    for area_code in snapshot.area_codes
+                ],
+                dtype=np.uint32,
+            )
 
-            self.individuals_df = pd.DataFrame({'status': np.zeros(snapshot.npeople),
-                                                'age_bin': age_bins,
-                                                'area_id': area_ids,
-                                                })
+            self.individuals_df = pd.DataFrame(
+                {
+                    "status": np.zeros(snapshot.npeople),
+                    "age_bin": age_bins,
+                    "area_id": area_ids,
+                }
+            )
 
             # create empty dicts to hold age and area counts
             # (use the string representation of the disease, e.g. DiseaseStatus.Exposed = 'exposed')
 
-            self.age_counts = {str(d): np.zeros((len(age_thresholds), max_time)) for d in DiseaseStatus}
-            self.area_counts = {str(d): np.zeros((len(self.unique_area_codes), max_time)) for d in DiseaseStatus}
+            self.age_counts = {
+                str(d): np.zeros((len(age_thresholds), max_time)) for d in DiseaseStatus
+            }
+            self.area_counts = {
+                str(d): np.zeros((len(self.unique_area_codes), max_time))
+                for d in DiseaseStatus
+            }
 
         # fill arrays up to current time with constant values
         for i in range(snapshot.time):
@@ -67,20 +84,23 @@ class Summary:
         columns = self.get_df_columns()
         age_counts_dict = {}
         for status, age_count_array in self.age_counts.items():
-            age_counts_dict[status] = pd.DataFrame.from_records(age_count_array, columns=columns)
+            age_counts_dict[status] = pd.DataFrame.from_records(
+                age_count_array, columns=columns
+            )
         return age_counts_dict
 
     def get_area_dataframes(self):
         columns = self.get_df_columns()
         area_counts_dict = {}
         for status, area_count_array in self.area_counts.items():
-            area_counts_dict[status] = pd.DataFrame.from_records(area_count_array, columns=columns,
-                                                                 index=self.unique_area_codes)
+            area_counts_dict[status] = pd.DataFrame.from_records(
+                area_count_array, columns=columns, index=self.unique_area_codes
+            )
         return area_counts_dict
 
     def update(self, time, statuses):
         """Given an array of status enums, compute and save counts."""
-        current_time = np.minimum(time, self.max_time-1)
+        current_time = np.minimum(time, self.max_time - 1)
 
         # store total counts by status
         unique_statuses, counts = np.unique(statuses, return_counts=True)
@@ -89,23 +109,39 @@ class Summary:
 
         if self.store_detailed_counts:
             # update dataframe with new statuses
-            self.individuals_df['status'] = statuses
+            self.individuals_df["status"] = statuses
 
             # store age counts
-            for (age_bin, status), count in self.individuals_df.groupby(["age_bin", "status"]).size().iteritems():
-                self.age_counts[DiseaseStatus(status).name.lower()][age_bin][current_time] = np.float32(count)
+            for (age_bin, status), count in (
+                self.individuals_df.groupby(["age_bin", "status"]).size().iteritems()
+            ):
+                self.age_counts[DiseaseStatus(status).name.lower()][age_bin][
+                    current_time
+                ] = np.float32(count)
 
             # store area counts
-            for (area_id, status), count in self.individuals_df.groupby(["area_id", "status"]).size().iteritems():
-                self.area_counts[DiseaseStatus(status).name.lower()][area_id][current_time] = np.float32(count)
+            for (area_id, status), count in (
+                self.individuals_df.groupby(["area_id", "status"]).size().iteritems()
+            ):
+                self.area_counts[DiseaseStatus(status).name.lower()][area_id][
+                    current_time
+                ] = np.float32(count)
 
     def draw_plots(self, time, size):
         """Given current time and graph size, draw the imgui plots."""
-        opts = {"graph_size": size, "scale_min": 0.0, "values_count": np.minimum(time, self.max_time-1)}
+        opts = {
+            "graph_size": size,
+            "scale_min": 0.0,
+            "values_count": np.minimum(time, self.max_time - 1),
+        }
         imgui.plot_lines("", self.total_counts[0], overlay_text="\nSusceptible", **opts)
         imgui.plot_lines("", self.total_counts[1], overlay_text="\nExposed", **opts)
-        imgui.plot_lines("", self.total_counts[2], overlay_text="\nPresymptomatic", **opts)
-        imgui.plot_lines("", self.total_counts[3], overlay_text="\nAsymptomatic", **opts)
+        imgui.plot_lines(
+            "", self.total_counts[2], overlay_text="\nPresymptomatic", **opts
+        )
+        imgui.plot_lines(
+            "", self.total_counts[3], overlay_text="\nAsymptomatic", **opts
+        )
         imgui.plot_lines("", self.total_counts[4], overlay_text="\nSymptomatic", **opts)
         imgui.plot_lines("", self.total_counts[5], overlay_text="\nRecovered", **opts)
         imgui.plot_lines("", self.total_counts[6], overlay_text="\nDead", **opts)

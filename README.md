@@ -100,3 +100,5 @@ https://github.com/dabreegster/RAMP-UA/tree/dcarlino_dev, then cleaned up by
 removing the initialisation phase, which is handled by Rust now. See that git
 repo for full lineage (from the EcoTwins branch of
 https://github.com/Urban-Analytics/RAMP-UA) and all authors
+
+`poetry run black ramp main_model.py`
