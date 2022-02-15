@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 Core RAMP-UA model.
 
@@ -8,19 +7,16 @@ Created on Tue Apr 6
 @author: Anna on Nick's code, for the national scaling-up
 """
 import sys
-sys.path.append("microsim")  # This is only needed when testing. I'm so confused about the imports
 import multiprocessing
 import pandas as pd
 import numpy as np
 pd.set_option('display.expand_frame_repr', False)  # Don't wrap lines when displaying DataFrames
-# pd.set_option('display.width', 0)  # Automatically find the best width
 import os
-import click  # command-line interface
-import pickle  # to save data
-from yaml import load, SafeLoader  # pyyaml library for reading the parameters.yml file
+import click
+import pickle
+from yaml import load, SafeLoader
 from shutil import copyfile
 
-# from model.microsim.microsim_model import MicrosimModel # are we keeping the R/Python model or not?
 from coding.run import run_opencl
 from coding.snapshot_convertor import SnapshotConvertor
 from coding.snapshot import Snapshot
@@ -44,29 +40,21 @@ def main(parameters_file):
 
     try:
         with open(parameters_file, 'r') as f:
-            #print(f"Reading parameters file: {parameters_file}. ")
-            # print(f"Reading parameters file: {parameters_file}. ")
             parameters = load(f,
                               Loader=SafeLoader)
             sim_params = parameters["microsim"]  # Parameters for the dynamic microsim (python)
             calibration_params = parameters["microsim_calibration"]
             disease_params = parameters["disease"]  # Parameters for the disease model (r)
-            # TODO Implement a more elegant way to set the parameters and pass them to the model. E.g.:
-            #         self.params, self.params_changed = Model._init_kwargs(params, kwargs)
-            #         [setattr(self, key, value) for key, value in self.params.items()]
             # Utility parameters
             scenario = sim_params["scenario"]
             initialise = sim_params["initialise"]
             iterations = sim_params["iterations"]
-#            Constants.Paths.PROJECT_FOLDER_ABSOLUTE_PATH = sim_params["project-dir-absolute-path"]
             study_area = sim_params["study-area"]
-            # selected_region_folder_name = sim_params["selected-region-folder-name"]
             output = sim_params["output"]
             output_every_iteration = sim_params["output-every-iteration"]
             debug = sim_params["debug"]
             repetitions = sim_params["repetitions"]
             use_lockdown = sim_params["use-lockdown"]
-            # quant_dir = sim_params["quant-dir"]
             open_cl_model = sim_params["opencl-model"]
             opencl_gui = sim_params["opencl-gui"]
             opencl_gpu = sim_params["opencl-gpu"]
@@ -86,15 +74,6 @@ def main(parameters_file):
                         "iteration (output_every_iteration=True)")
 
 
-    # To fix file path issues, use absolute/full path at all times
-    # Pick either: get working directory (if user starts this script in place, or set working directory)
-    # Option A: copy current working directory:
-    ###### current_working_dir = os.getcwd()  # get current directory
-    # TODO: change this working dir because it's not correct and had to add the ".." in the 2 paths under here
-
-    # Check that working directory is as expected
-    # path = os.path.join(current_working_dir, "..", Constants.Paths.DATA_FOLDER, Constants.Paths.REGIONAL_DATA_FOLDER)
-    # if not os.path.exists(os.path.join(current_working_dir, "..", Constants.Paths.DATA_FOLDER, Constants.Paths.REGIONAL_DATA_FOLDER)):
     if not os.path.exists(os.path.join(Constants.Paths.PROCESSED_DATA.FULL_PATH_FOLDER)):
         raise Exception("Data folder structure not valid. Make sure you are running within correct working directory.")
 
@@ -186,40 +165,6 @@ def run_opencl_model(iterations,
                )
 
 
-# def run_python_model(individuals_df, activity_locations_df, time_activity_multiplier, msim_args, iterations,
-#                      repetitions, parameters_file):
-#     print("\nRunning Python / R model")
-#
-#     # Create a microsim object
-#     m = MicrosimModel(individuals_df, activity_locations_df, time_activity_multiplier, **msim_args)
-#     copyfile(parameters_file, os.path.join(m.SCEN_DIR, "parameters.yml"))# use: copyfile(microsim,destination)
-#
-#     # Run the Python / R model
-#     if repetitions == 1:
-#         m.run(iterations, 0)
-#     elif repetitions >= 1:  # Run it multiple times on lots of cores
-#         try:
-#             with multiprocessing.Pool(processes=int(os.cpu_count())) as pool:
-#                 # Copy the model instance so we don't have to re-read the data each time
-#                 # (Use a generator so we don't need to store all the models in memory at once).
-#                 models = (MicrosimModel._make_a_copy(m) for _ in range(repetitions))
-#                 pickle_out = open(os.path.join("Models_m.pickle"), "wb")
-#                 pickle.dump(m, pickle_out)
-#                 pickle_out.close()
-#                 # models = ( Microsim(msim_args) for _ in range(repetitions))
-#                 # Also need a list giving the number of iterations for each model (same for each model)
-#                 iters = (iterations for _ in range(repetitions))
-#                 repnr = (r for r in range(repetitions))
-#                 # Run the models by passing each model and the number of iterations
-#                 pool.starmap(_run_multicore, zip(models, iters, repnr))
-#         finally:  # Make sure they get closed (shouldn't be necessary)
-#             pool.close()
-
-
-def _run_multicore(m, iter, rep):
-    return m.run(iter, rep)
-
-
 def create_params(calibration_params, disease_params):
     current_risk_beta = disease_params["current_risk_beta"]
 
@@ -253,4 +198,3 @@ def create_params(calibration_params, disease_params):
 
 if __name__ == "__main__":
     main()
-    print("End of program")
