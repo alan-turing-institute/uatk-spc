@@ -18,11 +18,8 @@ parameters_folder = "model_parameters"
 # /coding/
 code_folder = "coding"
 initialise_folder = "initialise"
-model_folder = "model"
 r_python_model_folder = "microsim"
-opencl_model_folder = "opencl"
 opencl_fonts_folder = "fonts"
-opencl_source_folder = "ramp"
 opencl_kernels_folder = "kernels"
 opencl_shaders_folder = "shaders"
 # /data/
@@ -264,60 +261,40 @@ class Constants:
         #<--<-- INITIALISE
         #-->--> MODEL
         class MODEL:
-            FOLDER = model_folder
             FULL_PATH_FOLDER = os.path.join(abspath,
-                                            code_folder,
-                                            FOLDER)
+                                            code_folder)
         #-->-->--> R/PYTHon
         class RPTYHON_MODEL:
             FOLDER = r_python_model_folder
             FULL_PATH_FOLDER = os.path.join(abspath,
                                             code_folder,
-                                            model_folder,
                                             FOLDER)
         #<--<--<-- R/PYTHon
         #-->-->--> OPENCL
         class OPENCL_MODEL:
-            FOLDER = opencl_model_folder
             FULL_PATH_FOLDER = os.path.join(abspath,
-                                            code_folder,
-                                            model_folder,
-                                            FOLDER)
+                                            code_folder)
         class OPENCL_FONTS:
             FOLDER = opencl_fonts_folder
             FULL_PATH_FOLDER = os.path.join(abspath,
                                             code_folder,
-                                            model_folder,
-
-                                            opencl_model_folder,
                                             FOLDER)
             FONT_DROID = "DroidSans.ttf"
             FULL_PATH_DROID = os.path.join(abspath,
                                            code_folder,
-                                           model_folder,
-                                           opencl_model_folder,
                                            FOLDER,
                                            FONT_DROID)
             FONT_ROBOTO = "RobotoMono.ttf"
             FULL_PATH_ROBOTO = os.path.join(abspath,
                                             code_folder,
-                                            model_folder,
-                                            opencl_model_folder,
                                             FOLDER,
                                             FONT_ROBOTO)
         class OPENCL_SOURCE:
-            SOURCE_FOLDER = opencl_source_folder
             FULL_PATH_SOURCE = os.path.join(abspath,
-                                            code_folder,
-                                            model_folder,
-                                            opencl_model_folder,
-                                            SOURCE_FOLDER)
+                                            code_folder)
             KERNELS_FOLDER = opencl_kernels_folder
             FULL_PATH_KERNEL_FOLDER = os.path.join(abspath,
                                                    code_folder,
-                                                   model_folder,
-                                                   opencl_model_folder,
-                                                   SOURCE_FOLDER,
                                                    KERNELS_FOLDER)
             # **** IMPORTANT ****
             # The following variable is used only by Simulator module
@@ -325,34 +302,22 @@ class Constants:
             # Specifically, you have to start from 'after' the current working directory
             # that currently is abspath/project_folder/ (must be consistent with the  configurations)
             FOLDER_PATH_FOR_KERNEL = os.path.join(code_folder,
-                                                  model_folder,
-                                                  opencl_model_folder,
-                                                  SOURCE_FOLDER,
                                                   KERNELS_FOLDER)
             KERNEL_FILE = "ramp_ua.cl"
             FULL_PATH_KERNEL_FILE = os.path.join(abspath,
                                                  code_folder,
-                                                 model_folder,
-                                                 opencl_model_folder,
-                                                 SOURCE_FOLDER,
                                                  KERNELS_FOLDER,
                                                  KERNEL_FILE)
             # **** END ****
             SHADERS_FOLDER = opencl_shaders_folder
             FULL_PATH_SHADERS_FOLDER = os.path.join(abspath,
                                                     code_folder,
-                                                    model_folder,
-                                                    opencl_model_folder,
-                                                    SOURCE_FOLDER,
                                                     SHADERS_FOLDER)
             # The following variable is used only by shader.py
             # OpenCL kernels are really sensible to the path provided
             # Specifically, you have to start from the current working directory
             # that currently is abspath/project_folder/coding/ (see configurations)
-            FOLDER_PATH_FOR_SHADERS = os.path.join(model_folder,
-                                                  opencl_model_folder,
-                                                  SOURCE_FOLDER,
-                                                  SHADERS_FOLDER)
+            FOLDER_PATH_FOR_SHADERS = os.path.join(SHADERS_FOLDER)
 
         #<--<--<-- OPENCL
         #<-<-- MODEL

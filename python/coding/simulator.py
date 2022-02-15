@@ -3,11 +3,11 @@ from numpy import random
 import pyopencl as cl
 import os
 import math
-from coding.model.opencl.ramp.buffers import Buffers
-from coding.model.opencl.ramp.kernels import Kernels
-from coding.model.opencl.ramp.params import Params
-from coding.model.opencl.ramp.snapshot import Snapshot
-from coding.model.opencl.ramp.initial_cases import InitialCases
+from coding.buffers import Buffers
+from coding.kernels import Kernels
+from coding.params import Params
+from coding.snapshot import Snapshot
+from coding.initial_cases import InitialCases
 from coding.constants import Constants
 
 

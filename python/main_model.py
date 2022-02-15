@@ -21,10 +21,10 @@ from yaml import load, SafeLoader  # pyyaml library for reading the parameters.y
 from shutil import copyfile
 
 # from model.microsim.microsim_model import MicrosimModel # are we keeping the R/Python model or not?
-from coding.model.opencl.ramp.run import run_opencl
-from coding.model.opencl.ramp.snapshot_convertor import SnapshotConvertor
-from coding.model.opencl.ramp.snapshot import Snapshot
-from coding.model.opencl.ramp.params import Params, IndividualHazardMultipliers, LocationHazardMultipliers
+from coding.run import run_opencl
+from coding.snapshot_convertor import SnapshotConvertor
+from coding.snapshot import Snapshot
+from coding.params import Params, IndividualHazardMultipliers, LocationHazardMultipliers
 from coding.initialise.initialisation_cache import InitialisationCache
 from coding.constants import Constants
 from coding.constants import ColumnNames

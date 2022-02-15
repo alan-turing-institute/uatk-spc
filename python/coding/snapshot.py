@@ -1,7 +1,7 @@
 import numpy as np
 
-from coding.model.opencl.ramp.buffers import Buffers
-from coding.model.opencl.ramp.params import Params
+from coding.buffers import Buffers
+from coding.params import Params
 
 
 class Snapshot:

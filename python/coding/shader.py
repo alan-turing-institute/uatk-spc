@@ -12,9 +12,9 @@ def load_shader(shader_name):
     Returns:
         program: Compiled OpenGL shader program.
     """
-    # shader_path = "microsim/opencl/ramp/shaders/"
+    # shader_path = "microsim/opencl/shaders/"
     shader_path = os.path.join(Constants.Paths.OPENCL_SOURCE.FULL_PATH_SHADERS_FOLDER)
-    # shader_path = "/Users/azanchetta/EcoTwins/microsim/opencl/ramp/shaders/"
+    # shader_path = "/Users/azanchetta/EcoTwins/microsim/opencl/shaders/"
     vert = glCreateShader(GL_VERTEX_SHADER)
     with open(f"{shader_path}/{shader_name}.vert") as f:  # AZ: added a "/" in the path
         glShaderSource(vert, f.read())
