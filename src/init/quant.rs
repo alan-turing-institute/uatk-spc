@@ -46,7 +46,7 @@ pub fn get_flows(
         Activity::Home | Activity::Work => unreachable!(),
     };
     for rec in csv::Reader::from_reader(File::open(
-        Path::new("raw_data/nationaldata/QUANT_RAMP").join(population_csv),
+        Path::new("data/raw_data/nationaldata/QUANT_RAMP").join(population_csv),
     )?)
     .deserialize()
     {
@@ -55,7 +55,7 @@ pub fn get_flows(
     }
 
     let table_path =
-        format!("raw_data/nationaldata/QUANT_RAMP/{}", prob_sij).replace(".bin", ".npy");
+        format!("data/raw_data/nationaldata/QUANT_RAMP/{}", prob_sij).replace(".bin", ".npy");
 
     if File::open(&table_path).is_err() {
         info!(
@@ -164,7 +164,7 @@ pub fn load_venues(activity: Activity) -> Result<TiVec<VenueID, Venue>> {
     };
     let mut venues = TiVec::new();
     for rec in csv::Reader::from_reader(File::open(format!(
-        "raw_data/nationaldata/QUANT_RAMP/{}",
+        "data/raw_data/nationaldata/QUANT_RAMP/{}",
         csv_path
     ))?)
     .deserialize()

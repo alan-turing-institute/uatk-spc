@@ -8,7 +8,7 @@ set -e
 manifest=manifest.csv
 echo 'file,bytes,checksum' > $manifest
 
-for file in `find raw_data/ -type f`; do
+for file in `find data/raw_data/ -type f`; do
 	echo $file
 	checksum=`md5sum $file | cut -d ' ' -f1`
 	bytes=`stat -c %s $file`

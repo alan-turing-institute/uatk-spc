@@ -1,5 +1,4 @@
+data
 target
 *.swp
 __pycache__
-raw_data
-processed_data

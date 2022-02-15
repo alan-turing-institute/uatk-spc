@@ -43,7 +43,7 @@ async fn main() -> Result<()> {
             let population = Population::create(input, &mut rng).await?;
 
             // First clear the target directory
-            let target_dir = format!("processed_data/{:?}", region);
+            let target_dir = format!("data/processed_data/{:?}", region);
             // Ignore errors if this directory doesn't even exist
             let _ = fs_err::remove_dir_all(&target_dir);
             fs_err::create_dir_all(format!("{target_dir}/snapshot"))?;
@@ -60,8 +60,10 @@ async fn main() -> Result<()> {
         }
         Action::RunModel { region } => {
             info!("Loading population");
-            let population =
-                utilities::read_binary::<Population>(format!("processed_data/{:?}.bin", region))?;
+            let population = utilities::read_binary::<Population>(format!(
+                "data/processed_data/{:?}/rust_cache.bin",
+                region
+            ))?;
             let mut model = Model::new(population, rng)?;
             model.run()?;
         }

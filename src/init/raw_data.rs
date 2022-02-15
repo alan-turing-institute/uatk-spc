@@ -50,7 +50,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
 
     for tu in tus_needed {
         let gzip_path = download_file("countydata", format!("tus_hse_{}.gz", tu)).await?;
-        let output_path = format!("raw_data/countydata/tus_hse_{}.csv", tu);
+        let output_path = format!("data/raw_data/countydata/tus_hse_{}.csv", tu);
         untar(gzip_path, &output_path)?;
         results.tus_files.push(output_path);
     }
@@ -58,17 +58,20 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     for osm_url in osm_needed {
         let zip_path = download(
             &osm_url,
-            format!("raw_data/countydata/OSM/{}", filename(&osm_url)),
+            format!("data/raw_data/countydata/OSM/{}", filename(&osm_url)),
         )
         .await?;
         // TODO .shp.zip, so we have to do basename twice
-        let output_dir = format!("raw_data/countydata/OSM/{}/", basename(&basename(&osm_url)));
+        let output_dir = format!(
+            "data/raw_data/countydata/OSM/{}/",
+            basename(&basename(&osm_url))
+        );
         unzip(zip_path, &output_dir)?;
         results.osm_directories.push(output_dir);
     }
 
     let path = download_file("nationaldata", "QUANT_RAMP.tar.gz").await?;
-    untar(path, "raw_data/nationaldata/QUANT_RAMP/")?;
+    untar(path, "data/raw_data/nationaldata/QUANT_RAMP/")?;
 
     // CommutingOD is all commented out
 
@@ -77,7 +80,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     download_file("nationaldata", "timeAtHomeIncreaseCTY.csv").await?;
 
     let path = download_file("nationaldata", "MSOAS_shp.tar.gz").await?;
-    untar(path, "raw_data/nationaldata/MSOAS_shp/")?;
+    untar(path, "data/raw_data/nationaldata/MSOAS_shp/")?;
 
     Ok(results)
 }
@@ -112,7 +115,7 @@ async fn download_file<P: AsRef<str>>(dir: &str, file: P) -> Result<PathBuf> {
     let file = file.as_ref();
     download(
         azure.join(dir).join(file),
-        Path::new("raw_data").join(dir).join(file),
+        Path::new("data/raw_data").join(dir).join(file),
     )
     .await
 }

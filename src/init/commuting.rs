@@ -27,8 +27,10 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
     let mut business_locations: HashMap<BusinessID, Point<f32>> = HashMap::new();
     let mut available_jobs_per_business: HashMap<BusinessID, usize> = HashMap::new();
     let mut total_jobs = 0;
-    for rec in csv::Reader::from_reader(File::open("raw_data/nationaldata/businessRegistry.csv")?)
-        .deserialize()
+    for rec in csv::Reader::from_reader(File::open(
+        "data/raw_data/nationaldata/businessRegistry.csv",
+    )?)
+    .deserialize()
     {
         let rec: Row = rec?;
         if msoas.contains(&rec.msoa) {

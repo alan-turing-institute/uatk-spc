@@ -31,7 +31,7 @@ pub fn calculate_lockdown_per_day(
     let mut total_change_per_day: Vec<f32> = Vec::new();
 
     for rec in csv::Reader::from_reader(File::open(
-        "raw_data/nationaldata/timeAtHomeIncreaseCTY.csv",
+        "data/raw_data/nationaldata/timeAtHomeIncreaseCTY.csv",
     )?)
     .deserialize()
     {

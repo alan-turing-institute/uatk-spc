@@ -36,11 +36,11 @@ pub fn get_info_per_msoa(
 fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA>> {
     // We can't use from_path, because the file isn't named .shp.dbf as expected
     let shape_reader =
-        shapefile::ShapeReader::from_path("raw_data/nationaldata/MSOAS_shp/msoas.shp")?;
+        shapefile::ShapeReader::from_path("data/raw_data/nationaldata/MSOAS_shp/msoas.shp")?;
     // TODO Weird error type
     // TODO BufReader doesn't work with fs_err
     let dbf_reader = shapefile::dbase::Reader::new(BufReader::new(std::fs::File::open(
-        "raw_data/nationaldata/MSOAS_shp/msoas.dbf",
+        "data/raw_data/nationaldata/MSOAS_shp/msoas.dbf",
     )?))
     .unwrap();
     let mut reader = shapefile::Reader::new(shape_reader, dbf_reader);
