@@ -116,16 +116,13 @@ impl Region {
 
         // Determine the MSOAs to operate on using CSV files from the original repo
         let csv_input = match self {
-            Region::WestYorkshireSmall => "Input_Test_3.csv",
-            Region::WestYorkshireLarge => "Input_WestYorkshire.csv",
-            Region::Devon => "Input_Devon.csv",
-            Region::TwoCounties => "Input_Test_accross.csv",
             Region::National => {
                 for msoa in MSOA::all_msoas_nationally().await? {
                     input.initial_cases_per_msoa.insert(msoa, default_cases());
                 }
                 return Ok(input);
             }
+            _ => format!("Input_{:?}.csv", self),
         };
         let csv_path = format!("model_parameters/{}", csv_input);
         for rec in csv::Reader::from_reader(File::open(csv_path)?).deserialize() {

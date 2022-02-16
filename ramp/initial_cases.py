@@ -17,9 +17,10 @@ class InitialCases:
         with open(parameters_file, "r") as f:
             parameters = load(f, Loader=SafeLoader)
             sim_params = parameters["microsim"]
+        study_area = sim_params["study-area"]
         self.initial_cases = pd.read_csv(
             os.path.join(
-                Constants.Paths.PARAMETERS.FULL_PATH, sim_params["list-of-msoas"]
+                Constants.Paths.PARAMETERS.FULL_PATH, f"Input_{study_area}.csv"
             )
         )
 

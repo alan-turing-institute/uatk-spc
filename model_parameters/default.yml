@@ -2,8 +2,7 @@
 ###### These can also be passed as command line arguments   ##### REVIEW THIS!!!
 
 microsim:
-  study-area: "WestYorkshireSmall" # Name of directory inside data/processed_data (will be created if doesn't exist) Test_3
-  list-of-msoas: "Input_Test_3.csv" # Input data: a csv with the list of MSOAs in the study area and initial number of cases
+  study-area: "WestYorkshireSmall"
   scenario: "BaseScenario" # name for scenario directory
   iterations: 80 # Number of model iterations. 0 means just initialise the model and create caches and snapshots, don't run it
   repetitions: 1 # How many times to run the model
