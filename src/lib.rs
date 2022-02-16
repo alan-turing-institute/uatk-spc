@@ -80,7 +80,7 @@ impl MSOA {
 
 #[derive(Serialize, Deserialize)]
 pub struct InfoPerMSOA {
-    pub shape: MultiPolygon<f64>,
+    pub shape: MultiPolygon<f32>,
     pub population: usize,
     /// All building centroids within this MSOA.
     ///

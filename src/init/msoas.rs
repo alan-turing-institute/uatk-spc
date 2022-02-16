@@ -2,7 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::io::{BufReader, Write};
 
 use anyhow::Result;
-use geo::map_coords::MapCoordsInplace;
+use geo::map_coords::MapCoords;
 use geo::prelude::{BoundingRect, Centroid, Contains};
 use geo::{MultiPolygon, Point};
 use proj::Proj;
@@ -60,16 +60,16 @@ fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA>
             }
             if let Some(shapefile::dbase::FieldValue::Numeric(Some(population))) = record.get("pop")
             {
-                let mut geo_polygon: MultiPolygon<f64> = shape.try_into()?;
-                geo_polygon.map_coords_inplace(|&(x, y)| {
+                let geo_polygon: MultiPolygon<f64> = shape.try_into()?;
+                let shape: MultiPolygon<f32> = geo_polygon.map_coords(|&(x, y)| {
                     // TODO Error handling inside here is weird
                     let pt = reproject.convert((x, y)).unwrap();
-                    (pt.x(), pt.y())
+                    (pt.x() as f32, pt.y() as f32)
                 });
                 results.insert(
                     msoa,
                     InfoPerMSOA {
-                        shape: geo_polygon,
+                        shape,
                         population: *population as usize,
                         buildings: Vec::new(),
                     },
@@ -84,7 +84,7 @@ fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA>
 // TODO If this is ever removed, cleanup dependencies on geojson and serde_json
 // TODO Also, there should be a less verbose way to do this sort of thing
 fn dump_msoa_shapes(msoas: &BTreeMap<MSOA, InfoPerMSOA>) -> Result<()> {
-    let geom_collection: geo::GeometryCollection<f64> =
+    let geom_collection: geo::GeometryCollection<f32> =
         msoas.values().map(|info| info.shape.clone()).collect();
     let mut feature_collection = geojson::FeatureCollection::from(&geom_collection);
     for (feature, msoa) in feature_collection.features.iter_mut().zip(msoas.keys()) {
@@ -129,17 +129,16 @@ fn match_points_to_shapes(points: Vec<Point<f32>>, msoas: &mut BTreeMap<MSOA, In
 // TODO Share with odjitter
 fn points_per_polygon<K: Clone + Ord>(
     points: Vec<Point<f32>>,
-    polygons: &BTreeMap<K, MultiPolygon<f64>>,
+    polygons: &BTreeMap<K, MultiPolygon<f32>>,
 ) -> BTreeMap<K, Vec<Point<f32>>> {
     info!(
         "Matching {} points to {} polygons. Building R-Tree...",
         print_count(points.len()),
         print_count(polygons.len())
     );
-    // TODO Arghhh
-    let cast_points: Vec<Point<f64>> = points
+    let cast_points: Vec<Point<f32>> = points
         .into_iter()
-        .map(|pt| Point::new(pt.lng() as f64, pt.lat() as f64))
+        .map(|pt| Point::new(pt.lng(), pt.lat()))
         .collect();
     let tree = RTree::bulk_load(cast_points);
 
@@ -149,12 +148,12 @@ fn points_per_polygon<K: Clone + Ord>(
         pb.inc(1);
         let mut pts_inside = Vec::new();
         let bounds = polygon.bounding_rect().unwrap();
-        let envelope: AABB<Point<f64>> =
+        let envelope: AABB<Point<f32>> =
             AABB::from_corners(bounds.min().into(), bounds.max().into());
         for pt in tree.locate_in_envelope(&envelope) {
             if polygon.contains(pt) {
                 // TODO Casting
-                pts_inside.push(Point::new(pt.lng() as f32, pt.lat() as f32));
+                pts_inside.push(Point::new(pt.lng(), pt.lat()));
             }
         }
         output.insert(key.clone(), pts_inside);

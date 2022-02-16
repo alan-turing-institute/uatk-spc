@@ -278,12 +278,10 @@ fn get_place_coordinates(
         for venue in &input.venues_per_activity[activity] {
             // TODO To match Python, we should filter venues belonging to our input MSOAs earlier.
             // This is a slower way to get equivalent results.
-            // TODO f32 hacks
-            let pt = geo::Point::new(venue.location.lat() as f64, venue.location.lng() as f64);
             if input
                 .info_per_msoa
                 .values()
-                .any(|info| info.shape.contains(&pt))
+                .any(|info| info.shape.contains(&venue.location))
             {
                 let place = id_mapping.to_place(activity, &venue.id);
                 result[place.0 as usize * 2 + 0] = venue.location.lat();

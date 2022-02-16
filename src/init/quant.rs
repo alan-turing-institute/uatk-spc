@@ -178,8 +178,8 @@ pub fn load_venues(activity: Activity) -> Result<TiVec<VenueID, Venue>> {
         venues.push(Venue {
             id: VenueID(venues.len()),
             activity,
-            // TODO Weird geo_types version problem, possibly because of the f32/f64 problem
-            location: Point::new(pt.lng() as f32, pt.lat() as f32),
+            // TODO Workaround geo_types version problem
+            location: Point::new(pt.lng(), pt.lat()),
             urn: rec.urn,
         });
     }
@@ -194,8 +194,8 @@ struct PopulationRow {
 
 #[derive(Debug, Deserialize)]
 struct ZoneRow {
-    east: f64,
-    north: f64,
+    east: f32,
+    north: f32,
     zonei: usize,
     urn: Option<usize>,
 }
