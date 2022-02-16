@@ -285,6 +285,11 @@ fn setup_venue_flows(
     info!("Reading {:?} flow data...", activity);
 
     population.venues_per_activity[activity] = load_venues(activity)?;
+    info!(
+        "{:?} has {} venues",
+        activity,
+        print_count(population.venues_per_activity[activity].len())
+    );
 
     // Per MSOA, a list of venues and the probability of going from the MSOA to that venue
     let flows_per_msoa: BTreeMap<MSOA, Vec<(VenueID, f64)>> =
@@ -303,7 +308,7 @@ fn setup_venue_flows(
 
         let msoa = &population.households[person.household].msoa;
         if let Some(flows) = flows_per_msoa.get(msoa) {
-            // TODO On the natonal run, we run out of memory around here.
+            // TODO On the national run, we run out of memory around here.
             person.flows_per_activity[activity] = flows.clone();
         } else {
             // I've never observed this, so crash if it ever happens

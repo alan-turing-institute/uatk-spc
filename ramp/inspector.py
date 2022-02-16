@@ -272,9 +272,7 @@ class Inspector:
         if self.is_pressed(glfw.KEY_DOWN):
             self.position[2] *= self.zoom_multiplier
 
-    # TODO: hard-coded lat-lon !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    def upload_locations(self, locations):  #  50.7184, lon=-3.5339
+    def upload_locations(self, locations):
         """Reprojects the lat lons around the provided one and uploads them to OpenGL.
 
         Args:
@@ -282,27 +280,15 @@ class Inspector:
             lat: The latitude to transform the coordinates around.
             lon: The longitude to transform the coordinates around.
         """
-        # non_zero = np.count_nonzero(locations)
-        # print (non_zero)
+        non_zero = np.count_nonzero(locations)
+        print(f'{non_zero} places are part of this study area')
         new_arr_no_0 = locations[np.where(locations != 0)]
-        print(new_arr_no_0)
         a = np.sort(new_arr_no_0)
         step = np.multiply(0.5, a.size)
-        print(step)
         step = step.astype(int)
         b = np.mean(a.reshape(-1, step), axis=1)
-        print(b)
         lat = b[1]
         lon = b[0]
-        # a = np.average(locations, 1)
-        # print (a)
-        # a = np.sort(locations)
-        # result = np.mean(a.reshape(-1, 421542), axis=1)
-        # lon = result[0]
-        # lat = result[1]
-
-        # lat = np.max(locations)
-        # lon = np.min(locations)
 
         glBindBuffer(GL_ARRAY_BUFFER, self.locations_vbo)
         glBufferSubData(
