@@ -281,7 +281,7 @@ class Inspector:
             lon: The longitude to transform the coordinates around.
         """
         non_zero = np.count_nonzero(locations)
-        print(f'{non_zero} places are part of this study area')
+        print(f"{non_zero} places are part of this study area")
         new_arr_no_0 = locations[np.where(locations != 0)]
         a = np.sort(new_arr_no_0)
         step = np.multiply(0.5, a.size)

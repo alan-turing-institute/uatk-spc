@@ -70,17 +70,6 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 
 [[package]]
-name = "convertbng"
-version = "0.6.25"
-description = "Fast lon, lat to and from ETRS89 and BNG (OSGB36) using the OS OSTN15 transform via Rust FFI"
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-numpy = ">=1.11.0"
-
-[[package]]
 name = "decorator"
 version = "5.1.1"
 description = "Decorators for Humans"
@@ -356,7 +345,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "b6bb67f24c13d11c2b3171931f19c93f982addce2ac2b86d8ece09d49c4e2623"
+content-hash = "ada6d09aa5e5330564b5ff01d97a3ac6799c206824f11aa78f5a21e93c0dbe78"
 
 [metadata.files]
 appdirs = [
@@ -403,16 +392,6 @@ click = [
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
     {file = "colorama-0.4.4.tar.gz", hash = "sha256:5941b2b48a20143d2267e95b1c2a7603ce057ee39fd88e7329b0c292aa16869b"},
-]
-convertbng = [
-    {file = "convertbng-0.6.25-cp27-cp27m-macosx_10_9_x86_64.macosx_10_9_intel.macosx_10_10_intel.macosx_10_10_x86_64.macosx_10_11_intel.macosx_10_11_x86_64.whl", hash = "sha256:4744f681089fdb79e484ce908f1f475ab61de6fbf5b880494559289e2f9d38c5"},
-    {file = "convertbng-0.6.25-cp27-cp27mu-manylinux1_x86_64.whl", hash = "sha256:089de66c1f54da9ed1cee7ffe6e6beaa8747f76e64d005675bd2e69fdc3deac8"},
-    {file = "convertbng-0.6.25-cp36-cp36m-macosx_10_9_x86_64.macosx_10_9_intel.macosx_10_10_intel.macosx_10_10_x86_64.macosx_10_11_intel.macosx_10_11_x86_64.whl", hash = "sha256:8f8ee8d3080904066421bc8d3437d9ae8a605d18d2bc2305e1c98088d0753f85"},
-    {file = "convertbng-0.6.25-cp36-cp36m-manylinux1_x86_64.whl", hash = "sha256:6a16929bcc7298af87b828370edf86beea4af4901474b7456d905e5892fd4e56"},
-    {file = "convertbng-0.6.25-cp37-cp37m-macosx_10_9_x86_64.macosx_10_9_intel.macosx_10_10_intel.macosx_10_10_x86_64.macosx_10_11_intel.macosx_10_11_x86_64.whl", hash = "sha256:387fd0270465b0ac4efebf6d24826fbbdd4b9bd6b9c640a7a08ee51dfaf21459"},
-    {file = "convertbng-0.6.25-cp37-cp37m-manylinux1_x86_64.whl", hash = "sha256:0031d6f2305886fb4fd5c01496bd0f5f4651fe026dce0ce355410e61bdf70e5e"},
-    {file = "convertbng-0.6.25-cp38-cp38-macosx_10_9_x86_64.macosx_10_9_intel.macosx_10_10_intel.macosx_10_10_x86_64.macosx_10_11_intel.macosx_10_11_x86_64.whl", hash = "sha256:7cfc5900e72173c32db6ab61687fdb824dfff4b2963ca743b5f49cb8cd2fc4f1"},
-    {file = "convertbng-0.6.25-cp38-cp38-manylinux1_x86_64.whl", hash = "sha256:9a308e37899769df035481942444ce555009f08a5e973f7c661e9bd47ce36692"},
 ]
 decorator = [
     {file = "decorator-5.1.1-py3-none-any.whl", hash = "sha256:b8c3f85900b9dc423225913c5aace94729fe1fa9763b38939a95226f02d37186"},

@@ -21,7 +21,6 @@ from yaml import load, SafeLoader
 from shutil import copyfile
 
 from ramp.run import run_opencl
-from ramp.snapshot_convertor import SnapshotConvertor
 from ramp.snapshot import Snapshot
 from ramp.params import Params, IndividualHazardMultipliers, LocationHazardMultipliers
 from ramp.initialisation_cache import InitialisationCache
@@ -120,7 +119,6 @@ def main(parameters_file):
 
 def run_opencl_model(
     iterations,
-    # regional_data_dir_full_path,
     study_area,
     use_gui,
     use_gpu,
@@ -139,41 +137,8 @@ def run_opencl_model(
 
     # Choose whether to load snapshot file from cache, or create a snapshot from population data
     if not os.path.exists(snapshot_cache_filepath):
-        print("\nGenerating Snapshot for OpenCL model")
-        cache = InitialisationCache(cache_dir=study_area_folder_in_processed_data)
-        if cache.is_empty():
-            raise Exception(
-                f"You will need to run the main_initialisation module because the cache is empty"
-            )
-        print("Loading data from previous cache")
-        individuals, activity_locations, lockdown_file = cache.read_from_cache()
-
-        if use_lockdown:
-            print(f"Loading the lockdown scenario")
-            time_activity_multiplier = lockdown_file.change
-            time_activity_multiplier = time_activity_multiplier[
-                startDate : len(time_activity_multiplier)
-            ]  # offset file to start date
-            time_activity_multiplier.index = range(len(time_activity_multiplier))
-        else:
-            time_activity_multiplier = np.ones(2000)
-
-        snapshot_converter = SnapshotConvertor(
-            individuals,
-            activity_locations,
-            time_activity_multiplier,
-            study_area_folder_in_processed_data,
-        )
-        snapshot = snapshot_converter.generate_snapshot()
-        if not os.path.exists(
-            os.path.join(study_area_folder_in_processed_data, "snapshot")
-        ):
-            os.makedirs(os.path.join(study_area_folder_in_processed_data, "snapshot"))
-        snapshot.save(
-            snapshot_cache_filepath
-        )  # store snapshot in cache so we can load later
-    else:  # load cached snapshot
-        snapshot = Snapshot.load_full_snapshot(path=snapshot_cache_filepath)
+        raise Exception(f"Snapshot cache missing: {snapshot_cache_filepath}")
+    snapshot = Snapshot.load_full_snapshot(path=snapshot_cache_filepath)
 
     # set the random seed of the model
     snapshot.seed_prngs(42)

@@ -16,7 +16,6 @@ glfw = "^2.4.0"
 imgui = "^1.4.1"
 PyOpenGL = "=3.1.5"
 pyopencl = "=2020.2.2"
-convertbng = "=0.6.25"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
