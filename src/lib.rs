@@ -54,6 +54,7 @@ pub struct Population {
 
 #[derive(Serialize, Deserialize)]
 pub struct Input {
+    pub enable_commuting: bool,
     /// Only people living in MSOAs filled out here will be part of the population
     pub initial_cases_per_msoa: BTreeMap<MSOA, usize>,
 }

@@ -38,8 +38,11 @@ async fn main() -> Result<()> {
     };
 
     match args.action {
-        Action::Init { region } => {
-            let input = region.to_input().await?;
+        Action::Init {
+            region,
+            no_commuting,
+        } => {
+            let input = region.to_input(!no_commuting).await?;
             let population = Population::create(input, &mut rng).await?;
 
             // First clear the target directory
@@ -100,6 +103,8 @@ enum Action {
     Init {
         #[clap(arg_enum)]
         region: Region,
+        #[clap(long)]
+        no_commuting: bool,
     },
     /// Run the model, for a fixed number of days
     RunModel {
@@ -109,8 +114,9 @@ enum Action {
 }
 
 impl Region {
-    async fn to_input(self) -> Result<Input> {
+    async fn to_input(self, enable_commuting: bool) -> Result<Input> {
         let mut input = Input {
+            enable_commuting,
             initial_cases_per_msoa: BTreeMap::new(),
         };
 

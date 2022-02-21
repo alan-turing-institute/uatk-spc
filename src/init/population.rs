@@ -43,7 +43,9 @@ pub fn create(input: Input, tus_files: Vec<String>, rng: &mut StdRng) -> Result<
     )?;
 
     // Commuting is special-cased
-    super::commuting::create_commuting_flows(&mut population, rng)?;
+    if population.input.enable_commuting {
+        super::commuting::create_commuting_flows(&mut population, rng)?;
+    }
 
     // TODO The Python implementation has lots of commented stuff, then some rounding
 
