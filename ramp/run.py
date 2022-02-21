@@ -34,9 +34,7 @@ def run_opencl(
         Constants.Paths.OUTPUT_FOLDER.FULL_PATH_FOLDER, study_area
     )
     if not quiet:
-        print(f"\nSnapshot Size:\t{int(snapshot.num_bytes() / 1000000)} MB\n")
-        print(f"snapshot file is: \t{snapshot}\n")
-        print(f"in: \t{study_area_folder_in_processed_data}\n")
+        print(f"Snapshot is {int(snapshot.num_bytes() / 1000000)} MB")
 
     # Create a simulator and upload the snapshot data to the OpenCL device
     simulator = Simulator(snapshot, parameters_file, gpu=use_gpu)
@@ -51,7 +49,7 @@ def run_opencl(
 
     if not quiet:
         print(
-            f"Platform:\t{simulator.platform_name()}\nDevice:\t\t{simulator.device_name()}\n"
+            f"OpenCL platform = {simulator.platform_name()}, device = {simulator.device_name()}"
         )
 
     if use_gui:

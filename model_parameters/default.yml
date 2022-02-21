@@ -1,26 +1,16 @@
-###### Utility parameters for the microsimulation (python) part. #####
-###### These can also be passed as command line arguments   ##### REVIEW THIS!!!
-
 microsim:
   study-area: "WestYorkshireSmall"
-  scenario: "BaseScenario" # name for scenario directory
-  iterations: 80 # Number of model iterations. 0 means just initialise the model and create caches and snapshots, don't run it
-  repetitions: 1 # How many times to run the model
+  iterations: 80 # Number of model iterations (days)
   use-lockdown: TRUE # Whether to preload the lockdown scenario
   start-date: 10 # Counted as number of days since 15/02/2020 (currently, max is 435)
-  sicThresh: 0 # min proportion of the population that must be preserved when using the sic1d07 classification for commuting modelling
-  initialise: FALSE # Legacy
   output: TRUE # Whether to generate output or not
   output-every-iteration: FALSE # Can optionally write output at every iteration, not just at the end
-  debug: FALSE # Whether to run some more expensive checks
-  use-cache: TRUE # Whether to cache the population data initialisation
   opencl-model: TRUE # Run the OpenCL model
   opencl-gui: TRUE # Run the OpenCL model with GUI visualisation for OpenCL model
   opencl-gpu: TRUE # Run OpenCL model on the GPU (if false then run using CPU)
 
 
 # Parameters that are used to calibrate the model.
-# These can only be passed using the parameters file
 microsim_calibration:
   # These multiply the amount of hazard that individuals pass on to shops etc:
   hazard_individual_multipliers:

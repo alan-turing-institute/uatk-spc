@@ -80,8 +80,6 @@ class Simulator:
         )
         # kernel_dir = os.path.join(opencl_dir, "ramp/kernels/")
         kernel_dir = Constants.Paths.OPENCL_SOURCE.FOLDER_PATH_FOR_KERNEL
-        # kernel_dir = kernel_dir + "/"
-        print(f"Checking kernel_dir \t{kernel_dir}\n")
         # Load the OpenCL kernel programs
         with open(
             os.path.join(kernel_dir, Constants.Paths.OPENCL_SOURCE.KERNEL_FILE)
