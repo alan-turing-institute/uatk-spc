@@ -23,7 +23,6 @@ from shutil import copyfile
 from ramp.run import run_opencl
 from ramp.snapshot import Snapshot
 from ramp.params import Params, IndividualHazardMultipliers, LocationHazardMultipliers
-from ramp.initialisation_cache import InitialisationCache
 from ramp.constants import Constants
 from ramp.constants import ColumnNames
 
