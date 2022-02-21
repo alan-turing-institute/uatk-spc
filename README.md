@@ -1,24 +1,30 @@
-# RAMP, ported to Rust
+# RAMP - EcoTwins + Rust version
 
-This is a rewrite in [Rust](https://www.rust-lang.org/) of the RAMP (Rapid
-Assistance in Modelling the Pandemic) model, based on the
-[EcoTwins-withCommuting
-branch](https://github.com/Urban-Analytics/RAMP-UA/tree/Ecotwins-withCommuting).
+This is an implementation of a [microsimulation model for
+epidimics](https://www.sciencedirect.com/science/article/pii/S0277953621007930)
+called RAMP (Rapid Assistance in Modelling the Pandemic).
 
-TODO: Describe the hybrid Python/Rust repo now, license, how to run it, etc
+The project is split into two stages:
+
+1.  Initialisation: combine various data sources to produce a snapshot
+		capturing some study area. This is implemented in
+		[Rust](https://www.rust-lang.org/), and most code is in the `src/`
+    directory.
+2.  Simulation: Run a COVID transmission model in that study area. This is
+		implemented in Python and OpenCL, with a dashboard using OpenGL and ImGui.
+    Most code is in the `ramp/` directory.
 
 ## Status
 
-The initialisation phase, which builds a snapshot per study area, works. You
-can then run the Python + OpenCL model on the snapshot. Initialisation in Rust
-is much faster than the Python version, but the snapshot is not identical to
-the one produced by the Python version. Initial results seem equivalent, but
-you absolutely need to validate this for whatever you're using RAMP for. (And
-please report problems or discrepencies!)
+- [X] initialisation produces a snapshot for different study areas
+- [X] basic simulation with the snapshot
+- [ ] commuting (partially ported from Python)
+- [ ] events (partly started)
+- [ ] calibration / validation
 
-The Python + OpenCL model is also partially ported, running as a simple
-single-threaded process. It's unlikely development will continue here without a
-clear motivation.
+There's a preliminary attempt to port the simulation logic from Python and
+OpenCL to Rust in `src/model/`, but there's no intention to continue its
+development.
 
 ## Running the code
 
@@ -41,24 +47,18 @@ cargo run --release -- init west-yorkshire-small
 This will download some large files the first time. You'll wind up with
 `processed_data/WestYorkshireSmall/` as output, as well as lots of intermediate
 files in `raw_data/`. The next time you run this command (even on a different
-study area), it should go much faster.
+study area), it should go much faster. You can run the pipeline for other study
+areas; try `cargo run --release -- init --help` for a list.
 
 Then to run the snapshot file in the Python model:
 
 ```shell
-# You shouldn't clone RAMP-UA inside the rampfs directory, just go somewhere else
-cd ..
-git clone https://github.com/dabreegster/RAMP-UA/
-cd RAMP-UA
-git checkout dcarlino_dev
+# You only have to run this the first time, to install Python dependencies
 poetry install
-# Move the output from the Rust pipeline to the RAMP-UA directory
-mv ../rampfs/processed_data/WestYorkshireSmall/ data/processed_data/Test_3/
 poetry run python main_model.py -p model_parameters/default.yml
 ```
 
-You can run the pipeline for other study areas; try `cargo run --release --
-init --help` for a list.
+This should launch an interactive dashboard.
 
 ### Troubleshooting
 
@@ -66,6 +66,19 @@ The Rust code depends on [proj](https://proj.org) to transform coordinates. You
 may need to install additional dependencies to build it, like `cmake`. Please
 [open an issue](https://github.com/dabreegster/rampfs/issues) if you have any
 trouble!
+
+## Developer tips
+
+### Code hygiene
+
+We use automated tools to format the code.
+
+```shell
+# Format all Python code
+poetry run black ramp main_model.py`
+# Format all Rust code
+cargo fmt
+```
 
 ### Some tips for working with Rust
 
@@ -93,12 +106,21 @@ If you're working on the Rust code outside of an IDE like
 [VSCode](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust),
 then you can check if the code compiles much faster by doing `cargo check`.
 
-## Python
+## Lineage
 
-This code was copied from
-https://github.com/dabreegster/RAMP-UA/tree/dcarlino_dev, then cleaned up by
-removing the initialisation phase, which is handled by Rust now. See that git
-repo for full lineage (from the EcoTwins branch of
-https://github.com/Urban-Analytics/RAMP-UA) and all authors
+The history of this project is slightly convoluted:
 
-`poetry run black ramp main_model.py`
+1.  RAMP was originally written in R, then later converted to Python and
+		OpenCL: <https://github.com/Urban-Analytics/RAMP-UA>
+2.  The "ecosystem of digital twins" branch heavily refactored the code to
+		support running in different study areas and added support for commuting:
+    <https://github.com/Urban-Analytics/RAMP-UA/tree/Ecotwins-withCommuting>
+3.  This separate repository was created to port the initialisation logic to
+		Rust, following the above branch
+4.  The Python and OpenCL code for running the model (after initialisation) was
+		copied into this repository from
+    <https://github.com/dabreegster/RAMP-UA/commits/dcarlino_dev> and further
+    cleaned up
+
+There are many contributors to the project through these different stages; the
+version control history can be seen on Github in the other repositories.
