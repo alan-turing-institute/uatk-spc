@@ -16,6 +16,9 @@ use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMod
 use ramp::utilities;
 use ramp::{Input, Model, Population, Snapshot, MSOA};
 
+// When running on all MSOAs, start with this many cases
+const DEFAULT_CASES_PER_MSOA: usize = 5;
+
 #[tokio::main]
 async fn main() -> Result<()> {
     // Specify the logging format
@@ -124,7 +127,9 @@ impl Region {
         let csv_input = match self {
             Region::National => {
                 for msoa in MSOA::all_msoas_nationally().await? {
-                    input.initial_cases_per_msoa.insert(msoa, default_cases());
+                    input
+                        .initial_cases_per_msoa
+                        .insert(msoa, DEFAULT_CASES_PER_MSOA);
                 }
                 return Ok(input);
             }
@@ -143,11 +148,5 @@ impl Region {
 struct InitialCaseRow {
     #[serde(rename = "MSOA11CD")]
     msoa: MSOA,
-    // This field is missing from some of the input files
-    #[serde(default = "default_cases")]
     cases: usize,
-}
-
-fn default_cases() -> usize {
-    5
 }
