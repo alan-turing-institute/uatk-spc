@@ -3,7 +3,6 @@ mod params;
 
 use anyhow::Result;
 use enum_map::EnumMap;
-use ordered_float::NotNan;
 use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 use rand::{Rng, SeedableRng};
@@ -11,7 +10,7 @@ use rand_distr::{Distribution, LogNormal, Weibull};
 use typed_index_collections::TiVec;
 
 use crate::utilities::print_count;
-use crate::{Activity, Obesity, Person, PersonID, Population, VenueID};
+use crate::{Activity, Flow, Obesity, PersonID, Population, VenueID};
 pub use params::Params;
 use params::SymptomStatus;
 
@@ -65,13 +64,6 @@ struct PersonState {
     baseline_flows: Vec<Flow>,
 }
 
-#[derive(Clone, Debug)]
-struct Flow {
-    activity: Activity,
-    venue: VenueID,
-    weight: f32,
-}
-
 #[derive(Clone)]
 struct PlaceState {
     hazards: f32,
@@ -84,7 +76,7 @@ impl Model {
     pub fn new(pop: Population, mut rng: StdRng) -> Result<Model> {
         let mut people = TiVec::new();
         for person in &pop.people {
-            let flows = get_baseline_flows(person);
+            let flows = person.get_baseline_flows(16);
             people.push(PersonState {
                 status: DiseaseStatus::Susceptible { hazard: 0.0 },
                 transition_time: 0,
@@ -417,34 +409,6 @@ impl Model {
         }
         Ok(())
     }
-}
-
-// Per person, flatten all the flows, regardless of activity
-// TODO The biggest simplification we could make is encoding Activity into VenueID directly. The
-// "global place ID" concept does this, but in a more complicated way.
-fn get_baseline_flows(person: &Person) -> Vec<Flow> {
-    let places_to_keep_per_person = 16;
-
-    let mut flows = Vec::new();
-    for activity in Activity::all() {
-        let duration = person.duration_per_activity[activity];
-        for (venue, flow) in &person.flows_per_activity[activity] {
-            // Weight the flows by duration
-            flows.push(Flow {
-                activity,
-                venue: *venue,
-                weight: (flow * duration) as f32,
-            });
-        }
-    }
-
-    // Sort by flows, descending
-    flows.sort_by_key(|flow| NotNan::new(flow.weight).unwrap());
-    flows.reverse();
-    // Only keep the top few
-    flows.truncate(places_to_keep_per_person);
-
-    flows
 }
 
 fn get_symptomatic_prob_for_age(params: &Params, age_years: u8) -> f32 {

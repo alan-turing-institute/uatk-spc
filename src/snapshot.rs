@@ -9,7 +9,6 @@ use ndarray::{arr0, Array, Array1};
 use ndarray_npy::NpzWriter;
 use ndarray_rand::rand_distr::Uniform;
 use ndarray_rand::RandomExt;
-use ordered_float::NotNan;
 use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
 
@@ -76,7 +75,7 @@ impl IDMapping {
         })
     }
 
-    fn to_place(&self, activity: Activity, venue: &VenueID) -> GlobalPlaceID {
+    fn to_place(&self, activity: Activity, venue: VenueID) -> GlobalPlaceID {
         GlobalPlaceID(self.id_offset_per_activity[activity] + venue.0 as u32)
     }
 }
@@ -230,22 +229,10 @@ fn get_baseline_flows(
     for person in &pop.people {
         pq.inc(1);
         // Per person, flatten all the flows, regardless of activity
-        // TODO Dedupe with get_baseline_flows in the Model
-        let mut flows: Vec<(GlobalPlaceID, f64)> = Vec::new();
-        for activity in Activity::all() {
-            let duration = person.duration_per_activity[activity];
-            for (venue, flow) in &person.flows_per_activity[activity] {
-                let place = id_mapping.to_place(activity, venue);
-                // Weight the flows by duration
-                flows.push((place, flow * duration));
-            }
+        let mut flows: Vec<(GlobalPlaceID, f32)> = Vec::new();
+        for flow in person.get_baseline_flows(places_to_keep_per_person) {
+            flows.push((id_mapping.to_place(flow.activity, flow.venue), flow.weight));
         }
-
-        // Sort by flows, descending
-        flows.sort_by_key(|pair| NotNan::new(pair.1).unwrap());
-        flows.reverse();
-        // Only keep the top few
-        flows.truncate(places_to_keep_per_person);
 
         // Fill out the final arrays, flattened to the range [start_idx, end_idx)
         let start_idx = person.id.0 * places_to_keep_per_person;
@@ -254,8 +241,7 @@ fn get_baseline_flows(
         //let slice = Slice::from(start_idx..end_idx);
         for (idx, (place, flow)) in flows.into_iter().enumerate() {
             people_place_ids[start_idx + idx] = place.0;
-            // TODO I think we can just handle f32's in the entire pipeline
-            people_baseline_flows[start_idx + idx] = flow as f32;
+            people_baseline_flows[start_idx + idx] = flow;
         }
     }
 
@@ -283,7 +269,7 @@ fn get_place_coordinates(
                 .values()
                 .any(|info| info.shape.contains(&venue.location))
             {
-                let place = id_mapping.to_place(activity, &venue.id);
+                let place = id_mapping.to_place(activity, venue.id);
                 result[place.0 as usize * 2 + 0] = venue.location.lat();
                 result[place.0 as usize * 2 + 1] = venue.location.lng();
             }
@@ -293,7 +279,7 @@ fn get_place_coordinates(
     // For homes, we just pick a random building in the MSOA area. This is just used for
     // visualization, so lack of buildings mapped in some areas isn't critical.
     for household in &input.households {
-        let place = id_mapping.to_place(Activity::Home, &household.id);
+        let place = id_mapping.to_place(Activity::Home, household.id);
         match input.info_per_msoa[&household.msoa].buildings.choose(rng) {
             Some(pt) => {
                 result[place.0 as usize * 2 + 0] = pt.lat();
