@@ -1,23 +1,22 @@
 # RAMP - EcoTwins + Rust version
 
-This is an implementation of a [microsimulation model for
-epidimics](https://www.sciencedirect.com/science/article/pii/S0277953621007930)
+This is an implementation of a
+[microsimulation model for epidimics](https://www.sciencedirect.com/science/article/pii/S0277953621007930)
 called RAMP (Rapid Assistance in Modelling the Pandemic).
 
 The project is split into two stages:
 
-1.  Initialisation: combine various data sources to produce a snapshot
-		capturing some study area. This is implemented in
-		[Rust](https://www.rust-lang.org/), and most code is in the `src/`
-    directory.
+1.  Initialisation: combine various data sources to produce a snapshot capturing
+    some study area. This is implemented in [Rust](https://www.rust-lang.org/),
+    and most code is in the `src/` directory.
 2.  Simulation: Run a COVID transmission model in that study area. This is
-		implemented in Python and OpenCL, with a dashboard using OpenGL and ImGui.
+    implemented in Python and OpenCL, with a dashboard using OpenGL and ImGui.
     Most code is in the `ramp/` directory.
 
 ## Status
 
-- [X] initialisation produces a snapshot for different study areas
-- [X] basic simulation with the snapshot
+- [x] initialisation produces a snapshot for different study areas
+- [x] basic simulation with the snapshot
 - [ ] commuting (partially ported from Python)
 - [ ] events (partly started)
 - [ ] calibration / validation
@@ -35,7 +34,8 @@ One-time installation of things you may be missing:
 - The instructions assume you'e running in a shell on Linux or Mac, and have
   standard commands like `unzip` and `python3` available
 
-You can then compile this project and generate a snapshot for a small study area:
+You can then compile this project and generate a snapshot for a small study
+area:
 
 ```shell
 git clone https://github.com/dabreegster/rampfs/
@@ -75,7 +75,7 @@ We use automated tools to format the code.
 
 ```shell
 # Format all Python code
-poetry run black ramp main_model.py`
+poetry run black ramp main_model.py
 # Format all Rust code
 cargo fmt
 ```
@@ -110,15 +110,15 @@ then you can check if the code compiles much faster by doing `cargo check`.
 
 The history of this project is slightly convoluted:
 
-1.  RAMP was originally written in R, then later converted to Python and
-		OpenCL: <https://github.com/Urban-Analytics/RAMP-UA>
+1.  RAMP was originally written in R, then later converted to Python and OpenCL:
+    <https://github.com/Urban-Analytics/RAMP-UA>
 2.  The "ecosystem of digital twins" branch heavily refactored the code to
-		support running in different study areas and added support for commuting:
+    support running in different study areas and added support for commuting:
     <https://github.com/Urban-Analytics/RAMP-UA/tree/Ecotwins-withCommuting>
 3.  This separate repository was created to port the initialisation logic to
-		Rust, following the above branch
+    Rust, following the above branch
 4.  The Python and OpenCL code for running the model (after initialisation) was
-		copied into this repository from
+    copied into this repository from
     <https://github.com/dabreegster/RAMP-UA/commits/dcarlino_dev> and further
     cleaned up
 
