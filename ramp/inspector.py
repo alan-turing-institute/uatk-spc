@@ -14,7 +14,6 @@ from ramp.shader import load_shader
 from ramp.snapshot import Snapshot
 from ramp.style import set_styles
 from ramp.summary import Summary
-from ramp.constants import Constants
 
 default_flags = imgui.WINDOW_NO_RESIZE | imgui.WINDOW_NO_MOVE | imgui.WINDOW_NO_COLLAPSE
 
@@ -26,13 +25,12 @@ class Inspector:
         self,
         simulator,
         snapshot,
-        study_area_folder,
+        snapshot_folder,
         nlines,
         window_name,
         width,
         height,
-        # font_path="microsim/opencl/fonts/RobotoMono.ttf"):
-        font_path=os.path.join(Constants.Paths.OPENCL_FONTS.FULL_PATH_ROBOTO),
+        font_path="ramp/fonts/RobotoMono.ttf",
     ):
         """Create the window, imgui renderer, and all background renderers.
 
@@ -193,10 +191,7 @@ class Inspector:
         self.move_sensitivity = 10.0
         self.zoom_multiplier = 1.01
         self.position = position
-        # self.snapshot_dir = "microsim/opencl/snapshots"
-        self.snapshot_dir = os.path.join(
-            study_area_folder, Constants.Paths.SNAPSHOTS.FOLDER
-        )
+        self.snapshot_dir = snapshot_folder
         self.snapshots = [
             f for f in os.listdir(self.snapshot_dir) if f.endswith(".npz")
         ]

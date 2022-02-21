@@ -11,7 +11,6 @@ from ramp.params import Params
 from ramp.simulator import Simulator
 from ramp.summary import Summary
 from ramp.disease_statuses import DiseaseStatus
-from ramp.constants import Constants
 
 
 def run_opencl(
@@ -27,18 +26,11 @@ def run_opencl(
     Entry point for running the OpenCL simulation either with the UI or in headless mode.
     NB: in order to write output data for the OpenCL dashboard you must run in headless mode.
     """
-    study_area_folder_in_processed_data = os.path.join(
-        Constants.Paths.PROCESSED_DATA.FULL_PATH_FOLDER, study_area
-    )
-    study_area_folder_in_output = os.path.join(
-        Constants.Paths.OUTPUT_FOLDER.FULL_PATH_FOLDER, study_area
-    )
     if not quiet:
         print(f"Snapshot is {int(snapshot.num_bytes() / 1000000)} MB")
 
     # Create a simulator and upload the snapshot data to the OpenCL device
     simulator = Simulator(snapshot, parameters_file, gpu=use_gpu)
-    # simulator.upload_all(snapshot.buffers)
 
     [people_statuses, people_transition_times] = simulator.seeding_base()
 
@@ -53,17 +45,15 @@ def run_opencl(
         )
 
     if use_gui:
-        run_with_gui(
-            simulator, snapshot, study_area_folder_in_processed_data, study_area
-        )
+        snapshot_folder = f"data/processed_data/{study_area}/snapshot/"
+        run_with_gui(simulator, snapshot, snapshot_folder, study_area)
     else:
         summary, final_state = run_headless(simulator, snapshot, iterations, quiet)
-        store_summary_data(
-            summary, store_detailed_counts=True, data_dir=study_area_folder_in_output
-        )
+        output_dir = f"data/output/{study_area}/"
+        store_summary_data(summary, store_detailed_counts=True, data_dir=output_dir)
 
 
-def run_with_gui(simulator, snapshot, study_area_folder_in_processed_data, study_area):
+def run_with_gui(simulator, snapshot, snapshot_folder, study_area):
     width = 2560  # Initial window width in pixels
     height = 1440  # Initial window height in pixels
     nlines = 4  # Number of visualised connections per person
@@ -72,7 +62,7 @@ def run_with_gui(simulator, snapshot, study_area_folder_in_processed_data, study
     inspector = Inspector(
         simulator,
         snapshot,
-        study_area_folder_in_processed_data,
+        snapshot_folder,
         nlines,
         study_area,  # "Ramp UA",
         width,

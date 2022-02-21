@@ -8,7 +8,6 @@ from ramp.kernels import Kernels
 from ramp.params import Params
 from ramp.snapshot import Snapshot
 from ramp.initial_cases import InitialCases
-from ramp.constants import Constants
 
 
 class Simulator:
@@ -78,12 +77,9 @@ class Simulator:
             people_prngs=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, npeople * 16),
             params=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, Params().num_bytes()),
         )
-        # kernel_dir = os.path.join(opencl_dir, "ramp/kernels/")
-        kernel_dir = Constants.Paths.OPENCL_SOURCE.FOLDER_PATH_FOR_KERNEL
+        kernel_dir = "ramp/kernels"
         # Load the OpenCL kernel programs
-        with open(
-            os.path.join(kernel_dir, Constants.Paths.OPENCL_SOURCE.KERNEL_FILE)
-        ) as f:
+        with open(os.path.join(kernel_dir, "ramp_ua.cl")) as f:
             program = cl.Program(ctx, f.read())
             program.build(options=[f"-I {kernel_dir}"])
 

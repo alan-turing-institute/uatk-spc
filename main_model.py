@@ -7,7 +7,6 @@ from yaml import load, SafeLoader
 from ramp.run import run_opencl
 from ramp.snapshot import Snapshot
 from ramp.params import Params, IndividualHazardMultipliers, LocationHazardMultipliers
-from ramp.constants import Constants
 
 
 @click.command()
