@@ -1406,7 +1406,7 @@ dependencies = [
  "tar",
  "tokio",
  "tracing",
- "tracing-span-tree",
+ "tracing-subscriber",
  "typed-index-collections",
 ]
 
@@ -1996,16 +1996,6 @@ checksum = "bc6b213177105856957181934e4920de57730fc69bf42c37ee5bb664d406d9e1"
 dependencies = [
  "serde",
  "tracing-core",
-]
-
-[[package]]
-name = "tracing-span-tree"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "877726b1570d7764022ef20cc61479b5bcfc1118b90521ce61f6cc9e4f5ffbd8"
-dependencies = [
- "tracing",
- "tracing-subscriber",
 ]
 
 [[package]]

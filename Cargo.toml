@@ -34,7 +34,7 @@ shapefile = { version = "0.3.0", features = ["geo-types"] }
 tar = "0.4.38"
 tokio = { version = "1.15.0", features = ["full"] }
 tracing = "0.1.31"
-tracing-span-tree = "0.1.0"
+tracing-subscriber = "0.2.25"
 typed-index-collections = { version = "3.0.3", features = ["serde-std"] }
 
 # See https://doc.rust-lang.org/cargo/reference/profiles.html#overrides. This
