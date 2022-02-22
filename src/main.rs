@@ -1,8 +1,5 @@
 //! This is the command-line interface to RAMP.
 
-#[macro_use]
-extern crate log;
-
 use std::collections::BTreeMap;
 
 use anyhow::Result;
@@ -11,7 +8,7 @@ use fs_err::File;
 use rand::rngs::StdRng;
 use rand::SeedableRng;
 use serde::Deserialize;
-use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
+use tracing::info;
 
 use ramp::utilities;
 use ramp::{Input, Model, Population, Snapshot, MSOA};
@@ -22,17 +19,6 @@ const DEFAULT_CASES_PER_MSOA: usize = 5;
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing_span_tree::span_tree().enable();
-
-    // Specify the logging format
-    TermLogger::init(
-        LevelFilter::Info,
-        ConfigBuilder::new()
-            .set_time_format_str("%H:%M:%S%.3f")
-            .set_location_level(LevelFilter::Error)
-            .build(),
-        TerminalMode::Stderr,
-        ColorChoice::Auto,
-    )?;
 
     let args = Args::parse();
 

@@ -16,7 +16,7 @@ use crate::{Activity, Household, Input, Obesity, Person, PersonID, Population, V
 
 /// Create a population from some time-use files, only keeping people in the specified MSOAs.
 pub fn create(input: Input, tus_files: Vec<String>, rng: &mut StdRng) -> Result<Population> {
-    let _s = tracing::info_span!("creating population").entered();
+    let _s = info_span!("creating population").entered();
 
     let mut population = Population {
         households: TiVec::new(),
@@ -58,7 +58,7 @@ fn read_individual_time_use_and_health_data(
     tus_files: Vec<String>,
     keep_msoas: BTreeSet<MSOA>,
 ) -> Result<()> {
-    let _s = tracing::info_span!("read_individual_time_use_and_health_data").entered();
+    let _s = info_span!("read_individual_time_use_and_health_data").entered();
 
     // First read the raw CSV files and just group the raw rows by household (MSOA and hid)
     // This isn't all that memory-intensive; the Population ultimately has to hold everyone anyway.
@@ -70,7 +70,7 @@ fn read_individual_time_use_and_health_data(
 
     // TODO Two-level progress bar. MultiProgress seems to demand two threads and calling join() :(
     for path in tus_files {
-        let _s = tracing::info_span!("Reading", ?path).entered();
+        let _s = info_span!("Reading", ?path).entered();
         info!("Reading {}", path);
         let file = File::open(path)?;
         let pb = progress_file_with_msg(&file)?;
@@ -122,7 +122,7 @@ fn read_individual_time_use_and_health_data(
     }
 
     // Now create the people and households
-    let _s = tracing::info_span!("Creating households").entered();
+    let _s = info_span!("Creating households").entered();
     info!("Creating households ({})", memory_usage());
     let pb = progress_count(people_per_household.len());
     for ((msoa, orig_hid), raw_people) in people_per_household {
@@ -284,7 +284,7 @@ fn pad_durations(durations: &mut EnumMap<Activity, f64>) -> Result<()> {
     Ok(())
 }
 
-#[tracing::instrument(skip(threshold, population))]
+#[instrument(skip(threshold, population))]
 fn setup_venue_flows(
     activity: Activity,
     threshold: Threshold,
@@ -306,7 +306,7 @@ fn setup_venue_flows(
     // Now let's assign these flows to the people. Near as I can tell, this just copies the flows
     // to every person in the MSOA. That's loads of duplication -- we could just keep it by (MSOA x
     // activity), but let's follow the Python for now.
-    let _s = tracing::info_span!("Copying flows to people", ?activity).entered();
+    let _s = info_span!("Copying flows to people", ?activity).entered();
     let pb = progress_count_with_msg(population.people.len());
     for person in &mut population.people {
         pb.inc(1);
