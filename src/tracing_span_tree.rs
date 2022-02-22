@@ -1,36 +1,3 @@
-//! Consumer of `tracing` data, which prints a hierarchical profile.
-//!
-//! Based on https://github.com/davidbarsky/tracing-tree, but does less, while
-//! actually printing timings for spans by default.
-//!
-//! Usage:
-//!
-//! ```rust
-//! tracing_span_tree::span_tree()
-//!     .aggregate(true)
-//!     .enable();
-//! ```
-//!
-//! Example output:
-//!
-//! ```text
-//! 8.37ms           top_level
-//!   1.09ms           middle
-//!     1.06ms           leaf
-//!   1.06ms           middle
-//!   3.12ms           middle
-//!     1.06ms           leaf
-//!   3.06ms           middle
-//! ```
-//!
-//! Same data, but with `.aggregate(true)`:
-//!
-//! ```text
-//! 8.39ms           top_level
-//!  8.35ms    4      middle
-//!    2.13ms    2      leaf
-//! ```
-
 use std::{
     fmt, mem,
     time::{Duration, Instant},
@@ -61,7 +28,10 @@ pub struct SpanTree {
 impl SpanTree {
     /// Merge identical sibling spans together.
     pub fn aggregate(self, yes: bool) -> SpanTree {
-        SpanTree { aggregate: yes, ..self }
+        SpanTree {
+            aggregate: yes,
+            ..self
+        }
     }
     /// Set as a global subscriber
     pub fn enable(self) {
@@ -79,12 +49,22 @@ struct Data {
 
 impl Data {
     fn new(attrs: &Attributes<'_>) -> Self {
-        let mut span = Self { start: Instant::now(), kvs: Vec::new(), children: Vec::new() };
+        let mut span = Self {
+            start: Instant::now(),
+            kvs: Vec::new(),
+            children: Vec::new(),
+        };
         attrs.record(&mut span);
         span
     }
     fn into_node(self, name: &'static str, fields: String) -> Node {
-        Node { name, fields, count: 1, duration: self.start.elapsed(), children: self.children }
+        Node {
+            name,
+            fields,
+            count: 1,
+            duration: self.start.elapsed(),
+            children: self.children,
+        }
     }
 }
 
@@ -114,10 +94,15 @@ where
         let fields = format!("{:?}", data.kvs);
         let mut node = data.into_node(span.name(), fields);
 
-        match span.parent_id() {
+        match span.parent().map(|span_ref| span_ref.id()) {
             Some(parent_id) => {
-                let parent_span = ctx.span(parent_id).unwrap();
-                parent_span.extensions_mut().get_mut::<Data>().unwrap().children.push(node);
+                let parent_span = ctx.span(&parent_id).unwrap();
+                parent_span
+                    .extensions_mut()
+                    .get_mut::<Data>()
+                    .unwrap()
+                    .children
+                    .push(node);
             }
             None => {
                 if self.aggregate {
@@ -147,7 +132,11 @@ impl Node {
         let reset = "\u{001b}[0m";
 
         let duration = format!("{:3.2?}", self.duration);
-        let count = if self.count > 1 { self.count.to_string() } else { String::new() };
+        let count = if self.count > 1 {
+            self.count.to_string()
+        } else {
+            String::new()
+        };
         eprintln!(
             "{:width$}  {:<9} {:<6} {bold}{} {}{reset}",
             "",
