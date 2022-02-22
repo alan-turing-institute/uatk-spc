@@ -1,38 +1,21 @@
-use std::{
-    fmt, mem,
-    time::{Duration, Instant},
-};
+use std::fmt;
+use std::time::{Duration, Instant};
 
-use tracing::{
-    debug,
-    field::{Field, Visit},
-    span::Attributes,
-    Event, Id, Subscriber,
-};
-use tracing_subscriber::{
-    layer::Context,
-    prelude::*,
-    registry::{LookupSpan, Registry},
-    Layer,
-};
+use tracing::field::{Field, Visit};
+use tracing::span::Attributes;
+use tracing::{debug, Event, Id, Subscriber};
+use tracing_subscriber::layer::{Context, SubscriberExt};
+use tracing_subscriber::registry::{LookupSpan, Registry};
+use tracing_subscriber::Layer;
 
 pub fn span_tree() -> SpanTree {
     SpanTree::default()
 }
 
 #[derive(Default)]
-pub struct SpanTree {
-    aggregate: bool,
-}
+pub struct SpanTree;
 
 impl SpanTree {
-    /// Merge identical sibling spans together.
-    pub fn aggregate(self, yes: bool) -> SpanTree {
-        SpanTree {
-            aggregate: yes,
-            ..self
-        }
-    }
     /// Set as a global subscriber
     pub fn enable(self) {
         let subscriber = Registry::default().with(self);
@@ -92,7 +75,7 @@ where
         let data = span.extensions_mut().remove::<Data>().unwrap();
         //let fields = format!("{:?}", span.fields());
         let fields = format!("{:?}", data.kvs);
-        let mut node = data.into_node(span.name(), fields);
+        let node = data.into_node(span.name(), fields);
 
         match span.parent().map(|span_ref| span_ref.id()) {
             Some(parent_id) => {
@@ -104,12 +87,7 @@ where
                     .children
                     .push(node);
             }
-            None => {
-                if self.aggregate {
-                    node.aggregate()
-                }
-                node.print()
-            }
+            None => node.print(),
         }
     }
 }
@@ -153,31 +131,6 @@ impl Node {
         }
         if level == 0 {
             eprintln!()
-        }
-    }
-
-    fn aggregate(&mut self) {
-        if self.children.is_empty() {
-            return;
-        }
-
-        self.children.sort_by_key(|it| it.name);
-        let mut idx = 0;
-        for i in 1..self.children.len() {
-            if self.children[idx].name == self.children[i].name {
-                let child = mem::take(&mut self.children[i]);
-                self.children[idx].duration += child.duration;
-                self.children[idx].count += child.count;
-                self.children[idx].children.extend(child.children);
-            } else {
-                idx += 1;
-                assert!(idx <= i);
-                self.children.swap(idx, i);
-            }
-        }
-        self.children.truncate(idx + 1);
-        for child in &mut self.children {
-            child.aggregate()
         }
     }
 }
