@@ -12,6 +12,7 @@ use typed_index_collections::TiVec;
 use crate::utilities::{print_count, progress_count};
 use crate::{Activity, PersonID, Population, Venue, VenueID, MSOA};
 
+#[tracing::instrument(skip_all)]
 pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> Result<()> {
     let mut all_workers: Vec<PersonID> = Vec::new();
     // Only keep businesses in MSOAs where a worker lives.

@@ -21,6 +21,8 @@ const DEFAULT_CASES_PER_MSOA: usize = 5;
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    tracing_span_tree::span_tree().enable();
+
     // Specify the logging format
     TermLogger::init(
         LevelFilter::Info,
