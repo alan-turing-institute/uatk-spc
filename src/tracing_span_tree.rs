@@ -8,14 +8,17 @@ use tracing_subscriber::layer::{Context, SubscriberExt};
 use tracing_subscriber::registry::{LookupSpan, Registry};
 use tracing_subscriber::Layer;
 
-pub fn span_tree() -> SpanTree {
-    SpanTree::default()
+pub struct SpanTree {
+    program_start: Instant,
 }
 
-#[derive(Default)]
-pub struct SpanTree;
-
 impl SpanTree {
+    pub fn new() -> Self {
+        SpanTree {
+            program_start: Instant::now(),
+        }
+    }
+
     /// Set as a global subscriber
     pub fn enable(self) {
         let subscriber = Registry::default().with(self);
@@ -57,6 +60,20 @@ impl Visit for Data {
     }
 }
 
+struct ScrapeOneMessage {
+    value: Option<String>,
+}
+
+// TODO Probably just grab "message" and ignore anything else
+impl Visit for ScrapeOneMessage {
+    fn record_debug(&mut self, _: &Field, value: &dyn fmt::Debug) {
+        if let Some(ref prev) = self.value {
+            panic!("Two values for an event: {} and {:?}", prev, value);
+        }
+        self.value = Some(format!("{:?}", value));
+    }
+}
+
 impl<S> Layer<S> for SpanTree
 where
     S: Subscriber + for<'span> LookupSpan<'span> + fmt::Debug,
@@ -68,7 +85,15 @@ where
         span.extensions_mut().insert(data);
     }
 
-    fn on_event(&self, _event: &Event<'_>, _ctx: Context<S>) {}
+    fn on_event(&self, event: &Event<'_>, _: Context<S>) {
+        let mut scrape = ScrapeOneMessage { value: None };
+        event.record(&mut scrape);
+        println!(
+            "[{:3.2?}] {}",
+            self.program_start.elapsed(),
+            scrape.value.unwrap()
+        );
+    }
 
     fn on_close(&self, id: Id, ctx: Context<S>) {
         let span = ctx.span(&id).unwrap();
