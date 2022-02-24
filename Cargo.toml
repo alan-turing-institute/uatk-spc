@@ -8,6 +8,7 @@ description = "Rapid Assistance in Modelling the Pandemic"
 [dependencies]
 anyhow = "1.0.51"
 bincode = "1.3.3"
+cached = "0.30.0"
 cap = "0.1.0"
 clap = { version = "3.0.0", features = ["derive"] }
 csv = "1.1.6"

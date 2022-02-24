@@ -41,14 +41,12 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
         let mut choices: Vec<(BusinessID, usize)> = market.to_job_choices();
 
         let pb = progress_count(market.jobs.len());
-        // TODO Slow. Cache Haversine?
         for person in market.workers {
             pb.inc(1);
             let person_location = population.people[person].location;
             let pair = choices
                 .choose_weighted_mut(rng, |(id, available_jobs)| {
-                    let dist = person_location.haversine_distance(&businesses.locations[id]);
-                    (*available_jobs as f32) / dist.powi(2)
+                    (*available_jobs as f32) / (dist_squared(person_location, businesses.locations[id]) as f32)
                 })
                 .unwrap();
 
@@ -246,5 +244,19 @@ impl JobMarket {
             *counts.entry(*id).or_insert(0) += 1;
         }
         counts.into_iter().collect()
+    }
+}
+
+// f32 isn't hashable, so just round decimal places for caching
+fn hashify_point(pt: Point<f32>) -> Point<i32> {
+    Point::new((pt.x() * 1000.0) as i32, (pt.y() * 1000.0) as i32)
+}
+
+use cached::{SizedCache, cached_key};
+cached_key!{
+    DIST: SizedCache<(Point<i32>, Point<i32>), i32> = SizedCache::with_size(5000);
+    Key = { (hashify_point(pt1), hashify_point(pt2)) };
+    fn dist_squared(pt1: Point<f32>, pt2: Point<f32>) -> i32 = {
+        pt1.haversine_distance(&pt2).powi(2) as i32
     }
 }
