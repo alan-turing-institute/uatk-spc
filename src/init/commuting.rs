@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{BTreeSet, HashMap};
 
 use anyhow::Result;
 use fs_err::File;
@@ -13,11 +13,11 @@ use crate::utilities::{print_count, progress_count};
 use crate::{Activity, Population, Venue, VenueID, MSOA};
 
 pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> Result<()> {
-    let mut businesses = load_businesses(population)?;
+    // min proportion of the population that must be preserved when using the sic1d07 classification
+    // TODO Plumb from YAML
+    let sic_threshold = 0.0;
 
-    // Assign numeric VenueIDs as we decide to use a business.
-    let mut business_to_venue: HashMap<BusinessID, VenueID> = HashMap::new();
-    let mut venues = TiVec::new();
+    let mut businesses = load_businesses(population)?;
 
     info!("Assigning workplaces");
     let pb = progress_count(population.people.len());
@@ -44,31 +44,14 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
                 }
             }
             if let Ok((business_id, _)) = choices.choose_weighted(rng, |pair| pair.1) {
-                // Do the ID lookup, creating new ones as needed
-                // TODO This is a common pattern
-                let venue_id = match business_to_venue.get(business_id) {
-                    Some(id) => *id,
-                    None => {
-                        let venue_id = VenueID(business_to_venue.len());
-                        business_to_venue.insert(business_id.clone(), venue_id);
-                        let location = &businesses.locations[&business_id];
-                        venues.push(Venue {
-                            id: venue_id,
-                            activity: Activity::Work,
-                            location: *location,
-                            urn: None,
-                        });
-                        venue_id
-                    }
-                };
+                let venue_id = businesses.get_venue(*business_id);
 
                 // Assign the one and only workplace
                 person.flows_per_activity[Activity::Work] = vec![(venue_id, 1.0)];
 
                 // This job is gone
-                businesses
-                    .available_jobs
-                    .insert(*business_id, businesses.available_jobs[business_id] - 1);
+                // (Note the or_insert_with will never happen -- the entry is alwayst there)
+                *businesses.available_jobs.entry(*business_id).or_insert(0) -= 1;
             } else {
                 // There were no remaining jobs for this SIC.
                 // TODO What should we do?
@@ -77,7 +60,7 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
     }
 
     // Create venues
-    population.venues_per_activity[Activity::Work] = venues;
+    population.venues_per_activity[Activity::Work] = businesses.venues;
 
     Ok(())
 }
@@ -101,6 +84,31 @@ struct Businesses {
     list_per_sic: HashMap<usize, Vec<BusinessID>>,
     locations: HashMap<BusinessID, Point<f32>>,
     available_jobs: HashMap<BusinessID, usize>,
+
+    // Assign numeric VenueIDs as we decide to use a business.
+    business_to_venue: HashMap<BusinessID, VenueID>,
+    venues: TiVec<VenueID, Venue>,
+}
+
+impl Businesses {
+    fn get_venue(&mut self, business_id: BusinessID) -> VenueID {
+        // Do the ID lookup, creating new ones as needed
+        match self.business_to_venue.get(&business_id) {
+            Some(id) => *id,
+            None => {
+                let venue_id = VenueID(self.business_to_venue.len());
+                self.business_to_venue.insert(business_id, venue_id);
+                let location = &self.locations[&business_id];
+                self.venues.push(Venue {
+                    id: venue_id,
+                    activity: Activity::Work,
+                    location: *location,
+                    urn: None,
+                });
+                venue_id
+            }
+        }
+    }
 }
 
 fn load_businesses(population: &Population) -> Result<Businesses> {
@@ -108,15 +116,21 @@ fn load_businesses(population: &Population) -> Result<Businesses> {
         list_per_sic: HashMap::new(),
         locations: HashMap::new(),
         available_jobs: HashMap::new(),
+
+        business_to_venue: HashMap::new(),
+        venues: TiVec::new(),
     };
 
-    // Only keep businesses in MSOAs where somebody lives.
+    // Only keep businesses in MSOAs where a worker lives.
     //
     // The rationale: if we're restricting the study area, we don't want to send people to work far
     // away, where the only activity occuring is work.
-    //
-    // TODO Only people who work -- does that matter?
-    let msoas = population.unique_msoas();
+    let mut msoas = BTreeSet::new();
+    for person in &population.people {
+        if person.duration_per_activity[Activity::Work] > 0.0 {
+            msoas.insert(population.households[person.household].msoa.clone());
+        }
+    }
 
     // Find all of the businesses, grouped by the Standard Industry Classification.
     info!("Finding all businesses");
