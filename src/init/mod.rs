@@ -16,6 +16,7 @@ impl Population {
     /// Generates a Population for a given area.
     ///
     /// This doesn't download or extract raw data files if they already exist.
+    #[instrument(skip_all)]
     pub async fn create(input: Input, rng: &mut StdRng) -> Result<Population> {
         let raw_results = raw_data::grab_raw_data(&input).await?;
         let mut population = population::create(input, raw_results.tus_files, rng)?;

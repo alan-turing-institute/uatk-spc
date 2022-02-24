@@ -71,7 +71,6 @@ fn read_individual_time_use_and_health_data(
     // TODO Two-level progress bar. MultiProgress seems to demand two threads and calling join() :(
     for path in tus_files {
         let _s = info_span!("Reading", ?path).entered();
-        info!("Reading {}", path);
         let file = File::open(path)?;
         let pb = progress_file_with_msg(&file)?;
         for rec in csv::Reader::from_reader(pb.wrap_read(file)).deserialize() {

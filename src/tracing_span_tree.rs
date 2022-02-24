@@ -85,21 +85,32 @@ where
         span.extensions_mut().insert(data);
     }
 
-    fn on_event(&self, event: &Event<'_>, _: Context<S>) {
+    fn on_event(&self, event: &Event<'_>, ctx: Context<S>) {
         let mut scrape = ScrapeOneMessage { value: None };
         event.record(&mut scrape);
+        // TODO Why doesn't this work?
+        // https://docs.rs/tracing-subscriber/latest/tracing_subscriber/layer/struct.Context.html#method.event_span
+        //let parent = ctx.event_span(event).map(|s| s.name()).unwrap_or("");
+        let parent = ctx
+            .current_span()
+            .metadata()
+            .map(|s| s.name())
+            .unwrap_or("??");
         println!(
-            "[{:3.2?}] {}",
+            "[{:3.2?}] [{}] {}",
             self.program_start.elapsed(),
+            parent,
             scrape.value.unwrap()
         );
     }
 
     fn on_close(&self, id: Id, ctx: Context<S>) {
         let span = ctx.span(&id).unwrap();
-        let data = span.extensions_mut().remove::<Data>().unwrap();
-        //let fields = format!("{:?}", span.fields());
-        let fields = format!("{:?}", data.kvs);
+        let mut data = span.extensions_mut().remove::<Data>().unwrap();
+        let fields = match data.kvs.pop() {
+            Some(pair) => pair.1,
+            None => String::new(),
+        };
         let node = data.into_node(span.name(), fields);
 
         match span.parent().map(|span_ref| span_ref.id()) {

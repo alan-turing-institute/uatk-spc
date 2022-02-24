@@ -7,6 +7,7 @@ use serde::Deserialize;
 use crate::{Activity, County, Population, MSOA};
 
 /// The result is in [0, 1]
+#[instrument(skip_all)]
 pub fn calculate_lockdown_per_day(
     msoas_per_county: BTreeMap<County, Vec<MSOA>>,
     population: &Population,

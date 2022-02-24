@@ -14,6 +14,7 @@ pub struct RawDataResults {
     pub msoas_per_county: BTreeMap<County, Vec<MSOA>>,
 }
 
+#[instrument(skip_all)]
 pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     let mut results = RawDataResults {
         tus_files: Vec::new(),

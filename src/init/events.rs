@@ -5,6 +5,7 @@ use serde::{Deserialize, Deserializer};
 
 use crate::{ContactCycle, Event};
 
+#[instrument(skip_all)]
 pub fn load(path: &str) -> Result<Vec<Event>> {
     info!("Loading events data");
     let mut events = Vec::new();
