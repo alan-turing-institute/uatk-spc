@@ -139,8 +139,10 @@ struct Node {
 
 impl Node {
     fn print(&self) {
+        println!("");
         self.go(0)
     }
+
     fn go(&self, level: usize) {
         let bold = "\u{001b}[1m";
         let reset = "\u{001b}[0m";

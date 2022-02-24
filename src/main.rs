@@ -8,7 +8,7 @@ use fs_err::File;
 use rand::rngs::StdRng;
 use rand::SeedableRng;
 use serde::Deserialize;
-use tracing::info;
+use tracing::{info, info_span};
 
 use ramp::utilities;
 use ramp::{Input, Model, Population, Snapshot, MSOA};
@@ -33,6 +33,7 @@ async fn main() -> Result<()> {
             region,
             no_commuting,
         } => {
+            let _s = info_span!("initialisation", ?region).entered();
             let input = region.to_input(!no_commuting).await?;
             let population = Population::create(input, &mut rng).await?;
 
@@ -45,12 +46,16 @@ async fn main() -> Result<()> {
             info!("By the end, {}", utilities::memory_usage());
             // Write all data to a file only readable from Rust (using Serde)
             let output = format!("{target_dir}/rust_cache.bin");
-            info!("Writing population to {}", output);
-            utilities::write_binary(&population, output)?;
+            {
+                let _s = info_span!("Writing population to", ?output).entered();
+                utilities::write_binary(&population, output)?;
+            }
 
             // Write the snapshot in the format the Python pipeline expects
-            info!("Writing snapshot");
-            Snapshot::convert_to_npz(population, target_dir, &mut rng)?;
+            {
+                let _s = info_span!("Writing snapshot").entered();
+                Snapshot::convert_to_npz(population, target_dir, &mut rng)?;
+            }
         }
         Action::RunModel { region } => {
             info!("Loading population");
