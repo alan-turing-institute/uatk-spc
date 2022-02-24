@@ -33,6 +33,10 @@ pub fn create(input: Input, tus_files: Vec<String>, rng: &mut StdRng) -> Result<
         .collect();
     read_individual_time_use_and_health_data(&mut population, tus_files, keep_msoas)?;
 
+    // The order doesn't matter for these steps
+    if population.input.enable_commuting {
+        super::commuting::create_commuting_flows(&mut population, rng)?;
+    }
     setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;
     setup_venue_flows(Activity::Nightclub, Threshold::TopN(10), &mut population)?;
     setup_venue_flows(Activity::PrimarySchool, Threshold::TopN(5), &mut population)?;
@@ -41,11 +45,6 @@ pub fn create(input: Input, tus_files: Vec<String>, rng: &mut StdRng) -> Result<
         Threshold::TopN(5),
         &mut population,
     )?;
-
-    // Commuting is special-cased
-    if population.input.enable_commuting {
-        super::commuting::create_commuting_flows(&mut population, rng)?;
-    }
 
     // TODO The Python implementation has lots of commented stuff, then some rounding
 
