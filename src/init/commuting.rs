@@ -10,52 +10,107 @@ use serde::Deserialize;
 use typed_index_collections::TiVec;
 
 use crate::utilities::{print_count, progress_count};
-use crate::{Activity, Population, Venue, VenueID, MSOA};
+use crate::{Activity, PersonID, Population, Venue, VenueID, MSOA};
 
 pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> Result<()> {
     // min proportion of the population that must be preserved when using the sic1d07 classification
     // TODO Plumb from YAML
     let sic_threshold = 0.0;
 
-    let mut businesses = load_businesses(population)?;
-
-    info!("Assigning workplaces");
-    let pb = progress_count(population.people.len());
-    for person in &mut population.people {
-        pb.inc(1);
-        if person.duration_per_activity[Activity::Work] == 0.0 {
-            continue;
+    let mut all_workers: Vec<PersonID> = Vec::new();
+    // Only keep businesses in MSOAs where a worker lives.
+    //
+    // The rationale: if we're restricting the study area, we don't want to send people to work far
+    // away, where the only activity occuring is work.
+    let mut msoas = BTreeSet::new();
+    for person in &population.people {
+        if person.duration_per_activity[Activity::Work] > 0.0 {
+            all_workers.push(person.id);
+            msoas.insert(population.households[person.household].msoa.clone());
         }
-        // TODO Handle people without an assigned SIC
-        if let Some(sic) = person.sic1d07 {
-            // Each person could work at any business matching their SIC. Weight the choice by the
-            // number of available jobs there and the inverse square distance between the person
-            // and business.
-            let mut choices: Vec<(BusinessID, f32)> = Vec::new();
-            if let Some(list) = businesses.list_per_sic.get(&sic) {
-                for id in list {
-                    let jobs_available = businesses.available_jobs[id];
-                    if jobs_available > 0 {
-                        let dist = person
-                            .location
-                            .haversine_distance(&businesses.locations[id]);
-                        choices.push((*id, (jobs_available as f32) / dist.powi(2)));
-                    }
-                }
-            }
-            if let Ok((business_id, _)) = choices.choose_weighted(rng, |pair| pair.1) {
-                let venue_id = businesses.get_venue(*business_id);
+    }
 
-                // Assign the one and only workplace
-                person.flows_per_activity[Activity::Work] = vec![(venue_id, 1.0)];
+    let mut businesses = load_businesses(msoas)?;
+    // Pairs of (workers, jobs) -- guaranteed equal length
+    let mut pairs: Vec<(Vec<PersonID>, Vec<BusinessID>)> = Vec::new();
 
-                // This job is gone
-                // (Note the or_insert_with will never happen -- the entry is alwayst there)
-                *businesses.available_jobs.entry(*business_id).or_insert(0) -= 1;
-            } else {
-                // There were no remaining jobs for this SIC.
-                // TODO What should we do?
+    // First pair workers and jobs using SIC
+    info!("Grouping people by SIC");
+    for (sic, business_list) in &businesses.list_per_sic {
+        let mut jobs: Vec<BusinessID> = Vec::new();
+        for id in business_list {
+            // Repeat based on how many jobs available there
+            for _ in 0..businesses.available_jobs[id] {
+                jobs.push(*id);
             }
+        }
+
+        // Find workers with a matching SIC
+        let mut workers: Vec<PersonID> = Vec::new();
+        for id in &all_workers {
+            if population.people[*id].sic1d07 == Some(*sic) {
+                workers.push(*id);
+            }
+        }
+
+        // If we have less jobs than people, pick who we want to work
+        if jobs.len() < workers.len() {
+            workers.shuffle(rng);
+            workers.truncate(jobs.len());
+        }
+        // Likewise, if we have too many jobs, don't fill them all
+        if jobs.len() > workers.len() {
+            jobs.shuffle(rng);
+            jobs.truncate(workers.len());
+        }
+        pairs.push((workers, jobs));
+    }
+
+    // How many people wind up with a job if we match by SIC?
+    let total_sic_workers: usize = pairs.iter().map(|pair| pair.0.len()).sum();
+    let ratio = (total_sic_workers as f64) / (all_workers.len() as f64);
+    info!(
+        "If we match workers to jobs by SIC, {} / {} = {} get a job. SIC threshold is {}",
+        print_count(total_sic_workers),
+        print_count(all_workers.len()),
+        ratio,
+        sic_threshold
+    );
+    if ratio < sic_threshold {
+        // Give up on using SIC. Just match up all workers with all jobs.
+        let mut all_jobs: Vec<BusinessID> = Vec::new();
+        for (id, size) in &businesses.available_jobs {
+            for _ in 0..*size {
+                all_jobs.push(*id);
+            }
+        }
+        pairs = vec![(all_workers, all_jobs)];
+    }
+
+    // Now match people up!
+    for (workers, mut jobs) in pairs {
+        info!("Assigning workplaces for some group");
+        assert_eq!(jobs.len(), workers.len());
+        let pb = progress_count(jobs.len());
+        for person in workers {
+            pb.inc(1);
+            let person_location = population.people[person].location;
+            // TODO Maintain a (BusinessID, remaining jobs) list instead of this nonsense
+            let indices: Vec<usize> = (0..jobs.len()).collect();
+            let idx = indices
+                .choose_weighted(rng, |idx| {
+                    let dist =
+                        person_location.haversine_distance(&businesses.locations[&jobs[*idx]]);
+                    1.0 / dist.powi(2)
+                })
+                .unwrap();
+
+            // This job is gone
+            let business_id = jobs.remove(*idx);
+            let venue_id = businesses.get_venue(business_id);
+
+            // Assign the one and only workplace
+            population.people[person].flows_per_activity[Activity::Work] = vec![(venue_id, 1.0)];
         }
     }
 
@@ -111,7 +166,7 @@ impl Businesses {
     }
 }
 
-fn load_businesses(population: &Population) -> Result<Businesses> {
+fn load_businesses(msoas: BTreeSet<MSOA>) -> Result<Businesses> {
     let mut result = Businesses {
         list_per_sic: HashMap::new(),
         locations: HashMap::new(),
@@ -120,17 +175,6 @@ fn load_businesses(population: &Population) -> Result<Businesses> {
         business_to_venue: HashMap::new(),
         venues: TiVec::new(),
     };
-
-    // Only keep businesses in MSOAs where a worker lives.
-    //
-    // The rationale: if we're restricting the study area, we don't want to send people to work far
-    // away, where the only activity occuring is work.
-    let mut msoas = BTreeSet::new();
-    for person in &population.people {
-        if person.duration_per_activity[Activity::Work] > 0.0 {
-            msoas.insert(population.households[person.household].msoa.clone());
-        }
-    }
 
     // Find all of the businesses, grouped by the Standard Industry Classification.
     info!("Finding all businesses");
