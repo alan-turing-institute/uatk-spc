@@ -11,6 +11,7 @@ use rstar::{RTree, AABB};
 use crate::utilities::{print_count, progress_count};
 use crate::{InfoPerMSOA, MSOA};
 
+#[instrument(skip_all)]
 pub fn get_info_per_msoa(
     msoas: BTreeSet<MSOA>,
     osm_directories: Vec<String>,

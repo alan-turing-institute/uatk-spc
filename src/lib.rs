@@ -8,11 +8,12 @@
 #[macro_use]
 extern crate anyhow;
 #[macro_use]
-extern crate log;
+extern crate tracing;
 
 mod init;
 mod model;
 mod snapshot;
+pub mod tracing_span_tree;
 pub mod utilities;
 
 use derive_more::{From, Into};

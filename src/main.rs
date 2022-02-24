@@ -1,8 +1,5 @@
 //! This is the command-line interface to RAMP.
 
-#[macro_use]
-extern crate log;
-
 use std::collections::BTreeMap;
 
 use anyhow::Result;
@@ -11,7 +8,7 @@ use fs_err::File;
 use rand::rngs::StdRng;
 use rand::SeedableRng;
 use serde::Deserialize;
-use simplelog::{ColorChoice, ConfigBuilder, LevelFilter, TermLogger, TerminalMode};
+use tracing::{info, info_span};
 
 use ramp::utilities;
 use ramp::{Input, Model, Population, Snapshot, MSOA};
@@ -21,16 +18,7 @@ const DEFAULT_CASES_PER_MSOA: usize = 5;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    // Specify the logging format
-    TermLogger::init(
-        LevelFilter::Info,
-        ConfigBuilder::new()
-            .set_time_format_str("%H:%M:%S%.3f")
-            .set_location_level(LevelFilter::Error)
-            .build(),
-        TerminalMode::Stderr,
-        ColorChoice::Auto,
-    )?;
+    ramp::tracing_span_tree::SpanTree::new().enable();
 
     let args = Args::parse();
 
@@ -45,6 +33,7 @@ async fn main() -> Result<()> {
             region,
             no_commuting,
         } => {
+            let _s = info_span!("initialisation", ?region).entered();
             let input = region.to_input(!no_commuting).await?;
             let population = Population::create(input, &mut rng).await?;
 
@@ -57,12 +46,16 @@ async fn main() -> Result<()> {
             info!("By the end, {}", utilities::memory_usage());
             // Write all data to a file only readable from Rust (using Serde)
             let output = format!("{target_dir}/rust_cache.bin");
-            info!("Writing population to {}", output);
-            utilities::write_binary(&population, output)?;
+            {
+                let _s = info_span!("Writing population to", ?output).entered();
+                utilities::write_binary(&population, output)?;
+            }
 
             // Write the snapshot in the format the Python pipeline expects
-            info!("Writing snapshot");
-            Snapshot::convert_to_npz(population, target_dir, &mut rng)?;
+            {
+                let _s = info_span!("Writing snapshot").entered();
+                Snapshot::convert_to_npz(population, target_dir, &mut rng)?;
+            }
         }
         Action::RunModel { region } => {
             info!("Loading population");

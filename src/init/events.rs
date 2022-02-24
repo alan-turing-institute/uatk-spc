@@ -5,7 +5,8 @@ use serde::{Deserialize, Deserializer};
 
 use crate::{ContactCycle, Event};
 
-pub fn load(path: &str) -> Result<Vec<Event>> {
+#[instrument]
+pub fn load_events(path: &str) -> Result<Vec<Event>> {
     info!("Loading events data");
     let mut events = Vec::new();
     for rec in csv::Reader::from_reader(File::open(path)?).deserialize() {
