@@ -56,7 +56,7 @@ Then to run the snapshot file in the Python model:
 ```shell
 # You only have to run this the first time, to install Python dependencies
 poetry install
-poetry run python simulate_gui.py -p model_parameters/default.yml
+poetry run python gui.py -p model_parameters/default.yml
 ```
 
 This should launch an interactive dashboard.

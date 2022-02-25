@@ -1,77 +1,37 @@
+#!/usr/bin/env python3
+
+import click
 import pickle
 from tqdm import tqdm
 import pandas as pd
 import os
-import csv
-import numpy as np
 
-
-from ramp.inspector import Inspector
 from ramp.params import Params
-from ramp.simulator import Simulator
 from ramp.summary import Summary
 from ramp.disease_statuses import DiseaseStatus
+from ramp.loader import setup_sim
 
 
-def run_opencl(
-    snapshot,
-    study_area,
-    parameters_file,
-    iterations=100,
-    use_gui=True,
-    use_gpu=False,
-    quiet=False,
+@click.command()
+@click.option(
+    "-p",
+    "--parameters-file",
+    type=click.Path(exists=True),
+    help="Parameters file to use to configure the model. This must be located in the working directory.",
+)
+def main(parameters_file):
+    simulator, snapshot, study_area = setup_sim(parameters_file)
+    # TODO from params
+    iterations = 100
+
+    summary, final_state = run_headless(simulator, snapshot, iterations)
+    output_dir = f"data/output/{study_area}/"
+    store_summary_data(summary, store_detailed_counts=True, data_dir=output_dir)
+
+
+def run_headless(
+    simulator, snapshot, iterations, quiet=False, store_detailed_counts=True
 ):
-    """
-    Entry point for running the OpenCL simulation either with the UI or in headless mode.
-    NB: in order to write output data for the OpenCL dashboard you must run in headless mode.
-    """
-    if not quiet:
-        print(f"Snapshot is {int(snapshot.num_bytes() / 1000000)} MB")
-
-    # Create a simulator and upload the snapshot data to the OpenCL device
-    simulator = Simulator(snapshot, parameters_file, gpu=use_gpu)
-    [people_statuses, people_transition_times] = simulator.seeding_base()
-    simulator.upload_all(snapshot.buffers)
-    simulator.upload("people_statuses", people_statuses)
-    simulator.upload("people_transition_times", people_transition_times)
-
-    if not quiet:
-        print(
-            f"OpenCL platform = {simulator.platform_name()}, device = {simulator.device_name()}"
-        )
-
-    if use_gui:
-        snapshot_folder = f"data/processed_data/{study_area}/snapshot/"
-        run_with_gui(simulator, snapshot, snapshot_folder, study_area)
-    else:
-        summary, final_state = run_headless(simulator, snapshot, iterations, quiet)
-        output_dir = f"data/output/{study_area}/"
-        store_summary_data(summary, store_detailed_counts=True, data_dir=output_dir)
-
-
-def run_with_gui(simulator, snapshot, snapshot_folder, study_area):
-    width = 2560  # Initial window width in pixels
-    height = 1440  # Initial window height in pixels
-    nlines = 4  # Number of visualised connections per person
-
-    # Create an inspector and upload static data
-    inspector = Inspector(
-        simulator,
-        snapshot,
-        snapshot_folder,
-        nlines,
-        study_area,  # "Ramp UA",
-        width,
-        height,
-    )
-
-    # Main UI loop
-    while inspector.is_active():
-        inspector.update()
-
-
-def run_headless(simulator, snapshot, iterations, quiet, store_detailed_counts=True):
     """
     Run the simulation in headless mode and store summary data.
     NB: running in this mode is required in order to view output data in the dashboard. Also store_detailed_counts must
@@ -130,9 +90,6 @@ def store_summary_data(summary, store_detailed_counts, data_dir):
 
     with open(output_dir + "/total_counts.pkl", "wb") as f:
         pickle.dump(total_counts_dict, f)
-        # w = csv.DictWriter(f, total_counts_dict.keys())
-        # w.writeheader()
-        # w.writerow(total_counts_dict)
         total_counts_df = pd.DataFrame.from_dict(
             total_counts_dict
         )  # transform to df so we can export to csv
@@ -158,3 +115,7 @@ def store_summary_data(summary, store_detailed_counts, data_dir):
                 area_counts_dict, orient="index"
             )  # transform to df so we can export to csv
             area_counts_df.to_csv(output_dir + "/area_counts.csv", index=False)
+
+
+if __name__ == "__main__":
+    main()
