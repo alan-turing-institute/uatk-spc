@@ -6,8 +6,6 @@ microsim:
   output: TRUE # Whether to generate output or not
   output-every-iteration: FALSE # Can optionally write output at every iteration, not just at the end
   opencl-model: TRUE # Run the OpenCL model
-  opencl-gui: TRUE # Run the OpenCL model with GUI visualisation for OpenCL model
-  opencl-gpu: TRUE # Run OpenCL model on the GPU (if false then run using CPU)
 
 
 # Parameters that are used to calibrate the model.

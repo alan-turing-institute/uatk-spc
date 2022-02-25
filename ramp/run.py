@@ -31,11 +31,8 @@ def run_opencl(
 
     # Create a simulator and upload the snapshot data to the OpenCL device
     simulator = Simulator(snapshot, parameters_file, gpu=use_gpu)
-
     [people_statuses, people_transition_times] = simulator.seeding_base()
-
     simulator.upload_all(snapshot.buffers)
-
     simulator.upload("people_statuses", people_statuses)
     simulator.upload("people_transition_times", people_transition_times)
 

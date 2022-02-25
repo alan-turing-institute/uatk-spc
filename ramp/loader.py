@@ -1,22 +1,12 @@
-#!/usr/bin/env python3
-
 import os
-import click
 from yaml import load, SafeLoader
 
-from ramp.run import run_opencl
+from ramp.simulator import Simulator
 from ramp.snapshot import Snapshot
 from ramp.params import Params, IndividualHazardMultipliers, LocationHazardMultipliers
 
 
-@click.command()
-@click.option(
-    "-p",
-    "--parameters-file",
-    type=click.Path(exists=True),
-    help="Parameters file to use to configure the model. This must be located in the working directory.",
-)
-def main(parameters_file):
+def setup_sim(parameters_file):
     print(f"Running a simulation based on {parameters_file}")
 
     try:
@@ -30,9 +20,6 @@ def main(parameters_file):
             output = sim_params["output"]
             output_every_iteration = sim_params["output-every-iteration"]
             use_lockdown = sim_params["use-lockdown"]
-            open_cl_model = sim_params["opencl-model"]
-            opencl_gui = sim_params["opencl-gui"]
-            opencl_gpu = sim_params["opencl-gpu"]
             startDate = sim_params["start-date"]
     except Exception as error:
         print("Error in parameters file format")
@@ -55,6 +42,7 @@ def main(parameters_file):
         )
     print(f"Loading snapshot from {snapshot_path}")
     snapshot = Snapshot.load_full_snapshot(path=snapshot_path)
+    print(f"Snapshot is {int(snapshot.num_bytes() / 1000000)} MB")
 
     # set the random seed of the model
     snapshot.seed_prngs(42)
@@ -67,17 +55,14 @@ def main(parameters_file):
             print("Switching to healthier population")
             snapshot.switch_to_healthier_population()
 
-    run_mode = "GUI" if opencl_gui else "headless"
-    print(f"Running OpenCL model in {run_mode} mode")
-    run_opencl(
-        snapshot,
-        study_area,
-        parameters_file,
-        iterations,
-        opencl_gui,
-        opencl_gpu,
-        quiet=False,
-    )
+    # Create a simulator and upload the snapshot data to the OpenCL device
+    simulator = Simulator(snapshot, parameters_file, gpu=True)
+    [people_statuses, people_transition_times] = simulator.seeding_base()
+    simulator.upload_all(snapshot.buffers)
+    simulator.upload("people_statuses", people_statuses)
+    simulator.upload("people_transition_times", people_transition_times)
+
+    return simulator, snapshot, study_area
 
 
 def create_params(calibration_params, disease_params):
@@ -128,7 +113,3 @@ def create_params(calibration_params, disease_params):
         diabetes_multiplier=disease_params["diabetes"],
         bloodpressure_multiplier=disease_params["bloodpressure"],
     )
-
-
-if __name__ == "__main__":
-    main()

@@ -56,7 +56,7 @@ Then to run the snapshot file in the Python model:
 ```shell
 # You only have to run this the first time, to install Python dependencies
 poetry install
-poetry run python main_model.py -p model_parameters/default.yml
+poetry run python simulate_gui.py -p model_parameters/default.yml
 ```
 
 This should launch an interactive dashboard.
@@ -76,7 +76,7 @@ We use automated tools to format the code.
 
 ```shell
 # Format all Python code
-poetry run black ramp main_model.py
+poetry run black ramp *.py
 # Format all Rust code
 cargo fmt
 ```
