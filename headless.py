@@ -25,8 +25,9 @@ def main(parameters_file):
     iterations = 100
 
     summary, final_state = run_headless(simulator, snapshot, iterations)
-    output_dir = f"data/output/{study_area}/"
-    store_summary_data(summary, store_detailed_counts=True, data_dir=output_dir)
+    store_summary_data(
+        summary, store_detailed_counts=True, output_dir=f"data/output/{study_area}/"
+    )
 
 
 def run_headless(
@@ -75,18 +76,15 @@ def run_headless(
     return summary, final_state
 
 
-def store_summary_data(summary, store_detailed_counts, data_dir):
+def store_summary_data(summary, store_detailed_counts, output_dir):
+    print(f"output area folder {output_dir}")
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     # convert total_counts to dict of pandas dataseries
     total_counts_dict = {}
     for status, timeseries in enumerate(summary.total_counts):
         total_counts_dict[DiseaseStatus(status).name.lower()] = pd.Series(timeseries)
-
-    output_dir = data_dir
-    print(f"output area folder {output_dir}")
-    # output_dir = data_dir + "/output/OpenCL/"
-    # create output directory if it doesn't exist
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
 
     with open(output_dir + "/total_counts.pkl", "wb") as f:
         pickle.dump(total_counts_dict, f)
@@ -103,18 +101,24 @@ def store_summary_data(summary, store_detailed_counts, data_dir):
         # Store pickled summary objects
         with open(output_dir + "/age_counts.pkl", "wb") as f:
             pickle.dump(age_counts_dict, f)
-            age_counts_df = pd.DataFrame.from_dict(
-                age_counts_dict,  # transform to df so we can export to csv
+            # This is a dictionary from each disease status to a table with 8
+            # rows and a column per day.
+            # TODO What's the desired CSV output?
+            """age_counts_df = pd.DataFrame.from_dict(
+                age_counts_dict,
                 orient="index",
             )
-            age_counts_df.to_csv(output_dir + "/age_counts.csv", index=False)
+            age_counts_df.to_csv(output_dir + "/age_counts.csv", index=False)"""
 
         with open(output_dir + "/area_counts.pkl", "wb") as f:
             pickle.dump(area_counts_dict, f)
-            area_counts_df = pd.DataFrame.from_dict(
+            # This is a dictionary from each disease status to a table with
+            # days as columns and MSOAs as rows.
+            # TODO What's the desired CSV output?
+            """area_counts_df = pd.DataFrame.from_dict(
                 area_counts_dict, orient="index"
-            )  # transform to df so we can export to csv
-            area_counts_df.to_csv(output_dir + "/area_counts.csv", index=False)
+            )
+            area_counts_df.to_csv(output_dir + "/area_counts.csv", index=False)"""
 
 
 if __name__ == "__main__":
