@@ -59,7 +59,12 @@ poetry install
 poetry run python gui.py -p model_parameters/default.yml
 ```
 
-This should launch an interactive dashboard.
+This should launch an interactive dashboard. Or you can run the simulation in
+"headless" mode and instead write summary output data:
+
+```shell
+poetry run python headless.py -p model_parameters/default.yml
+```
 
 ### Troubleshooting
 
