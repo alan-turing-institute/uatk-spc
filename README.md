@@ -1,23 +1,22 @@
 # ASPICS – RAMP-UA/EcoTwins + Rust
 
-
-<a href="url"><img src="/ASPICS_Logo_V2.png" align="left" width="130" ></a> 
+`<a href="url"><img src="/ASPICS_Logo_V2.png" align="left" width="130" >``</a>`
 
 This is an implementation of a [microsimulation model for epidimics](https://www.sciencedirect.com/science/article/pii/S0277953621007930) called ASPICS (Agent-based Simulation of ePIdemics at Country Scale).
 
 The project is split into two stages:
 
-1.  Initialisation: combine various data sources to produce a snapshot capturing
-    some study area. This is implemented in [Rust](https://www.rust-lang.org/),
-    and most code is in the `src/` directory.
-2.  Simulation: Run a COVID transmission model in that study area. This is
-    implemented in Python and OpenCL, with a dashboard using OpenGL and ImGui.
-    Most code is in the `ramp/` directory.
+1. Initialisation: combine various data sources to produce a snapshot capturing
+   some study area. This is implemented in [Rust](https://www.rust-lang.org/),
+   and most code is in the `src/` directory.
+2. Simulation: Run a COVID transmission model in that study area. This is
+   implemented in Python and OpenCL, with a dashboard using OpenGL and ImGui.
+   Most code is in the `ramp/` directory.
 
 ## Status
 
-- [x] initialisation produces a snapshot for different study areas
-- [x] basic simulation with the snapshot
+- [X] initialisation produces a snapshot for different study areas
+- [X] basic simulation with the snapshot
 - [ ] commuting (partially ported from Python)
 - [ ] events (partly started)
 - [ ] calibration / validation
@@ -30,7 +29,7 @@ development.
 
 One-time installation of things you may be missing:
 
-- The latest version of Rust (1.58): <https://www.rust-lang.org/tools/install>
+- The latest version of Rust (1.58): [https://www.rust-lang.org/tools/install](https://www.rust-lang.org/tools/install)
 - [Poetry](https://python-poetry.org), for running a fork of the Python model
 - The instructions assume you'e running in a shell on Linux or Mac, and have
   standard commands like `unzip` and `python3` available
@@ -45,7 +44,18 @@ cd rampfs
 cargo run --release -- init west-yorkshire-small
 ```
 
+If you got an error running cargo, most likely you need to install these two packages.
+
+```
+brew install cmake
+```
+
+```
+brew install proj
+```
+
 This will download some large files the first time. You'll wind up with
+
 `processed_data/WestYorkshireSmall/` as output, as well as lots of intermediate
 files in `raw_data/`. The next time you run this command (even on a different
 study area), it should go much faster. You can run the pipeline for other study
@@ -116,17 +126,17 @@ then you can check if the code compiles much faster by doing `cargo check`.
 
 The history of this project is slightly convoluted:
 
-1.  RAMP was originally written in R, then later converted to Python and OpenCL:
-    <https://github.com/Urban-Analytics/RAMP-UA>
-2.  The "ecosystem of digital twins" branch heavily refactored the code to
-    support running in different study areas and added support for commuting:
-    <https://github.com/Urban-Analytics/RAMP-UA/tree/Ecotwins-withCommuting>
-3.  This separate repository was created to port the initialisation logic to
-    Rust, following the above branch
-4.  The Python and OpenCL code for running the model (after initialisation) was
-    copied into this repository from
-    <https://github.com/dabreegster/RAMP-UA/commits/dcarlino_dev> and further
-    cleaned up
+1. RAMP was originally written in R, then later converted to Python and OpenCL:
+   [https://github.com/Urban-Analytics/RAMP-UA](https://github.com/Urban-Analytics/RAMP-UA)
+2. The "ecosystem of digital twins" branch heavily refactored the code to
+   support running in different study areas and added support for commuting:
+   [https://github.com/Urban-Analytics/RAMP-UA/tree/Ecotwins-withCommuting](https://github.com/Urban-Analytics/RAMP-UA/tree/Ecotwins-withCommuting)
+3. This separate repository was created to port the initialisation logic to
+   Rust, following the above branch
+4. The Python and OpenCL code for running the model (after initialisation) was
+   copied into this repository from
+   [https://github.com/dabreegster/RAMP-UA/commits/dcarlino_dev](https://github.com/dabreegster/RAMP-UA/commits/dcarlino_dev) and further
+   cleaned up
 
 There are many contributors to the project through these different stages; the
 version control history can be seen on Github in the other repositories.
