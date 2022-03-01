@@ -18,11 +18,7 @@ const DEFAULT_CASES_PER_MSOA: usize = 5;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    let subscriber = tracing_subscriber::FmtSubscriber::builder()
-        .with_max_level(tracing::Level::DEBUG)
-        .finish();
-    tracing::subscriber::set_global_default(subscriber).expect("setting default subscriber failed");
-    //ramp::tracing_span_tree::SpanTree::new().enable();
+    ramp::tracing_span_tree::SpanTree::new().enable();
 
     let args = Args::parse();
 
