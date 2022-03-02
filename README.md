@@ -1,6 +1,6 @@
 # ASPICS – RAMP-UA/EcoTwins + Rust
 
-`<a href="url"><img src="/ASPICS_Logo_V2.png" align="left" width="130" >``</a>`
+<a href="url"><img src="/ASPICS_Logo_V2.png" align="left" width="130" ></a>
 
 This is an implementation of a [microsimulation model for epidimics](https://www.sciencedirect.com/science/article/pii/S0277953621007930) called ASPICS (Agent-based Simulation of ePIdemics at Country Scale).
 
