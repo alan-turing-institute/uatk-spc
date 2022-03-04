@@ -1,5 +1,7 @@
 # ASPICS – RAMP-UA/EcoTwins + Rust
 
+[![DOI](https://zenodo.org/badge/440815189.svg)](https://zenodo.org/badge/latestdoi/440815189)
+
 <a href="url"><img src="/ASPICS_Logo_V2.png" align="left" width="130" ></a>
 
 This is an implementation of a [microsimulation model for epidimics](https://www.sciencedirect.com/science/article/pii/S0277953621007930) called ASPICS (Agent-based Simulation of ePIdemics at Country Scale).
