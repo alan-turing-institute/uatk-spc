@@ -2,7 +2,7 @@
 
 [![DOI](https://zenodo.org/badge/440815189.svg)](https://zenodo.org/badge/latestdoi/440815189)
 
-![](ASPICS_Logo_V2.png)
+<img src="ASPICS_Logo_V2.png" align="left" width="130"/>
 
 - [Usage guide](usage_guide.md) - build and run the project
 - [Developer guide](developer_guide.md) - extend the project
