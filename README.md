@@ -2,138 +2,31 @@
 
 [![DOI](https://zenodo.org/badge/440815189.svg)](https://zenodo.org/badge/latestdoi/440815189)
 
-<a href="url"><img src="/ASPICS_Logo_V2.png" align="left" width="130" ></a>
+![](ASPICS_Logo_V2.png)
 
-This is an implementation of a [microsimulation model for epidimics](https://www.sciencedirect.com/science/article/pii/S0277953621007930) called ASPICS (Agent-based Simulation of ePIdemics at Country Scale).
+- [Usage guide](usage_guide.md) - build and run the project
+- [Developer guide](developer_guide.md) - extend the project
+  - [Code walkthrough](code_walkthrough.md)
 
-The project is split into two stages:
-
-1. Initialisation: combine various data sources to produce a snapshot capturing
-   some study area. This is implemented in [Rust](https://www.rust-lang.org/),
-   and most code is in the `src/` directory.
-2. Simulation: Run a COVID transmission model in that study area. This is
-   implemented in Python and OpenCL, with a dashboard using OpenGL and ImGui.
-   Most code is in the `ramp/` directory.
+This is an implementation of a [microsimulation model for
+epidimics](https://www.sciencedirect.com/science/article/pii/S0277953621007930)
+called ASPICS (Agent-based Simulation of ePIdemics at Country Scale). The
+project is split into two pieces -- the **initialisation pipeline** combines
+various data sources to describe a synthetic population for some study area,
+and then the **simulation** models the spread of COVID through that population.
 
 ## Status
 
+We aim for this repository to provide an easy-to-use code base for building
+similar research, but this is still in progress. File an
+[issue](https://github.com/dabreegster/rampfs/issues) if you're interested in
+building off this work.
+
 - [x] initialisation produces a snapshot for different study areas
 - [x] basic simulation with the snapshot
-- [x] commuting
-- [ ] events (partly started)
+- [x] home-to-work commuting
+- [ ] large-scale events
 - [ ] calibration / validation
-
-There's a preliminary attempt to port the simulation logic from Python and
-OpenCL to Rust in `src/model/`, but there's no intention to continue its
-development.
-
-## Running the code
-
-One-time installation of things you may be missing:
-
-- The latest version of Rust (1.58): [https://www.rust-lang.org/tools/install](https://www.rust-lang.org/tools/install)
-- [Poetry](https://python-poetry.org), for running a fork of the Python model
-  - If you have trouble installing Python dependencies -- especially on Mac M1 -- you can instead use [conda](https://docs.conda.io/projects/conda/en/latest/index.html)
-- The instructions assume you'e running in a shell on Linux or Mac, and have
-  standard commands like `unzip` and `python3` available
-
-You can then compile this project and generate a snapshot for a small study
-area:
-
-```shell
-git clone https://github.com/dabreegster/rampfs/
-cd rampfs
-# You only have to run this the first time, to install Python dependencies
-poetry install
-# This will take a few minutes the first time you do it, to build external dependencies
-cargo run --release -- init west-yorkshire-small
-```
-
-This will download some large files the first time. You'll wind up with
-`processed_data/WestYorkshireSmall/` as output, as well as lots of intermediate
-files in `raw_data/`. The next time you run this command (even on a different
-study area), it should go much faster. You can run the pipeline for other study
-areas; try `cargo run --release -- init --help` for a list.
-
-Then to run the snapshot file in the Python model:
-
-```shell
-poetry run python gui.py -p model_parameters/default.yml
-```
-
-This should launch an interactive dashboard. Or you can run the simulation in
-"headless" mode and instead write summary output data:
-
-```shell
-poetry run python headless.py -p model_parameters/default.yml
-```
-
-### Conda alternative
-
-If poetry doesn't work, we also have a Conda environment. You can use it like this:
-
-```shell
-conda env create -f environment.yml
-conda activate aspics
-python3.7 gui.py -p model_parameters/default.yml
-```
-
-Note inside the Conda environment, just `python` may not work; specify `python3.7`.
-
-If you get `CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.` and the provided instructions don't help, on Linux you can try doing `source ~/anaconda3/etc/profile.d/conda.sh`.
-
-### Troubleshooting
-
-The Rust code depends on [proj](https://proj.org) to transform coordinates. You
-may need to install additional dependencies to build it, like `cmake`. Please
-[open an issue](https://github.com/dabreegster/rampfs/issues) if you have any
-trouble!
-
-On Mac, you can do:
-
-```shell
-brew install cmake
-brew install proj
-```
-
-## Developer tips
-
-### Code hygiene
-
-We use automated tools to format the code.
-
-```shell
-# Format all Python code
-poetry run black ramp *.py
-# Format all Rust code
-cargo fmt
-```
-
-### Some tips for working with Rust
-
-There are two equivalent ways to rebuild and then run the code. First:
-
-```shell
-cargo run --release -- init devon
-```
-
-The `--` separates arguments to `cargo`, the Rust build tool, and arguments to
-the program itself. The second way:
-
-```shell
-cargo build --release
-./target/release/ramp init devon
-```
-
-You can build the code in two ways -- **debug** and **release**. There's a
-simple tradeoff -- debug mode is fast to build, but slow to run. Release mode is
-slow to build, but fast to run. For the RAMP codebase, since the input data is
-so large and the codebase so small, I'd recommend always using `--release`. If
-you want to use debug mode, just omit the flag.
-
-If you're working on the Rust code outside of an IDE like
-[VSCode](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust),
-then you can check if the code compiles much faster by doing `cargo check`.
 
 ## Lineage
 
