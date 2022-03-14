@@ -17,7 +17,7 @@ class InitialCases:
             parameters = load(f, Loader=SafeLoader)
             sim_params = parameters["microsim"]
         study_area = sim_params["study-area"]
-        self.initial_cases = pd.read_csv(f"../model_parameters/Input_{study_area}.csv")
+        self.initial_cases = pd.read_csv(f"../config/Input_{study_area}.csv")
 
         self.people_df = pd.DataFrame(
             {"area_code": area_codes, "not_home_prob": not_home_probs}
