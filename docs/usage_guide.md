@@ -21,6 +21,7 @@ cd rampfs
 # You only have to run this the first time, to install Python dependencies
 poetry install
 # This will take a few minutes the first time you do it, to build external dependencies
+cd init
 cargo build --release
 ```
 
@@ -40,6 +41,7 @@ brew install pkg-config cmake proj
 ## Generating a snapshot for a study area
 
 ```
+cd init
 cargo run --release -- init west-yorkshire-small
 ```
 
@@ -56,6 +58,7 @@ You can run the pipeline for other study areas; try
 Then to run the snapshot file in the Python model:
 
 ```shell
+cd ../
 poetry run python gui.py -p model_parameters/default.yml
 ```
 

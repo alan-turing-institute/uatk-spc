@@ -184,7 +184,7 @@ impl Snapshot {
         write!(file, "{}", serde_json::to_string_pretty(&area_codes)?)?;
 
         let status = Command::new("python3")
-            .arg("scripts/fix_snapshot.py")
+            .arg("fix_snapshot.py")
             .arg(&target_dir)
             .status()?;
         if !status.success() {

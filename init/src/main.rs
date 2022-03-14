@@ -128,7 +128,7 @@ impl Region {
             }
             _ => format!("Input_{:?}.csv", self),
         };
-        let csv_path = format!("model_parameters/{}", csv_input);
+        let csv_path = format!("../model_parameters/{}", csv_input);
         for rec in csv::Reader::from_reader(File::open(csv_path)?).deserialize() {
             let rec: InitialCaseRow = rec?;
             input.initial_cases_per_msoa.insert(rec.msoa, rec.cases);

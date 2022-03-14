@@ -10,10 +10,7 @@
 
 This is an implementation of a
 [microsimulation model for epidimics](https://www.sciencedirect.com/science/article/pii/S0277953621007930)
-called ASPICS (Agent-based Simulation of ePIdemics at Country Scale). The
-project is split into two pieces -- the **initialisation pipeline** combines
-various data sources to describe a synthetic population for some study area, and
-then the **simulation** models the spread of COVID through that population.
+called ASPICS (Agent-based Simulation of ePIdemics at Country Scale).
 
 ## Status
 

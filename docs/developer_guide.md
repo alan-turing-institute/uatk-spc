@@ -8,7 +8,9 @@ We use automated tools to format the code.
 # Format all Python code
 poetry run black ramp *.py
 # Format all Rust code
+cd init
 cargo fmt
+cd ..
 # Format Markdown docs
 prettier --write *.md
 ```
