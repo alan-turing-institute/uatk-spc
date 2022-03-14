@@ -1,9 +1,9 @@
 [package]
-name = "ramp"
+name = "aspics"
 version = "0.1.0"
 edition = "2021"
 authors = ["Dustin Carlino <dcarlino@turing.ac.uk>"]
-description = "Rapid Assistance in Modelling the Pandemic"
+description = "Agent-based Simulation of ePIdemics at Country Scale"
 
 [dependencies]
 anyhow = "1.0.51"

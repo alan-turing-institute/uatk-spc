@@ -1,4 +1,4 @@
-//! This is the command-line interface to RAMP.
+//! This is the command-line interface to ASPICS.
 
 use std::collections::BTreeMap;
 
@@ -10,15 +10,15 @@ use rand::SeedableRng;
 use serde::Deserialize;
 use tracing::{info, info_span};
 
-use ramp::utilities;
-use ramp::{Input, Model, Population, Snapshot, MSOA};
+use aspics::utilities;
+use aspics::{Input, Model, Population, Snapshot, MSOA};
 
 // When running on all MSOAs, start with this many cases
 const DEFAULT_CASES_PER_MSOA: usize = 5;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    ramp::tracing_span_tree::SpanTree::new().enable();
+    aspics::tracing_span_tree::SpanTree::new().enable();
 
     let args = Args::parse();
 

@@ -33,7 +33,7 @@ the program itself. The second way:
 
 ```shell
 cargo build --release
-./target/release/ramp init devon
+./target/release/aspics init devon
 ```
 
 You can build the code in two ways -- **debug** and **release**. There's a
