@@ -60,14 +60,14 @@ Then to run the snapshot file in the Python model:
 
 ```shell
 cd ../model
-poetry run python gui.py -p ../config/default.yml
+poetry run python gui.py -p ../config/WestYorkshireSmall.yml
 ```
 
 This should launch an interactive dashboard. Or you can run the simulation in
 "headless" mode and instead write summary output data:
 
 ```shell
-poetry run python headless.py -p ../config/default.yml
+poetry run python headless.py -p ../config/WestYorkshireSmall.yml
 ```
 
 ## Conda alternative
@@ -78,7 +78,7 @@ this:
 ```shell
 conda env create -f environment.yml
 conda activate aspics
-python3.7 gui.py -p ../config/default.yml
+python3.7 gui.py -p ../config/WestYorkshireSmall.yml
 ```
 
 Note inside the Conda environment, just `python` may not work; specify
