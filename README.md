@@ -1,4 +1,4 @@
-# Agent-based Simulation of ePIdemics at Country Scale (ASPICS)
+# Agent-based Simulation of ePIdemics at Country Scale (ASPICS) v0.1
 
 [![DOI](https://zenodo.org/badge/440815189.svg)](https://zenodo.org/badge/latestdoi/440815189)
 
