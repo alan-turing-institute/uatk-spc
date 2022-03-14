@@ -19,9 +19,10 @@ resolved.
 git clone https://github.com/dabreegster/rampfs/
 cd rampfs
 # You only have to run this the first time, to install Python dependencies
+cd model
 poetry install
 # This will take a few minutes the first time you do it, to build external dependencies
-cd init
+cd ../init
 cargo build --release
 ```
 
@@ -58,15 +59,15 @@ You can run the pipeline for other study areas; try
 Then to run the snapshot file in the Python model:
 
 ```shell
-cd ../
-poetry run python gui.py -p model_parameters/default.yml
+cd ../model
+poetry run python gui.py -p ../model_parameters/default.yml
 ```
 
 This should launch an interactive dashboard. Or you can run the simulation in
 "headless" mode and instead write summary output data:
 
 ```shell
-poetry run python headless.py -p model_parameters/default.yml
+poetry run python headless.py -p ../model_parameters/default.yml
 ```
 
 ## Conda alternative
@@ -77,7 +78,7 @@ this:
 ```shell
 conda env create -f environment.yml
 conda activate aspics
-python3.7 gui.py -p model_parameters/default.yml
+python3.7 gui.py -p ../model_parameters/default.yml
 ```
 
 Note inside the Conda environment, just `python` may not work; specify

@@ -6,12 +6,15 @@ We use automated tools to format the code.
 
 ```shell
 # Format all Python code
+cd model
 poetry run black ramp *.py
+
 # Format all Rust code
-cd init
+cd ../init
 cargo fmt
-cd ..
+
 # Format Markdown docs
+cd ../docs
 prettier --write *.md
 ```
 
