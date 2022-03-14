@@ -9,7 +9,7 @@
 - [Developer guide](docs/developer_guide.md) - extend the project ([Code walkthrough](docs/code_walkthrough.md))
 
 
-The Agent-based Simulation of ePIdemics at Country Scale (ASPICS) models the spread of an epidemic within any area of England. It is an extension to the national level of an earlier [model](https://www.sciencedirect.com/science/article/pii/S0277953621007930) called DyME (Dynamic Microsimulation for epidemics), with improvements to some elements of the modelling and much faster runtimes. It is currently pre-calibrated to run a simulation of the COVID-19 virus.
+The Agent-based Simulation of ePIdemics at Country Scale (ASPICS) models the spread of an epidemic within any area of England. It is an extension to the national level of an earlier model called [DyME](https://www.sciencedirect.com/science/article/pii/S0277953621007930) (Dynamic Microsimulation for epidemics), with improvements to some elements of the modelling and much faster runtimes. It is currently pre-calibrated to run a simulation of the COVID-19 virus.
 
 ## Status
 
