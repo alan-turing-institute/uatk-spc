@@ -11,7 +11,7 @@ def load_shader(shader_name):
     Returns:
         program: Compiled OpenGL shader program.
     """
-    shader_path = "ramp/shaders"
+    shader_path = "aspics/shaders"
     vert = glCreateShader(GL_VERTEX_SHADER)
     with open(f"{shader_path}/{shader_name}.vert") as f:  # AZ: added a "/" in the path
         glShaderSource(vert, f.read())

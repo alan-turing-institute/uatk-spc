@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 
 import click
-from ramp.loader import setup_sim
-from ramp.inspector import Inspector
+from aspics.loader import setup_sim
+from aspics.inspector import Inspector
 
 
 @click.command()

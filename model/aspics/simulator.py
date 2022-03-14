@@ -3,11 +3,11 @@ from numpy import random
 import pyopencl as cl
 import os
 import math
-from ramp.buffers import Buffers
-from ramp.kernels import Kernels
-from ramp.params import Params
-from ramp.snapshot import Snapshot
-from ramp.initial_cases import InitialCases
+from aspics.buffers import Buffers
+from aspics.kernels import Kernels
+from aspics.params import Params
+from aspics.snapshot import Snapshot
+from aspics.initial_cases import InitialCases
 
 
 class Simulator:
@@ -77,7 +77,7 @@ class Simulator:
             people_prngs=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, npeople * 16),
             params=cl.Buffer(ctx, cl.mem_flags.READ_WRITE, Params().num_bytes()),
         )
-        kernel_dir = "ramp/kernels"
+        kernel_dir = "aspics/kernels"
         # Load the OpenCL kernel programs
         with open(os.path.join(kernel_dir, "ramp_ua.cl")) as f:
             program = cl.Program(ctx, f.read())

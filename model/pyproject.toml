@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "ramp"
+name = "aspics"
 version = "0.1.0"
 # TODO Bring all of this from setup.py
 description = ""

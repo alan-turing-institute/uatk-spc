@@ -1,7 +1,7 @@
 import numpy as np
 import imgui
 import pandas as pd
-from ramp.disease_statuses import DiseaseStatus
+from aspics.disease_statuses import DiseaseStatus
 
 
 class Summary:

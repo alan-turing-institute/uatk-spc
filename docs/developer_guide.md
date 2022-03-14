@@ -7,7 +7,7 @@ We use automated tools to format the code.
 ```shell
 # Format all Python code
 cd model
-poetry run black ramp *.py
+poetry run black aspics *.py
 
 # Format all Rust code
 cd ../init
@@ -38,7 +38,7 @@ cargo build --release
 
 You can build the code in two ways -- **debug** and **release**. There's a
 simple tradeoff -- debug mode is fast to build, but slow to run. Release mode is
-slow to build, but fast to run. For the RAMP codebase, since the input data is
+slow to build, but fast to run. For the ASPICS codebase, since the input data is
 so large and the codebase so small, I'd recommend always using `--release`. If
 you want to use debug mode, just omit the flag.
 

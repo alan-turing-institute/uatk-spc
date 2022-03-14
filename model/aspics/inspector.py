@@ -7,13 +7,13 @@ import copy
 from imgui.integrations.glfw import GlfwRenderer
 from OpenGL.GL import *
 
-from ramp.activity import Activity
-from ramp.params import Params
-from ramp.projections import latlon_to_km
-from ramp.shader import load_shader
-from ramp.snapshot import Snapshot
-from ramp.style import set_styles
-from ramp.summary import Summary
+from aspics.activity import Activity
+from aspics.params import Params
+from aspics.projections import latlon_to_km
+from aspics.shader import load_shader
+from aspics.snapshot import Snapshot
+from aspics.style import set_styles
+from aspics.summary import Summary
 
 default_flags = imgui.WINDOW_NO_RESIZE | imgui.WINDOW_NO_MOVE | imgui.WINDOW_NO_COLLAPSE
 
@@ -30,7 +30,7 @@ class Inspector:
         window_name,
         width,
         height,
-        font_path="ramp/fonts/RobotoMono.ttf",
+        font_path="aspics/fonts/RobotoMono.ttf",
     ):
         """Create the window, imgui renderer, and all background renderers.
 

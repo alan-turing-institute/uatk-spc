@@ -6,10 +6,10 @@ from tqdm import tqdm
 import pandas as pd
 import os
 
-from ramp.params import Params
-from ramp.summary import Summary
-from ramp.disease_statuses import DiseaseStatus
-from ramp.loader import setup_sim
+from aspics.params import Params
+from aspics.summary import Summary
+from aspics.disease_statuses import DiseaseStatus
+from aspics.loader import setup_sim
 
 
 @click.command()

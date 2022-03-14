@@ -1,9 +1,9 @@
 import os
 from yaml import load, SafeLoader
 
-from ramp.simulator import Simulator
-from ramp.snapshot import Snapshot
-from ramp.params import Params, IndividualHazardMultipliers, LocationHazardMultipliers
+from aspics.simulator import Simulator
+from aspics.snapshot import Snapshot
+from aspics.params import Params, IndividualHazardMultipliers, LocationHazardMultipliers
 
 
 def setup_sim(parameters_file):

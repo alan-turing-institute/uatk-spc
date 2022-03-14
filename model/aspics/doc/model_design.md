@@ -114,7 +114,7 @@ and to read the simulation state we copy the buffers into provided numpy arrays.
 This is done using the `upload` and `download` function in the `Simulator` class
 in python.
 
-The full set of buffer names is stored in `ramp/buffers.py`, here they are to
+The full set of buffer names is stored in `aspics/buffers.py`, here they are to
 summarise:
 
 ```python
@@ -248,7 +248,7 @@ Each of these kernels is individually unit tested by making assertions on the
 contents of any modified arrays/buffers before and after the kernel is run. See
 `tests/` for details.
 
-The full set of kernel names is stored in `ramp/kernels.py` here they are to
+The full set of kernel names is stored in `aspics/kernels.py` here they are to
 summarise:
 
 ```python
