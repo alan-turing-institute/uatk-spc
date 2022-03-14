@@ -4,9 +4,9 @@
 
 <img src="docs/logo.png" align="left" width="130"/>
 
-- [Usage guide](usage_guide.md) - build and run the project
-- [Developer guide](developer_guide.md) - extend the project
-  - [Code walkthrough](code_walkthrough.md)
+- [Usage guide](docs/usage_guide.md) - build and run the project
+- [Developer guide](docs/developer_guide.md) - extend the project
+  - [Code walkthrough](docs/code_walkthrough.md)
 
 This is an implementation of a
 [microsimulation model for epidimics](https://www.sciencedirect.com/science/article/pii/S0277953621007930)
