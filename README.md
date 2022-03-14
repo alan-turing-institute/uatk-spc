@@ -2,18 +2,18 @@
 
 [![DOI](https://zenodo.org/badge/440815189.svg)](https://zenodo.org/badge/latestdoi/440815189)
 
-<img src="ASPICS_Logo_V2.png" align="left" width="130"/>
+<img src="docs/logo.png" align="left" width="130"/>
 
 - [Usage guide](usage_guide.md) - build and run the project
 - [Developer guide](developer_guide.md) - extend the project
   - [Code walkthrough](code_walkthrough.md)
 
-This is an implementation of a [microsimulation model for
-epidimics](https://www.sciencedirect.com/science/article/pii/S0277953621007930)
+This is an implementation of a
+[microsimulation model for epidimics](https://www.sciencedirect.com/science/article/pii/S0277953621007930)
 called ASPICS (Agent-based Simulation of ePIdemics at Country Scale). The
 project is split into two pieces -- the **initialisation pipeline** combines
-various data sources to describe a synthetic population for some study area,
-and then the **simulation** models the spread of COVID through that population.
+various data sources to describe a synthetic population for some study area, and
+then the **simulation** models the spread of COVID through that population.
 
 ## Status
 
@@ -41,8 +41,8 @@ The history of this project is slightly convoluted:
    Rust, following the above branch
 4. The Python and OpenCL code for running the model (after initialisation) was
    copied into this repository from
-   [https://github.com/dabreegster/RAMP-UA/commits/dcarlino_dev](https://github.com/dabreegster/RAMP-UA/commits/dcarlino_dev) and further
-   cleaned up
+   [https://github.com/dabreegster/RAMP-UA/commits/dcarlino_dev](https://github.com/dabreegster/RAMP-UA/commits/dcarlino_dev)
+   and further cleaned up
 
 There are many contributors to the project through these different stages; the
 version control history can be seen on Github in the other repositories.

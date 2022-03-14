@@ -6,9 +6,12 @@ resolved.
 
 ## One-time installation
 
-- The latest version of Rust (1.58): [https://www.rust-lang.org/tools/install](https://www.rust-lang.org/tools/install)
+- The latest version of Rust (1.58):
+  [https://www.rust-lang.org/tools/install](https://www.rust-lang.org/tools/install)
 - [Poetry](https://python-poetry.org), for running a fork of the Python model
-  - If you have trouble installing Python dependencies -- especially on Mac M1 -- you can instead use [conda](https://docs.conda.io/projects/conda/en/latest/index.html)
+  - If you have trouble installing Python dependencies -- especially on Mac M1
+    -- you can instead use
+    [conda](https://docs.conda.io/projects/conda/en/latest/index.html)
 - The instructions assume you'e running in a shell on Linux or Mac, and have
   standard commands like `unzip` and `python3` available
 
@@ -45,7 +48,8 @@ This will download some large files the first time. You'll wind up with
 files in `raw_data/`. The next time you run this command (even on a different
 study area), it should go much faster.
 
-You can run the pipeline for other study areas; try `cargo run --release -- init --help` for a list.
+You can run the pipeline for other study areas; try
+`cargo run --release -- init --help` for a list.
 
 ## Running the simulation
 
@@ -64,7 +68,8 @@ poetry run python headless.py -p model_parameters/default.yml
 
 ## Conda alternative
 
-If `poetry` doesn't work, we also have a Conda environment. You can use it like this:
+If `poetry` doesn't work, we also have a Conda environment. You can use it like
+this:
 
 ```shell
 conda env create -f environment.yml
@@ -72,6 +77,10 @@ conda activate aspics
 python3.7 gui.py -p model_parameters/default.yml
 ```
 
-Note inside the Conda environment, just `python` may not work; specify `python3.7`.
+Note inside the Conda environment, just `python` may not work; specify
+`python3.7`.
 
-If you get `CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.` and the provided instructions don't help, on Linux you can try doing `source ~/anaconda3/etc/profile.d/conda.sh`.
+If you get
+`CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.`
+and the provided instructions don't help, on Linux you can try doing
+`source ~/anaconda3/etc/profile.d/conda.sh`.
