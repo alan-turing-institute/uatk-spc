@@ -54,7 +54,12 @@ async fn main() -> Result<()> {
             // Write the snapshot in the format the Python pipeline expects
             {
                 let _s = info_span!("Writing snapshot").entered();
-                Snapshot::convert_to_npz(population, target_dir, &mut rng)?;
+                Snapshot::convert_to_npz(&population, target_dir, &mut rng)?;
+            }
+
+            {
+                let _s = info_span!("Writing protobuf").entered();
+                protobuf::convert_to_pb(&population, target_dir)?;
             }
         }
         Action::RunModel { region } => {

@@ -1,0 +1,107 @@
+syntax = "proto3";
+package synthpop;
+
+message Population {
+    // Indexed by VenueIDs with Activity::Home
+    repeated Household households = 1;
+    // Indexed by PersonID
+    repeated Person people = 2;
+
+    // Per activity, a list of venues. VenueID for the appropriate Activity indexes into this
+    // list. This is not filled out for `Activity::Home`; see `households` for that.
+    map<string, VenueList> venues_per_activity = 3;
+
+    map<string, InfoPerMSOA> info_per_msoa = 4;
+}
+
+message Household {
+    // TODO ID or use index?
+    string msoa = 1;
+    /// An ID from the original data, kept around for debugging
+    int64 orig_hid = 2;
+    // PersonID
+    repeated int64 members = 3;
+}
+
+message VenueList {
+    repeated Venue venues = 1;
+}
+
+message InfoPerMSOA {
+    repeated Point shape = 1;
+    uint64 population = 2;
+    // All building centroids within this MSOA. May be empty.
+    repeated Point buildings = 3;
+}
+
+message Point {
+    float longitude = 1;
+    float latitude = 2;
+}
+
+message Person {
+    int64 id = 1;
+    int64 household = 2;
+    // This is the centroid of the household's MSOA. It's redundant to store it per person, but
+    // very convenient.
+    Point location = 3;
+    // An ID from the original data, kept around for debugging
+    int64 orig_pid = 4;
+    // The Standard Industry Classification for where this person works. 0 means none.
+    uint64 sic1d07 = 5;
+
+    // Nobody's older than 256 years
+    uint32 age_years = 6;
+    Obesity obesity = 7;
+    // TODO Unclear what the values mean
+    uint32 cardiovascular_disease = 8;
+    uint32 diabete = 9;
+    uint32 blood_pressure = 10;
+
+    // TODO This seems like it should be equivalent to 1 - duration_per_activity[Activity::Home]
+    float pr_not_home = 11;
+
+    repeated Flows flows_per_activity = 12;
+}
+
+// Per activity, a list of venues where this person is likely to go do that activity.
+message Flows {
+    Activity activity = 1;
+    repeated Flow flows = 2;
+    // These sum to 1, representing a fraction of a day
+    float activity_duration = 3;
+}
+
+message Flow {
+    int64 venue_id = 1;
+    // The probabilities sum to 1
+    float weight = 2;
+}
+
+// Represents a place where people do an activity
+message Venue {
+    int64 id = 1;
+    Activity activity = 2;
+
+    Point location = 3;
+    // This only exists for PrimarySchool and SecondarySchool. It's a
+    // https://en.wikipedia.org/wiki/Unique_Reference_Number. 0 means none.
+    uint64 urn = 4;
+}
+
+enum Activity {
+    RETAIL = 0;
+    PRIMARY_SCHOOL = 1;
+    SECONDARY_SCHOOL = 2;
+    HOME = 3;
+    WORK = 4;
+    NIGHTCLUB = 5;
+}
+
+enum Obesity {
+    OBESE_3 = 0;
+    OBESE_2 = 1;
+    OBESE_1 = 2;
+    OVERWEIGHT = 3;
+    NORMAL = 4;
+}

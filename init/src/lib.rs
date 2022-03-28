@@ -12,6 +12,7 @@ extern crate tracing;
 
 mod init;
 mod model;
+mod protobuf;
 mod snapshot;
 pub mod tracing_span_tree;
 pub mod utilities;
@@ -30,6 +31,10 @@ use serde::{Deserialize, Serialize};
 
 pub use self::model::Model;
 pub use self::snapshot::Snapshot;
+
+pub mod items {
+    include!(concat!(env!("OUT_DIR"), "/synthpop.rs"));
+}
 
 // Override the memory allocator, so utilities::memory_usage can take measurements
 #[global_allocator]

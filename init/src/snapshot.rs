@@ -81,7 +81,7 @@ impl IDMapping {
 }
 
 impl Snapshot {
-    pub fn convert_to_npz(input: Population, target_dir: String, rng: &mut StdRng) -> Result<()> {
+    pub fn convert_to_npz(input: &Population, target_dir: String, rng: &mut StdRng) -> Result<()> {
         let id_mapping =
             IDMapping::new(&input).ok_or_else(|| anyhow!("More than 2**32 place IDs"))?;
         let people = &input.people;
