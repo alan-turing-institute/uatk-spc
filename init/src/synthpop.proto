@@ -20,7 +20,7 @@ message Household {
     /// An ID from the original data, kept around for debugging
     int64 orig_hid = 2;
     // PersonID
-    repeated int64 members = 3;
+    repeated uint64 members = 3;
 }
 
 message VenueList {

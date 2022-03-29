@@ -12,7 +12,7 @@ extern crate tracing;
 
 mod init;
 mod model;
-mod protobuf;
+pub mod protobuf;
 mod snapshot;
 pub mod tracing_span_tree;
 pub mod utilities;
@@ -32,7 +32,7 @@ use serde::{Deserialize, Serialize};
 pub use self::model::Model;
 pub use self::snapshot::Snapshot;
 
-pub mod items {
+pub mod pb {
     include!(concat!(env!("OUT_DIR"), "/synthpop.rs"));
 }
 
