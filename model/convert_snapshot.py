@@ -2,6 +2,7 @@
 
 import click
 import numpy as np
+import random
 import synthpop_pb2
 from collections import namedtuple
 
@@ -72,25 +73,24 @@ def convert_to_npz(pop, output_path):
 
     np.savez(
         output_path,
-        nplaces=num_places,
-        npeople=num_people,
-        nslots=SLOTS,
-        time=0,
-        # TODO Do we need to plumb this along, or can we just calculate it?
-        # not_home_probs=np.array([p.pr_not_home for p in pop.people]),
+        nplaces=np.uint32(num_places),
+        npeople=np.uint32(num_people),
+        nslots=np.uint32(SLOTS),
+        time=np.uint32(0),
+        not_home_probs=np.array([get_not_home_probability(p) for p in pop.people]),
         # TODO Plumb along
-        lockdown_per_day=np.zeros(100, dtype=np.float32),
+        lockdown_multipliers=np.zeros(100, dtype=np.float32),
         place_activities=id_mapping.place_activities,
-        # place_coords=get_place_coordinates(pop, id_mapping),
+        place_coords=get_place_coordinates(pop, id_mapping),
         place_hazards=np.zeros(num_places, dtype=np.uint32),
         place_counts=np.zeros(num_places, dtype=np.uint32),
-        people_ages=np.array([p.age_years for p in pop.people]),
+        people_ages=np.array([p.age_years for p in pop.people], dtype=np.uint16),
         # TODO Invert the order in the proto! obese3=4, normal=0
         people_obesity=np.array(
             [p.health.obesity for p in pop.people], dtype=np.uint16
         ),
         people_cvd=np.array(
-            [p.health.cardiovascular_disease for p in pop.people], dtype=np.uint16
+            [p.health.cardiovascular_disease for p in pop.people], dtype=np.uint8
         ),
         people_diabetes=np.array(
             [p.health.diabetes for p in pop.people], dtype=np.uint8
@@ -122,7 +122,9 @@ def get_baseline_flows(pop, id_mapping):
     people_place_ids = np.full(
         len(pop.people) * places_to_keep_per_person, sentinel_value, dtype=np.uint32
     )
-    people_baseline_flows = np.zeros(len(pop.people) * places_to_keep_per_person)
+    people_baseline_flows = np.zeros(
+        len(pop.people) * places_to_keep_per_person, dtype=np.float32
+    )
 
     for person in pop.people:
         idx = person.id * places_to_keep_per_person
@@ -152,54 +154,40 @@ def get_baseline_flows_per_person(person, places_to_keep_per_person):
     return result
 
 
-"""
-fn get_place_coordinates(
-    input: &Population,
-    id_mapping: &IDMapping,
-    rng: &mut StdRng,
-) -> Result<Array1<f32>> {
-    let mut result = Array1::<f32>::zeros(id_mapping.total_places as usize * 2);
+def get_not_home_probability(person):
+    # TODO Stop storing in the Rust pipeline internally if this approach works
+    pr = 0.0
+    for flows in person.flows_per_activity:
+        if flows.activity != synthpop_pb2.Activity.HOME:
+            pr += flows.activity_duration
+    return pr
 
-    for activity in Activity::all() {
-        // Not stored as venues
-        if activity == Activity::Home {
-            continue;
-        }
 
-        for venue in &input.venues_per_activity[activity] {
-            // TODO To match Python, we should filter venues belonging to our input MSOAs earlier.
-            // This is a slower way to get equivalent results.
-            if input
-                .info_per_msoa
-                .values()
-                .any(|info| info.shape.contains(&venue.location))
-            {
-                let place = id_mapping.to_place(activity, venue.id);
-                result[place.0 as usize * 2 + 0] = venue.location.lat();
-                result[place.0 as usize * 2 + 1] = venue.location.lng();
-            }
-        }
-    }
+def get_place_coordinates(pop, id_mapping):
+    result = np.zeros(id_mapping.total_places * 2, dtype=np.float32)
 
-    // For homes, we just pick a random building in the MSOA area. This is just used for
-    // visualization, so lack of buildings mapped in some areas isn't critical.
-    for household in &input.households {
-        let place = id_mapping.to_place(Activity::Home, household.id);
-        match input.info_per_msoa[&household.msoa].buildings.choose(rng) {
-            Some(pt) => {
-                result[place.0 as usize * 2 + 0] = pt.lat();
-                result[place.0 as usize * 2 + 1] = pt.lng();
-            }
-            None => {
-                // TODO Should we fail, or just pick a random point in the shape?
-                bail!("MSOA {:?} has no buildings", household.msoa);
-            }
-        }
-    }
+    for activity, venues in pop.venues_per_activity.items():
+        # Not stored as venues
+        if activity == synthpop_pb2.Activity.HOME:
+            continue
+        for venue in venues.venues:
+            # TODO We need to filter venues belonging to our input MSOAs in SPC. Here we could filter by any shape containing the venue, but then we have to depend on some library to do that geometry.
+            place = id_mapping.to_place(activity, venue.id)
+            result[place * 2] = venue.location.latitude
+            result[place * 2 + 1] = venue.location.longitude
 
-    Ok(result)
-}
-"""
+    # For homes, we just pick a random building in the MSOA area. This is just
+    # used for visualization, so lack of buildings mapped in some areas isn't
+    # critical.
+    for household in pop.households:
+        place = id_mapping.to_place(synthpop_pb2.Activity.HOME, household.id)
+        # TODO Take an RNG seed from parameters
+        # TODO This should crash if we have no buildings in the MSOA
+        location = random.choice(pop.info_per_msoa[household.msoa].buildings)
+        result[place * 2] = location.latitude
+        result[place * 2 + 1] = location.longitude
+
+    return result
 
 
 LocationHazardMultipliers = namedtuple(

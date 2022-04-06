@@ -156,3 +156,7 @@ Third, protocol buffers support limited key types for maps. Enumerations can't
 be used, so we use the numeric value for the activity enum.
 
 We'll evaluate flatbuffers and other alternative encodings.
+
+Note that in any case, SPC internally doesn't use the auto-generated code until
+the very end of the pipeline. It's always possible to be more precise with
+native Rust types, and convert to the less strict types last.
