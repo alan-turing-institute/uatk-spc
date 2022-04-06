@@ -61,7 +61,7 @@ message Health {
     Obesity obesity = 1;
     // TODO Unclear what the values mean
     uint32 cardiovascular_disease = 2;
-    uint32 diabete = 3;
+    uint32 diabetes = 3;
     uint32 blood_pressure = 4;
 }
 
@@ -70,13 +70,13 @@ message Flows {
     Activity activity = 1;
     repeated Flow flows = 2;
     // These sum to 1 for all `flows_per_activity`, representing a fraction of a day
-    float activity_duration = 3;
+    double activity_duration = 3;
 }
 
 message Flow {
     uint64 venue_id = 1;
     // The probabilities sum to 1 for all `flows`
-    float weight = 2;
+    double weight = 2;
 }
 
 // Represents a place where people do an activity
