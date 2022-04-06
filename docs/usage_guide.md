@@ -88,3 +88,18 @@ If you get
 `CommandNotFoundError: Your shell has not been properly configured to use 'conda activate'.`
 and the provided instructions don't help, on Linux you can try doing
 `source ~/anaconda3/etc/profile.d/conda.sh`.
+
+## Working with protocol buffers
+
+These instructions will be reorganized after we split this repository between
+SPC and ASPICS. For now, just for reference:
+
+```shell
+pip install protobuf
+
+# Regenerate the Python bindings
+protoc -I=src/ --python_out=protobuf_samples/ src/synthpop.proto
+
+# Transform a proto to JSON
+python protobuf_samples/protobuf_to_json.py ../data/processed_data/WestYorkshireSmall/synthpop.pb
+```

@@ -11,6 +11,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<()> {
 
     for household in &input.households {
         output.households.push(pb::Household {
+            id: household.id.0.try_into()?,
             msoa: household.msoa.0.clone(),
             orig_hid: household.orig_hid.try_into()?,
             members: household
