@@ -1,3 +1,5 @@
+# Data sources
+
 The data is sorted around the 2011 Middle-layer Super Output Area (MSOA) geographical unit. These units where created for census collection and are designed to be relatively homogeneous, with an average population size of 8000. Any list of MSOAs in England can be run, with the exception of the MSOAs forming the City of London (i.e the London borough called the City, not London as a whole).
 
 The data from Open Street Map (OSM) is downloaded directly from https://www.openstreetmap.org. Everything else is hosted as local copies on one Azure repository that interacts automatically with the model, and divided into utilities, county level data and national data.
@@ -8,7 +10,7 @@ The data from Open Street Map (OSM) is downloaded directly from https://www.open
 lookUp.csv
 ```
 
-The look-up table links different geographies together. It is used internally by the model, but can also help the user define their own study area. MSOA11CD, MSOA11NM, LAD20CD, LAD20NM, ITL321CD, ITL321NM, ITL221CD, ITL221NM, ITL121CD, ITL121NM are all standard denominations fully compatible with ONS fields of the same name. They are based on ONS [lookups](https://geoportal.statistics.gov.uk/). See ONS documentation for more details. CTY20NM and CCTY20NM are custom denominations for the counties of England (used to sort the county level population data) and the ceremonial counties of England respectively. Their spelling may vary in different data sources and the field CTY20NM is not compatible with the ONS field of the same name (which excludes all counties that are also unitary authorities). GoogleMob and OSM are different spellings for the counties of England used by Google and OSM for their data releases.
+The look-up table links different geographies together. It is used internally by the model, but can also help the user define their own study area. `MSOA11CD`, `MSOA11NM`, `LAD20CD`, `LAD20NM`, `ITL321CD`, `ITL321NM`, `ITL221CD`, `ITL221NM`, `ITL121CD`, `ITL121NM` are all standard denominations fully compatible with ONS fields of the same name. They are based on ONS [lookups](https://geoportal.statistics.gov.uk/). See ONS documentation for more details. `CTY20NM` and `CCTY20NM` are custom denominations for the counties of England (used to sort the county level population data) and the ceremonial counties of England respectively. Their spelling may vary in different data sources and the field `CTY20NM` is not compatible with the ONS field of the same name (which excludes all counties that are also unitary authorities). `GoogleMob` and `OSM` are different spellings for the counties of England used by Google and OSM for their data releases.
 
 ## County level data
 
@@ -31,12 +33,12 @@ The fields currently contained are:
 - `age`: in years
 - `origin`: 1 White; 2 Black; 3 Asian; 4 Mixed; 5 Other
 - `nssec5`: National Statistics Socio-economic classification:
-    1. Higher managerial, administrative and professional occupations
-    2. Intermediate occupations
-    3. Small employers and own account workers
-    4. Lower supervisory and technical occupations
-    5. Semi-routine and routine occupations
-    0. Never worked and long-term unemployed
+    - 1: Higher managerial, administrative and professional occupations
+    - 2: Intermediate occupations
+    - 3: Small employers and own account workers
+    - 4: Lower supervisory and technical occupations
+    - 5: Semi-routine and routine occupations
+    - 0: Never worked and long-term unemployed
 - `soc2010`: Previous version of the [Standard Occupational Classification]( https://www.ons.gov.uk/methodology/classificationsandstandards/standardoccupationalclassificationsoc/soc2010)
 - `sic1d07`: Standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities), 1st layer (number corresponding to the letter in alphabetical order)
 - `sic2d07`: Standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities), 2nd layer 
@@ -64,7 +66,7 @@ Some other fields were kept from specific projects but are not from official sou
 ## National data
 
 ```
-businessRegistry.cs
+businessRegistry.csv
 ```
 
 Contains a breakdown of all business units (i.e. a single workplace) in England at LSOA scale (smaller than MSOA), estimated by the project contributors from two nomis datasets: [UK Business Counts - local units by industry and employment size band 2020](https://www.nomisweb.co.uk/datasets/idbrlu) and [Business Register and Employment Survey 2015](https://www.nomisweb.co.uk/datasets/newbrespub). Each item contains the `size`  of the unit and its main `sic1d07` code in reference to standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities) (number corresponding to the letter in alphabetical order). It is used to compute commuting flows.
