@@ -130,3 +130,29 @@ another possible source of non-determinism is iteration order. In Rust, a
 `HashMap` could have different order every time it's used, so we use a
 `BTreeMap` instead when this matters. In Python, dictionaries are ordered. Be
 sure to check for your language.
+
+## Protocol buffers
+
+SPC uses protocol buffers for output. This has some advantages explained the
+"explicit data schema" section above, but the particular choice of protocol
+buffer has some limitations.
+
+First, proto3 doesn't support [required
+fields](https://github.com/protocolbuffers/protobuf/issues/2497). This is done
+to allow schemas to evolve better over time, but this isn't a feature SPC makes
+use of. There's no need to have new code work with old data, or vice versa --
+if the schema is updated, downstream code should adapt accordingly and use the
+updated input files. The lack of required fields leads to imprecise code -- a
+person's health structure is always filled out, but in Rust, we wind up with
+`Option<Health>`. Differentiating 0 from missing data also becomes impossible
+-- `urn` is optional, but in protobuf, we're forced to map the missing case to
+0 and document this.
+
+Second, protocol buffers don't easily support type-safe wrappers around numeric
+IDs, so downstream code has to be careful not to mix up household, venue, and
+person IDs.
+
+Third, protocol buffers support limited key types for maps. Enumerations can't
+be used, so we stringify the activity enum.
+
+We'll evaluate flatbuffers and other alternative encodings.
