@@ -102,4 +102,7 @@ protoc -I=src/ --python_out=protobuf_samples/ src/synthpop.proto
 
 # Transform a proto to JSON
 python protobuf_samples/protobuf_to_json.py ../data/processed_data/WestYorkshireSmall/synthpop.pb
+
+# Convert SPC protobuf to an ASPICS snapshot
+poetry run python convert_snapshot.py -i ../data/processed_data/WestYorkshireSmall/synthpop.pb -o ../data/processed_data/WestYorkshireSmall/snapshot/cache.npz
 ```
