@@ -51,7 +51,6 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<()> {
     }
 
     for (activity, venues) in &input.venues_per_activity {
-        let activity_name = format!("{:?}", activity);
         let list = pb::VenueList {
             venues: venues
                 .iter()
@@ -64,7 +63,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<()> {
                 })
                 .collect(),
         };
-        output.venues_per_activity.insert(activity_name, list);
+        output.venues_per_activity.insert(activity as i32, list);
     }
 
     for (msoa, info) in &input.info_per_msoa {

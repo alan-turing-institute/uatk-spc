@@ -5,9 +5,9 @@ message Population {
     repeated Household households = 1;
     repeated Person people = 2;
 
-    // This is filled out per stringified Activity. The exception is for
+    // This is filled out per Activity enum value. The exception is for
     // `Activity::Home`; see `households` for that.
-    map<string, VenueList> venues_per_activity = 3;
+    map<int32, VenueList> venues_per_activity = 3;
 
     map<string, InfoPerMSOA> info_per_msoa = 4;
 }

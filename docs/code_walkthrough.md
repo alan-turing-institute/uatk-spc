@@ -153,6 +153,6 @@ IDs, so downstream code has to be careful not to mix up household, venue, and
 person IDs.
 
 Third, protocol buffers support limited key types for maps. Enumerations can't
-be used, so we stringify the activity enum.
+be used, so we use the numeric value for the activity enum.
 
 We'll evaluate flatbuffers and other alternative encodings.
