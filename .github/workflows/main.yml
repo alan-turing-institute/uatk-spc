@@ -1,0 +1,33 @@
+name: Build
+on: [push]
+jobs:
+  build:
+    name: Build for ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        build: [linux, macos, windows]
+        include:
+          - build: linux
+            os: ubuntu-18.04
+          - build: macos
+            os: macos-latest
+          - build: windows
+            os: windows-latest
+
+    steps:
+      - uses: actions/checkout@master
+
+      - uses: hecrj/setup-rust-action@v1
+        with:
+          rust-version: 1.58.0
+
+      - name: Cache build
+        uses: actions/cache@v2
+        with:
+                path: target
+                # The key could include hashFiles('Cargo.lock'), but cargo will figure out what can be reused.
+                key: build-${{ matrix.os }}
+
+      - name: Build
+        run: cargo check
