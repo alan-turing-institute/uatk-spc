@@ -20,7 +20,7 @@ impl Population {
         let raw_results = raw_data::grab_raw_data(&input).await?;
         let mut population = population::create(input, raw_results.tus_files, rng)?;
         population.info_per_msoa =
-            msoas::get_info_per_msoa(population.unique_msoas(), raw_results.osm_directories)?;
+            msoas::get_info_per_msoa(&population.msoas, raw_results.osm_directories)?;
         population.lockdown_per_day =
             lockdown::calculate_lockdown_per_day(raw_results.msoas_per_county, &population)?;
         population.events = events::load_events("../config/eventDataConcerts.csv")?;

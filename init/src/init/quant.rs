@@ -31,7 +31,7 @@ pub enum Threshold {
 /// different venues for that activity.
 pub fn get_flows(
     activity: Activity,
-    msoas: BTreeSet<MSOA>,
+    msoas: &BTreeSet<MSOA>,
     threshold: Threshold,
 ) -> Result<BTreeMap<MSOA, Vec<(VenueID, f64)>>> {
     // Build a mapping from MSOA to zonei
@@ -80,7 +80,7 @@ pub fn get_flows(
     let mut result = BTreeMap::new();
     for msoa in msoas {
         // TODO The Python code defaults to 0 when the MSOA is missing; this seems problematic?
-        let zonei = msoa_to_zonei.get(&msoa).cloned().unwrap_or(0);
+        let zonei = msoa_to_zonei.get(msoa).cloned().unwrap_or(0);
         pb.set_message(format!(
             "Get {:?} flows for {} (zonei {})",
             activity, msoa.0, zonei
@@ -97,7 +97,7 @@ pub fn get_flows(
         };
 
         // There are lots of venues! Just keep some of them
-        result.insert(msoa, normalize(threshold.apply(pr_visit_venue)));
+        result.insert(msoa.clone(), normalize(threshold.apply(pr_visit_venue)));
     }
     Ok(result)
 }

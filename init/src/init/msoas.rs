@@ -13,7 +13,7 @@ use crate::{InfoPerMSOA, MSOA};
 
 #[instrument(skip_all)]
 pub fn get_info_per_msoa(
-    msoas: BTreeSet<MSOA>,
+    msoas: &BTreeSet<MSOA>,
     osm_directories: Vec<String>,
 ) -> Result<BTreeMap<MSOA, InfoPerMSOA>> {
     info!("Loading MSOA shapes");
@@ -34,7 +34,7 @@ pub fn get_info_per_msoa(
     Ok(info_per_msoa)
 }
 
-fn load_msoa_shapes(msoas: BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA>> {
+fn load_msoa_shapes(msoas: &BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA>> {
     // We can't use from_path, because the file isn't named .shp.dbf as expected
     let shape_reader =
         shapefile::ShapeReader::from_path("data/raw_data/nationaldata/MSOAS_shp/msoas.shp")?;

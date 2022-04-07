@@ -44,6 +44,9 @@ static ALLOCATOR: Cap<std::alloc::System> = Cap::new(std::alloc::System, usize::
 /// the simulation.
 #[derive(Serialize, Deserialize)]
 pub struct Population {
+    /// The study area covers these MSOAs
+    pub msoas: BTreeSet<MSOA>,
+
     /// Only VenueIDs for `Activity::Home` index into this
     pub households: TiVec<VenueID, Household>,
     pub people: TiVec<PersonID, Person>,
@@ -96,19 +99,6 @@ pub struct InfoPerMSOA {
     /// residential, commercial? And some areas don't have any buildings mapped yet!
     // TODO Not guaranteed to be non-empty
     pub buildings: Vec<Point<f32>>,
-}
-
-impl Population {
-    /// All the MSOAs of people in this population.
-    // TODO Should we just store this set? It'll be a subset of initial_cases_per_msoa, only
-    // different if there are no people for some MSOA.
-    pub fn unique_msoas(&self) -> BTreeSet<MSOA> {
-        let mut result = BTreeSet::new();
-        for h in &self.households {
-            result.insert(h.msoa.clone());
-        }
-        result
-    }
 }
 
 /// A special type of venue where people live

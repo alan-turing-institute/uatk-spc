@@ -18,7 +18,9 @@ use crate::{Activity, Household, Input, Obesity, Person, PersonID, Population, V
 pub fn create(input: Input, tus_files: Vec<String>, rng: &mut StdRng) -> Result<Population> {
     let _s = info_span!("creating population").entered();
 
+    let msoas = input.initial_cases_per_msoa.keys().cloned().collect();
     let mut population = Population {
+        msoas,
         households: TiVec::new(),
         people: TiVec::new(),
         venues_per_activity: EnumMap::default(),
@@ -27,13 +29,7 @@ pub fn create(input: Input, tus_files: Vec<String>, rng: &mut StdRng) -> Result<
         events: Vec::new(),
         input,
     };
-    let keep_msoas = population
-        .input
-        .initial_cases_per_msoa
-        .keys()
-        .cloned()
-        .collect();
-    read_individual_time_use_and_health_data(&mut population, tus_files, keep_msoas)?;
+    read_individual_time_use_and_health_data(&mut population, tus_files)?;
 
     // The order doesn't matter for these steps
     if population.input.enable_commuting {
@@ -56,7 +52,6 @@ pub fn create(input: Input, tus_files: Vec<String>, rng: &mut StdRng) -> Result<
 fn read_individual_time_use_and_health_data(
     population: &mut Population,
     tus_files: Vec<String>,
-    keep_msoas: BTreeSet<MSOA>,
 ) -> Result<()> {
     let _s = info_span!("read_individual_time_use_and_health_data").entered();
 
@@ -91,7 +86,7 @@ fn read_individual_time_use_and_health_data(
             }
 
             // Only keep people in the input set of MSOAs
-            if !keep_msoas.contains(&rec.msoa) {
+            if !population.msoas.contains(&rec.msoa) {
                 continue;
             }
 
@@ -143,12 +138,23 @@ fn read_individual_time_use_and_health_data(
         population.households.push(household);
     }
 
+    let mut actual_msoas = BTreeSet::new();
+    for h in &population.households {
+        actual_msoas.insert(h.msoa.clone());
+    }
+    if actual_msoas != population.msoas {
+        panic!(
+            "Some input MSOAs had no people: {:?}",
+            population.msoas.difference(&actual_msoas)
+        );
+    }
+
     // TODO This long line gets truncated sometimes by a later progress bar?
     info!(
         "{} people across {} households, and {} MSOAs ({})",
         print_count(population.people.len()),
         print_count(population.households.len()),
-        print_count(population.unique_msoas().len()),
+        print_count(population.msoas.len()),
         memory_usage()
     );
     Ok(())
@@ -300,7 +306,7 @@ fn setup_venue_flows(
 
     // Per MSOA, a list of venues and the probability of going from the MSOA to that venue
     let flows_per_msoa: BTreeMap<MSOA, Vec<(VenueID, f64)>> =
-        get_flows(activity, population.unique_msoas(), threshold)?;
+        get_flows(activity, &population.msoas, threshold)?;
 
     // Now let's assign these flows to the people. Near as I can tell, this just copies the flows
     // to every person in the MSOA. That's loads of duplication -- we could just keep it by (MSOA x
