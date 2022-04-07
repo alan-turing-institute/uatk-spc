@@ -18,21 +18,19 @@ use crate::{Activity, Household, Input, Obesity, Person, PersonID, Population, V
 pub fn create(input: Input, tus_files: Vec<String>, rng: &mut StdRng) -> Result<Population> {
     let _s = info_span!("creating population").entered();
 
-    let msoas = input.initial_cases_per_msoa.keys().cloned().collect();
     let mut population = Population {
-        msoas,
+        msoas: input.msoas.clone(),
         households: TiVec::new(),
         people: TiVec::new(),
         venues_per_activity: EnumMap::default(),
         info_per_msoa: BTreeMap::new(),
         lockdown_per_day: Vec::new(),
         events: Vec::new(),
-        input,
     };
     read_individual_time_use_and_health_data(&mut population, tus_files)?;
 
     // The order doesn't matter for these steps
-    if population.input.enable_commuting {
+    if input.enable_commuting {
         super::commuting::create_commuting_flows(&mut population, rng)?;
     }
     setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;

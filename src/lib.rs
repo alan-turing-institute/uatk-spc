@@ -49,14 +49,13 @@ pub struct Population {
     /// A number in [0, 1] for each day. 0 means all time just spent at home
     pub lockdown_per_day: Vec<f32>,
     pub events: Vec<Event>,
-    pub input: Input,
 }
 
 #[derive(Serialize, Deserialize)]
 pub struct Input {
     pub enable_commuting: bool,
     /// Only people living in MSOAs filled out here will be part of the population
-    pub initial_cases_per_msoa: BTreeMap<MSOA, usize>,
+    pub msoas: BTreeSet<MSOA>,
 }
 
 /// Represents a region of the UK.

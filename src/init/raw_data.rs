@@ -32,7 +32,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     let mut osm_needed = BTreeSet::new();
     for rec in csv::Reader::from_reader(File::open(lookup_path)?).deserialize() {
         let rec: MsoaLookupRow = rec?;
-        if input.initial_cases_per_msoa.contains_key(&rec.msoa) {
+        if input.msoas.contains(&rec.msoa) {
             tus_needed.insert(rec.new_tu);
             osm_needed.insert(rec.osm);
             results
@@ -44,7 +44,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     }
     info!(
         "From {} MSOAs, we need {} time use files and {} OSM files",
-        print_count(input.initial_cases_per_msoa.len()),
+        print_count(input.msoas.len()),
         print_count(tus_needed.len()),
         print_count(osm_needed.len())
     );

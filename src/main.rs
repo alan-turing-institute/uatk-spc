@@ -1,6 +1,6 @@
 //! This is the command-line interface to SPC.
 
-use std::collections::BTreeMap;
+use std::collections::BTreeSet;
 
 use anyhow::Result;
 use clap::Parser;
@@ -11,9 +11,6 @@ use serde::Deserialize;
 use tracing::{info, info_span};
 
 use spc::{protobuf, utilities, Input, Population, MSOA};
-
-// When running on all MSOAs, start with this many cases
-const DEFAULT_CASES_PER_MSOA: usize = 5;
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -76,33 +73,29 @@ impl Region {
     async fn to_input(self, enable_commuting: bool) -> Result<Input> {
         let mut input = Input {
             enable_commuting,
-            initial_cases_per_msoa: BTreeMap::new(),
+            msoas: BTreeSet::new(),
         };
 
         // Determine the MSOAs to operate on using CSV files from the original repo
         let csv_input = match self {
             Region::National => {
-                for msoa in MSOA::all_msoas_nationally().await? {
-                    input
-                        .initial_cases_per_msoa
-                        .insert(msoa, DEFAULT_CASES_PER_MSOA);
-                }
+                input.msoas = MSOA::all_msoas_nationally().await?;
                 return Ok(input);
             }
             _ => format!("Input_{:?}.csv", self),
         };
         let csv_path = format!("config/{}", csv_input);
         for rec in csv::Reader::from_reader(File::open(csv_path)?).deserialize() {
-            let rec: InitialCaseRow = rec?;
-            input.initial_cases_per_msoa.insert(rec.msoa, rec.cases);
+            let rec: Row = rec?;
+            input.msoas.insert(rec.msoa);
         }
         Ok(input)
     }
 }
 
+// TODO We could just read raw lines
 #[derive(Deserialize)]
-struct InitialCaseRow {
+struct Row {
     #[serde(rename = "MSOA11CD")]
     msoa: MSOA,
-    cases: usize,
 }
