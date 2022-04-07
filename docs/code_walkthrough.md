@@ -1,16 +1,5 @@
 # Code walkthrough
 
-The project is split into two stages:
-
-1. Initialisation: combine various data sources to produce a snapshot capturing
-   some study area. This is implemented in [Rust](https://www.rust-lang.org/),
-   with code in the
-   [init](https://github.com/dabreegster/rampfs/tree/main/init) directory.
-2. Simulation: Run a COVID transmission model in that study area. This is
-   implemented in Python and OpenCL, with a dashboard using OpenGL and ImGui.
-   Code is in the
-   [model](https://github.com/dabreegster/rampfs/tree/main/model) directory.
-
 ## Generally useful techniques
 
 The code-base makes use of some techniques that may be generally applicable to

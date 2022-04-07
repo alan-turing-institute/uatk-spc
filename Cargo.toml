@@ -1,9 +1,9 @@
 [package]
-name = "aspics"
+name = "spc"
 version = "0.1.0"
 edition = "2021"
-authors = ["Dustin Carlino <dcarlino@turing.ac.uk>"]
-description = "Agent-based Simulation of ePIdemics at Country Scale"
+authors = ["Dustin Carlino <dcarlino@turing.ac.uk>", "Hadrien Salat <hsalat@turing.ac.uk>", "Fernando Benitez <fbenitez@turing.ac.uk>"]
+description = "Synthetic Population Catalyst"
 
 [dependencies]
 anyhow = "1.0.51"

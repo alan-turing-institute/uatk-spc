@@ -24,10 +24,9 @@ impl SpanTree {
     pub fn enable(self) {
         // Ignore everything except our own code. hyper and reqwest are very spammy.
         // TODO Filter more carefully -- anything >= INFO from other crates is probably fine
-        let subscriber =
-            Registry::default().with(self.with_filter(tracing_subscriber::filter::filter_fn(
-                |metadata| metadata.target().starts_with("aspics"),
-            )));
+        let subscriber = Registry::default().with(self.with_filter(
+            tracing_subscriber::filter::filter_fn(|metadata| metadata.target().starts_with("spc")),
+        ));
         tracing::subscriber::set_global_default(subscriber)
             .unwrap_or_else(|_| debug!("Global subscriber is already set"));
     }

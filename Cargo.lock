@@ -63,45 +63,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "aspics"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "bincode",
- "bytes",
- "cap",
- "clap 3.0.0",
- "csv",
- "derive_more",
- "enum-map",
- "flate2",
- "fs-err",
- "futures-util",
- "geo",
- "geojson",
- "indicatif",
- "ndarray",
- "ndarray-npy",
- "ndarray-rand",
- "ordered-float",
- "proj",
- "prost",
- "prost-build",
- "rand",
- "rand_distr",
- "reqwest",
- "rstar",
- "serde",
- "serde_json",
- "shapefile",
- "tar",
- "tokio",
- "tracing",
- "tracing-subscriber",
- "typed-index-collections",
-]
-
-[[package]]
 name = "atty"
 version = "0.2.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1833,6 +1794,45 @@ checksum = "5dc90fe6c7be1a323296982db1836d1ea9e47b6839496dde9a541bc496df3516"
 dependencies = [
  "libc",
  "winapi",
+]
+
+[[package]]
+name = "spc"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "bincode",
+ "bytes",
+ "cap",
+ "clap 3.0.0",
+ "csv",
+ "derive_more",
+ "enum-map",
+ "flate2",
+ "fs-err",
+ "futures-util",
+ "geo",
+ "geojson",
+ "indicatif",
+ "ndarray",
+ "ndarray-npy",
+ "ndarray-rand",
+ "ordered-float",
+ "proj",
+ "prost",
+ "prost-build",
+ "rand",
+ "rand_distr",
+ "reqwest",
+ "rstar",
+ "serde",
+ "serde_json",
+ "shapefile",
+ "tar",
+ "tokio",
+ "tracing",
+ "tracing-subscriber",
+ "typed-index-collections",
 ]
 
 [[package]]

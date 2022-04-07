@@ -5,17 +5,10 @@
 We use automated tools to format the code.
 
 ```shell
-# Format all Python code
-cd model
-poetry run black aspics *.py
-
-# Format all Rust code
-cd ../init
 cargo fmt
 
 # Format Markdown docs
-cd ../docs
-prettier --write *.md
+prettier --write *.md docs/*.md
 ```
 
 Install [prettier](https://prettier.io) for Markdown.

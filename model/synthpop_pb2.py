@@ -1,1 +1,0 @@
-../init/protobuf_samples/synthpop_pb2.py

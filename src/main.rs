@@ -1,4 +1,4 @@
-//! This is the command-line interface to ASPICS.
+//! This is the command-line interface to SPC.
 
 use std::collections::BTreeMap;
 
@@ -10,15 +10,14 @@ use rand::SeedableRng;
 use serde::Deserialize;
 use tracing::{info, info_span};
 
-use aspics::utilities;
-use aspics::{protobuf, Input, Population, MSOA};
+use spc::{protobuf, utilities, Input, Population, MSOA};
 
 // When running on all MSOAs, start with this many cases
 const DEFAULT_CASES_PER_MSOA: usize = 5;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    aspics::tracing_span_tree::SpanTree::new().enable();
+    spc::tracing_span_tree::SpanTree::new().enable();
 
     let args = Args::parse();
 
@@ -92,7 +91,7 @@ impl Region {
             }
             _ => format!("Input_{:?}.csv", self),
         };
-        let csv_path = format!("../config/{}", csv_input);
+        let csv_path = format!("config/{}", csv_input);
         for rec in csv::Reader::from_reader(File::open(csv_path)?).deserialize() {
             let rec: InitialCaseRow = rec?;
             input.initial_cases_per_msoa.insert(rec.msoa, rec.cases);
