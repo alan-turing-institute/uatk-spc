@@ -1,5 +1,5 @@
 use enum_map::{enum_map, Enum, EnumMap};
-use ndarray::{array, concatenate, Array1, Axis};
+use ndarray::{array, Array1};
 
 use crate::Activity;
 
@@ -76,43 +76,5 @@ impl Params {
             bloodpressure_multiplier: 1.0,
             overweight_sympt_mplier: 1.46,
         }
-    }
-
-    pub fn get_flattened_array(&self) -> Array1<f32> {
-        concatenate!(
-            Axis(0),
-            array![
-                self.symptomatic_multiplier,
-                self.exposed_scale,
-                self.exposed_shape,
-                self.presymptomatic_scale,
-                self.presymptomatic_shape,
-                self.infection_log_scale,
-                self.infection_mode,
-                self.lockdown_multiplier,
-            ],
-            array![
-                self.location_hazard_multipliers[Activity::Retail],
-                self.location_hazard_multipliers[Activity::Nightclub],
-                self.location_hazard_multipliers[Activity::PrimarySchool],
-                self.location_hazard_multipliers[Activity::SecondarySchool],
-                self.location_hazard_multipliers[Activity::Home],
-                self.location_hazard_multipliers[Activity::Work],
-            ],
-            array![
-                self.individual_hazard_multipliers[SymptomStatus::Presymptomatic],
-                self.individual_hazard_multipliers[SymptomStatus::Asymptomatic],
-                self.individual_hazard_multipliers[SymptomStatus::Symptomatic],
-            ],
-            self.mortality_probs,
-            self.obesity_multipliers,
-            self.symptomatic_probs,
-            array![
-                self.cvd_multiplier,
-                self.diabetes_multiplier,
-                self.bloodpressure_multiplier,
-                self.overweight_sympt_mplier,
-            ],
-        )
     }
 }

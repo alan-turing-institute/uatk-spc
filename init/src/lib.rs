@@ -1,9 +1,4 @@
-//! This is a Rust implementation of RAMP (Rapid Assistance in Modelling the Pandemic).
-//!
-//! It's split into several stages:
-//! 1) init -- from raw data, build an activity model for a study area
-//! 2) snapshot -- from an activity model, build a snapshot for the OpenCL simulation
-//! 3) TODO -- simulate COVID in the population
+//! TODO Describe all the everything. This is SPC -- synthetic population catalyst.
 
 #[macro_use]
 extern crate anyhow;
@@ -13,7 +8,6 @@ extern crate tracing;
 mod init;
 mod model;
 pub mod protobuf;
-mod snapshot;
 pub mod tracing_span_tree;
 pub mod utilities;
 
@@ -30,7 +24,6 @@ use ordered_float::NotNan;
 use serde::{Deserialize, Serialize};
 
 pub use self::model::Model;
-pub use self::snapshot::Snapshot;
 
 pub mod pb {
     include!(concat!(env!("OUT_DIR"), "/synthpop.rs"));

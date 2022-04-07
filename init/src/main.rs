@@ -11,7 +11,7 @@ use serde::Deserialize;
 use tracing::{info, info_span};
 
 use aspics::utilities;
-use aspics::{protobuf, Input, Model, Population, Snapshot, MSOA};
+use aspics::{protobuf, Input, Model, Population, MSOA};
 
 // When running on all MSOAs, start with this many cases
 const DEFAULT_CASES_PER_MSOA: usize = 5;
@@ -41,26 +41,13 @@ async fn main() -> Result<()> {
             let target_dir = format!("data/processed_data/{:?}", region);
             // Ignore errors if this directory doesn't even exist
             let _ = fs_err::remove_dir_all(&target_dir);
-            fs_err::create_dir_all(format!("{target_dir}/snapshot"))?;
 
             info!("By the end, {}", utilities::memory_usage());
-            // Write all data to a file only readable from Rust (using Serde)
-            {
-                let output = format!("{target_dir}/rust_cache.bin");
-                let _s = info_span!("Writing population to", ?output).entered();
-                utilities::write_binary(&population, output)?;
-            }
 
             {
                 let output = format!("{target_dir}/synthpop.pb");
                 let _s = info_span!("Writing protobuf to", ?output).entered();
                 protobuf::convert_to_pb(&population, output)?;
-            }
-
-            // Write the snapshot in the format the Python pipeline expects
-            {
-                let _s = info_span!("Writing snapshot").entered();
-                Snapshot::convert_to_npz(&population, target_dir, &mut rng)?;
             }
         }
         Action::RunModel { region } => {
