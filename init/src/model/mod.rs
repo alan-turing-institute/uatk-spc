@@ -388,13 +388,13 @@ impl Model {
                     }
 
                     // TODO All of these values just look like booleans. Seriously...
-                    if person_info.cardiovascular_disease > 0 {
+                    if person_info.has_cardiovascular_disease {
                         mortality_prob *= self.params.cvd_multiplier;
                     }
-                    if person_info.diabetes > 0 {
+                    if person_info.has_diabetes {
                         mortality_prob *= self.params.diabetes_multiplier;
                     }
-                    if person_info.blood_pressure > 0 {
+                    if person_info.has_high_blood_pressure {
                         mortality_prob *= self.params.bloodpressure_multiplier;
                     }
 

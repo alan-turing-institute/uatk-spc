@@ -258,9 +258,9 @@ impl TuPerson {
 
             age_years: self.age,
             obesity: self.obesity,
-            cardiovascular_disease: self.cvd,
-            diabetes: self.diabetes,
-            blood_pressure: self.bloodpressure,
+            has_cardiovascular_disease: self.cvd > 0,
+            has_diabetes: self.diabetes > 0,
+            has_high_blood_pressure: self.bloodpressure > 0,
 
             pr_not_home: self.pnothome,
 

@@ -42,9 +42,9 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<()> {
                     Obesity::Normal => pb::Obesity::Normal,
                 }
                 .into(),
-                cardiovascular_disease: person.cardiovascular_disease.into(),
-                diabetes: person.diabetes.into(),
-                blood_pressure: person.blood_pressure.into(),
+                has_cardiovascular_disease: person.has_cardiovascular_disease,
+                has_diabetes: person.has_diabetes,
+                has_high_blood_pressure: person.has_high_blood_pressure,
             }),
             flows_per_activity: convert_flows(person),
         });

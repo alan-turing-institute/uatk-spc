@@ -142,18 +142,18 @@ impl Snapshot {
             "people_cvd",
             &people
                 .iter()
-                .map(|p| p.cardiovascular_disease)
+                .map(|p| bool_to_u8(p.has_cardiovascular_disease))
                 .collect::<Array1<u8>>(),
         )?;
         npz.add_array(
             "people_diabetes",
-            &people.iter().map(|p| p.diabetes).collect::<Array1<u8>>(),
+            &people.iter().map(|p| bool_to_u8(p.has_diabetes)).collect::<Array1<u8>>(),
         )?;
         npz.add_array(
             "people_blood_pressure",
             &people
                 .iter()
-                .map(|p| p.blood_pressure)
+                .map(|p| bool_to_u8(p.has_high_blood_pressure))
                 .collect::<Array1<u8>>(),
         )?;
         npz.add_array("people_statuses", &Array1::<u32>::zeros(num_people))?;
@@ -293,4 +293,12 @@ fn get_place_coordinates(
     }
 
     Ok(result)
+}
+
+fn bool_to_u8(x: bool) -> u8 {
+    if x {
+        1
+    } else {
+        0
+    }
 }

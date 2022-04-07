@@ -7,6 +7,10 @@ import random
 import synthpop_pb2
 from collections import namedtuple
 
+# Things to keep in mind:
+# - This script isn't deterministic, because it doesn't fix a random number
+#   generator seed. We'd need to set one both from random.choice and numpy.
+
 
 @click.command()
 @click.option(
@@ -52,8 +56,6 @@ class IDMapping:
             if activity == synthpop_pb2.Activity.HOME:
                 num_venues = len(pop.households)
             else:
-                # TODO This fails -- python and rust stringify the enum
-                # differently. Just switch to ints.
                 num_venues = len(pop.venues_per_activity[activity].venues)
 
             start = offset
@@ -86,18 +88,19 @@ def convert_to_npz(pop, output_path):
         place_hazards=np.zeros(num_places, dtype=np.uint32),
         place_counts=np.zeros(num_places, dtype=np.uint32),
         people_ages=np.array([p.age_years for p in pop.people], dtype=np.uint16),
-        # TODO Invert the order in the proto! obese3=4, normal=0
         people_obesity=np.array(
             [p.health.obesity for p in pop.people], dtype=np.uint16
         ),
         people_cvd=np.array(
-            [p.health.cardiovascular_disease for p in pop.people], dtype=np.uint8
+            [bool_to_int(p.health.has_cardiovascular_disease) for p in pop.people],
+            dtype=np.uint8,
         ),
         people_diabetes=np.array(
-            [p.health.diabetes for p in pop.people], dtype=np.uint8
+            [bool_to_int(p.health.has_diabetes) for p in pop.people], dtype=np.uint8
         ),
         people_blood_pressure=np.array(
-            [p.health.blood_pressure for p in pop.people], dtype=np.uint8
+            [bool_to_int(p.health.has_high_blood_pressure) for p in pop.people],
+            dtype=np.uint8,
         ),
         people_statuses=np.zeros(num_people, dtype=np.uint32),
         people_transition_times=np.zeros(num_people, dtype=np.uint32),
@@ -182,13 +185,19 @@ def get_place_coordinates(pop, id_mapping):
     # critical.
     for household in pop.households:
         place = id_mapping.to_place(synthpop_pb2.Activity.HOME, household.id)
-        # TODO Take an RNG seed from parameters
         # TODO This should crash if we have no buildings in the MSOA
         location = random.choice(pop.info_per_msoa[household.msoa].buildings)
         result[place * 2] = location.latitude
         result[place * 2 + 1] = location.longitude
 
     return result
+
+
+def bool_to_int(x):
+    if x:
+        return 1
+    else:
+        return 0
 
 
 if __name__ == "__main__":

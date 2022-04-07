@@ -59,10 +59,9 @@ message Person {
 
 message Health {
     Obesity obesity = 1;
-    // TODO Unclear what the values mean
-    uint32 cardiovascular_disease = 2;
-    uint32 diabetes = 3;
-    uint32 blood_pressure = 4;
+    bool has_cardiovascular_disease = 2;
+    bool has_diabetes = 3;
+    bool has_high_blood_pressure = 4;
 }
 
 // Per activity, a list of venues where this person is likely to go do that activity.
@@ -102,9 +101,9 @@ enum Activity {
 }
 
 enum Obesity {
-    OBESE_3 = 0;
-    OBESE_2 = 1;
+    NORMAL = 0;
+    OVERWEIGHT = 1;
     OBESE_1 = 2;
-    OVERWEIGHT = 3;
-    NORMAL = 4;
+    OBESE_2 = 3;
+    OBESE_3 = 4;
 }

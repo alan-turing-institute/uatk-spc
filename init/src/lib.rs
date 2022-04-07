@@ -136,10 +136,9 @@ pub struct Person {
     // Nobody's older than 256 years
     pub age_years: u8,
     pub obesity: Obesity,
-    // Unclear what the values mean
-    pub cardiovascular_disease: u8,
-    pub diabetes: u8,
-    pub blood_pressure: u8,
+    pub has_cardiovascular_disease: bool,
+    pub has_diabetes: bool,
+    pub has_high_blood_pressure: bool,
 
     // TODO This seems like it should be equivalent to 1 - duration_per_activity[Activity::Home]
     pub pr_not_home: f32,
