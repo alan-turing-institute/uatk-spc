@@ -1,14 +1,15 @@
 # Synthetic Population Catalyst
 
-- [Usage guide](docs/usage_guide.md) - build and run the project
+- [Usage guide](docs/usage_guide.md)
 - [Developer guide](docs/developer_guide.md)
 - [Code walkthrough](docs/code_walkthrough.md)
 - [Data sources](docs/data_sources.md)
 
 The Synthetic Population Catalyst (SPC) makes it easier for researchers to work
 with population data in England. It combines a variety of [data
-sources](docs/data_sources.md) and outputs a single protocol buffer file
-describing the population in a given study area.
+sources](docs/data_sources.md) and outputs a single [protocol buffer
+file](https://github.com/dabreegster/spc/blob/main/synthpop.proto) describing
+the population in a given study area.
 
 ## Lineage
 
