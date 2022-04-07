@@ -73,7 +73,9 @@ def convert_to_npz(pop, output_path):
     num_places = id_mapping.total_places
 
     people_place_ids, people_baseline_flows = get_baseline_flows(pop, id_mapping)
+    place_coords = get_place_coordinates(pop, id_mapping)
 
+    print("Creating snapshot")
     np.savez(
         output_path,
         nplaces=np.uint32(num_places),
@@ -84,7 +86,7 @@ def convert_to_npz(pop, output_path):
         # TODO Plumb along
         lockdown_multipliers=np.ones(100, dtype=np.float32),
         place_activities=id_mapping.place_activities,
-        place_coords=get_place_coordinates(pop, id_mapping),
+        place_coords=place_coords,
         place_hazards=np.zeros(num_places, dtype=np.uint32),
         place_counts=np.zeros(num_places, dtype=np.uint32),
         people_ages=np.array([p.age_years for p in pop.people], dtype=np.uint16),
@@ -118,6 +120,8 @@ def convert_to_npz(pop, output_path):
 
 
 def get_baseline_flows(pop, id_mapping):
+    print(f"Collapsing flows for {len(pop.people)} people")
+
     # We ultimately want a 1D array for flows and place IDs. It's a flattened list, with
     # places_to_keep_per_person entries per person.
     places_to_keep_per_person = SLOTS
@@ -159,6 +163,7 @@ def get_baseline_flows_per_person(person, places_to_keep_per_person):
 
 
 def get_place_coordinates(pop, id_mapping):
+    print("Finalizing all coordinates")
     result = np.zeros(id_mapping.total_places * 2, dtype=np.float32)
 
     for activity, venues in pop.venues_per_activity.items():
@@ -166,7 +171,6 @@ def get_place_coordinates(pop, id_mapping):
         if activity == synthpop_pb2.Activity.HOME:
             continue
         for venue in venues.venues:
-            # TODO We need to filter venues belonging to our input MSOAs in SPC. Here we could filter by any shape containing the venue, but then we have to depend on some library to do that geometry.
             place = id_mapping.to_place(activity, venue.id)
             result[place * 2] = venue.location.latitude
             result[place * 2 + 1] = venue.location.longitude
