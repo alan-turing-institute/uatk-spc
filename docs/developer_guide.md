@@ -25,7 +25,7 @@ Install [prettier](https://prettier.io) for Markdown.
 There are two equivalent ways to rebuild and then run the code. First:
 
 ```shell
-cargo run --release -- init devon
+cargo run --release -- devon
 ```
 
 The `--` separates arguments to `cargo`, the Rust build tool, and arguments to
@@ -33,7 +33,7 @@ the program itself. The second way:
 
 ```shell
 cargo build --release
-./target/release/aspics init devon
+./target/release/aspics devon
 ```
 
 You can build the code in two ways -- **debug** and **release**. There's a

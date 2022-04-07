@@ -43,7 +43,7 @@ brew install pkg-config cmake proj
 
 ```
 cd init
-cargo run --release -- init west-yorkshire-small
+cargo run --release -- west-yorkshire-small
 ```
 
 This will download some large files the first time. You'll wind up with
@@ -52,14 +52,20 @@ files in `raw_data/`. The next time you run this command (even on a different
 study area), it should go much faster.
 
 You can run the pipeline for other study areas; try
-`cargo run --release -- init --help` for a list.
+`cargo run --release -- --help` for a list.
 
 ## Running the simulation
+
+Convert the synthetic population file to a snapshot:
+
+```shell
+cd ../model
+poetry run python convert_snapshot.py -i ../data/processed_data/WestYorkshireSmall/synthpop.pb -o ../data/processed_data/WestYorkshireSmall/snapshot/cache.npz
+```
 
 Then to run the snapshot file in the Python model:
 
 ```shell
-cd ../model
 poetry run python gui.py -p ../config/WestYorkshireSmall.yml
 ```
 

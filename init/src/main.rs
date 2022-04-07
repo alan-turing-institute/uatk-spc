@@ -11,7 +11,7 @@ use serde::Deserialize;
 use tracing::{info, info_span};
 
 use aspics::utilities;
-use aspics::{protobuf, Input, Model, Population, MSOA};
+use aspics::{protobuf, Input, Population, MSOA};
 
 // When running on all MSOAs, start with this many cases
 const DEFAULT_CASES_PER_MSOA: usize = 5;
@@ -28,37 +28,22 @@ async fn main() -> Result<()> {
         StdRng::from_entropy()
     };
 
-    match args.action {
-        Action::Init {
-            region,
-            no_commuting,
-        } => {
-            let _s = info_span!("initialisation", ?region).entered();
-            let input = region.to_input(!no_commuting).await?;
-            let population = Population::create(input, &mut rng).await?;
+    let _s = info_span!("initialisation", ?args.region).entered();
+    let input = args.region.to_input(!args.no_commuting).await?;
+    let population = Population::create(input, &mut rng).await?;
 
-            // First clear the target directory
-            let target_dir = format!("data/processed_data/{:?}", region);
-            // Ignore errors if this directory doesn't even exist
-            let _ = fs_err::remove_dir_all(&target_dir);
+    // First clear the target directory
+    let target_dir = format!("data/processed_data/{:?}", args.region);
+    // Ignore errors if this directory doesn't even exist
+    let _ = fs_err::remove_dir_all(&target_dir);
+    fs_err::create_dir_all(&target_dir)?;
 
-            info!("By the end, {}", utilities::memory_usage());
+    info!("By the end, {}", utilities::memory_usage());
 
-            {
-                let output = format!("{target_dir}/synthpop.pb");
-                let _s = info_span!("Writing protobuf to", ?output).entered();
-                protobuf::convert_to_pb(&population, output)?;
-            }
-        }
-        Action::RunModel { region } => {
-            info!("Loading population");
-            let population = utilities::read_binary::<Population>(format!(
-                "data/processed_data/{:?}/rust_cache.bin",
-                region
-            ))?;
-            let mut model = Model::new(population, rng)?;
-            model.run()?;
-        }
+    {
+        let output = format!("{target_dir}/synthpop.pb");
+        let _s = info_span!("Writing protobuf to", ?output).entered();
+        protobuf::convert_to_pb(&population, output)?;
     }
 
     Ok(())
@@ -67,8 +52,10 @@ async fn main() -> Result<()> {
 #[derive(Parser)]
 #[clap(about, version, author)]
 struct Args {
-    #[clap(subcommand)]
-    action: Action,
+    #[clap(arg_enum)]
+    region: Region,
+    #[clap(long)]
+    no_commuting: bool,
     /// By default, the output will be different every time the tool is run, based on a different
     /// random number generator seed. Specify this to get deterministic behavior, given the same
     /// input.
@@ -84,22 +71,6 @@ enum Region {
     Devon,
     TwoCounties,
     National,
-}
-
-#[derive(clap::Subcommand, Clone)]
-enum Action {
-    /// Import raw data and build an activity model for a region
-    Init {
-        #[clap(arg_enum)]
-        region: Region,
-        #[clap(long)]
-        no_commuting: bool,
-    },
-    /// Run the model, for a fixed number of days
-    RunModel {
-        #[clap(arg_enum)]
-        region: Region,
-    },
 }
 
 impl Region {

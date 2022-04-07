@@ -3,6 +3,7 @@
 import click
 import numpy as np
 from aspics.params import Params
+import os
 import random
 import synthpop_pb2
 from collections import namedtuple
@@ -23,6 +24,11 @@ from collections import namedtuple
     "-o", "--output_path", type=click.Path(), help="Write the snapshot file here"
 )
 def main(input_path, output_path):
+    try:
+        os.mkdir(os.path.dirname(output_path))
+    except FileExistsError:
+        pass
+
     print(f"Reading {input_path}")
     pop = synthpop_pb2.Population()
     f = open(input_path, "rb")

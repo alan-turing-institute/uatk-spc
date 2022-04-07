@@ -11,11 +11,6 @@ The project is split into two stages:
    Code is in the
    [model](https://github.com/dabreegster/rampfs/tree/main/model) directory.
 
-There's a preliminary attempt to port the simulation logic from Python and
-OpenCL to Rust in
-[src/model](https://github.com/dabreegster/rampfs/tree/main/init/src/model), but
-there's no intention to continue its development.
-
 ## Generally useful techniques
 
 The code-base makes use of some techniques that may be generally applicable to

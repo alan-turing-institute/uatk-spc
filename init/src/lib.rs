@@ -6,7 +6,6 @@ extern crate anyhow;
 extern crate tracing;
 
 mod init;
-mod model;
 pub mod protobuf;
 pub mod tracing_span_tree;
 pub mod utilities;
@@ -22,8 +21,6 @@ use enum_map::{Enum, EnumMap};
 use geo::{MultiPolygon, Point};
 use ordered_float::NotNan;
 use serde::{Deserialize, Serialize};
-
-pub use self::model::Model;
 
 pub mod pb {
     include!(concat!(env!("OUT_DIR"), "/synthpop.rs"));
