@@ -147,7 +147,10 @@ impl Snapshot {
         )?;
         npz.add_array(
             "people_diabetes",
-            &people.iter().map(|p| bool_to_u8(p.has_diabetes)).collect::<Array1<u8>>(),
+            &people
+                .iter()
+                .map(|p| bool_to_u8(p.has_diabetes))
+                .collect::<Array1<u8>>(),
         )?;
         npz.add_array(
             "people_blood_pressure",

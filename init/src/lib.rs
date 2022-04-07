@@ -140,7 +140,8 @@ pub struct Person {
     pub has_diabetes: bool,
     pub has_high_blood_pressure: bool,
 
-    // TODO This seems like it should be equivalent to 1 - duration_per_activity[Activity::Home]
+    // This isn't equal to 1 - duration_per_activity[Activity::Home], because the activities
+    // captured are a subset of the time-use data.
     pub pr_not_home: f32,
 
     /// Per activity, a list of venues where this person is likely to go do that activity. The

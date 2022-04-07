@@ -80,9 +80,9 @@ def convert_to_npz(pop, output_path):
         npeople=np.uint32(num_people),
         nslots=np.uint32(SLOTS),
         time=np.uint32(0),
-        not_home_probs=np.array([get_not_home_probability(p) for p in pop.people]),
+        not_home_probs=np.array([p.time_use.not_home for p in pop.people]),
         # TODO Plumb along
-        lockdown_multipliers=np.zeros(100, dtype=np.float32),
+        lockdown_multipliers=np.ones(100, dtype=np.float32),
         place_activities=id_mapping.place_activities,
         place_coords=get_place_coordinates(pop, id_mapping),
         place_hazards=np.zeros(num_places, dtype=np.uint32),
@@ -156,15 +156,6 @@ def get_baseline_flows_per_person(person, places_to_keep_per_person):
     # Only keep the top few
     del result[places_to_keep_per_person:]
     return result
-
-
-def get_not_home_probability(person):
-    # TODO Stop storing in the Rust pipeline internally if this approach works
-    pr = 0.0
-    for flows in person.flows_per_activity:
-        if flows.activity != synthpop_pb2.Activity.HOME:
-            pr += flows.activity_duration
-    return pr
 
 
 def get_place_coordinates(pop, id_mapping):
