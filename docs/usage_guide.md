@@ -34,9 +34,9 @@ cargo run --release -- config/west_yorkshire_small.csv
 ```
 
 This will download some large files the first time. You'll wind up with
-`processed_data/west_yorkshire_small.pb` as output, as well as lots of
-intermediate files in `raw_data/`. The next time you run this command (even on
-a different study area), it should go much faster.
+`data/output/west_yorkshire_small.pb` as output, as well as lots of
+intermediate files in `data/raw_data/`. The next time you run this command
+(even on a different study area), it should go much faster.
 
 ## Working with protocol buffers
 
@@ -49,5 +49,5 @@ pip install protobuf
 protoc --python_out=protobuf_samples/ synthpop.proto
 
 # Transform a proto to JSON
-python protobuf_samples/protobuf_to_json.py data/processed_data/west_yorkshire_small.pb
+python protobuf_samples/protobuf_to_json.py data/output/west_yorkshire_small.pb
 ```

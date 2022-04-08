@@ -29,16 +29,12 @@ async fn main() -> Result<()> {
     let _s = info_span!("initialisation", ?region).entered();
     let population = Population::create(input, &mut rng).await?;
 
-    // First clear the target directory
-    let target_dir = format!("data/processed_data/{region}");
-    // Ignore errors if this directory doesn't even exist
-    let _ = fs_err::remove_dir_all(&target_dir);
-    fs_err::create_dir_all(&target_dir)?;
-
     info!("By the end, {}", utilities::memory_usage());
 
     {
-        let output = format!("{target_dir}/synthpop.pb");
+        // Create the output dir if needed
+        fs_err::create_dir_all("data/output")?;
+        let output = format!("data/output/{region}.pb");
         let _s = info_span!("Writing protobuf to", ?output).entered();
         protobuf::convert_to_pb(&population, output)?;
     }
