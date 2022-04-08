@@ -25,7 +25,6 @@ pub fn create(input: Input, tus_files: Vec<String>, rng: &mut StdRng) -> Result<
         venues_per_activity: EnumMap::default(),
         info_per_msoa: BTreeMap::new(),
         lockdown_per_day: Vec::new(),
-        events: Vec::new(),
     };
     read_individual_time_use_and_health_data(&mut population, tus_files)?;
 

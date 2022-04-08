@@ -1,5 +1,4 @@
 mod commuting;
-mod events;
 mod lockdown;
 mod msoas;
 mod population;
@@ -26,7 +25,6 @@ impl Population {
             msoas::get_info_per_msoa(&population.msoas, raw_results.osm_directories)?;
         population.lockdown_per_day =
             lockdown::calculate_lockdown_per_day(raw_results.msoas_per_county, &population)?;
-        population.events = events::load_events("config/eventDataConcerts.csv")?;
         population.remove_unused_venues();
         Ok(population)
     }
