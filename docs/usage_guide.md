@@ -27,7 +27,7 @@ On Mac, you can do:
 brew install pkg-config cmake proj
 ```
 
-## Generating a snapshot for a study area
+## Generating output for a study area
 
 ```
 cargo run --release -- config/west_yorkshire_small.csv
@@ -50,4 +50,20 @@ protoc --python_out=protobuf_samples/ synthpop.proto
 
 # Transform a proto to JSON
 python protobuf_samples/protobuf_to_json.py data/output/west_yorkshire_small.pb
+```
+
+## Adding a new study area
+
+A study area requires a list of MSOAs to include. Create a new file
+`config/your_region.csv` with this list, following the format of the other
+files in there. (The first line must set the column name as `"MSOA11CD"`.)
+
+You can use the `select_msoas.py` script to generate this list based on an ONS
+geography code. The script looks for every MSOA where the `CTY20NM` is Bristol.
+Refer to `data/raw_data/referencedata/lookUp.csv` for all geographies.
+
+After you write a new file, you simply run the pipeline with that as input:
+
+```
+cargo run --release -- config/your_region.csv
 ```
