@@ -122,7 +122,7 @@ async fn download_file(url: &str, path: &str) -> Result<()> {
     let res = client.get(url).send().await?;
     let total_size = res
         .content_length()
-        .ok_or(anyhow!("Failed to get content length from {}", url))?;
+        .ok_or_else(|| anyhow!("Failed to get content length from {}", url))?;
 
     let pb = ProgressBar::new(total_size);
     pb.set_style(ProgressStyle::default_bar()
@@ -136,7 +136,7 @@ async fn download_file(url: &str, path: &str) -> Result<()> {
 
     while let Some(item) = stream.next().await {
         let chunk = item?;
-        file.write(&chunk)?;
+        file.write_all(&chunk)?;
         let new = min(downloaded + (chunk.len() as u64), total_size);
         downloaded = new;
         pb.set_position(new);

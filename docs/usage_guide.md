@@ -2,7 +2,7 @@
 
 ## One-time installation
 
-- The latest version of Rust (1.58):
+- The latest version of Rust (1.60):
   [https://www.rust-lang.org/tools/install](https://www.rust-lang.org/tools/install)
 - The instructions assume you'e running in a shell on Linux or Mac, and have
   standard commands like `unzip` and `python3` available

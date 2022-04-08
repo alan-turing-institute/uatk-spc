@@ -141,7 +141,7 @@ struct Node {
 
 impl Node {
     fn print(&self) {
-        println!("");
+        println!();
         self.go(0)
     }
 
