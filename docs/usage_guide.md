@@ -30,16 +30,13 @@ brew install pkg-config cmake proj
 ## Generating a snapshot for a study area
 
 ```
-cargo run --release -- west-yorkshire-small
+cargo run --release -- config/west_yorkshire_small.csv
 ```
 
 This will download some large files the first time. You'll wind up with
-`processed_data/WestYorkshireSmall/` as output, as well as lots of intermediate
-files in `raw_data/`. The next time you run this command (even on a different
-study area), it should go much faster.
-
-You can run the pipeline for other study areas; try
-`cargo run --release -- --help` for a list.
+`processed_data/west_yorkshire_small.pb` as output, as well as lots of
+intermediate files in `raw_data/`. The next time you run this command (even on
+a different study area), it should go much faster.
 
 ## Working with protocol buffers
 
@@ -52,5 +49,5 @@ pip install protobuf
 protoc --python_out=protobuf_samples/ synthpop.proto
 
 # Transform a proto to JSON
-python protobuf_samples/protobuf_to_json.py data/processed_data/WestYorkshireSmall/synthpop.pb
+python protobuf_samples/protobuf_to_json.py data/processed_data/west_yorkshire_small.pb
 ```

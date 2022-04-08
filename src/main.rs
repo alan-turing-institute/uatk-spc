@@ -1,6 +1,7 @@
 //! This is the command-line interface to SPC.
 
 use std::collections::BTreeSet;
+use std::path::Path;
 
 use anyhow::Result;
 use clap::Parser;
@@ -24,12 +25,12 @@ async fn main() -> Result<()> {
         StdRng::from_entropy()
     };
 
-    let _s = info_span!("initialisation", ?args.region).entered();
-    let input = args.region.to_input(!args.no_commuting).await?;
+    let (input, region) = args.to_input().await?;
+    let _s = info_span!("initialisation", ?region).entered();
     let population = Population::create(input, &mut rng).await?;
 
     // First clear the target directory
-    let target_dir = format!("data/processed_data/{:?}", args.region);
+    let target_dir = format!("data/processed_data/{region}");
     // Ignore errors if this directory doesn't even exist
     let _ = fs_err::remove_dir_all(&target_dir);
     fs_err::create_dir_all(&target_dir)?;
@@ -48,8 +49,7 @@ async fn main() -> Result<()> {
 #[derive(Parser)]
 #[clap(about, version, author)]
 struct Args {
-    #[clap(arg_enum)]
-    region: Region,
+    msoa_input: String,
     #[clap(long)]
     no_commuting: bool,
     /// By default, the output will be different every time the tool is run, based on a different
@@ -59,37 +59,30 @@ struct Args {
     rng_seed: Option<u64>,
 }
 
-#[derive(clap::ArgEnum, Clone, Copy, Debug)]
-/// Which counties to operate on
-enum Region {
-    WestYorkshireSmall,
-    WestYorkshireLarge,
-    Devon,
-    TwoCounties,
-    National,
-}
-
-impl Region {
-    async fn to_input(self, enable_commuting: bool) -> Result<Input> {
+impl Args {
+    async fn to_input(self) -> Result<(Input, String)> {
         let mut input = Input {
-            enable_commuting,
+            enable_commuting: !self.no_commuting,
             msoas: BTreeSet::new(),
         };
+        let region = Path::new(&self.msoa_input)
+            .file_stem()
+            .unwrap()
+            .to_os_string()
+            .into_string()
+            .unwrap();
 
-        // Determine the MSOAs to operate on using CSV files from the original repo
-        let csv_input = match self {
-            Region::National => {
-                input.msoas = MSOA::all_msoas_nationally().await?;
-                return Ok(input);
+        // A special case
+        if region == "national" {
+            input.msoas = MSOA::all_msoas_nationally().await?;
+            Ok((input, "national".to_string()))
+        } else {
+            for rec in csv::Reader::from_reader(File::open(&self.msoa_input)?).deserialize() {
+                let rec: Row = rec?;
+                input.msoas.insert(rec.msoa);
             }
-            _ => format!("Input_{:?}.csv", self),
-        };
-        let csv_path = format!("config/{}", csv_input);
-        for rec in csv::Reader::from_reader(File::open(csv_path)?).deserialize() {
-            let rec: Row = rec?;
-            input.msoas.insert(rec.msoa);
+            Ok((input, region))
         }
-        Ok(input)
     }
 }
 
