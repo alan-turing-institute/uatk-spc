@@ -6,14 +6,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        build: [linux, macos, windows]
+        # Building proj on Windows is a mess, so not enabled yet. https://github.com/georust/proj/pull/79
+        build: [linux, macos]
         include:
           - build: linux
             os: ubuntu-18.04
           - build: macos
             os: macos-latest
-          - build: windows
-            os: windows-latest
 
     steps:
       - uses: actions/checkout@master
