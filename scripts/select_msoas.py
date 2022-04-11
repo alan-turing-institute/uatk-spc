@@ -8,5 +8,5 @@ print('"MSOA11CD"')
 with open('data/raw_data/referencedata/lookUp.csv') as f:
     for row in csv.DictReader(f):
         # Modify these to select MSOAs based on different geographies
-        if row['CTY20NM'] == 'Bristol':
+        if row['LAD20NM'] == 'Liverpool':
             print('"{}"'.format(row['MSOA11CD']))

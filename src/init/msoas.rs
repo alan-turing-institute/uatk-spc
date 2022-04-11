@@ -103,7 +103,7 @@ fn load_building_centroids(path: &str) -> Result<Vec<Point<f32>>> {
         let geo_polygon: MultiPolygon<f64> = shape.try_into()?;
         if let Some(pt) = geo_polygon.centroid() {
             // TODO Urgh, casting everywhere
-            results.push(Point::new(pt.lng() as f32, pt.lat() as f32));
+            results.push(Point::new(pt.x() as f32, pt.y() as f32));
         }
     }
     info!(
@@ -139,7 +139,7 @@ fn points_per_polygon<K: Clone + Ord>(
     );
     let cast_points: Vec<Point<f32>> = points
         .into_iter()
-        .map(|pt| Point::new(pt.lng(), pt.lat()))
+        .map(|pt| Point::new(pt.x(), pt.y()))
         .collect();
     let tree = RTree::bulk_load(cast_points);
 
@@ -154,7 +154,7 @@ fn points_per_polygon<K: Clone + Ord>(
         for pt in tree.locate_in_envelope(&envelope) {
             if polygon.contains(pt) {
                 // TODO Casting
-                pts_inside.push(Point::new(pt.lng(), pt.lat()));
+                pts_inside.push(Point::new(pt.x(), pt.y()));
             }
         }
         output.insert(key.clone(), pts_inside);
