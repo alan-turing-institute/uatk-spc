@@ -4,6 +4,7 @@
 - [Developer guide](docs/developer_guide.md)
 - [Code walkthrough](docs/code_walkthrough.md)
 - [Data sources](docs/data_sources.md)
+- [Performance of the pipeline](docs/performance.md)
 
 The Synthetic Population Catalyst (SPC) makes it easier for researchers to work
 with population data in England. It combines a variety of [data
