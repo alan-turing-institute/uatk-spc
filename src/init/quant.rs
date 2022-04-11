@@ -61,7 +61,9 @@ pub fn get_flows(
         info!(
             "Running a Python script to convert QUANT data from pickle to the regular numpy format"
         );
-        let status = Command::new("python3").arg("fix_quant_data.py").status()?;
+        let status = Command::new("python3")
+            .arg("scripts/fix_quant_data.py")
+            .status()?;
         if !status.success() {
             bail!("fix_quant_data.py failed");
         }

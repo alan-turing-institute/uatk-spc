@@ -72,9 +72,10 @@ A study area requires a list of MSOAs to include. Create a new file
 `config/your_region.csv` with this list, following the format of the other
 files in there. (The first line must set the column name as `"MSOA11CD"`.)
 
-You can use the `select_msoas.py` script to generate this list based on an ONS
-geography code. The script looks for every MSOA where the `CTY20NM` is Bristol.
-Refer to `data/raw_data/referencedata/lookUp.csv` for all geographies.
+You can use the `scripts/select_msoas.py` script to generate this list based on
+an ONS geography code. The script looks for every MSOA where the `CTY20NM` is
+Bristol.  Refer to `data/raw_data/referencedata/lookUp.csv` for all
+geographies.
 
 After you write a new file, you simply run the pipeline with that as input:
 
