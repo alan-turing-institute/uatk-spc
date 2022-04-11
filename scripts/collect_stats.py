@@ -12,7 +12,7 @@ for study_area in listdir("config"):
     if study_area == "national":
         continue
     # Assume `cargo build --release` has happened
-    subprocess.run(["./target/release/spc", "config/" + study_area, "--output-stats", "--no-commuting"])
+    subprocess.run(["./target/release/spc", "config/" + study_area, "--output-stats"])
     with open("stats.csv") as f:
         for row in csv.DictReader(f):
             rows.append(row)
