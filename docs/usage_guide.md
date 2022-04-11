@@ -14,18 +14,32 @@ cd spc
 cargo build --release
 ```
 
-### Troubleshooting
+### Proj dependencies
 
 The Rust code depends on [proj](https://proj.org) to transform coordinates. You
-may need to install additional dependencies to build it, like `cmake`. Please
-[open an issue](https://github.com/dabreegster/rampfs/issues) if you have any
-trouble!
+may need to install additional dependencies to build it. Please [open an
+issue](https://github.com/dabreegster/rampfs/issues) if you have any trouble!
+
+On Ubuntu, you can do:
+
+```shell
+apt-get install cmake sqlite3 libclang-dev
+```
 
 On Mac, you can do:
 
 ```shell
 brew install pkg-config cmake proj
 ```
+
+### Python dependencies
+
+Although SPC is written in Rust, one step of the pipeline needs to run
+`fix_quant_data.py`, a small Python script. This requires `numpy`. `python3
+fix_quant_data.py` will be called, and the `python3` in your path must have
+`numpy` installed. In Ubuntu, `apt-get install python3-numpy` works. You can
+also `pip install numpy`. It's not ideal to rely on system-wide dependencies
+like this. We're working to remove this step entirely and avoid needing Python.
 
 ## Generating output for a study area
 
@@ -67,3 +81,20 @@ After you write a new file, you simply run the pipeline with that as input:
 ```
 cargo run --release -- config/your_region.csv
 ```
+
+## Docker
+
+If you're having trouble building, you can run in Docker. Assuming you have Docker setup:
+
+```shell
+git clone https://github.com/dabreegster/spc/
+cd spc
+# Build the Docker image initially. Once we publish to Docker Hub, this step
+# won't be necessary.
+docker build -t spc .
+# Run SPC in Docker
+docker run --mount type=bind,source="$(pwd)"/data,target=/spc/data -t spc /spc/target/release/spc config/west_yorkshire_small.csv
+```
+
+This will make the `data` directory in your directory available to the Docker
+image, where it'll download the large input files and produce the final output.
