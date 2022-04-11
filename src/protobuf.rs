@@ -1,14 +1,15 @@
-use std::fs::File;
 use std::io::{BufWriter, Write};
 
 use anyhow::Result;
+use fs_err::File;
 use geo::coords_iter::CoordsIter;
 use geo::{Coordinate, Point};
 use prost::Message;
 
 use crate::{pb, Activity, Obesity, Person, Population};
 
-pub fn convert_to_pb(input: &Population, output_path: String) -> Result<()> {
+/// Returns the bytes written
+pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
     let mut output = pb::Population::default();
 
     for household in &input.households {
@@ -85,7 +86,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<()> {
     output.encode(&mut buf)?;
     let mut f = BufWriter::new(File::create(output_path)?);
     f.write_all(&buf)?;
-    Ok(())
+    Ok(buf.len())
 }
 
 fn convert_point(pt: &Point<f32>) -> pb::Point {

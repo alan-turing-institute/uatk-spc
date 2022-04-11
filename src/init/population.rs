@@ -1,4 +1,5 @@
 use std::collections::{BTreeMap, BTreeSet};
+use std::time::{Duration, Instant};
 
 use anyhow::Result;
 use enum_map::EnumMap;
@@ -14,8 +15,13 @@ use crate::utilities::{
 };
 use crate::{Activity, Household, Input, Obesity, Person, PersonID, Population, VenueID, MSOA};
 
-/// Create a population from some time-use files, only keeping people in the specified MSOAs.
-pub fn create(input: Input, tus_files: Vec<String>, rng: &mut StdRng) -> Result<Population> {
+/// Create a population from some time-use files, only keeping people in the specified MSOAs. Also
+/// returns the duration for the commuting calculation.
+pub fn create(
+    input: Input,
+    tus_files: Vec<String>,
+    rng: &mut StdRng,
+) -> Result<(Population, Duration)> {
     let _s = info_span!("creating population").entered();
 
     let mut population = Population {
@@ -29,9 +35,13 @@ pub fn create(input: Input, tus_files: Vec<String>, rng: &mut StdRng) -> Result<
     read_individual_time_use_and_health_data(&mut population, tus_files)?;
 
     // The order doesn't matter for these steps
-    if input.enable_commuting {
+    let commuting_duration = if input.enable_commuting {
+        let now = Instant::now();
         super::commuting::create_commuting_flows(&mut population, rng)?;
-    }
+        Instant::now() - now
+    } else {
+        Duration::ZERO
+    };
     setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;
     setup_venue_flows(Activity::Nightclub, Threshold::TopN(10), &mut population)?;
     setup_venue_flows(Activity::PrimarySchool, Threshold::TopN(5), &mut population)?;
@@ -43,7 +53,7 @@ pub fn create(input: Input, tus_files: Vec<String>, rng: &mut StdRng) -> Result<
 
     // TODO The Python implementation has lots of commented stuff, then some rounding
 
-    Ok(population)
+    Ok((population, commuting_duration))
 }
 
 fn read_individual_time_use_and_health_data(
