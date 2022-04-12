@@ -9,12 +9,13 @@ message Population {
     // `Activity::Home`; see `households` for that.
     map<int32, VenueList> venues_per_activity = 3;
 
-    map<string, InfoPerMSOA> info_per_msoa = 4;
+    repeated InfoPerMSOA info_per_msoa = 4;
 }
 
 message Household {
     uint64 id = 1;
-    string msoa = 2;
+    // An index into `Population::info_per_msoa`
+    uint64 msoa = 2;
     /// An ID from the original data, kept around for debugging
     int64 orig_hid = 3;
     // These IDs index into `Population::people`
@@ -27,10 +28,12 @@ message VenueList {
 }
 
 message InfoPerMSOA {
-    repeated Point shape = 1;
-    uint64 population = 2;
+    // MSOA11CD
+    string name = 1;
+    repeated Point shape = 2;
+    uint64 population = 3;
     // All building centroids within this MSOA. May be empty.
-    repeated Point buildings = 3;
+    repeated Point buildings = 4;
 }
 
 // In WGS84

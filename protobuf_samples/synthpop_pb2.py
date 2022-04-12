@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='synthpop',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0esynthpop.proto\x12\x08synthpop\"\xf9\x02\n\nPopulation\x12\'\n\nhouseholds\x18\x01 \x03(\x0b\x32\x13.synthpop.Household\x12 \n\x06people\x18\x02 \x03(\x0b\x32\x10.synthpop.Person\x12H\n\x13venues_per_activity\x18\x03 \x03(\x0b\x32+.synthpop.Population.VenuesPerActivityEntry\x12<\n\rinfo_per_msoa\x18\x04 \x03(\x0b\x32%.synthpop.Population.InfoPerMsoaEntry\x1aM\n\x16VenuesPerActivityEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.synthpop.VenueList:\x02\x38\x01\x1aI\n\x10InfoPerMsoaEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12$\n\x05value\x18\x02 \x01(\x0b\x32\x15.synthpop.InfoPerMSOA:\x02\x38\x01\"H\n\tHousehold\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x0c\n\x04msoa\x18\x02 \x01(\t\x12\x10\n\x08orig_hid\x18\x03 \x01(\x03\x12\x0f\n\x07members\x18\x04 \x03(\x04\",\n\tVenueList\x12\x1f\n\x06venues\x18\x01 \x03(\x0b\x32\x0f.synthpop.Venue\"e\n\x0bInfoPerMSOA\x12\x1e\n\x05shape\x18\x01 \x03(\x0b\x32\x0f.synthpop.Point\x12\x12\n\npopulation\x18\x02 \x01(\x04\x12\"\n\tbuildings\x18\x03 \x03(\x0b\x32\x0f.synthpop.Point\",\n\x05Point\x12\x11\n\tlongitude\x18\x01 \x01(\x02\x12\x10\n\x08latitude\x18\x02 \x01(\x02\"\xf4\x01\n\x06Person\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x11\n\thousehold\x18\x02 \x01(\x04\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x10\n\x08orig_pid\x18\x04 \x01(\x03\x12\x0f\n\x07sic1d07\x18\x05 \x01(\x04\x12\x11\n\tage_years\x18\x06 \x01(\r\x12 \n\x06health\x18\x07 \x01(\x0b\x32\x10.synthpop.Health\x12#\n\x08time_use\x18\x08 \x01(\x0b\x32\x11.synthpop.TimeUse\x12+\n\x12\x66lows_per_activity\x18\t \x03(\x0b\x32\x0f.synthpop.Flows\"\x87\x01\n\x06Health\x12\"\n\x07obesity\x18\x01 \x01(\x0e\x32\x11.synthpop.Obesity\x12\"\n\x1ahas_cardiovascular_disease\x18\x02 \x01(\x08\x12\x14\n\x0chas_diabetes\x18\x03 \x01(\x08\x12\x1f\n\x17has_high_blood_pressure\x18\x04 \x01(\x08\"\x1b\n\x07TimeUse\x12\x10\n\x08not_home\x18\x01 \x01(\x02\"g\n\x05\x46lows\x12$\n\x08\x61\x63tivity\x18\x01 \x01(\x0e\x32\x12.synthpop.Activity\x12\x1d\n\x05\x66lows\x18\x02 \x03(\x0b\x32\x0e.synthpop.Flow\x12\x19\n\x11\x61\x63tivity_duration\x18\x03 \x01(\x01\"(\n\x04\x46low\x12\x10\n\x08venue_id\x18\x01 \x01(\x04\x12\x0e\n\x06weight\x18\x02 \x01(\x01\"i\n\x05Venue\x12\n\n\x02id\x18\x01 \x01(\x04\x12$\n\x08\x61\x63tivity\x18\x02 \x01(\x0e\x32\x12.synthpop.Activity\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x0b\n\x03urn\x18\x04 \x01(\x04*c\n\x08\x41\x63tivity\x12\n\n\x06RETAIL\x10\x00\x12\x12\n\x0ePRIMARY_SCHOOL\x10\x01\x12\x14\n\x10SECONDARY_SCHOOL\x10\x02\x12\x08\n\x04HOME\x10\x03\x12\x08\n\x04WORK\x10\x04\x12\r\n\tNIGHTCLUB\x10\x05*L\n\x07Obesity\x12\n\n\x06NORMAL\x10\x00\x12\x0e\n\nOVERWEIGHT\x10\x01\x12\x0b\n\x07OBESE_1\x10\x02\x12\x0b\n\x07OBESE_2\x10\x03\x12\x0b\n\x07OBESE_3\x10\x04\x62\x06proto3')
+  serialized_pb=_b('\n\x0esynthpop.proto\x12\x08synthpop\"\x9e\x02\n\nPopulation\x12\'\n\nhouseholds\x18\x01 \x03(\x0b\x32\x13.synthpop.Household\x12 \n\x06people\x18\x02 \x03(\x0b\x32\x10.synthpop.Person\x12H\n\x13venues_per_activity\x18\x03 \x03(\x0b\x32+.synthpop.Population.VenuesPerActivityEntry\x12,\n\rinfo_per_msoa\x18\x04 \x03(\x0b\x32\x15.synthpop.InfoPerMSOA\x1aM\n\x16VenuesPerActivityEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.synthpop.VenueList:\x02\x38\x01\"H\n\tHousehold\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x0c\n\x04msoa\x18\x02 \x01(\x04\x12\x10\n\x08orig_hid\x18\x03 \x01(\x03\x12\x0f\n\x07members\x18\x04 \x03(\x04\",\n\tVenueList\x12\x1f\n\x06venues\x18\x01 \x03(\x0b\x32\x0f.synthpop.Venue\"s\n\x0bInfoPerMSOA\x12\x0c\n\x04name\x18\x01 \x01(\t\x12\x1e\n\x05shape\x18\x02 \x03(\x0b\x32\x0f.synthpop.Point\x12\x12\n\npopulation\x18\x03 \x01(\x04\x12\"\n\tbuildings\x18\x04 \x03(\x0b\x32\x0f.synthpop.Point\",\n\x05Point\x12\x11\n\tlongitude\x18\x01 \x01(\x02\x12\x10\n\x08latitude\x18\x02 \x01(\x02\"\xf4\x01\n\x06Person\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x11\n\thousehold\x18\x02 \x01(\x04\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x10\n\x08orig_pid\x18\x04 \x01(\x03\x12\x0f\n\x07sic1d07\x18\x05 \x01(\x04\x12\x11\n\tage_years\x18\x06 \x01(\r\x12 \n\x06health\x18\x07 \x01(\x0b\x32\x10.synthpop.Health\x12#\n\x08time_use\x18\x08 \x01(\x0b\x32\x11.synthpop.TimeUse\x12+\n\x12\x66lows_per_activity\x18\t \x03(\x0b\x32\x0f.synthpop.Flows\"\x87\x01\n\x06Health\x12\"\n\x07obesity\x18\x01 \x01(\x0e\x32\x11.synthpop.Obesity\x12\"\n\x1ahas_cardiovascular_disease\x18\x02 \x01(\x08\x12\x14\n\x0chas_diabetes\x18\x03 \x01(\x08\x12\x1f\n\x17has_high_blood_pressure\x18\x04 \x01(\x08\"\x1b\n\x07TimeUse\x12\x10\n\x08not_home\x18\x01 \x01(\x02\"g\n\x05\x46lows\x12$\n\x08\x61\x63tivity\x18\x01 \x01(\x0e\x32\x12.synthpop.Activity\x12\x1d\n\x05\x66lows\x18\x02 \x03(\x0b\x32\x0e.synthpop.Flow\x12\x19\n\x11\x61\x63tivity_duration\x18\x03 \x01(\x01\"(\n\x04\x46low\x12\x10\n\x08venue_id\x18\x01 \x01(\x04\x12\x0e\n\x06weight\x18\x02 \x01(\x01\"i\n\x05Venue\x12\n\n\x02id\x18\x01 \x01(\x04\x12$\n\x08\x61\x63tivity\x18\x02 \x01(\x0e\x32\x12.synthpop.Activity\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x0b\n\x03urn\x18\x04 \x01(\x04*c\n\x08\x41\x63tivity\x12\n\n\x06RETAIL\x10\x00\x12\x12\n\x0ePRIMARY_SCHOOL\x10\x01\x12\x14\n\x10SECONDARY_SCHOOL\x10\x02\x12\x08\n\x04HOME\x10\x03\x12\x08\n\x04WORK\x10\x04\x12\r\n\tNIGHTCLUB\x10\x05*L\n\x07Obesity\x12\n\n\x06NORMAL\x10\x00\x12\x0e\n\nOVERWEIGHT\x10\x01\x12\x0b\n\x07OBESE_1\x10\x02\x12\x0b\n\x07OBESE_2\x10\x03\x12\x0b\n\x07OBESE_3\x10\x04\x62\x06proto3')
 )
 
 _ACTIVITY = _descriptor.EnumDescriptor(
@@ -56,8 +56,8 @@ _ACTIVITY = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1345,
-  serialized_end=1444,
+  serialized_start=1268,
+  serialized_end=1367,
 )
 _sym_db.RegisterEnumDescriptor(_ACTIVITY)
 
@@ -91,8 +91,8 @@ _OBESITY = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1446,
-  serialized_end=1522,
+  serialized_start=1369,
+  serialized_end=1445,
 )
 _sym_db.RegisterEnumDescriptor(_OBESITY)
 
@@ -144,45 +144,8 @@ _POPULATION_VENUESPERACTIVITYENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=254,
-  serialized_end=331,
-)
-
-_POPULATION_INFOPERMSOAENTRY = _descriptor.Descriptor(
-  name='InfoPerMsoaEntry',
-  full_name='synthpop.Population.InfoPerMsoaEntry',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='key', full_name='synthpop.Population.InfoPerMsoaEntry.key', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-    _descriptor.FieldDescriptor(
-      name='value', full_name='synthpop.Population.InfoPerMsoaEntry.value', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=_b('8\001'),
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=333,
-  serialized_end=406,
+  serialized_start=238,
+  serialized_end=315,
 )
 
 _POPULATION = _descriptor.Descriptor(
@@ -223,7 +186,7 @@ _POPULATION = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[_POPULATION_VENUESPERACTIVITYENTRY, _POPULATION_INFOPERMSOAENTRY, ],
+  nested_types=[_POPULATION_VENUESPERACTIVITYENTRY, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -233,7 +196,7 @@ _POPULATION = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=29,
-  serialized_end=406,
+  serialized_end=315,
 )
 
 
@@ -253,8 +216,8 @@ _HOUSEHOLD = _descriptor.Descriptor(
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='msoa', full_name='synthpop.Household.msoa', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=_b("").decode('utf-8'),
+      number=2, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -284,8 +247,8 @@ _HOUSEHOLD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=408,
-  serialized_end=480,
+  serialized_start=317,
+  serialized_end=389,
 )
 
 
@@ -315,8 +278,8 @@ _VENUELIST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=482,
-  serialized_end=526,
+  serialized_start=391,
+  serialized_end=435,
 )
 
 
@@ -328,22 +291,29 @@ _INFOPERMSOA = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='shape', full_name='synthpop.InfoPerMSOA.shape', index=0,
-      number=1, type=11, cpp_type=10, label=3,
+      name='name', full_name='synthpop.InfoPerMSOA.name', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='shape', full_name='synthpop.InfoPerMSOA.shape', index=1,
+      number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='population', full_name='synthpop.InfoPerMSOA.population', index=1,
-      number=2, type=4, cpp_type=4, label=1,
+      name='population', full_name='synthpop.InfoPerMSOA.population', index=2,
+      number=3, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='buildings', full_name='synthpop.InfoPerMSOA.buildings', index=2,
-      number=3, type=11, cpp_type=10, label=3,
+      name='buildings', full_name='synthpop.InfoPerMSOA.buildings', index=3,
+      number=4, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -360,8 +330,8 @@ _INFOPERMSOA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=528,
-  serialized_end=629,
+  serialized_start=437,
+  serialized_end=552,
 )
 
 
@@ -398,8 +368,8 @@ _POINT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=631,
-  serialized_end=675,
+  serialized_start=554,
+  serialized_end=598,
 )
 
 
@@ -485,8 +455,8 @@ _PERSON = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=678,
-  serialized_end=922,
+  serialized_start=601,
+  serialized_end=845,
 )
 
 
@@ -537,8 +507,8 @@ _HEALTH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=925,
-  serialized_end=1060,
+  serialized_start=848,
+  serialized_end=983,
 )
 
 
@@ -568,8 +538,8 @@ _TIMEUSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1062,
-  serialized_end=1089,
+  serialized_start=985,
+  serialized_end=1012,
 )
 
 
@@ -613,8 +583,8 @@ _FLOWS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1091,
-  serialized_end=1194,
+  serialized_start=1014,
+  serialized_end=1117,
 )
 
 
@@ -651,8 +621,8 @@ _FLOW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1196,
-  serialized_end=1236,
+  serialized_start=1119,
+  serialized_end=1159,
 )
 
 
@@ -703,18 +673,16 @@ _VENUE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1238,
-  serialized_end=1343,
+  serialized_start=1161,
+  serialized_end=1266,
 )
 
 _POPULATION_VENUESPERACTIVITYENTRY.fields_by_name['value'].message_type = _VENUELIST
 _POPULATION_VENUESPERACTIVITYENTRY.containing_type = _POPULATION
-_POPULATION_INFOPERMSOAENTRY.fields_by_name['value'].message_type = _INFOPERMSOA
-_POPULATION_INFOPERMSOAENTRY.containing_type = _POPULATION
 _POPULATION.fields_by_name['households'].message_type = _HOUSEHOLD
 _POPULATION.fields_by_name['people'].message_type = _PERSON
 _POPULATION.fields_by_name['venues_per_activity'].message_type = _POPULATION_VENUESPERACTIVITYENTRY
-_POPULATION.fields_by_name['info_per_msoa'].message_type = _POPULATION_INFOPERMSOAENTRY
+_POPULATION.fields_by_name['info_per_msoa'].message_type = _INFOPERMSOA
 _VENUELIST.fields_by_name['venues'].message_type = _VENUE
 _INFOPERMSOA.fields_by_name['shape'].message_type = _POINT
 _INFOPERMSOA.fields_by_name['buildings'].message_type = _POINT
@@ -750,20 +718,12 @@ Population = _reflection.GeneratedProtocolMessageType('Population', (_message.Me
     # @@protoc_insertion_point(class_scope:synthpop.Population.VenuesPerActivityEntry)
     ))
   ,
-
-  InfoPerMsoaEntry = _reflection.GeneratedProtocolMessageType('InfoPerMsoaEntry', (_message.Message,), dict(
-    DESCRIPTOR = _POPULATION_INFOPERMSOAENTRY,
-    __module__ = 'synthpop_pb2'
-    # @@protoc_insertion_point(class_scope:synthpop.Population.InfoPerMsoaEntry)
-    ))
-  ,
   DESCRIPTOR = _POPULATION,
   __module__ = 'synthpop_pb2'
   # @@protoc_insertion_point(class_scope:synthpop.Population)
   ))
 _sym_db.RegisterMessage(Population)
 _sym_db.RegisterMessage(Population.VenuesPerActivityEntry)
-_sym_db.RegisterMessage(Population.InfoPerMsoaEntry)
 
 Household = _reflection.GeneratedProtocolMessageType('Household', (_message.Message,), dict(
   DESCRIPTOR = _HOUSEHOLD,
@@ -837,5 +797,4 @@ _sym_db.RegisterMessage(Venue)
 
 
 _POPULATION_VENUESPERACTIVITYENTRY._options = None
-_POPULATION_INFOPERMSOAENTRY._options = None
 # @@protoc_insertion_point(module_scope)
