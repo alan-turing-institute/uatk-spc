@@ -225,11 +225,6 @@ impl JobMarket {
         businesses: &Businesses,
         pb: ProgressBar,
     ) -> Vec<(PersonID, VenueID)> {
-        /*if let Some(sic) = self.sic {
-            info!("Assigning workplaces for SIC {sic}");
-        } else {
-            info!("Assigning workplaces for everyone, ignoring SIC");
-        }*/
         assert_eq!(self.jobs.len(), self.workers.len());
 
         let mut choices: Vec<(VenueID, usize)> = self.to_job_choices();

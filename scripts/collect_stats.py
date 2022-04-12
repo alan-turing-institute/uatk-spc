@@ -9,7 +9,7 @@ from markdownTable import markdownTable
 
 rows = []
 for study_area in listdir("config"):
-    if study_area == "national":
+    if study_area == "national.csv":
         continue
     # Assume `cargo build --release` has happened
     subprocess.run(["./target/release/spc", "config/" + study_area, "--output-stats"])
