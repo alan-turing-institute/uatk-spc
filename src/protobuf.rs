@@ -15,7 +15,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
     for household in &input.households {
         output.households.push(pb::Household {
             id: household.id.0.try_into()?,
-            msoa: household.msoa.0.clone(),
+            msoa: input.info_per_msoa[household.msoa].name.0.clone(),
             orig_hid: household.orig_hid.try_into()?,
             members: household
                 .members
@@ -70,9 +70,9 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
         output.venues_per_activity.insert(activity as i32, list);
     }
 
-    for (msoa, info) in &input.info_per_msoa {
+    for info in &input.info_per_msoa {
         output.info_per_msoa.insert(
-            msoa.0.clone(),
+            info.name.0.clone(),
             pb::InfoPerMsoa {
                 shape: info.shape.coords_iter().map(convert_coordinate).collect(),
                 population: info.population.try_into()?,

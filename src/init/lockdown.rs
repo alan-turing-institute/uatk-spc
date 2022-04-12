@@ -22,7 +22,7 @@ pub fn calculate_lockdown_per_day(
                 county,
                 msoas
                     .iter()
-                    .map(|msoa| population.info_per_msoa[msoa].population)
+                    .map(|msoa| population.info_per_msoa[population.msoas[msoa]].population)
                     .sum(),
             )
         })

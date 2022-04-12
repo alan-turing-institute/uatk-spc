@@ -1,7 +1,7 @@
 //! QUANT is http://quant.casa.ucl.ac.uk. RAMP uses it to get a probability distribution of how
 //! likely people are to travel from their home MSOA to different venues for various activities.
 
-use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::collections::{BTreeMap, HashMap};
 use std::path::Path;
 use std::process::Command;
 
@@ -16,7 +16,7 @@ use serde::Deserialize;
 use typed_index_collections::TiVec;
 
 use crate::utilities::progress_count_with_msg;
-use crate::{Activity, Venue, VenueID, MSOA};
+use crate::{Activity, Venue, VenueID, MSOA, MSOAID};
 
 pub enum Threshold {
     /// Take the top values until we hit a sum
@@ -31,9 +31,9 @@ pub enum Threshold {
 /// different venues for that activity.
 pub fn get_flows(
     activity: Activity,
-    msoas: &BTreeSet<MSOA>,
+    msoas: &BTreeMap<MSOA, MSOAID>,
     threshold: Threshold,
-) -> Result<BTreeMap<MSOA, Vec<(VenueID, f64)>>> {
+) -> Result<TiVec<MSOAID, Vec<(VenueID, f64)>>> {
     // Build a mapping from MSOA to zonei
     let mut msoa_to_zonei: HashMap<MSOA, usize> = HashMap::new();
     let (population_csv, prob_sij) = match activity {
@@ -79,8 +79,9 @@ pub fn get_flows(
     };
 
     let pb = progress_count_with_msg(msoas.len());
-    let mut result = BTreeMap::new();
-    for msoa in msoas {
+    let mut result: TiVec<MSOAID, Vec<(VenueID, f64)>> =
+        std::iter::repeat_with(Vec::new).take(msoas.len()).collect();
+    for (msoa, msoa_id) in msoas {
         // TODO The Python code defaults to 0 when the MSOA is missing; this seems problematic?
         let zonei = msoa_to_zonei.get(msoa).cloned().unwrap_or(0);
         pb.set_message(format!(
@@ -99,7 +100,7 @@ pub fn get_flows(
         };
 
         // There are lots of venues! Just keep some of them
-        result.insert(msoa.clone(), normalize(threshold.apply(pr_visit_venue)));
+        result[*msoa_id] = normalize(threshold.apply(pr_visit_venue));
     }
     Ok(result)
 }

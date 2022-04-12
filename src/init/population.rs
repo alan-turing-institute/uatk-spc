@@ -13,47 +13,94 @@ use super::quant::{get_flows, load_venues, Threshold};
 use crate::utilities::{
     memory_usage, print_count, progress_count, progress_count_with_msg, progress_file_with_msg,
 };
-use crate::{Activity, Household, Input, Obesity, Person, PersonID, Population, VenueID, MSOA};
+use crate::{
+    Activity, Household, Input, Obesity, Person, PersonID, Population, VenueID, MSOA, MSOAID,
+};
 
-/// Create a population from some time-use files, only keeping people in the specified MSOAs. Also
-/// returns the duration for the commuting calculation.
-pub fn create(
-    input: Input,
-    tus_files: Vec<String>,
-    rng: &mut StdRng,
-) -> Result<(Population, Duration)> {
-    let _s = info_span!("creating population").entered();
+impl Population {
+    /// Create a population from some time-use files, only keeping people in the specified MSOAs. Also
+    /// returns the duration for the commuting calculation.
+    ///
+    /// This doesn't download or extract raw data files if they already exist.
+    pub async fn create(input: Input, rng: &mut StdRng) -> Result<(Population, Duration)> {
+        let raw_results = super::raw_data::grab_raw_data(&input).await?;
 
-    let mut population = Population {
-        msoas: input.msoas.clone(),
-        households: TiVec::new(),
-        people: TiVec::new(),
-        venues_per_activity: EnumMap::default(),
-        info_per_msoa: BTreeMap::new(),
-        lockdown_per_day: Vec::new(),
-    };
-    read_individual_time_use_and_health_data(&mut population, tus_files)?;
+        let _s = info_span!("creating population").entered();
 
-    // The order doesn't matter for these steps
-    let commuting_duration = if input.enable_commuting {
-        let now = Instant::now();
-        super::commuting::create_commuting_flows(&mut population, rng)?;
-        Instant::now() - now
-    } else {
-        Duration::ZERO
-    };
-    setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;
-    setup_venue_flows(Activity::Nightclub, Threshold::TopN(10), &mut population)?;
-    setup_venue_flows(Activity::PrimarySchool, Threshold::TopN(5), &mut population)?;
-    setup_venue_flows(
-        Activity::SecondarySchool,
-        Threshold::TopN(5),
-        &mut population,
-    )?;
+        let mut population = Population {
+            msoas: input
+                .msoas
+                .into_iter()
+                .enumerate()
+                .map(|(idx, msoa)| (msoa, MSOAID(idx)))
+                .collect(),
+            households: TiVec::new(),
+            people: TiVec::new(),
+            venues_per_activity: EnumMap::default(),
+            info_per_msoa: TiVec::new(),
+            lockdown_per_day: Vec::new(),
+        };
 
-    // TODO The Python implementation has lots of commented stuff, then some rounding
+        // Fill this out early, so we can map between MSOA and MSOAID
+        population.info_per_msoa =
+            super::msoas::get_info_per_msoa(&population.msoas, raw_results.osm_directories)?;
 
-    Ok((population, commuting_duration))
+        read_individual_time_use_and_health_data(&mut population, raw_results.tus_files)?;
+
+        // The order doesn't matter for these steps
+        let commuting_duration = if input.enable_commuting {
+            let now = Instant::now();
+            super::commuting::create_commuting_flows(&mut population, rng)?;
+            Instant::now() - now
+        } else {
+            Duration::ZERO
+        };
+        setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;
+        setup_venue_flows(Activity::Nightclub, Threshold::TopN(10), &mut population)?;
+        setup_venue_flows(Activity::PrimarySchool, Threshold::TopN(5), &mut population)?;
+        setup_venue_flows(
+            Activity::SecondarySchool,
+            Threshold::TopN(5),
+            &mut population,
+        )?;
+
+        // TODO The Python implementation has lots of commented stuff, then some rounding
+
+        population.lockdown_per_day =
+            super::lockdown::calculate_lockdown_per_day(raw_results.msoas_per_county, &population)?;
+        population.remove_unused_venues();
+        Ok((population, commuting_duration))
+    }
+
+    // Remove venues where nobody goes (by zeroing out the location)
+    //
+    // TODO Should we do this earlier and only keep venues matching our input MSOAs (the same as
+    // where people live?)
+    // - Since we take the top N flows, it could change the results
+    // - Do we have to check if the venue's location is physically inside an MSOA polygon, or do we
+    //  use the *Population.csv files somehow?
+    //
+    //  TODO Actually remove the venues from the output entirely, and compact VenueIDs.
+    fn remove_unused_venues(&mut self) {
+        let mut visited_venues: BTreeSet<(Activity, VenueID)> = BTreeSet::new();
+        for person in &self.people {
+            for (activity, flows) in &person.flows_per_activity {
+                for (venue, _) in flows {
+                    visited_venues.insert((activity, *venue));
+                }
+            }
+        }
+        let mut unvisited_venues = 0;
+        for (activity, venues) in &mut self.venues_per_activity {
+            for (id, venue) in venues.iter_mut_enumerated() {
+                if !visited_venues.contains(&(activity, id)) {
+                    unvisited_venues += 1;
+                    venue.location = geo::Point::new(0.0, 0.0);
+                }
+            }
+        }
+        info!("Removed {} unvisited venues", print_count(unvisited_venues));
+    }
 }
 
 fn read_individual_time_use_and_health_data(
@@ -67,7 +114,7 @@ fn read_individual_time_use_and_health_data(
     //
     // If there are multiple time use files, we assume this grouping won't have any overlaps --
     // MSOAs shouldn't be the same between different files.
-    let mut people_per_household: BTreeMap<(MSOA, isize), Vec<TuPerson>> = BTreeMap::new();
+    let mut people_per_household: BTreeMap<(MSOAID, isize), Vec<TuPerson>> = BTreeMap::new();
     let mut no_household = 0;
 
     // TODO Two-level progress bar. MultiProgress seems to demand two threads and calling join() :(
@@ -93,14 +140,12 @@ fn read_individual_time_use_and_health_data(
             }
 
             // Only keep people in the input set of MSOAs
-            if !population.msoas.contains(&rec.msoa) {
-                continue;
+            if let Some(msoa) = population.msoas.get(&rec.msoa) {
+                people_per_household
+                    .entry((*msoa, rec.hid))
+                    .or_insert_with(Vec::new)
+                    .push(rec);
             }
-
-            people_per_household
-                .entry((rec.msoa.clone(), rec.hid))
-                .or_insert_with(Vec::new)
-                .push(rec);
         }
     }
 
@@ -147,16 +192,14 @@ fn read_individual_time_use_and_health_data(
 
     let mut actual_msoas = BTreeSet::new();
     for h in &population.households {
-        actual_msoas.insert(h.msoa.clone());
+        actual_msoas.insert(population.info_per_msoa[h.msoa].name.clone());
     }
-    if actual_msoas != population.msoas {
+    let expected_msoas = population.msoas.keys().cloned().collect::<BTreeSet<_>>();
+    if actual_msoas != expected_msoas {
         // See https://github.com/dabreegster/spc/issues/7
         error!(
             "Some input MSOAs had no people: {:?}",
-            population
-                .msoas
-                .difference(&actual_msoas)
-                .collect::<Vec<_>>()
+            expected_msoas.difference(&actual_msoas).collect::<Vec<_>>()
         );
     }
 
@@ -316,7 +359,7 @@ fn setup_venue_flows(
     );
 
     // Per MSOA, a list of venues and the probability of going from the MSOA to that venue
-    let flows_per_msoa: BTreeMap<MSOA, Vec<(VenueID, f64)>> =
+    let flows_per_msoa: TiVec<MSOAID, Vec<(VenueID, f64)>> =
         get_flows(activity, &population.msoas, threshold)?;
 
     // Now let's assign these flows to the people. Near as I can tell, this just copies the flows
@@ -330,14 +373,17 @@ fn setup_venue_flows(
             pb.set_message(memory_usage());
         }
 
-        let msoa = &population.households[person.household].msoa;
-        if let Some(flows) = flows_per_msoa.get(msoa) {
-            // TODO On the national run, we run out of memory around here.
-            person.flows_per_activity[activity] = flows.clone();
-        } else {
+        let msoa = population.households[person.household].msoa;
+        let flows = flows_per_msoa[msoa].clone();
+        if flows.is_empty() {
             // I've never observed this, so crash if it ever happens
-            panic!("No flows for {:?} in {}", activity, msoa.0);
+            panic!(
+                "No flows for {:?} in {}",
+                activity, population.info_per_msoa[msoa].name.0
+            );
         }
+        // TODO On the national run, we run out of memory around here.
+        person.flows_per_activity[activity] = flows;
     }
 
     Ok(())

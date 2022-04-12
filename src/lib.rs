@@ -34,9 +34,6 @@ static ALLOCATOR: Cap<std::alloc::System> = Cap::new(std::alloc::System, usize::
 /// the simulation.
 #[derive(Serialize, Deserialize)]
 pub struct Population {
-    /// The study area covers these MSOAs
-    pub msoas: BTreeSet<MSOA>,
-
     /// Only VenueIDs for `Activity::Home` index into this
     pub households: TiVec<VenueID, Household>,
     pub people: TiVec<PersonID, Person>,
@@ -45,7 +42,9 @@ pub struct Population {
     /// list. This is not filled out for `Activity::Home`; see `households` for that.
     pub venues_per_activity: EnumMap<Activity, TiVec<VenueID, Venue>>,
 
-    pub info_per_msoa: BTreeMap<MSOA, InfoPerMSOA>,
+    /// The study area covers these MSOAs. Map the strings to an opaque ID.
+    pub msoas: BTreeMap<MSOA, MSOAID>,
+    pub info_per_msoa: TiVec<MSOAID, InfoPerMSOA>,
     /// A number in [0, 1] for each day. 0 means all time just spent at home
     pub lockdown_per_day: Vec<f32>,
 }
@@ -79,6 +78,8 @@ impl MSOA {
 
 #[derive(Serialize, Deserialize)]
 pub struct InfoPerMSOA {
+    pub id: MSOAID,
+    pub name: MSOA,
     pub shape: MultiPolygon<f32>,
     pub population: usize,
     /// All building centroids within this MSOA.
@@ -93,7 +94,7 @@ pub struct InfoPerMSOA {
 #[derive(Serialize, Deserialize)]
 pub struct Household {
     pub id: VenueID,
-    pub msoa: MSOA,
+    pub msoa: MSOAID,
     /// An ID from the original data, kept around for debugging
     pub orig_hid: isize,
     pub members: Vec<PersonID>,
@@ -212,6 +213,10 @@ pub enum Obesity {
 
 // These are unsigned integers, used to index into different vectors. They're wrapped in a type, so
 // we never accidentally confuse a VenueID with a PersonID.
+
+// An index into info_per_msoa. Deliberately not implementing Display
+#[derive(Clone, Copy, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into, Serialize, Deserialize)]
+pub struct MSOAID(pub usize);
 
 #[derive(
     Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into, Serialize, Deserialize,

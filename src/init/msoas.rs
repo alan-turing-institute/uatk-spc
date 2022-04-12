@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, BTreeSet};
+use std::collections::BTreeMap;
 use std::io::{BufReader, Write};
 
 use anyhow::Result;
@@ -7,15 +7,16 @@ use geo::prelude::{BoundingRect, Centroid, Contains};
 use geo::{MultiPolygon, Point};
 use proj::Proj;
 use rstar::{RTree, AABB};
+use typed_index_collections::TiVec;
 
 use crate::utilities::{print_count, progress_count};
-use crate::{InfoPerMSOA, MSOA};
+use crate::{InfoPerMSOA, MSOA, MSOAID};
 
 #[instrument(skip_all)]
 pub fn get_info_per_msoa(
-    msoas: &BTreeSet<MSOA>,
+    msoas: &BTreeMap<MSOA, MSOAID>,
     osm_directories: Vec<String>,
-) -> Result<BTreeMap<MSOA, InfoPerMSOA>> {
+) -> Result<TiVec<MSOAID, InfoPerMSOA>> {
     info!("Loading MSOA shapes");
     let mut info_per_msoa = load_msoa_shapes(msoas)?;
     if false {
@@ -34,7 +35,7 @@ pub fn get_info_per_msoa(
     Ok(info_per_msoa)
 }
 
-fn load_msoa_shapes(msoas: &BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA>> {
+fn load_msoa_shapes(msoas: &BTreeMap<MSOA, MSOAID>) -> Result<TiVec<MSOAID, InfoPerMSOA>> {
     // We can't use from_path, because the file isn't named .shp.dbf as expected
     let shape_reader =
         shapefile::ShapeReader::from_path("data/raw_data/nationaldata/MSOAS_shp/msoas.shp")?;
@@ -50,31 +51,33 @@ fn load_msoa_shapes(msoas: &BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA
     let reproject = Proj::new_known_crs("EPSG:27700", "EPSG:4326", None)
         .ok_or(anyhow!("Couldn't set up CRS projection"))?;
 
-    let mut results = BTreeMap::new();
+    let mut results = TiVec::new();
     for pair in reader.iter_shapes_and_records_as::<shapefile::Polygon, shapefile::dbase::Record>()
     {
         let (shape, record) = pair?;
         if let Some(shapefile::dbase::FieldValue::Character(Some(msoa))) = record.get("MSOA11CD") {
             let msoa = MSOA(msoa.clone());
-            if !msoas.contains(&msoa) {
-                continue;
-            }
-            if let Some(shapefile::dbase::FieldValue::Numeric(Some(population))) = record.get("pop")
-            {
-                let geo_polygon: MultiPolygon<f64> = shape.try_into()?;
-                let shape: MultiPolygon<f32> = geo_polygon.map_coords(|&(x, y)| {
-                    // TODO Error handling inside here is weird
-                    let pt = reproject.convert((x, y)).unwrap();
-                    (pt.x() as f32, pt.y() as f32)
-                });
-                results.insert(
-                    msoa,
-                    InfoPerMSOA {
-                        shape,
-                        population: *population as usize,
-                        buildings: Vec::new(),
-                    },
-                );
+            if let Some(id) = msoas.get(&msoa) {
+                if let Some(shapefile::dbase::FieldValue::Numeric(Some(population))) =
+                    record.get("pop")
+                {
+                    let geo_polygon: MultiPolygon<f64> = shape.try_into()?;
+                    let shape: MultiPolygon<f32> = geo_polygon.map_coords(|&(x, y)| {
+                        // TODO Error handling inside here is weird
+                        let pt = reproject.convert((x, y)).unwrap();
+                        (pt.x() as f32, pt.y() as f32)
+                    });
+                    results.insert(
+                        *id,
+                        InfoPerMSOA {
+                            id: *id,
+                            name: msoa,
+                            shape,
+                            population: *population as usize,
+                            buildings: Vec::new(),
+                        },
+                    );
+                }
             }
         }
     }
@@ -84,12 +87,12 @@ fn load_msoa_shapes(msoas: &BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA
 
 // TODO If this is ever removed, cleanup dependencies on geojson and serde_json
 // TODO Also, there should be a less verbose way to do this sort of thing
-fn dump_msoa_shapes(msoas: &BTreeMap<MSOA, InfoPerMSOA>) -> Result<()> {
+fn dump_msoa_shapes(msoas: &TiVec<MSOAID, InfoPerMSOA>) -> Result<()> {
     let geom_collection: geo::GeometryCollection<f32> =
-        msoas.values().map(|info| info.shape.clone()).collect();
+        msoas.iter().map(|info| info.shape.clone()).collect();
     let mut feature_collection = geojson::FeatureCollection::from(&geom_collection);
-    for (feature, msoa) in feature_collection.features.iter_mut().zip(msoas.keys()) {
-        feature.set_property("msoa11cd", msoa.0.clone());
+    for (feature, msoa) in feature_collection.features.iter_mut().zip(msoas.iter()) {
+        feature.set_property("msoa11cd", msoa.name.0.clone());
     }
     let gj = geojson::GeoJson::from(feature_collection);
     let mut file = fs_err::File::create("msoas.geojson")?;
@@ -114,13 +117,13 @@ fn load_building_centroids(path: &str) -> Result<Vec<Point<f32>>> {
     Ok(results)
 }
 
-fn match_points_to_shapes(points: Vec<Point<f32>>, msoas: &mut BTreeMap<MSOA, InfoPerMSOA>) {
+fn match_points_to_shapes(points: Vec<Point<f32>>, msoas: &mut TiVec<MSOAID, InfoPerMSOA>) {
     let polygons = msoas
         .iter()
-        .map(|(k, v)| (k.clone(), v.shape.clone()))
+        .map(|msoa| (msoa.id, msoa.shape.clone()))
         .collect::<BTreeMap<_, _>>();
-    for (key, points) in points_per_polygon(points, &polygons) {
-        msoas.get_mut(&key).unwrap().buildings = points;
+    for (id, points) in points_per_polygon(points, &polygons) {
+        msoas[id].buildings = points;
     }
 }
 

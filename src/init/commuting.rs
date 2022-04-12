@@ -23,7 +23,11 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
     for person in &population.people {
         if person.duration_per_activity[Activity::Work] > 0.0 {
             all_workers.push(person.id);
-            msoas.insert(population.households[person.household].msoa.clone());
+            msoas.insert(
+                population.info_per_msoa[population.households[person.household].msoa]
+                    .name
+                    .clone(),
+            );
         }
     }
 
