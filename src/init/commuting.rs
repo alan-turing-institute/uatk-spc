@@ -27,36 +27,12 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
         }
     }
 
-    let mut businesses = Businesses::load(msoas)?;
+    let businesses = Businesses::load(msoas)?;
     let markets = JobMarket::create(population, &businesses, &all_workers, rng);
 
     info!("Matching {} job markets", markets.len());
     for market in markets {
-        if let Some(sic) = market.sic {
-            info!("Assigning workplaces for SIC {sic}");
-        } else {
-            info!("Assigning workplaces for everyone, ignoring SIC");
-        }
-        assert_eq!(market.jobs.len(), market.workers.len());
-
-        let mut choices: Vec<(BusinessID, usize)> = market.to_job_choices();
-
-        let pb = progress_count(market.jobs.len());
-        // TODO Slow. Cache Haversine?
-        for person in market.workers {
-            pb.inc(1);
-            let person_location = population.people[person].location;
-            let pair = choices
-                .choose_weighted_mut(rng, |(id, available_jobs)| {
-                    let dist = person_location.haversine_distance(&businesses.locations[id]);
-                    (*available_jobs as f32) / dist.powi(2)
-                })
-                .unwrap();
-
-            // This job is gone
-            pair.1 -= 1;
-            let venue_id = businesses.get_venue(pair.0);
-
+        for (person, venue_id) in market.resolve(&population, &businesses, rng) {
             // Assign the one and only workplace
             population.people[person].flows_per_activity[Activity::Work] = vec![(venue_id, 1.0)];
         }
@@ -64,6 +40,7 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
 
     // Create venues
     population.venues_per_activity[Activity::Work] = businesses.venues;
+    // TODO Filter out unused venues if needed
 
     Ok(())
 }
@@ -80,27 +57,17 @@ struct Row {
     sic1d07: usize,
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
-struct BusinessID(u32);
-
 struct Businesses {
-    list_per_sic: HashMap<usize, Vec<BusinessID>>,
-    locations: HashMap<BusinessID, Point<f32>>,
-    available_jobs: HashMap<BusinessID, usize>,
-
-    // Assign numeric VenueIDs as we decide to use a business.
-    business_to_venue: HashMap<BusinessID, VenueID>,
+    venues_per_sic: HashMap<usize, Vec<VenueID>>,
+    available_jobs: HashMap<VenueID, usize>,
     venues: TiVec<VenueID, Venue>,
 }
 
 impl Businesses {
     fn load(msoas: BTreeSet<MSOA>) -> Result<Businesses> {
         let mut result = Businesses {
-            list_per_sic: HashMap::new(),
-            locations: HashMap::new(),
+            venues_per_sic: HashMap::new(),
             available_jobs: HashMap::new(),
-
-            business_to_venue: HashMap::new(),
             venues: TiVec::new(),
         };
 
@@ -114,15 +81,20 @@ impl Businesses {
         {
             let rec: Row = rec?;
             if msoas.contains(&rec.msoa) {
-                // The CSV has string IDs, but they're not used anywhere else. Use integer IDs,
-                // which're much faster to copy around.
-                let id = BusinessID(result.locations.len().try_into()?);
+                // The CSV has string IDs, but they're not used anywhere else. Immediately create a
+                // venue and use integer IDs, which're much faster to copy around.
+                let id = VenueID(result.venues.len());
                 result
-                    .list_per_sic
+                    .venues_per_sic
                     .entry(rec.sic1d07)
                     .or_insert_with(Vec::new)
                     .push(id);
-                result.locations.insert(id, Point::new(rec.lng, rec.lat));
+                result.venues.push(Venue {
+                    id,
+                    activity: Activity::Work,
+                    location: Point::new(rec.lng, rec.lat),
+                    urn: None,
+                });
                 result.available_jobs.insert(id, rec.size);
                 total_jobs += rec.size;
             }
@@ -130,28 +102,9 @@ impl Businesses {
         info!(
             "{} jobs available among {} businesses",
             print_count(total_jobs),
-            print_count(result.locations.len())
+            print_count(result.venues.len())
         );
         Ok(result)
-    }
-
-    fn get_venue(&mut self, business_id: BusinessID) -> VenueID {
-        // Do the ID lookup, creating new ones as needed
-        match self.business_to_venue.get(&business_id) {
-            Some(id) => *id,
-            None => {
-                let venue_id = VenueID(self.business_to_venue.len());
-                self.business_to_venue.insert(business_id, venue_id);
-                let location = &self.locations[&business_id];
-                self.venues.push(Venue {
-                    id: venue_id,
-                    activity: Activity::Work,
-                    location: *location,
-                    urn: None,
-                });
-                venue_id
-            }
-        }
     }
 }
 
@@ -159,7 +112,7 @@ struct JobMarket {
     sic: Option<usize>,
     // workers and jobs have equal length
     workers: Vec<PersonID>,
-    jobs: Vec<BusinessID>,
+    jobs: Vec<VenueID>,
 }
 
 impl JobMarket {
@@ -177,9 +130,9 @@ impl JobMarket {
 
         // First pair workers and jobs using SIC
         info!("Grouping people by SIC");
-        for (sic, business_list) in &businesses.list_per_sic {
-            let mut jobs: Vec<BusinessID> = Vec::new();
-            for id in business_list {
+        for (sic, venue_list) in &businesses.venues_per_sic {
+            let mut jobs: Vec<VenueID> = Vec::new();
+            for id in venue_list {
                 // Repeat based on how many jobs available there
                 for _ in 0..businesses.available_jobs[id] {
                     jobs.push(*id);
@@ -228,12 +181,14 @@ impl JobMarket {
         }
 
         // Give up on using SIC. Just match up all workers with all jobs.
-        let mut all_jobs: Vec<BusinessID> = Vec::new();
+        let mut all_jobs: Vec<VenueID> = Vec::new();
         for (id, size) in &businesses.available_jobs {
             for _ in 0..*size {
                 all_jobs.push(*id);
             }
         }
+        // TODO I'm not sure this one is correct -- we don't truncate to make sure workers/jobs
+        // match!
         return vec![JobMarket {
             sic: None,
             workers: all_workers.clone(),
@@ -241,11 +196,46 @@ impl JobMarket {
         }];
     }
 
-    fn to_job_choices(&self) -> Vec<(BusinessID, usize)> {
-        let mut counts: BTreeMap<BusinessID, usize> = BTreeMap::new();
+    fn to_job_choices(&self) -> Vec<(VenueID, usize)> {
+        let mut counts: BTreeMap<VenueID, usize> = BTreeMap::new();
         for id in &self.jobs {
             *counts.entry(*id).or_insert(0) += 1;
         }
         counts.into_iter().collect()
+    }
+
+    fn resolve(
+        self,
+        population: &Population,
+        businesses: &Businesses,
+        rng: &mut StdRng,
+    ) -> Vec<(PersonID, VenueID)> {
+        if let Some(sic) = self.sic {
+            info!("Assigning workplaces for SIC {sic}");
+        } else {
+            info!("Assigning workplaces for everyone, ignoring SIC");
+        }
+        assert_eq!(self.jobs.len(), self.workers.len());
+
+        let mut choices: Vec<(VenueID, usize)> = self.to_job_choices();
+
+        let mut output = Vec::new();
+        let pb = progress_count(self.jobs.len());
+        for person in self.workers {
+            pb.inc(1);
+            let person_location = population.people[person].location;
+            let pair = choices
+                .choose_weighted_mut(rng, |(id, available_jobs)| {
+                    let dist = person_location.haversine_distance(&businesses.venues[*id].location);
+                    (*available_jobs as f32) / dist.powi(2)
+                })
+                .unwrap();
+
+            // This job is gone
+            pair.1 -= 1;
+
+            output.push((person, pair.0));
+        }
+        output
     }
 }
