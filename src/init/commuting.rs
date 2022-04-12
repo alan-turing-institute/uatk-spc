@@ -4,8 +4,11 @@ use anyhow::Result;
 use fs_err::File;
 use geo::prelude::HaversineDistance;
 use geo::Point;
+use indicatif::{MultiProgress, ProgressBar};
 use rand::rngs::StdRng;
 use rand::seq::SliceRandom;
+use rand::{RngCore, SeedableRng};
+use rayon::prelude::*;
 use serde::Deserialize;
 use typed_index_collections::TiVec;
 
@@ -31,11 +34,18 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
     let markets = JobMarket::create(population, &businesses, &all_workers, rng);
 
     info!("Matching {} job markets", markets.len());
-    for market in markets {
-        for (person, venue_id) in market.resolve(&population, &businesses, rng) {
-            // Assign the one and only workplace
-            population.people[person].flows_per_activity[Activity::Work] = vec![(venue_id, 1.0)];
-        }
+    let mp = MultiProgress::new();
+
+    let matches: Vec<Vec<(PersonID, VenueID)>> = markets
+        .into_par_iter()
+        .map(|market| {
+            let pb = mp.add(progress_count(market.jobs.len()));
+            market.resolve(&population, &businesses, pb)
+        })
+        .collect();
+    for (person, venue_id) in matches.into_iter().flatten() {
+        // Assign the one and only workplace
+        population.people[person].flows_per_activity[Activity::Work] = vec![(venue_id, 1.0)];
     }
 
     // Create venues
@@ -113,6 +123,8 @@ struct JobMarket {
     // workers and jobs have equal length
     workers: Vec<PersonID>,
     jobs: Vec<VenueID>,
+    // Fork a new RNG per market, to avoid multi-threaded use
+    rng: StdRng,
 }
 
 impl JobMarket {
@@ -162,6 +174,8 @@ impl JobMarket {
                 sic: Some(*sic),
                 workers,
                 jobs,
+                // TODO from_rng consumes the original RNG; why?!
+                rng: StdRng::seed_from_u64(rng.next_u64()),
             });
         }
 
@@ -193,6 +207,7 @@ impl JobMarket {
             sic: None,
             workers: all_workers.clone(),
             jobs: all_jobs,
+            rng: StdRng::from_rng(rng).unwrap(),
         }];
     }
 
@@ -205,27 +220,26 @@ impl JobMarket {
     }
 
     fn resolve(
-        self,
+        mut self,
         population: &Population,
         businesses: &Businesses,
-        rng: &mut StdRng,
+        pb: ProgressBar,
     ) -> Vec<(PersonID, VenueID)> {
-        if let Some(sic) = self.sic {
+        /*if let Some(sic) = self.sic {
             info!("Assigning workplaces for SIC {sic}");
         } else {
             info!("Assigning workplaces for everyone, ignoring SIC");
-        }
+        }*/
         assert_eq!(self.jobs.len(), self.workers.len());
 
         let mut choices: Vec<(VenueID, usize)> = self.to_job_choices();
 
         let mut output = Vec::new();
-        let pb = progress_count(self.jobs.len());
         for person in self.workers {
             pb.inc(1);
             let person_location = population.people[person].location;
             let pair = choices
-                .choose_weighted_mut(rng, |(id, available_jobs)| {
+                .choose_weighted_mut(&mut self.rng, |(id, available_jobs)| {
                     let dist = person_location.haversine_distance(&businesses.venues[*id].location);
                     (*available_jobs as f32) / dist.powi(2)
                 })
