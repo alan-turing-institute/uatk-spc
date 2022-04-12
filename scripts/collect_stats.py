@@ -19,4 +19,5 @@ for study_area in listdir("config"):
 
 # Print as a Markdown table for convenience
 with open("stats.csv") as f:
-    print(markdownTable(rows).getMarkdown())
+    # This still isn't quite Github's format; the +'s are weird
+    print(markdownTable(rows).setParams(row_sep = "markdown", quote = False).getMarkdown())
