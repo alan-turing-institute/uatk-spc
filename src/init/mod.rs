@@ -5,14 +5,17 @@ mod population;
 mod quant;
 mod raw_data;
 
-use std::collections::BTreeSet;
-use std::time::Duration;
+use std::collections::{BTreeMap, BTreeSet};
+use std::time::{Duration, Instant};
 
 use anyhow::Result;
+use enum_map::EnumMap;
 use rand::rngs::StdRng;
+use typed_index_collections::TiVec;
 
 use crate::utilities::print_count;
 use crate::{Activity, Input, Population, VenueID};
+use quant::Threshold;
 pub use raw_data::all_msoas_nationally;
 
 impl Population {
@@ -22,8 +25,44 @@ impl Population {
     /// This doesn't download or extract raw data files if they already exist.
     pub async fn create(input: Input, rng: &mut StdRng) -> Result<(Population, Duration)> {
         let raw_results = raw_data::grab_raw_data(&input).await?;
-        let (mut population, commuting_duration) =
-            population::create(input, raw_results.tus_files, rng)?;
+
+        let _s = info_span!("creating population").entered();
+        let mut population = Population {
+            msoas: input.msoas,
+            households: TiVec::new(),
+            people: TiVec::new(),
+            venues_per_activity: EnumMap::default(),
+            info_per_msoa: BTreeMap::new(),
+            lockdown_per_day: Vec::new(),
+        };
+        population::read_individual_time_use_and_health_data(
+            &mut population,
+            raw_results.tus_files,
+        )?;
+
+        // The order doesn't matter for these steps
+        let commuting_duration = if input.enable_commuting {
+            let now = Instant::now();
+            commuting::create_commuting_flows(&mut population, rng)?;
+            Instant::now() - now
+        } else {
+            Duration::ZERO
+        };
+        population::setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;
+        population::setup_venue_flows(Activity::Nightclub, Threshold::TopN(10), &mut population)?;
+        population::setup_venue_flows(
+            Activity::PrimarySchool,
+            Threshold::TopN(5),
+            &mut population,
+        )?;
+        population::setup_venue_flows(
+            Activity::SecondarySchool,
+            Threshold::TopN(5),
+            &mut population,
+        )?;
+
+        // TODO The Python implementation has lots of commented stuff, then some rounding
+
         population.info_per_msoa =
             msoas::get_info_per_msoa(&population.msoas, raw_results.osm_directories)?;
         population.lockdown_per_day =

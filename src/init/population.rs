@@ -1,62 +1,18 @@
 use std::collections::{BTreeMap, BTreeSet};
-use std::time::{Duration, Instant};
 
 use anyhow::Result;
 use enum_map::EnumMap;
 use fs_err::File;
 use geo::Point;
-use rand::rngs::StdRng;
 use serde::{Deserialize, Deserializer};
-use typed_index_collections::TiVec;
 
 use super::quant::{get_flows, load_venues, Threshold};
 use crate::utilities::{
     memory_usage, print_count, progress_count, progress_count_with_msg, progress_file_with_msg,
 };
-use crate::{Activity, Household, Input, Obesity, Person, PersonID, Population, VenueID, MSOA};
+use crate::{Activity, Household, Obesity, Person, PersonID, Population, VenueID, MSOA};
 
-/// Create a population from some time-use files, only keeping people in the specified MSOAs. Also
-/// returns the duration for the commuting calculation.
-pub fn create(
-    input: Input,
-    tus_files: Vec<String>,
-    rng: &mut StdRng,
-) -> Result<(Population, Duration)> {
-    let _s = info_span!("creating population").entered();
-
-    let mut population = Population {
-        msoas: input.msoas.clone(),
-        households: TiVec::new(),
-        people: TiVec::new(),
-        venues_per_activity: EnumMap::default(),
-        info_per_msoa: BTreeMap::new(),
-        lockdown_per_day: Vec::new(),
-    };
-    read_individual_time_use_and_health_data(&mut population, tus_files)?;
-
-    // The order doesn't matter for these steps
-    let commuting_duration = if input.enable_commuting {
-        let now = Instant::now();
-        super::commuting::create_commuting_flows(&mut population, rng)?;
-        Instant::now() - now
-    } else {
-        Duration::ZERO
-    };
-    setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;
-    setup_venue_flows(Activity::Nightclub, Threshold::TopN(10), &mut population)?;
-    setup_venue_flows(Activity::PrimarySchool, Threshold::TopN(5), &mut population)?;
-    setup_venue_flows(
-        Activity::SecondarySchool,
-        Threshold::TopN(5),
-        &mut population,
-    )?;
-
-    // TODO The Python implementation has lots of commented stuff, then some rounding
-
-    Ok((population, commuting_duration))
-}
-
-fn read_individual_time_use_and_health_data(
+pub fn read_individual_time_use_and_health_data(
     population: &mut Population,
     tus_files: Vec<String>,
 ) -> Result<()> {
@@ -301,7 +257,7 @@ fn pad_durations(durations: &mut EnumMap<Activity, f64>) -> Result<()> {
 }
 
 #[instrument(skip(threshold, population))]
-fn setup_venue_flows(
+pub fn setup_venue_flows(
     activity: Activity,
     threshold: Threshold,
     population: &mut Population,
