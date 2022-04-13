@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='synthpop',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0esynthpop.proto\x12\x08synthpop\"\xf9\x02\n\nPopulation\x12\'\n\nhouseholds\x18\x01 \x03(\x0b\x32\x13.synthpop.Household\x12 \n\x06people\x18\x02 \x03(\x0b\x32\x10.synthpop.Person\x12H\n\x13venues_per_activity\x18\x03 \x03(\x0b\x32+.synthpop.Population.VenuesPerActivityEntry\x12<\n\rinfo_per_msoa\x18\x04 \x03(\x0b\x32%.synthpop.Population.InfoPerMsoaEntry\x1aM\n\x16VenuesPerActivityEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.synthpop.VenueList:\x02\x38\x01\x1aI\n\x10InfoPerMsoaEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12$\n\x05value\x18\x02 \x01(\x0b\x32\x15.synthpop.InfoPerMSOA:\x02\x38\x01\"H\n\tHousehold\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x0c\n\x04msoa\x18\x02 \x01(\t\x12\x10\n\x08orig_hid\x18\x03 \x01(\x03\x12\x0f\n\x07members\x18\x04 \x03(\x04\",\n\tVenueList\x12\x1f\n\x06venues\x18\x01 \x03(\x0b\x32\x0f.synthpop.Venue\"e\n\x0bInfoPerMSOA\x12\x1e\n\x05shape\x18\x01 \x03(\x0b\x32\x0f.synthpop.Point\x12\x12\n\npopulation\x18\x02 \x01(\x04\x12\"\n\tbuildings\x18\x03 \x03(\x0b\x32\x0f.synthpop.Point\",\n\x05Point\x12\x11\n\tlongitude\x18\x01 \x01(\x02\x12\x10\n\x08latitude\x18\x02 \x01(\x02\"\xf4\x01\n\x06Person\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x11\n\thousehold\x18\x02 \x01(\x04\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x10\n\x08orig_pid\x18\x04 \x01(\x03\x12\x0f\n\x07sic1d07\x18\x05 \x01(\x04\x12\x11\n\tage_years\x18\x06 \x01(\r\x12 \n\x06health\x18\x07 \x01(\x0b\x32\x10.synthpop.Health\x12#\n\x08time_use\x18\x08 \x01(\x0b\x32\x11.synthpop.TimeUse\x12+\n\x12\x66lows_per_activity\x18\t \x03(\x0b\x32\x0f.synthpop.Flows\"\x87\x01\n\x06Health\x12\"\n\x07obesity\x18\x01 \x01(\x0e\x32\x11.synthpop.Obesity\x12\"\n\x1ahas_cardiovascular_disease\x18\x02 \x01(\x08\x12\x14\n\x0chas_diabetes\x18\x03 \x01(\x08\x12\x1f\n\x17has_high_blood_pressure\x18\x04 \x01(\x08\"\x1b\n\x07TimeUse\x12\x10\n\x08not_home\x18\x01 \x01(\x02\"g\n\x05\x46lows\x12$\n\x08\x61\x63tivity\x18\x01 \x01(\x0e\x32\x12.synthpop.Activity\x12\x1d\n\x05\x66lows\x18\x02 \x03(\x0b\x32\x0e.synthpop.Flow\x12\x19\n\x11\x61\x63tivity_duration\x18\x03 \x01(\x01\"(\n\x04\x46low\x12\x10\n\x08venue_id\x18\x01 \x01(\x04\x12\x0e\n\x06weight\x18\x02 \x01(\x01\"i\n\x05Venue\x12\n\n\x02id\x18\x01 \x01(\x04\x12$\n\x08\x61\x63tivity\x18\x02 \x01(\x0e\x32\x12.synthpop.Activity\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x0b\n\x03urn\x18\x04 \x01(\x04*c\n\x08\x41\x63tivity\x12\n\n\x06RETAIL\x10\x00\x12\x12\n\x0ePRIMARY_SCHOOL\x10\x01\x12\x14\n\x10SECONDARY_SCHOOL\x10\x02\x12\x08\n\x04HOME\x10\x03\x12\x08\n\x04WORK\x10\x04\x12\r\n\tNIGHTCLUB\x10\x05*L\n\x07Obesity\x12\n\n\x06NORMAL\x10\x00\x12\x0e\n\nOVERWEIGHT\x10\x01\x12\x0b\n\x07OBESE_1\x10\x02\x12\x0b\n\x07OBESE_2\x10\x03\x12\x0b\n\x07OBESE_3\x10\x04\x62\x06proto3')
+  serialized_pb=_b('\n\x0esynthpop.proto\x12\x08synthpop\"\xf9\x02\n\nPopulation\x12\'\n\nhouseholds\x18\x01 \x03(\x0b\x32\x13.synthpop.Household\x12 \n\x06people\x18\x02 \x03(\x0b\x32\x10.synthpop.Person\x12H\n\x13venues_per_activity\x18\x03 \x03(\x0b\x32+.synthpop.Population.VenuesPerActivityEntry\x12<\n\rinfo_per_msoa\x18\x04 \x03(\x0b\x32%.synthpop.Population.InfoPerMsoaEntry\x1aM\n\x16VenuesPerActivityEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.synthpop.VenueList:\x02\x38\x01\x1aI\n\x10InfoPerMsoaEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12$\n\x05value\x18\x02 \x01(\x0b\x32\x15.synthpop.InfoPerMSOA:\x02\x38\x01\"H\n\tHousehold\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x0c\n\x04msoa\x18\x02 \x01(\t\x12\x10\n\x08orig_hid\x18\x03 \x01(\x03\x12\x0f\n\x07members\x18\x04 \x03(\x04\",\n\tVenueList\x12\x1f\n\x06venues\x18\x01 \x03(\x0b\x32\x0f.synthpop.Venue\"e\n\x0bInfoPerMSOA\x12\x1e\n\x05shape\x18\x01 \x03(\x0b\x32\x0f.synthpop.Point\x12\x12\n\npopulation\x18\x02 \x01(\x04\x12\"\n\tbuildings\x18\x03 \x03(\x0b\x32\x0f.synthpop.Point\",\n\x05Point\x12\x11\n\tlongitude\x18\x01 \x01(\x02\x12\x10\n\x08latitude\x18\x02 \x01(\x02\"\xf4\x01\n\x06Person\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x11\n\thousehold\x18\x02 \x01(\x04\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x10\n\x08orig_pid\x18\x04 \x01(\x03\x12\x0f\n\x07sic1d07\x18\x05 \x01(\x04\x12\x11\n\tage_years\x18\x06 \x01(\r\x12 \n\x06health\x18\x07 \x01(\x0b\x32\x10.synthpop.Health\x12#\n\x08time_use\x18\x08 \x01(\x0b\x32\x11.synthpop.TimeUse\x12+\n\x12\x66lows_per_activity\x18\t \x03(\x0b\x32\x0f.synthpop.Flows\"\x7f\n\x06Health\x12\x1a\n\x03\x62mi\x18\x01 \x01(\x0e\x32\r.synthpop.BMI\x12\"\n\x1ahas_cardiovascular_disease\x18\x02 \x01(\x08\x12\x14\n\x0chas_diabetes\x18\x03 \x01(\x08\x12\x1f\n\x17has_high_blood_pressure\x18\x04 \x01(\x08\"\x1b\n\x07TimeUse\x12\x10\n\x08not_home\x18\x01 \x01(\x02\"g\n\x05\x46lows\x12$\n\x08\x61\x63tivity\x18\x01 \x01(\x0e\x32\x12.synthpop.Activity\x12\x1d\n\x05\x66lows\x18\x02 \x03(\x0b\x32\x0e.synthpop.Flow\x12\x19\n\x11\x61\x63tivity_duration\x18\x03 \x01(\x01\"(\n\x04\x46low\x12\x10\n\x08venue_id\x18\x01 \x01(\x04\x12\x0e\n\x06weight\x18\x02 \x01(\x01\"i\n\x05Venue\x12\n\n\x02id\x18\x01 \x01(\x04\x12$\n\x08\x61\x63tivity\x18\x02 \x01(\x0e\x32\x12.synthpop.Activity\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x0b\n\x03urn\x18\x04 \x01(\x04*c\n\x08\x41\x63tivity\x12\n\n\x06RETAIL\x10\x00\x12\x12\n\x0ePRIMARY_SCHOOL\x10\x01\x12\x14\n\x10SECONDARY_SCHOOL\x10\x02\x12\x08\n\x04HOME\x10\x03\x12\x08\n\x04WORK\x10\x04\x12\r\n\tNIGHTCLUB\x10\x05*m\n\x03\x42MI\x12\x12\n\x0eNOT_APPLICABLE\x10\x00\x12\x0f\n\x0bUNDERWEIGHT\x10\x01\x12\n\n\x06NORMAL\x10\x02\x12\x0e\n\nOVERWEIGHT\x10\x03\x12\x0b\n\x07OBESE_1\x10\x04\x12\x0b\n\x07OBESE_2\x10\x05\x12\x0b\n\x07OBESE_3\x10\x06\x62\x06proto3')
 )
 
 _ACTIVITY = _descriptor.EnumDescriptor(
@@ -56,58 +56,68 @@ _ACTIVITY = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1345,
-  serialized_end=1444,
+  serialized_start=1336,
+  serialized_end=1435,
 )
 _sym_db.RegisterEnumDescriptor(_ACTIVITY)
 
 Activity = enum_type_wrapper.EnumTypeWrapper(_ACTIVITY)
-_OBESITY = _descriptor.EnumDescriptor(
-  name='Obesity',
-  full_name='synthpop.Obesity',
+_BMI = _descriptor.EnumDescriptor(
+  name='BMI',
+  full_name='synthpop.BMI',
   filename=None,
   file=DESCRIPTOR,
   values=[
     _descriptor.EnumValueDescriptor(
-      name='NORMAL', index=0, number=0,
+      name='NOT_APPLICABLE', index=0, number=0,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='OVERWEIGHT', index=1, number=1,
+      name='UNDERWEIGHT', index=1, number=1,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='OBESE_1', index=2, number=2,
+      name='NORMAL', index=2, number=2,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='OBESE_2', index=3, number=3,
+      name='OVERWEIGHT', index=3, number=3,
       serialized_options=None,
       type=None),
     _descriptor.EnumValueDescriptor(
-      name='OBESE_3', index=4, number=4,
+      name='OBESE_1', index=4, number=4,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='OBESE_2', index=5, number=5,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='OBESE_3', index=6, number=6,
       serialized_options=None,
       type=None),
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1446,
-  serialized_end=1522,
+  serialized_start=1437,
+  serialized_end=1546,
 )
-_sym_db.RegisterEnumDescriptor(_OBESITY)
+_sym_db.RegisterEnumDescriptor(_BMI)
 
-Obesity = enum_type_wrapper.EnumTypeWrapper(_OBESITY)
+BMI = enum_type_wrapper.EnumTypeWrapper(_BMI)
 RETAIL = 0
 PRIMARY_SCHOOL = 1
 SECONDARY_SCHOOL = 2
 HOME = 3
 WORK = 4
 NIGHTCLUB = 5
-NORMAL = 0
-OVERWEIGHT = 1
-OBESE_1 = 2
-OBESE_2 = 3
-OBESE_3 = 4
+NOT_APPLICABLE = 0
+UNDERWEIGHT = 1
+NORMAL = 2
+OVERWEIGHT = 3
+OBESE_1 = 4
+OBESE_2 = 5
+OBESE_3 = 6
 
 
 
@@ -498,7 +508,7 @@ _HEALTH = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='obesity', full_name='synthpop.Health.obesity', index=0,
+      name='bmi', full_name='synthpop.Health.bmi', index=0,
       number=1, type=14, cpp_type=8, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -537,8 +547,8 @@ _HEALTH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=925,
-  serialized_end=1060,
+  serialized_start=924,
+  serialized_end=1051,
 )
 
 
@@ -568,8 +578,8 @@ _TIMEUSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1062,
-  serialized_end=1089,
+  serialized_start=1053,
+  serialized_end=1080,
 )
 
 
@@ -613,8 +623,8 @@ _FLOWS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1091,
-  serialized_end=1194,
+  serialized_start=1082,
+  serialized_end=1185,
 )
 
 
@@ -651,8 +661,8 @@ _FLOW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1196,
-  serialized_end=1236,
+  serialized_start=1187,
+  serialized_end=1227,
 )
 
 
@@ -703,8 +713,8 @@ _VENUE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1238,
-  serialized_end=1343,
+  serialized_start=1229,
+  serialized_end=1334,
 )
 
 _POPULATION_VENUESPERACTIVITYENTRY.fields_by_name['value'].message_type = _VENUELIST
@@ -722,7 +732,7 @@ _PERSON.fields_by_name['location'].message_type = _POINT
 _PERSON.fields_by_name['health'].message_type = _HEALTH
 _PERSON.fields_by_name['time_use'].message_type = _TIMEUSE
 _PERSON.fields_by_name['flows_per_activity'].message_type = _FLOWS
-_HEALTH.fields_by_name['obesity'].enum_type = _OBESITY
+_HEALTH.fields_by_name['bmi'].enum_type = _BMI
 _FLOWS.fields_by_name['activity'].enum_type = _ACTIVITY
 _FLOWS.fields_by_name['flows'].message_type = _FLOW
 _VENUE.fields_by_name['activity'].enum_type = _ACTIVITY
@@ -739,7 +749,7 @@ DESCRIPTOR.message_types_by_name['Flows'] = _FLOWS
 DESCRIPTOR.message_types_by_name['Flow'] = _FLOW
 DESCRIPTOR.message_types_by_name['Venue'] = _VENUE
 DESCRIPTOR.enum_types_by_name['Activity'] = _ACTIVITY
-DESCRIPTOR.enum_types_by_name['Obesity'] = _OBESITY
+DESCRIPTOR.enum_types_by_name['BMI'] = _BMI
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 Population = _reflection.GeneratedProtocolMessageType('Population', (_message.Message,), dict(

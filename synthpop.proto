@@ -59,7 +59,7 @@ message Person {
 }
 
 message Health {
-    Obesity obesity = 1;
+    BMI bmi = 1;
     bool has_cardiovascular_disease = 2;
     bool has_diabetes = 3;
     bool has_high_blood_pressure = 4;
@@ -106,10 +106,20 @@ enum Activity {
     NIGHTCLUB = 5;
 }
 
-enum Obesity {
-    NORMAL = 0;
-    OVERWEIGHT = 1;
-    OBESE_1 = 2;
-    OBESE_2 = 3;
-    OBESE_3 = 4;
+// Body Mass Index
+enum BMI {
+    // Likely to be missing data
+    NOT_APPLICABLE = 0;
+    // Underweight: less than 18.5
+    UNDERWEIGHT = 1;
+    // Normal: 18.5 to less than 25
+    NORMAL = 2;
+    // Overweight: 25 to less than 30
+    OVERWEIGHT = 3;
+    // Obese I: 30 to less than 35
+    OBESE_1 = 4;
+    // Obese II: 35 to less than 40
+    OBESE_2 = 5;
+    // Obese III: 40 or more
+    OBESE_3 = 6;
 }

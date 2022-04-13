@@ -113,7 +113,7 @@ pub struct Person {
 
     // Nobody's older than 256 years
     pub age_years: u8,
-    pub obesity: Obesity,
+    pub bmi: BMI,
     pub has_cardiovascular_disease: bool,
     pub has_diabetes: bool,
     pub has_high_blood_pressure: bool,
@@ -202,12 +202,14 @@ pub struct Venue {
 }
 
 #[derive(Serialize, Deserialize)]
-pub enum Obesity {
-    Obese3,
-    Obese2,
-    Obese1,
-    Overweight,
+pub enum BMI {
+    NotApplicable,
+    Underweight,
     Normal,
+    Overweight,
+    Obese1,
+    Obese2,
+    Obese3,
 }
 
 // These are unsigned integers, used to index into different vectors. They're wrapped in a type, so
