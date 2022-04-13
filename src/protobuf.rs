@@ -49,9 +49,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
                 has_diabetes: person.has_diabetes,
                 has_high_blood_pressure: person.has_high_blood_pressure,
             }),
-            time_use: Some(pb::TimeUse {
-                not_home: person.pr_not_home,
-            }),
+            time_use: Some(person.time_use.clone()),
             flows_per_activity: convert_flows(person),
         });
     }

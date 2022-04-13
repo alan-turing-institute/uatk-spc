@@ -20,7 +20,7 @@ use cap::Cap;
 use enum_map::{Enum, EnumMap};
 use geo::{MultiPolygon, Point};
 use ordered_float::NotNan;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 pub mod pb {
     include!(concat!(env!("OUT_DIR"), "/synthpop.rs"));
@@ -32,7 +32,6 @@ static ALLOCATOR: Cap<std::alloc::System> = Cap::new(std::alloc::System, usize::
 
 /// After running the initialization for a study area, this one file carries all data needed for
 /// the simulation.
-#[derive(Serialize, Deserialize)]
 pub struct Population {
     /// The study area covers these MSOAs
     pub msoas: BTreeSet<MSOA>,
@@ -50,7 +49,6 @@ pub struct Population {
     pub lockdown_per_day: Vec<f32>,
 }
 
-#[derive(Serialize, Deserialize)]
 pub struct Input {
     pub enable_commuting: bool,
     /// Only people living in MSOAs filled out here will be part of the population
@@ -63,12 +61,12 @@ pub struct Input {
 // TODO Given one of these, how do we look it up?
 // - http://statistics.data.gov.uk/id/statistical-geography/E02002191
 // - https://mapit.mysociety.org/area/36070.html (they have a paid API)
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
 pub struct MSOA(String);
 
 /// This represents a 2020 county boundary, which contains several MSOAs. It's used in Google
 /// mobility data. It's not the same county as defined by ONS.
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
 pub struct County(String);
 
 impl MSOA {
@@ -77,7 +75,6 @@ impl MSOA {
     }
 }
 
-#[derive(Serialize, Deserialize)]
 pub struct InfoPerMSOA {
     pub shape: MultiPolygon<f32>,
     pub population: usize,
@@ -90,7 +87,6 @@ pub struct InfoPerMSOA {
 }
 
 /// A special type of venue where people live
-#[derive(Serialize, Deserialize)]
 pub struct Household {
     pub id: VenueID,
     pub msoa: MSOA,
@@ -99,7 +95,6 @@ pub struct Household {
     pub members: Vec<PersonID>,
 }
 
-#[derive(Serialize, Deserialize)]
 pub struct Person {
     pub id: PersonID,
     pub household: VenueID,
@@ -118,9 +113,7 @@ pub struct Person {
     pub has_diabetes: bool,
     pub has_high_blood_pressure: bool,
 
-    // This isn't equal to 1 - duration_per_activity[Activity::Home], because the activities
-    // captured are a subset of the time-use data.
-    pub pr_not_home: f32,
+    pub time_use: pb::TimeUse,
 
     /// Per activity, a list of venues where this person is likely to go do that activity. The
     /// probabilities sum to 1.
@@ -156,7 +149,7 @@ impl Person {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Enum, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Enum)]
 pub enum Activity {
     Retail,
     PrimarySchool,
@@ -190,7 +183,6 @@ pub struct Flow {
 }
 
 /// Represents a place where people do an activity
-#[derive(Serialize, Deserialize)]
 pub struct Venue {
     pub id: VenueID,
     pub activity: Activity,
@@ -201,7 +193,6 @@ pub struct Venue {
     pub urn: Option<usize>,
 }
 
-#[derive(Serialize, Deserialize)]
 pub enum BMI {
     NotApplicable,
     Underweight,
@@ -215,9 +206,7 @@ pub enum BMI {
 // These are unsigned integers, used to index into different vectors. They're wrapped in a type, so
 // we never accidentally confuse a VenueID with a PersonID.
 
-#[derive(
-    Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into, Serialize, Deserialize,
-)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into)]
 pub struct PersonID(pub usize);
 impl fmt::Display for PersonID {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -228,9 +217,7 @@ impl fmt::Display for PersonID {
 /// These IDs are scoped by Activity. This means two VenueIDs may be equal, but represent different
 /// places!
 // TODO Just encode Activity in here too
-#[derive(
-    Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into, Serialize, Deserialize,
-)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into)]
 pub struct VenueID(pub usize);
 impl fmt::Display for VenueID {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

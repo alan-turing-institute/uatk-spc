@@ -65,9 +65,21 @@ message Health {
     bool has_high_blood_pressure = 4;
 }
 
-// TODO Plumb through all fields
+// The proportion of a day spent doing different daily activities.
+// unknown + work + school + shop + services + leisure + escort + transport = not_home + home + work_home = home_total + not_home + home_total = 1
 message TimeUse {
-    float not_home = 1;
+    double unknown = 1;
+    double work = 2;
+    double school = 3;
+    double shop = 4;
+    double services = 5;
+    double leisure = 6;
+    double escort = 7;
+    double transport = 8;
+    double not_home = 9;
+    double home = 10;
+    double work_home = 11;
+    double home_total = 12;
 }
 
 // Per activity, a list of venues where this person is likely to go do that activity.

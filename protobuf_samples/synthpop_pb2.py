@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='synthpop',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0esynthpop.proto\x12\x08synthpop\"\xf9\x02\n\nPopulation\x12\'\n\nhouseholds\x18\x01 \x03(\x0b\x32\x13.synthpop.Household\x12 \n\x06people\x18\x02 \x03(\x0b\x32\x10.synthpop.Person\x12H\n\x13venues_per_activity\x18\x03 \x03(\x0b\x32+.synthpop.Population.VenuesPerActivityEntry\x12<\n\rinfo_per_msoa\x18\x04 \x03(\x0b\x32%.synthpop.Population.InfoPerMsoaEntry\x1aM\n\x16VenuesPerActivityEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.synthpop.VenueList:\x02\x38\x01\x1aI\n\x10InfoPerMsoaEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12$\n\x05value\x18\x02 \x01(\x0b\x32\x15.synthpop.InfoPerMSOA:\x02\x38\x01\"H\n\tHousehold\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x0c\n\x04msoa\x18\x02 \x01(\t\x12\x10\n\x08orig_hid\x18\x03 \x01(\x03\x12\x0f\n\x07members\x18\x04 \x03(\x04\",\n\tVenueList\x12\x1f\n\x06venues\x18\x01 \x03(\x0b\x32\x0f.synthpop.Venue\"e\n\x0bInfoPerMSOA\x12\x1e\n\x05shape\x18\x01 \x03(\x0b\x32\x0f.synthpop.Point\x12\x12\n\npopulation\x18\x02 \x01(\x04\x12\"\n\tbuildings\x18\x03 \x03(\x0b\x32\x0f.synthpop.Point\",\n\x05Point\x12\x11\n\tlongitude\x18\x01 \x01(\x02\x12\x10\n\x08latitude\x18\x02 \x01(\x02\"\xf4\x01\n\x06Person\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x11\n\thousehold\x18\x02 \x01(\x04\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x10\n\x08orig_pid\x18\x04 \x01(\x03\x12\x0f\n\x07sic1d07\x18\x05 \x01(\x04\x12\x11\n\tage_years\x18\x06 \x01(\r\x12 \n\x06health\x18\x07 \x01(\x0b\x32\x10.synthpop.Health\x12#\n\x08time_use\x18\x08 \x01(\x0b\x32\x11.synthpop.TimeUse\x12+\n\x12\x66lows_per_activity\x18\t \x03(\x0b\x32\x0f.synthpop.Flows\"\x7f\n\x06Health\x12\x1a\n\x03\x62mi\x18\x01 \x01(\x0e\x32\r.synthpop.BMI\x12\"\n\x1ahas_cardiovascular_disease\x18\x02 \x01(\x08\x12\x14\n\x0chas_diabetes\x18\x03 \x01(\x08\x12\x1f\n\x17has_high_blood_pressure\x18\x04 \x01(\x08\"\x1b\n\x07TimeUse\x12\x10\n\x08not_home\x18\x01 \x01(\x02\"g\n\x05\x46lows\x12$\n\x08\x61\x63tivity\x18\x01 \x01(\x0e\x32\x12.synthpop.Activity\x12\x1d\n\x05\x66lows\x18\x02 \x03(\x0b\x32\x0e.synthpop.Flow\x12\x19\n\x11\x61\x63tivity_duration\x18\x03 \x01(\x01\"(\n\x04\x46low\x12\x10\n\x08venue_id\x18\x01 \x01(\x04\x12\x0e\n\x06weight\x18\x02 \x01(\x01\"i\n\x05Venue\x12\n\n\x02id\x18\x01 \x01(\x04\x12$\n\x08\x61\x63tivity\x18\x02 \x01(\x0e\x32\x12.synthpop.Activity\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x0b\n\x03urn\x18\x04 \x01(\x04*c\n\x08\x41\x63tivity\x12\n\n\x06RETAIL\x10\x00\x12\x12\n\x0ePRIMARY_SCHOOL\x10\x01\x12\x14\n\x10SECONDARY_SCHOOL\x10\x02\x12\x08\n\x04HOME\x10\x03\x12\x08\n\x04WORK\x10\x04\x12\r\n\tNIGHTCLUB\x10\x05*m\n\x03\x42MI\x12\x12\n\x0eNOT_APPLICABLE\x10\x00\x12\x0f\n\x0bUNDERWEIGHT\x10\x01\x12\n\n\x06NORMAL\x10\x02\x12\x0e\n\nOVERWEIGHT\x10\x03\x12\x0b\n\x07OBESE_1\x10\x04\x12\x0b\n\x07OBESE_2\x10\x05\x12\x0b\n\x07OBESE_3\x10\x06\x62\x06proto3')
+  serialized_pb=_b('\n\x0esynthpop.proto\x12\x08synthpop\"\xf9\x02\n\nPopulation\x12\'\n\nhouseholds\x18\x01 \x03(\x0b\x32\x13.synthpop.Household\x12 \n\x06people\x18\x02 \x03(\x0b\x32\x10.synthpop.Person\x12H\n\x13venues_per_activity\x18\x03 \x03(\x0b\x32+.synthpop.Population.VenuesPerActivityEntry\x12<\n\rinfo_per_msoa\x18\x04 \x03(\x0b\x32%.synthpop.Population.InfoPerMsoaEntry\x1aM\n\x16VenuesPerActivityEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.synthpop.VenueList:\x02\x38\x01\x1aI\n\x10InfoPerMsoaEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12$\n\x05value\x18\x02 \x01(\x0b\x32\x15.synthpop.InfoPerMSOA:\x02\x38\x01\"H\n\tHousehold\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x0c\n\x04msoa\x18\x02 \x01(\t\x12\x10\n\x08orig_hid\x18\x03 \x01(\x03\x12\x0f\n\x07members\x18\x04 \x03(\x04\",\n\tVenueList\x12\x1f\n\x06venues\x18\x01 \x03(\x0b\x32\x0f.synthpop.Venue\"e\n\x0bInfoPerMSOA\x12\x1e\n\x05shape\x18\x01 \x03(\x0b\x32\x0f.synthpop.Point\x12\x12\n\npopulation\x18\x02 \x01(\x04\x12\"\n\tbuildings\x18\x03 \x03(\x0b\x32\x0f.synthpop.Point\",\n\x05Point\x12\x11\n\tlongitude\x18\x01 \x01(\x02\x12\x10\n\x08latitude\x18\x02 \x01(\x02\"\xf4\x01\n\x06Person\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x11\n\thousehold\x18\x02 \x01(\x04\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x10\n\x08orig_pid\x18\x04 \x01(\x03\x12\x0f\n\x07sic1d07\x18\x05 \x01(\x04\x12\x11\n\tage_years\x18\x06 \x01(\r\x12 \n\x06health\x18\x07 \x01(\x0b\x32\x10.synthpop.Health\x12#\n\x08time_use\x18\x08 \x01(\x0b\x32\x11.synthpop.TimeUse\x12+\n\x12\x66lows_per_activity\x18\t \x03(\x0b\x32\x0f.synthpop.Flows\"\x7f\n\x06Health\x12\x1a\n\x03\x62mi\x18\x01 \x01(\x0e\x32\r.synthpop.BMI\x12\"\n\x1ahas_cardiovascular_disease\x18\x02 \x01(\x08\x12\x14\n\x0chas_diabetes\x18\x03 \x01(\x08\x12\x1f\n\x17has_high_blood_pressure\x18\x04 \x01(\x08\"\xd3\x01\n\x07TimeUse\x12\x0f\n\x07unknown\x18\x01 \x01(\x01\x12\x0c\n\x04work\x18\x02 \x01(\x01\x12\x0e\n\x06school\x18\x03 \x01(\x01\x12\x0c\n\x04shop\x18\x04 \x01(\x01\x12\x10\n\x08services\x18\x05 \x01(\x01\x12\x0f\n\x07leisure\x18\x06 \x01(\x01\x12\x0e\n\x06\x65scort\x18\x07 \x01(\x01\x12\x11\n\ttransport\x18\x08 \x01(\x01\x12\x10\n\x08not_home\x18\t \x01(\x01\x12\x0c\n\x04home\x18\n \x01(\x01\x12\x11\n\twork_home\x18\x0b \x01(\x01\x12\x12\n\nhome_total\x18\x0c \x01(\x01\"g\n\x05\x46lows\x12$\n\x08\x61\x63tivity\x18\x01 \x01(\x0e\x32\x12.synthpop.Activity\x12\x1d\n\x05\x66lows\x18\x02 \x03(\x0b\x32\x0e.synthpop.Flow\x12\x19\n\x11\x61\x63tivity_duration\x18\x03 \x01(\x01\"(\n\x04\x46low\x12\x10\n\x08venue_id\x18\x01 \x01(\x04\x12\x0e\n\x06weight\x18\x02 \x01(\x01\"i\n\x05Venue\x12\n\n\x02id\x18\x01 \x01(\x04\x12$\n\x08\x61\x63tivity\x18\x02 \x01(\x0e\x32\x12.synthpop.Activity\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x0b\n\x03urn\x18\x04 \x01(\x04*c\n\x08\x41\x63tivity\x12\n\n\x06RETAIL\x10\x00\x12\x12\n\x0ePRIMARY_SCHOOL\x10\x01\x12\x14\n\x10SECONDARY_SCHOOL\x10\x02\x12\x08\n\x04HOME\x10\x03\x12\x08\n\x04WORK\x10\x04\x12\r\n\tNIGHTCLUB\x10\x05*m\n\x03\x42MI\x12\x12\n\x0eNOT_APPLICABLE\x10\x00\x12\x0f\n\x0bUNDERWEIGHT\x10\x01\x12\n\n\x06NORMAL\x10\x02\x12\x0e\n\nOVERWEIGHT\x10\x03\x12\x0b\n\x07OBESE_1\x10\x04\x12\x0b\n\x07OBESE_2\x10\x05\x12\x0b\n\x07OBESE_3\x10\x06\x62\x06proto3')
 )
 
 _ACTIVITY = _descriptor.EnumDescriptor(
@@ -56,8 +56,8 @@ _ACTIVITY = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1336,
-  serialized_end=1435,
+  serialized_start=1521,
+  serialized_end=1620,
 )
 _sym_db.RegisterEnumDescriptor(_ACTIVITY)
 
@@ -99,8 +99,8 @@ _BMI = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1437,
-  serialized_end=1546,
+  serialized_start=1622,
+  serialized_end=1731,
 )
 _sym_db.RegisterEnumDescriptor(_BMI)
 
@@ -560,8 +560,85 @@ _TIMEUSE = _descriptor.Descriptor(
   containing_type=None,
   fields=[
     _descriptor.FieldDescriptor(
-      name='not_home', full_name='synthpop.TimeUse.not_home', index=0,
-      number=1, type=2, cpp_type=6, label=1,
+      name='unknown', full_name='synthpop.TimeUse.unknown', index=0,
+      number=1, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='work', full_name='synthpop.TimeUse.work', index=1,
+      number=2, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='school', full_name='synthpop.TimeUse.school', index=2,
+      number=3, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='shop', full_name='synthpop.TimeUse.shop', index=3,
+      number=4, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='services', full_name='synthpop.TimeUse.services', index=4,
+      number=5, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='leisure', full_name='synthpop.TimeUse.leisure', index=5,
+      number=6, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='escort', full_name='synthpop.TimeUse.escort', index=6,
+      number=7, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='transport', full_name='synthpop.TimeUse.transport', index=7,
+      number=8, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='not_home', full_name='synthpop.TimeUse.not_home', index=8,
+      number=9, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='home', full_name='synthpop.TimeUse.home', index=9,
+      number=10, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='work_home', full_name='synthpop.TimeUse.work_home', index=10,
+      number=11, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='home_total', full_name='synthpop.TimeUse.home_total', index=11,
+      number=12, type=1, cpp_type=5, label=1,
       has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -578,8 +655,8 @@ _TIMEUSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1053,
-  serialized_end=1080,
+  serialized_start=1054,
+  serialized_end=1265,
 )
 
 
@@ -623,8 +700,8 @@ _FLOWS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1082,
-  serialized_end=1185,
+  serialized_start=1267,
+  serialized_end=1370,
 )
 
 
@@ -661,8 +738,8 @@ _FLOW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1187,
-  serialized_end=1227,
+  serialized_start=1372,
+  serialized_end=1412,
 )
 
 
@@ -713,8 +790,8 @@ _VENUE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1229,
-  serialized_end=1334,
+  serialized_start=1414,
+  serialized_end=1519,
 )
 
 _POPULATION_VENUESPERACTIVITYENTRY.fields_by_name['value'].message_type = _VENUELIST
