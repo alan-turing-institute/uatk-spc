@@ -134,14 +134,18 @@ struct TuPerson {
     #[serde(deserialize_with = "parse_isize")]
     hid: isize,
     pid: isize,
-    #[serde(deserialize_with = "parse_usize_or_na")]
-    sic1d07: Option<usize>,
     lat: f32,
     lng: f32,
 
-    age: u8,
-    #[serde(rename = "BMIvg6", deserialize_with = "parse_bmi")]
-    bmi: BMI,
+    sex: usize,
+    age: u32,
+    origin: usize,
+    nssec5: usize,
+    #[serde(deserialize_with = "parse_u64_or_na")]
+    sic1d07: u64,
+
+    #[serde(rename = "BMIvg6")]
+    bmi: String,
     cvd: u8,
     diabetes: u8,
     bloodpressure: u8,
@@ -160,18 +164,24 @@ struct TuPerson {
     phometot: f64,
 }
 
-/// Parses either an unsigned integer or the string "NA"
-fn parse_usize_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<Option<usize>, D::Error> {
+/// Parses either an unsigned integer or the string "NA". "NA" maps to 0, and this verifies that 0
+/// isn't an actual value that gets used.
+fn parse_u64_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<u64, D::Error> {
     // We have to parse it as a string first, or we lose the chance to check that it's "NA" later
     let raw = <String>::deserialize(d)?;
-    if let Ok(x) = raw.parse::<usize>() {
-        return Ok(Some(x));
+    if let Ok(x) = raw.parse::<u64>() {
+        if x == 0 {
+            return Err(serde::de::Error::custom(format!(
+                "The value 0 appears in the data, so we can't safely map NA to it"
+            )));
+        }
+        return Ok(x);
     }
     if raw == "NA" {
-        return Ok(None);
+        return Ok(0);
     }
     Err(serde::de::Error::custom(format!(
-        "Not a usize or \"NA\": {}",
+        "Not a u64 or \"NA\": {}",
         raw
     )))
 }
@@ -183,23 +193,6 @@ fn parse_isize<'de, D: Deserializer<'de>>(d: D) -> Result<isize, D::Error> {
     let float = <f64>::deserialize(d)?;
     // TODO Is there a safety check we should do? Make sure it's already rounded?
     Ok(float as isize)
-}
-
-fn parse_bmi<'de, D: Deserializer<'de>>(d: D) -> Result<BMI, D::Error> {
-    let raw = <&str>::deserialize(d)?;
-    match raw {
-        "Not applicable" => Ok(BMI::NotApplicable),
-        "Underweight: less than 18.5" => Ok(BMI::Underweight),
-        "Normal: 18.5 to less than 25" => Ok(BMI::Normal),
-        "Overweight: 25 to less than 30" => Ok(BMI::Overweight),
-        "Obese I: 30 to less than 35" => Ok(BMI::Obese1),
-        "Obese II: 35 to less than 40" => Ok(BMI::Obese2),
-        "Obese III: 40 or more" => Ok(BMI::Obese3),
-        _ => Err(serde::de::Error::custom(format!(
-            "Unknown BMIvg6 value {}",
-            raw
-        ))),
-    }
 }
 
 impl TuPerson {
@@ -232,11 +225,48 @@ impl TuPerson {
             id,
             household,
             orig_pid: self.pid,
-            sic1d07: self.sic1d07,
             location: Point::new(self.lng, self.lat),
 
-            age_years: self.age,
-            bmi: self.bmi,
+            demographics: pb::Demographics {
+                sex: match self.sex {
+                    x if x == 0 => pb::Sex::Female,
+                    x if x == 1 => pb::Sex::Male,
+                    x => bail!("Unknown sex {}", x),
+                }
+                .into(),
+                age_years: self.age,
+                origin: match self.origin {
+                    x if x == 1 => pb::Origin::White,
+                    x if x == 2 => pb::Origin::Black,
+                    x if x == 3 => pb::Origin::Asian,
+                    x if x == 4 => pb::Origin::Mixed,
+                    x if x == 5 => pb::Origin::Other,
+                    x => bail!("Unknown origin {}", x),
+                }
+                .into(),
+                socioeconomic_classification: match self.nssec5 {
+                    x if x == 0 => pb::Nssec5::Unemployed,
+                    x if x == 1 => pb::Nssec5::Higher,
+                    x if x == 2 => pb::Nssec5::Intermediate,
+                    x if x == 3 => pb::Nssec5::Small,
+                    x if x == 4 => pb::Nssec5::Lower,
+                    x if x == 5 => pb::Nssec5::Routine,
+                    x => bail!("Unknown nssec5 {}", x),
+                }
+                .into(),
+                sic1d07: self.sic1d07,
+            },
+
+            bmi: match self.bmi.as_str() {
+                "Not applicable" => BMI::NotApplicable,
+                "Underweight: less than 18.5" => BMI::Underweight,
+                "Normal: 18.5 to less than 25" => BMI::Normal,
+                "Overweight: 25 to less than 30" => BMI::Overweight,
+                "Obese I: 30 to less than 35" => BMI::Obese1,
+                "Obese II: 35 to less than 40" => BMI::Obese2,
+                "Obese III: 40 or more" => BMI::Obese3,
+                x => bail!("Unknown BMIvg6 value {}", x),
+            },
             has_cardiovascular_disease: self.cvd > 0,
             has_diabetes: self.diabetes > 0,
             has_high_blood_pressure: self.bloodpressure > 0,

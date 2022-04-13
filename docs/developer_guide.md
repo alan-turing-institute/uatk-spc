@@ -38,3 +38,17 @@ you want to use debug mode, just omit the flag.
 If you're working on the Rust code outside of an IDE like
 [VSCode](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust),
 then you can check if the code compiles much faster by doing `cargo check`.
+
+## Working with protocol buffers
+
+These instructions will be reorganized. For now, just for reference:
+
+```shell
+pip install protobuf
+
+# Regenerate the Python bindings
+protoc --python_out=protobuf_samples/ synthpop.proto
+
+# Transform a proto to JSON
+python protobuf_samples/protobuf_to_json.py data/output/west_yorkshire_small.pb
+```

@@ -55,7 +55,7 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
     Ok(())
 }
 
-#[derive(Deserialize)]
+#[derive(Debug, Deserialize)]
 struct Row {
     #[serde(rename = "MSOA11CD")]
     msoa: MSOA,
@@ -64,11 +64,11 @@ struct Row {
     lat: f32,
     // The number of workers
     size: usize,
-    sic1d07: usize,
+    sic1d07: u64,
 }
 
 struct Businesses {
-    venues_per_sic: HashMap<usize, Vec<VenueID>>,
+    venues_per_sic: HashMap<u64, Vec<VenueID>>,
     available_jobs: HashMap<VenueID, usize>,
     venues: TiVec<VenueID, Venue>,
 }
@@ -94,6 +94,9 @@ impl Businesses {
                 // The CSV has string IDs, but they're not used anywhere else. Immediately create a
                 // venue and use integer IDs, which're much faster to copy around.
                 let id = VenueID(result.venues.len());
+                if rec.sic1d07 == 0 {
+                    bail!("A business unexpectedly uses SIC 0: {:?}", rec);
+                }
                 result
                     .venues_per_sic
                     .entry(rec.sic1d07)
@@ -119,7 +122,7 @@ impl Businesses {
 }
 
 struct JobMarket {
-    sic: Option<usize>,
+    sic: Option<u64>,
     // workers and jobs have equal length
     workers: Vec<PersonID>,
     jobs: Vec<VenueID>,
@@ -154,7 +157,7 @@ impl JobMarket {
             // Find workers with a matching SIC
             let mut workers: Vec<PersonID> = Vec::new();
             for id in all_workers {
-                if population.people[*id].sic1d07 == Some(*sic) {
+                if population.people[*id].demographics.sic1d07 == *sic {
                     workers.push(*id);
                 }
             }

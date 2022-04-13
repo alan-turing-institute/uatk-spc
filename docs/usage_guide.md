@@ -30,20 +30,6 @@ This will download some large files the first time. You'll wind up with
 intermediate files in `data/raw_data/`. The next time you run this command
 (even on a different study area), it should go much faster.
 
-## Working with protocol buffers
-
-These instructions will be reorganized. For now, just for reference:
-
-```shell
-pip install protobuf
-
-# Regenerate the Python bindings
-protoc --python_out=protobuf_samples/ synthpop.proto
-
-# Transform a proto to JSON
-python protobuf_samples/protobuf_to_json.py data/output/west_yorkshire_small.pb
-```
-
 ## Adding a new study area
 
 A study area requires a list of MSOAs to include. Create a new file `config/your_region.csv` with this list, following the format of the other files in there. (The first line must set the column name as `"MSOA11CD"`.)
