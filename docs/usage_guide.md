@@ -16,7 +16,7 @@ cd spc
 # The next command will take a few minutes the first time you do it, to build external dependencies
 cargo build --release
 ```
-If you get some errors during the compilation process, take a look at Troubleshooting section bellow to see if you
+If you get some errors during the compilation process, take a look at [Troubleshooting](#Troubleshooting) section bellow
 
 ## Generating output for a study area
 
