@@ -47,15 +47,51 @@ message Person {
     Point location = 3;
     // An ID from the original data, kept around for debugging
     int64 orig_pid = 4;
+
+    Demographics demographics = 5;
+    Health health = 6;
+    TimeUse time_use = 7;
+
+    repeated Flows flows_per_activity = 8;
+}
+
+message Demographics {
+    Sex sex = 1;
+    uint32 age_years = 2;
+    Origin origin = 3;
+    NSSEC5 socioeconomic_classification = 4;
     // The Standard Industry Classification for where this person works. 0 means none.
     uint64 sic1d07 = 5;
+    // TODO Include soc2010, sic2d07?
+}
 
-    uint32 age_years = 6;
+enum Sex {
+    FEMALE = 0;
+    MALE = 1;
+}
 
-    Health health = 7;
-    TimeUse time_use = 8;
+enum Origin {
+    WHITE = 0;
+    BLACK = 1;
+    ASIAN = 2;
+    MIXED = 3;
+    OTHER = 4;
+}
 
-    repeated Flows flows_per_activity = 9;
+// National Statistics socio-economic classification
+enum NSSEC5 {
+    // Never worked and long-term unemployed
+    UNEMPLOYED = 0;
+    // Higher managerial, administrative and professional occupations
+    HIGHER = 1;
+    // Intermediate occupations
+    INTERMEDIATE = 2;
+    // Small employers and own account workers
+    SMALL = 3;
+    // Lower supervisory and technical occupations
+    LOWER = 4;
+    // Semi-routine and routine occupations
+    ROUTINE = 5;
 }
 
 message Health {
@@ -63,6 +99,24 @@ message Health {
     bool has_cardiovascular_disease = 2;
     bool has_diabetes = 3;
     bool has_high_blood_pressure = 4;
+}
+
+// Body Mass Index
+enum BMI {
+    // Likely to be missing data
+    NOT_APPLICABLE = 0;
+    // Underweight: less than 18.5
+    UNDERWEIGHT = 1;
+    // Normal: 18.5 to less than 25
+    NORMAL = 2;
+    // Overweight: 25 to less than 30
+    OVERWEIGHT = 3;
+    // Obese I: 30 to less than 35
+    OBESE_1 = 4;
+    // Obese II: 35 to less than 40
+    OBESE_2 = 5;
+    // Obese III: 40 or more
+    OBESE_3 = 6;
 }
 
 // The proportion of a day spent doing different daily activities.
@@ -116,22 +170,4 @@ enum Activity {
     HOME = 3;
     WORK = 4;
     NIGHTCLUB = 5;
-}
-
-// Body Mass Index
-enum BMI {
-    // Likely to be missing data
-    NOT_APPLICABLE = 0;
-    // Underweight: less than 18.5
-    UNDERWEIGHT = 1;
-    // Normal: 18.5 to less than 25
-    NORMAL = 2;
-    // Overweight: 25 to less than 30
-    OVERWEIGHT = 3;
-    // Obese I: 30 to less than 35
-    OBESE_1 = 4;
-    // Obese II: 35 to less than 40
-    OBESE_2 = 5;
-    // Obese III: 40 or more
-    OBESE_3 = 6;
 }

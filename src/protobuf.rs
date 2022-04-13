@@ -31,9 +31,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
             household: person.household.0.try_into()?,
             location: Some(convert_point(&person.location)),
             orig_pid: person.orig_pid.try_into()?,
-            // TODO Make sure 0 isn't a valid case
-            sic1d07: person.sic1d07.unwrap_or(0).try_into()?,
-            age_years: person.age_years.into(),
+            demographics: Some(person.demographics.clone()),
             health: Some(pb::Health {
                 bmi: match person.bmi {
                     BMI::NotApplicable => pb::Bmi::NotApplicable,
