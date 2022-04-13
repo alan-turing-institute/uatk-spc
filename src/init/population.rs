@@ -10,7 +10,7 @@ use super::quant::{get_flows, load_venues, Threshold};
 use crate::utilities::{
     memory_usage, print_count, progress_count, progress_count_with_msg, progress_file_with_msg,
 };
-use crate::{Activity, Household, Person, PersonID, Population, VenueID, BMI, MSOA};
+use crate::{pb, Activity, Household, Person, PersonID, Population, VenueID, BMI, MSOA};
 
 pub fn read_individual_time_use_and_health_data(
     population: &mut Population,
@@ -139,18 +139,25 @@ struct TuPerson {
     lat: f32,
     lng: f32,
 
-    phome: f64,
-    pwork: f64,
-    pleisure: f64,
-    pshop: f64,
-    pschool: f64,
     age: u8,
     #[serde(rename = "BMIvg6", deserialize_with = "parse_bmi")]
     bmi: BMI,
     cvd: u8,
     diabetes: u8,
     bloodpressure: u8,
-    pnothome: f32,
+
+    punknown: f64,
+    pwork: f64,
+    pschool: f64,
+    pshop: f64,
+    pservices: f64,
+    pleisure: f64,
+    pescort: f64,
+    ptransport: f64,
+    pnothome: f64,
+    phome: f64,
+    pworkhome: f64,
+    phometot: f64,
 }
 
 /// Parses either an unsigned integer or the string "NA"
@@ -234,7 +241,20 @@ impl TuPerson {
             has_diabetes: self.diabetes > 0,
             has_high_blood_pressure: self.bloodpressure > 0,
 
-            pr_not_home: self.pnothome,
+            time_use: pb::TimeUse {
+                unknown: self.punknown,
+                work: self.pwork,
+                school: self.pschool,
+                shop: self.pshop,
+                services: self.pservices,
+                leisure: self.pleisure,
+                escort: self.pescort,
+                transport: self.ptransport,
+                not_home: self.pnothome,
+                home: self.phome,
+                work_home: self.pworkhome,
+                home_total: self.phometot,
+            },
 
             flows_per_activity,
             duration_per_activity,
