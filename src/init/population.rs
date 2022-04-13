@@ -10,7 +10,7 @@ use super::quant::{get_flows, load_venues, Threshold};
 use crate::utilities::{
     memory_usage, print_count, progress_count, progress_count_with_msg, progress_file_with_msg,
 };
-use crate::{Activity, Household, Obesity, Person, PersonID, Population, VenueID, MSOA};
+use crate::{Activity, Household, Person, PersonID, Population, VenueID, BMI, MSOA};
 
 pub fn read_individual_time_use_and_health_data(
     population: &mut Population,
@@ -145,8 +145,8 @@ struct TuPerson {
     pshop: f64,
     pschool: f64,
     age: u8,
-    #[serde(rename = "BMIvg6", deserialize_with = "parse_obesity")]
-    obesity: Obesity,
+    #[serde(rename = "BMIvg6", deserialize_with = "parse_bmi")]
+    bmi: BMI,
     cvd: u8,
     diabetes: u8,
     bloodpressure: u8,
@@ -178,17 +178,16 @@ fn parse_isize<'de, D: Deserializer<'de>>(d: D) -> Result<isize, D::Error> {
     Ok(float as isize)
 }
 
-fn parse_obesity<'de, D: Deserializer<'de>>(d: D) -> Result<Obesity, D::Error> {
+fn parse_bmi<'de, D: Deserializer<'de>>(d: D) -> Result<BMI, D::Error> {
     let raw = <&str>::deserialize(d)?;
     match raw {
-        "Obese III: 40 or more" => Ok(Obesity::Obese3),
-        "Obese II: 35 to less than 40" => Ok(Obesity::Obese2),
-        "Obese I: 30 to less than 35" => Ok(Obesity::Obese1),
-        "Overweight: 25 to less than 30" => Ok(Obesity::Overweight),
-        "Normal: 18.5 to less than 25" | "Not applicable" => Ok(Obesity::Normal),
-        // There are some additional values that the Python maps to normal. It's nice to explicitly
-        // list them
-        "Underweight: less than 18.5" => Ok(Obesity::Normal),
+        "Not applicable" => Ok(BMI::NotApplicable),
+        "Underweight: less than 18.5" => Ok(BMI::Underweight),
+        "Normal: 18.5 to less than 25" => Ok(BMI::Normal),
+        "Overweight: 25 to less than 30" => Ok(BMI::Overweight),
+        "Obese I: 30 to less than 35" => Ok(BMI::Obese1),
+        "Obese II: 35 to less than 40" => Ok(BMI::Obese2),
+        "Obese III: 40 or more" => Ok(BMI::Obese3),
         _ => Err(serde::de::Error::custom(format!(
             "Unknown BMIvg6 value {}",
             raw
@@ -230,7 +229,7 @@ impl TuPerson {
             location: Point::new(self.lng, self.lat),
 
             age_years: self.age,
-            obesity: self.obesity,
+            bmi: self.bmi,
             has_cardiovascular_disease: self.cvd > 0,
             has_diabetes: self.diabetes > 0,
             has_high_blood_pressure: self.bloodpressure > 0,

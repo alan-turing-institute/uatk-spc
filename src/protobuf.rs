@@ -6,7 +6,7 @@ use geo::coords_iter::CoordsIter;
 use geo::{Coordinate, Point};
 use prost::Message;
 
-use crate::{pb, Activity, Obesity, Person, Population};
+use crate::{pb, Activity, Person, Population, BMI};
 
 /// Returns the bytes written
 pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
@@ -35,12 +35,14 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
             sic1d07: person.sic1d07.unwrap_or(0).try_into()?,
             age_years: person.age_years.into(),
             health: Some(pb::Health {
-                obesity: match person.obesity {
-                    Obesity::Obese3 => pb::Obesity::Obese3,
-                    Obesity::Obese2 => pb::Obesity::Obese2,
-                    Obesity::Obese1 => pb::Obesity::Obese1,
-                    Obesity::Overweight => pb::Obesity::Overweight,
-                    Obesity::Normal => pb::Obesity::Normal,
+                bmi: match person.bmi {
+                    BMI::NotApplicable => pb::Bmi::NotApplicable,
+                    BMI::Underweight => pb::Bmi::Underweight,
+                    BMI::Normal => pb::Bmi::Normal,
+                    BMI::Overweight => pb::Bmi::Overweight,
+                    BMI::Obese1 => pb::Bmi::Obese1,
+                    BMI::Obese2 => pb::Bmi::Obese2,
+                    BMI::Obese3 => pb::Bmi::Obese3,
                 }
                 .into(),
                 has_cardiovascular_disease: person.has_cardiovascular_disease,
