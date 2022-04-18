@@ -54,8 +54,7 @@ fn load_msoa_shapes(msoas: &BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA
     let mut reader = shapefile::Reader::new(shape_reader, dbf_reader);
 
     // I opened the file in QGIS to figure out the source CRS
-    let reproject = Proj::new_known_crs("EPSG:27700", "EPSG:4326", None)
-        .ok_or(anyhow!("Couldn't set up CRS projection"))?;
+    let reproject = Proj::new_known_crs("EPSG:27700", "EPSG:4326", None)?;
 
     let mut results = BTreeMap::new();
     for pair in reader.iter_shapes_and_records_as::<shapefile::Polygon, shapefile::dbase::Record>()
@@ -71,8 +70,8 @@ fn load_msoa_shapes(msoas: &BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA
                 let geo_polygon: MultiPolygon<f64> = shape.try_into()?;
                 let shape: MultiPolygon<f32> = geo_polygon.map_coords(|&(x, y)| {
                     // TODO Error handling inside here is weird
-                    let pt = reproject.convert((x, y)).unwrap();
-                    (pt.x() as f32, pt.y() as f32)
+                    let (x, y) = reproject.convert((x, y)).unwrap();
+                    (x as f32, y as f32)
                 });
                 results.insert(
                     msoa,
