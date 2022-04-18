@@ -5,7 +5,7 @@ use anyhow::Result;
 use geo::map_coords::MapCoords;
 use geo::prelude::{BoundingRect, Centroid, Contains};
 use geo::{MultiPolygon, Point};
-use proj::Proj;
+use proj::{Proj, Transform};
 use rstar::{RTree, AABB};
 
 use crate::utilities::{print_count, progress_count};
@@ -67,12 +67,11 @@ fn load_msoa_shapes(msoas: &BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA
             }
             if let Some(shapefile::dbase::FieldValue::Numeric(Some(population))) = record.get("pop")
             {
-                let geo_polygon: MultiPolygon<f64> = shape.try_into()?;
-                let shape: MultiPolygon<f32> = geo_polygon.map_coords(|&(x, y)| {
-                    // TODO Error handling inside here is weird
-                    let (x, y) = reproject.convert((x, y)).unwrap();
-                    (x as f32, y as f32)
-                });
+                let mut geo_polygon: MultiPolygon<f64> = shape.try_into()?;
+                geo_polygon.transform(&reproject)?;
+                // f64 -> f32
+                let shape: MultiPolygon<f32> =
+                    geo_polygon.map_coords(|&(x, y)| (x as f32, y as f32));
                 results.insert(
                     msoa,
                     InfoPerMSOA {
