@@ -31,6 +31,13 @@ pub fn get_info_per_msoa(
         ))?);
     }
     match_points_to_shapes(building_centroids, &mut info_per_msoa);
+
+    for (msoa, info) in &info_per_msoa {
+        if info.buildings.is_empty() {
+            bail!("{} has no buildings", msoa.0);
+        }
+    }
+
     Ok(info_per_msoa)
 }
 
