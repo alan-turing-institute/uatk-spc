@@ -10,6 +10,8 @@ message Population {
     map<int32, VenueList> venues_per_activity = 3;
 
     map<string, InfoPerMSOA> info_per_msoa = 4;
+
+    Lockdown lockdown = 5;
 }
 
 message Household {
@@ -28,6 +30,7 @@ message VenueList {
 
 message InfoPerMSOA {
     repeated Point shape = 1;
+    // There's no relationship between this value and the people listed.
     uint64 population = 2;
     // All building centroids within this MSOA. Guaranteed to be non-empty.
     repeated Point buildings = 3;
@@ -170,4 +173,12 @@ enum Activity {
     HOME = 3;
     WORK = 4;
     NIGHTCLUB = 5;
+}
+
+// Describes a reduction in daily travel behavior due to COVID lockdowns.
+message Lockdown {
+    // The YYYY-MM-DD date of the first entry in the daily list.
+    string start_date = 1;
+    // A number in [0, 1] for each day of lockdown. 0 means all time just spent at home.
+    repeated float per_day = 2;
 }

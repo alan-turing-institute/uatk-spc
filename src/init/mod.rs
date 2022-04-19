@@ -33,7 +33,7 @@ impl Population {
             people: TiVec::new(),
             venues_per_activity: EnumMap::default(),
             info_per_msoa: BTreeMap::new(),
-            lockdown_per_day: Vec::new(),
+            lockdown: crate::pb::Lockdown::default(),
         };
         population::read_individual_time_use_and_health_data(
             &mut population,
@@ -65,7 +65,7 @@ impl Population {
 
         population.info_per_msoa =
             msoas::get_info_per_msoa(&population.msoas, raw_results.osm_directories)?;
-        population.lockdown_per_day =
+        population.lockdown =
             lockdown::calculate_lockdown_per_day(raw_results.msoas_per_county, &population)?;
         population.remove_unused_venues();
         Ok((population, commuting_duration))

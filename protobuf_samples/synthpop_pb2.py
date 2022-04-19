@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='synthpop',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0esynthpop.proto\x12\x08synthpop\"\xf9\x02\n\nPopulation\x12\'\n\nhouseholds\x18\x01 \x03(\x0b\x32\x13.synthpop.Household\x12 \n\x06people\x18\x02 \x03(\x0b\x32\x10.synthpop.Person\x12H\n\x13venues_per_activity\x18\x03 \x03(\x0b\x32+.synthpop.Population.VenuesPerActivityEntry\x12<\n\rinfo_per_msoa\x18\x04 \x03(\x0b\x32%.synthpop.Population.InfoPerMsoaEntry\x1aM\n\x16VenuesPerActivityEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.synthpop.VenueList:\x02\x38\x01\x1aI\n\x10InfoPerMsoaEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12$\n\x05value\x18\x02 \x01(\x0b\x32\x15.synthpop.InfoPerMSOA:\x02\x38\x01\"H\n\tHousehold\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x0c\n\x04msoa\x18\x02 \x01(\t\x12\x10\n\x08orig_hid\x18\x03 \x01(\x03\x12\x0f\n\x07members\x18\x04 \x03(\x04\",\n\tVenueList\x12\x1f\n\x06venues\x18\x01 \x03(\x0b\x32\x0f.synthpop.Venue\"e\n\x0bInfoPerMSOA\x12\x1e\n\x05shape\x18\x01 \x03(\x0b\x32\x0f.synthpop.Point\x12\x12\n\npopulation\x18\x02 \x01(\x04\x12\"\n\tbuildings\x18\x03 \x03(\x0b\x32\x0f.synthpop.Point\",\n\x05Point\x12\x11\n\tlongitude\x18\x01 \x01(\x02\x12\x10\n\x08latitude\x18\x02 \x01(\x02\"\xfe\x01\n\x06Person\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x11\n\thousehold\x18\x02 \x01(\x04\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x10\n\x08orig_pid\x18\x04 \x01(\x03\x12,\n\x0c\x64\x65mographics\x18\x05 \x01(\x0b\x32\x16.synthpop.Demographics\x12 \n\x06health\x18\x06 \x01(\x0b\x32\x10.synthpop.Health\x12#\n\x08time_use\x18\x07 \x01(\x0b\x32\x11.synthpop.TimeUse\x12+\n\x12\x66lows_per_activity\x18\x08 \x03(\x0b\x32\x0f.synthpop.Flows\"\xa8\x01\n\x0c\x44\x65mographics\x12\x1a\n\x03sex\x18\x01 \x01(\x0e\x32\r.synthpop.Sex\x12\x11\n\tage_years\x18\x02 \x01(\r\x12 \n\x06origin\x18\x03 \x01(\x0e\x32\x10.synthpop.Origin\x12\x36\n\x1csocioeconomic_classification\x18\x04 \x01(\x0e\x32\x10.synthpop.NSSEC5\x12\x0f\n\x07sic1d07\x18\x05 \x01(\x04\"\x7f\n\x06Health\x12\x1a\n\x03\x62mi\x18\x01 \x01(\x0e\x32\r.synthpop.BMI\x12\"\n\x1ahas_cardiovascular_disease\x18\x02 \x01(\x08\x12\x14\n\x0chas_diabetes\x18\x03 \x01(\x08\x12\x1f\n\x17has_high_blood_pressure\x18\x04 \x01(\x08\"\xd3\x01\n\x07TimeUse\x12\x0f\n\x07unknown\x18\x01 \x01(\x01\x12\x0c\n\x04work\x18\x02 \x01(\x01\x12\x0e\n\x06school\x18\x03 \x01(\x01\x12\x0c\n\x04shop\x18\x04 \x01(\x01\x12\x10\n\x08services\x18\x05 \x01(\x01\x12\x0f\n\x07leisure\x18\x06 \x01(\x01\x12\x0e\n\x06\x65scort\x18\x07 \x01(\x01\x12\x11\n\ttransport\x18\x08 \x01(\x01\x12\x10\n\x08not_home\x18\t \x01(\x01\x12\x0c\n\x04home\x18\n \x01(\x01\x12\x11\n\twork_home\x18\x0b \x01(\x01\x12\x12\n\nhome_total\x18\x0c \x01(\x01\"g\n\x05\x46lows\x12$\n\x08\x61\x63tivity\x18\x01 \x01(\x0e\x32\x12.synthpop.Activity\x12\x1d\n\x05\x66lows\x18\x02 \x03(\x0b\x32\x0e.synthpop.Flow\x12\x19\n\x11\x61\x63tivity_duration\x18\x03 \x01(\x01\"(\n\x04\x46low\x12\x10\n\x08venue_id\x18\x01 \x01(\x04\x12\x0e\n\x06weight\x18\x02 \x01(\x01\"i\n\x05Venue\x12\n\n\x02id\x18\x01 \x01(\x04\x12$\n\x08\x61\x63tivity\x18\x02 \x01(\x0e\x32\x12.synthpop.Activity\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x0b\n\x03urn\x18\x04 \x01(\x04*\x1b\n\x03Sex\x12\n\n\x06\x46\x45MALE\x10\x00\x12\x08\n\x04MALE\x10\x01*?\n\x06Origin\x12\t\n\x05WHITE\x10\x00\x12\t\n\x05\x42LACK\x10\x01\x12\t\n\x05\x41SIAN\x10\x02\x12\t\n\x05MIXED\x10\x03\x12\t\n\x05OTHER\x10\x04*Y\n\x06NSSEC5\x12\x0e\n\nUNEMPLOYED\x10\x00\x12\n\n\x06HIGHER\x10\x01\x12\x10\n\x0cINTERMEDIATE\x10\x02\x12\t\n\x05SMALL\x10\x03\x12\t\n\x05LOWER\x10\x04\x12\x0b\n\x07ROUTINE\x10\x05*m\n\x03\x42MI\x12\x12\n\x0eNOT_APPLICABLE\x10\x00\x12\x0f\n\x0bUNDERWEIGHT\x10\x01\x12\n\n\x06NORMAL\x10\x02\x12\x0e\n\nOVERWEIGHT\x10\x03\x12\x0b\n\x07OBESE_1\x10\x04\x12\x0b\n\x07OBESE_2\x10\x05\x12\x0b\n\x07OBESE_3\x10\x06*c\n\x08\x41\x63tivity\x12\n\n\x06RETAIL\x10\x00\x12\x12\n\x0ePRIMARY_SCHOOL\x10\x01\x12\x14\n\x10SECONDARY_SCHOOL\x10\x02\x12\x08\n\x04HOME\x10\x03\x12\x08\n\x04WORK\x10\x04\x12\r\n\tNIGHTCLUB\x10\x05\x62\x06proto3')
+  serialized_pb=_b('\n\x0esynthpop.proto\x12\x08synthpop\"\x9f\x03\n\nPopulation\x12\'\n\nhouseholds\x18\x01 \x03(\x0b\x32\x13.synthpop.Household\x12 \n\x06people\x18\x02 \x03(\x0b\x32\x10.synthpop.Person\x12H\n\x13venues_per_activity\x18\x03 \x03(\x0b\x32+.synthpop.Population.VenuesPerActivityEntry\x12<\n\rinfo_per_msoa\x18\x04 \x03(\x0b\x32%.synthpop.Population.InfoPerMsoaEntry\x12$\n\x08lockdown\x18\x05 \x01(\x0b\x32\x12.synthpop.Lockdown\x1aM\n\x16VenuesPerActivityEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.synthpop.VenueList:\x02\x38\x01\x1aI\n\x10InfoPerMsoaEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12$\n\x05value\x18\x02 \x01(\x0b\x32\x15.synthpop.InfoPerMSOA:\x02\x38\x01\"H\n\tHousehold\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x0c\n\x04msoa\x18\x02 \x01(\t\x12\x10\n\x08orig_hid\x18\x03 \x01(\x03\x12\x0f\n\x07members\x18\x04 \x03(\x04\",\n\tVenueList\x12\x1f\n\x06venues\x18\x01 \x03(\x0b\x32\x0f.synthpop.Venue\"e\n\x0bInfoPerMSOA\x12\x1e\n\x05shape\x18\x01 \x03(\x0b\x32\x0f.synthpop.Point\x12\x12\n\npopulation\x18\x02 \x01(\x04\x12\"\n\tbuildings\x18\x03 \x03(\x0b\x32\x0f.synthpop.Point\",\n\x05Point\x12\x11\n\tlongitude\x18\x01 \x01(\x02\x12\x10\n\x08latitude\x18\x02 \x01(\x02\"\xfe\x01\n\x06Person\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x11\n\thousehold\x18\x02 \x01(\x04\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x10\n\x08orig_pid\x18\x04 \x01(\x03\x12,\n\x0c\x64\x65mographics\x18\x05 \x01(\x0b\x32\x16.synthpop.Demographics\x12 \n\x06health\x18\x06 \x01(\x0b\x32\x10.synthpop.Health\x12#\n\x08time_use\x18\x07 \x01(\x0b\x32\x11.synthpop.TimeUse\x12+\n\x12\x66lows_per_activity\x18\x08 \x03(\x0b\x32\x0f.synthpop.Flows\"\xa8\x01\n\x0c\x44\x65mographics\x12\x1a\n\x03sex\x18\x01 \x01(\x0e\x32\r.synthpop.Sex\x12\x11\n\tage_years\x18\x02 \x01(\r\x12 \n\x06origin\x18\x03 \x01(\x0e\x32\x10.synthpop.Origin\x12\x36\n\x1csocioeconomic_classification\x18\x04 \x01(\x0e\x32\x10.synthpop.NSSEC5\x12\x0f\n\x07sic1d07\x18\x05 \x01(\x04\"\x7f\n\x06Health\x12\x1a\n\x03\x62mi\x18\x01 \x01(\x0e\x32\r.synthpop.BMI\x12\"\n\x1ahas_cardiovascular_disease\x18\x02 \x01(\x08\x12\x14\n\x0chas_diabetes\x18\x03 \x01(\x08\x12\x1f\n\x17has_high_blood_pressure\x18\x04 \x01(\x08\"\xd3\x01\n\x07TimeUse\x12\x0f\n\x07unknown\x18\x01 \x01(\x01\x12\x0c\n\x04work\x18\x02 \x01(\x01\x12\x0e\n\x06school\x18\x03 \x01(\x01\x12\x0c\n\x04shop\x18\x04 \x01(\x01\x12\x10\n\x08services\x18\x05 \x01(\x01\x12\x0f\n\x07leisure\x18\x06 \x01(\x01\x12\x0e\n\x06\x65scort\x18\x07 \x01(\x01\x12\x11\n\ttransport\x18\x08 \x01(\x01\x12\x10\n\x08not_home\x18\t \x01(\x01\x12\x0c\n\x04home\x18\n \x01(\x01\x12\x11\n\twork_home\x18\x0b \x01(\x01\x12\x12\n\nhome_total\x18\x0c \x01(\x01\"g\n\x05\x46lows\x12$\n\x08\x61\x63tivity\x18\x01 \x01(\x0e\x32\x12.synthpop.Activity\x12\x1d\n\x05\x66lows\x18\x02 \x03(\x0b\x32\x0e.synthpop.Flow\x12\x19\n\x11\x61\x63tivity_duration\x18\x03 \x01(\x01\"(\n\x04\x46low\x12\x10\n\x08venue_id\x18\x01 \x01(\x04\x12\x0e\n\x06weight\x18\x02 \x01(\x01\"i\n\x05Venue\x12\n\n\x02id\x18\x01 \x01(\x04\x12$\n\x08\x61\x63tivity\x18\x02 \x01(\x0e\x32\x12.synthpop.Activity\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x0b\n\x03urn\x18\x04 \x01(\x04\"/\n\x08Lockdown\x12\x12\n\nstart_date\x18\x01 \x01(\t\x12\x0f\n\x07per_day\x18\x02 \x03(\x02*\x1b\n\x03Sex\x12\n\n\x06\x46\x45MALE\x10\x00\x12\x08\n\x04MALE\x10\x01*?\n\x06Origin\x12\t\n\x05WHITE\x10\x00\x12\t\n\x05\x42LACK\x10\x01\x12\t\n\x05\x41SIAN\x10\x02\x12\t\n\x05MIXED\x10\x03\x12\t\n\x05OTHER\x10\x04*Y\n\x06NSSEC5\x12\x0e\n\nUNEMPLOYED\x10\x00\x12\n\n\x06HIGHER\x10\x01\x12\x10\n\x0cINTERMEDIATE\x10\x02\x12\t\n\x05SMALL\x10\x03\x12\t\n\x05LOWER\x10\x04\x12\x0b\n\x07ROUTINE\x10\x05*m\n\x03\x42MI\x12\x12\n\x0eNOT_APPLICABLE\x10\x00\x12\x0f\n\x0bUNDERWEIGHT\x10\x01\x12\n\n\x06NORMAL\x10\x02\x12\x0e\n\nOVERWEIGHT\x10\x03\x12\x0b\n\x07OBESE_1\x10\x04\x12\x0b\n\x07OBESE_2\x10\x05\x12\x0b\n\x07OBESE_3\x10\x06*c\n\x08\x41\x63tivity\x12\n\n\x06RETAIL\x10\x00\x12\x12\n\x0ePRIMARY_SCHOOL\x10\x01\x12\x14\n\x10SECONDARY_SCHOOL\x10\x02\x12\x08\n\x04HOME\x10\x03\x12\x08\n\x04WORK\x10\x04\x12\r\n\tNIGHTCLUB\x10\x05\x62\x06proto3')
 )
 
 _SEX = _descriptor.EnumDescriptor(
@@ -40,8 +40,8 @@ _SEX = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1702,
-  serialized_end=1729,
+  serialized_start=1789,
+  serialized_end=1816,
 )
 _sym_db.RegisterEnumDescriptor(_SEX)
 
@@ -75,8 +75,8 @@ _ORIGIN = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1731,
-  serialized_end=1794,
+  serialized_start=1818,
+  serialized_end=1881,
 )
 _sym_db.RegisterEnumDescriptor(_ORIGIN)
 
@@ -114,8 +114,8 @@ _NSSEC5 = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1796,
-  serialized_end=1885,
+  serialized_start=1883,
+  serialized_end=1972,
 )
 _sym_db.RegisterEnumDescriptor(_NSSEC5)
 
@@ -157,8 +157,8 @@ _BMI = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1887,
-  serialized_end=1996,
+  serialized_start=1974,
+  serialized_end=2083,
 )
 _sym_db.RegisterEnumDescriptor(_BMI)
 
@@ -196,8 +196,8 @@ _ACTIVITY = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1998,
-  serialized_end=2097,
+  serialized_start=2085,
+  serialized_end=2184,
 )
 _sym_db.RegisterEnumDescriptor(_ACTIVITY)
 
@@ -264,8 +264,8 @@ _POPULATION_VENUESPERACTIVITYENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=254,
-  serialized_end=331,
+  serialized_start=292,
+  serialized_end=369,
 )
 
 _POPULATION_INFOPERMSOAENTRY = _descriptor.Descriptor(
@@ -301,8 +301,8 @@ _POPULATION_INFOPERMSOAENTRY = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=333,
-  serialized_end=406,
+  serialized_start=371,
+  serialized_end=444,
 )
 
 _POPULATION = _descriptor.Descriptor(
@@ -340,6 +340,13 @@ _POPULATION = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='lockdown', full_name='synthpop.Population.lockdown', index=4,
+      number=5, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
   ],
   extensions=[
   ],
@@ -353,7 +360,7 @@ _POPULATION = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=29,
-  serialized_end=406,
+  serialized_end=444,
 )
 
 
@@ -404,8 +411,8 @@ _HOUSEHOLD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=408,
-  serialized_end=480,
+  serialized_start=446,
+  serialized_end=518,
 )
 
 
@@ -435,8 +442,8 @@ _VENUELIST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=482,
-  serialized_end=526,
+  serialized_start=520,
+  serialized_end=564,
 )
 
 
@@ -480,8 +487,8 @@ _INFOPERMSOA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=528,
-  serialized_end=629,
+  serialized_start=566,
+  serialized_end=667,
 )
 
 
@@ -518,8 +525,8 @@ _POINT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=631,
-  serialized_end=675,
+  serialized_start=669,
+  serialized_end=713,
 )
 
 
@@ -598,8 +605,8 @@ _PERSON = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=678,
-  serialized_end=932,
+  serialized_start=716,
+  serialized_end=970,
 )
 
 
@@ -657,8 +664,8 @@ _DEMOGRAPHICS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=935,
-  serialized_end=1103,
+  serialized_start=973,
+  serialized_end=1141,
 )
 
 
@@ -709,8 +716,8 @@ _HEALTH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1105,
-  serialized_end=1232,
+  serialized_start=1143,
+  serialized_end=1270,
 )
 
 
@@ -817,8 +824,8 @@ _TIMEUSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1235,
-  serialized_end=1446,
+  serialized_start=1273,
+  serialized_end=1484,
 )
 
 
@@ -862,8 +869,8 @@ _FLOWS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1448,
-  serialized_end=1551,
+  serialized_start=1486,
+  serialized_end=1589,
 )
 
 
@@ -900,8 +907,8 @@ _FLOW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1553,
-  serialized_end=1593,
+  serialized_start=1591,
+  serialized_end=1631,
 )
 
 
@@ -952,8 +959,46 @@ _VENUE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1595,
-  serialized_end=1700,
+  serialized_start=1633,
+  serialized_end=1738,
+)
+
+
+_LOCKDOWN = _descriptor.Descriptor(
+  name='Lockdown',
+  full_name='synthpop.Lockdown',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='start_date', full_name='synthpop.Lockdown.start_date', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=_b("").decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='per_day', full_name='synthpop.Lockdown.per_day', index=1,
+      number=2, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1740,
+  serialized_end=1787,
 )
 
 _POPULATION_VENUESPERACTIVITYENTRY.fields_by_name['value'].message_type = _VENUELIST
@@ -964,6 +1009,7 @@ _POPULATION.fields_by_name['households'].message_type = _HOUSEHOLD
 _POPULATION.fields_by_name['people'].message_type = _PERSON
 _POPULATION.fields_by_name['venues_per_activity'].message_type = _POPULATION_VENUESPERACTIVITYENTRY
 _POPULATION.fields_by_name['info_per_msoa'].message_type = _POPULATION_INFOPERMSOAENTRY
+_POPULATION.fields_by_name['lockdown'].message_type = _LOCKDOWN
 _VENUELIST.fields_by_name['venues'].message_type = _VENUE
 _INFOPERMSOA.fields_by_name['shape'].message_type = _POINT
 _INFOPERMSOA.fields_by_name['buildings'].message_type = _POINT
@@ -992,6 +1038,7 @@ DESCRIPTOR.message_types_by_name['TimeUse'] = _TIMEUSE
 DESCRIPTOR.message_types_by_name['Flows'] = _FLOWS
 DESCRIPTOR.message_types_by_name['Flow'] = _FLOW
 DESCRIPTOR.message_types_by_name['Venue'] = _VENUE
+DESCRIPTOR.message_types_by_name['Lockdown'] = _LOCKDOWN
 DESCRIPTOR.enum_types_by_name['Sex'] = _SEX
 DESCRIPTOR.enum_types_by_name['Origin'] = _ORIGIN
 DESCRIPTOR.enum_types_by_name['NSSEC5'] = _NSSEC5
@@ -1098,6 +1145,13 @@ Venue = _reflection.GeneratedProtocolMessageType('Venue', (_message.Message,), d
   # @@protoc_insertion_point(class_scope:synthpop.Venue)
   ))
 _sym_db.RegisterMessage(Venue)
+
+Lockdown = _reflection.GeneratedProtocolMessageType('Lockdown', (_message.Message,), dict(
+  DESCRIPTOR = _LOCKDOWN,
+  __module__ = 'synthpop_pb2'
+  # @@protoc_insertion_point(class_scope:synthpop.Lockdown)
+  ))
+_sym_db.RegisterMessage(Lockdown)
 
 
 _POPULATION_VENUESPERACTIVITYENTRY._options = None
