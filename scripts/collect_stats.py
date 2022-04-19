@@ -8,11 +8,13 @@ import csv
 from markdownTable import markdownTable
 
 rows = []
-for study_area in listdir("config"):
+for study_area in sorted(listdir("config")):
     if study_area == "national.csv":
         continue
     # Assume `cargo build --release` has happened
-    subprocess.run(["./target/release/spc", "config/" + study_area, "--output-stats"])
+    subprocess.run(
+        ["./target/release/spc", "config/" + study_area, "--output-stats"], check=True
+    )
     with open("stats.csv") as f:
         for row in csv.DictReader(f):
             rows.append(row)
@@ -20,4 +22,4 @@ for study_area in listdir("config"):
 # Print as a Markdown table for convenience
 with open("stats.csv") as f:
     # This still isn't quite Github's format; the +'s are weird
-    print(markdownTable(rows).setParams(row_sep = "markdown", quote = False).getMarkdown())
+    print(markdownTable(rows).setParams(row_sep="markdown", quote=False).getMarkdown())

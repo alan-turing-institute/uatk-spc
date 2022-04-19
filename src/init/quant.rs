@@ -153,8 +153,7 @@ fn get_venue_flows(
 
 pub fn load_venues(activity: Activity) -> Result<TiVec<VenueID, Venue>> {
     // I had the wrong CRS originally, but it's from "British National Grid"
-    let reproject = Proj::new_known_crs("EPSG:27700", "EPSG:4326", None)
-        .ok_or(anyhow!("Couldn't set up CRS projection"))?;
+    let reproject = Proj::new_known_crs("EPSG:27700", "EPSG:4326", None)?;
 
     let csv_path = match activity {
         Activity::Retail | Activity::Nightclub => "retailpointsZones.csv",
@@ -173,13 +172,12 @@ pub fn load_venues(activity: Activity) -> Result<TiVec<VenueID, Venue>> {
         // Let's check this while we're at it
         assert_eq!(venues.len(), rec.zonei);
 
-        let pt = reproject.convert((rec.east, rec.north))?;
+        let (x, y) = reproject.convert((rec.east, rec.north))?;
 
         venues.push(Venue {
             id: VenueID(venues.len()),
             activity,
-            // TODO Workaround geo_types version problem
-            location: Point::new(pt.lng(), pt.lat()),
+            location: Point::new(x, y),
             urn: rec.urn,
         });
     }

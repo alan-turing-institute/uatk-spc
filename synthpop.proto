@@ -29,7 +29,7 @@ message VenueList {
 message InfoPerMSOA {
     repeated Point shape = 1;
     uint64 population = 2;
-    // All building centroids within this MSOA. May be empty.
+    // All building centroids within this MSOA. Guaranteed to be non-empty.
     repeated Point buildings = 3;
 }
 
