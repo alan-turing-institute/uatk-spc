@@ -14,13 +14,13 @@ The look-up table links different geographies together. It is used internally by
 
 ## County level data
 
-Contains 47 files, each representing one of the counties of England mentioned above and named
+Contains 47 files, each representing the population in 2020 of one of the counties of England mentioned above, and named
 
 ```
 tus_hse_<county_name>.gz
 ```
 
-This data is based on the [2011 UK census](http://dx.doi.org/10.5257/census/aggregate-2011-1), the [Time Use Survey 2014-15](http://dx.doi.org/10.5255/UKDA-SN-8128-1) and the [Health Survey for England 2017](http://dx.doi.org/10.5255/UKDA-SN-8488-2). The SPENSER (Synthetic Population Estimation and Scenario Projection) microsimulation model ([reference](http://dx.doi.org/10.1111/gean.12320)) distributes a synthetic population based on the census at MSOA scale and projects it to 2020 according to estimates from the Office for National Statistics (ONS). This information was enriched with some of the content of the other two datasets through propensity score matching (PSM) by Karyn Morrissey (Technical University of Denmark). The rest of the datasets can be added *a posteriori* from the identifiers provided.
+This data is based on the [2011 UK census](http://dx.doi.org/10.5257/census/aggregate-2011-1), the [Time Use Survey 2014-15](http://dx.doi.org/10.5255/UKDA-SN-8128-1) and the [Health Survey for England 2017](http://dx.doi.org/10.5255/UKDA-SN-8488-2). The SPENSER (Synthetic Population Estimation and Scenario Projection) microsimulation model ([reference](http://dx.doi.org/10.1111/gean.12320)) distributes a synthetic population based on the census at MSOA scale and projects it to 2020 according to estimates from the Office for National Statistics (ONS). This information was enriched with some of the content of the other two datasets through propensity score matching (PSM) by Prof. Karyn Morrissey (Technical University of Denmark). The rest of the datasets can be added *a posteriori* from the identifiers provided.
 
 The fields currently contained are:
 - `idp`: a unique individual identifier within the present data
@@ -87,4 +87,4 @@ See: Milton R, Batty M, Dennett A, dedicated [RAMP Spatial Interaction Model Git
 timeAtHomeIncreaseCTY.csv
 ```
 
-This file is a subset from [Google COVID-19 Community Mobility Reports](https://www.google.com/covid19/mobility/), cropped to England. It describes the daily reduction in mobility, average at county level, due to lockdown and other COVID-19 restrictions between the 15<sup>th</sup> of February 2020 and 2<sup>nd</sup> of March 2021. Missing values have been replaced by the national average. These values can be used directly to reduce `pnothome` and increase `phometot` (and their sub-categories) to simulate more accurately the period.
+This file is a subset from [Google COVID-19 Community Mobility Reports](https://www.google.com/covid19/mobility/), cropped to England. It describes the daily reduction in mobility, averaged at county level, due to lockdown and other COVID-19 restrictions between the 15<sup>th</sup> of February 2020 and 15<sup>th</sup> of April 2022. Missing values have been replaced by the national average. These values can be used directly to reduce `pnothome` and increase `phometot` (and their sub-categories) to simulate more accurately the period.
