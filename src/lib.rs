@@ -19,7 +19,6 @@ use anyhow::Result;
 use cap::Cap;
 use enum_map::{Enum, EnumMap};
 use geo::{MultiPolygon, Point};
-use ordered_float::NotNan;
 use serde::Deserialize;
 
 pub mod pb {
@@ -118,32 +117,6 @@ pub struct Person {
     pub flows_per_activity: EnumMap<Activity, Vec<(VenueID, f64)>>,
     /// These sum to 1, representing a fraction of a day
     pub duration_per_activity: EnumMap<Activity, f64>,
-}
-
-impl Person {
-    /// Flatten all the flows, regardless of activity
-    pub fn get_baseline_flows(&self, places_to_keep_per_person: usize) -> Vec<Flow> {
-        let mut flows = Vec::new();
-        for activity in Activity::all() {
-            let duration = self.duration_per_activity[activity];
-            for (venue, flow) in &self.flows_per_activity[activity] {
-                // Weight the flows by duration
-                flows.push(Flow {
-                    activity,
-                    venue: *venue,
-                    weight: (flow * duration) as f32,
-                });
-            }
-        }
-
-        // Sort by flows, descending
-        flows.sort_by_key(|flow| NotNan::new(flow.weight).unwrap());
-        flows.reverse();
-        // Only keep the top few
-        flows.truncate(places_to_keep_per_person);
-
-        flows
-    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Enum)]
