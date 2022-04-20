@@ -15,6 +15,7 @@ message Population {
 }
 
 message Household {
+    // This is the index into Population::households
     uint64 id = 1;
     string msoa = 2;
     /// An ID from the original data, kept around for debugging
@@ -44,6 +45,7 @@ message Point {
 }
 
 message Person {
+    // This is the index into Population::people
     uint64 id = 1;
     uint64 household = 2;
     // This indexes into venues_per_activity[Activity::WORK]. This is optional;

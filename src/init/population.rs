@@ -65,17 +65,6 @@ pub fn read_individual_time_use_and_health_data(
         );
     }
 
-    // Strip out households with >10 people
-    let before_households = people_per_household.len();
-    people_per_household.retain(|_, people| people.len() <= 10);
-    let after_households = people_per_household.len();
-    if before_households != after_households {
-        warn!(
-            "{} households with >10 people filtered out",
-            print_count(before_households - after_households)
-        );
-    }
-
     // Now create the people and households
     let _s = info_span!("Creating households").entered();
     info!("Creating households ({})", memory_usage());
