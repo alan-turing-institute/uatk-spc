@@ -52,6 +52,9 @@ pub struct Input {
     pub enable_commuting: bool,
     /// Only people living in MSOAs filled out here will be part of the population
     pub msoas: BTreeSet<MSOA>,
+    /// The minimum proportion of the population that must be preserved when using the sic1d07
+    /// classification
+    pub sic_threshold: f64,
 }
 
 /// Represents a region of the UK.

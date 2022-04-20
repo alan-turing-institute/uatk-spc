@@ -16,7 +16,11 @@ use crate::utilities::{print_count, progress_count};
 use crate::{Activity, PersonID, Population, Venue, VenueID, MSOA};
 
 #[instrument(skip_all)]
-pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> Result<()> {
+pub fn create_commuting_flows(
+    population: &mut Population,
+    sic_threshold: f64,
+    rng: &mut StdRng,
+) -> Result<()> {
     let mut all_workers: Vec<PersonID> = Vec::new();
     // Only keep businesses in MSOAs where a worker lives.
     //
@@ -31,7 +35,7 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
     }
 
     let businesses = Businesses::load(msoas)?;
-    let markets = JobMarket::create(population, &businesses, &all_workers, rng);
+    let markets = JobMarket::create(population, &businesses, all_workers, sic_threshold, rng);
 
     info!("Matching {} job markets", markets.len());
     let mp = MultiProgress::new();
@@ -133,13 +137,10 @@ impl JobMarket {
     fn create(
         population: &Population,
         businesses: &Businesses,
-        all_workers: &Vec<PersonID>,
+        mut all_workers: Vec<PersonID>,
+        sic_threshold: f64,
         rng: &mut StdRng,
     ) -> Vec<JobMarket> {
-        // min proportion of the population that must be preserved when using the sic1d07 classification
-        // TODO Plumb from YAML
-        let sic_threshold = 0.0;
-
         let mut markets = Vec::new();
 
         // First pair workers and jobs using SIC
@@ -155,22 +156,13 @@ impl JobMarket {
 
             // Find workers with a matching SIC
             let mut workers: Vec<PersonID> = Vec::new();
-            for id in all_workers {
+            for id in &all_workers {
                 if population.people[*id].demographics.sic1d07 == *sic {
                     workers.push(*id);
                 }
             }
 
-            // If we have less jobs than people, pick who we want to work
-            if jobs.len() < workers.len() {
-                workers.shuffle(rng);
-                workers.truncate(jobs.len());
-            }
-            // Likewise, we may have too many jobs
-            if jobs.len() > workers.len() {
-                jobs.shuffle(rng);
-                jobs.truncate(workers.len());
-            }
+            trim_jobs_or_workers(&mut jobs, &mut workers, rng);
 
             markets.push(JobMarket {
                 sic: Some(*sic),
@@ -203,8 +195,7 @@ impl JobMarket {
                 all_jobs.push(*id);
             }
         }
-        // TODO I'm not sure this one is correct -- we don't truncate to make sure workers/jobs
-        // match!
+        trim_jobs_or_workers(&mut all_jobs, &mut all_workers, rng);
         return vec![JobMarket {
             sic: None,
             workers: all_workers.clone(),
@@ -248,5 +239,18 @@ impl JobMarket {
             output.push((person, pair.0));
         }
         output
+    }
+}
+
+fn trim_jobs_or_workers(jobs: &mut Vec<VenueID>, workers: &mut Vec<PersonID>, rng: &mut StdRng) {
+    // If we have less jobs than people, pick who we want to work
+    if jobs.len() < workers.len() {
+        workers.shuffle(rng);
+        workers.truncate(jobs.len());
+    }
+    // Likewise, we may have too many jobs
+    if jobs.len() > workers.len() {
+        jobs.shuffle(rng);
+        jobs.truncate(workers.len());
     }
 }

@@ -15,7 +15,7 @@ The following tables summarizes the resources SPC needs to run in different area
 
 Notes:
 
-- `pb_file_size` refers to the size of the protobuf file in `data/output/`
+- `pb_file_size` refers to the size of the uncompressed protobuf file in `data/output/`
 - The total `runtime` is usually dominated by matching workers to businesses, so `commuting_runtime` gives a breakdown
 - Measuring memory usage of Linux processes isn't straightforward, so `memory_usage` should just be a guide
 - These measurements were all taken on one developer's laptop, and they don't represent multiple runs. This table just aims to give a general sense of how long running takes.

@@ -47,7 +47,7 @@ impl Population {
         // The order doesn't matter for these steps
         let commuting_duration = if input.enable_commuting {
             let now = Instant::now();
-            commuting::create_commuting_flows(&mut population, rng)?;
+            commuting::create_commuting_flows(&mut population, input.sic_threshold, rng)?;
             Instant::now() - now
         } else {
             Duration::ZERO
