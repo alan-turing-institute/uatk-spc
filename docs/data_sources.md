@@ -43,9 +43,9 @@ The fields currently contained are:
 - `sic1d07`: Standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities), 1st layer (number corresponding to the letter in alphabetical order)
 - `sic2d07`: Standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities), 2nd layer 
 - Proportion of 24h spent doing different daily activities:
-    `punknown` + `pwork` + `pschool` + `pshop` + `pservices` + `pleisure` + `pescort` + `ptransport` = `pnothome`
-    `phome` + `pworkhome` = `phometot`
-    `pnothome` + `phometot` = 1
+    - `punknown` + `pwork` + `pschool` + `pshop` + `pservices` + `pleisure` + `pescort` + `ptransport` = `pnothome`
+    - `phome` + `pworkhome` = `phometot`
+    - `pnothome` + `phometot` = 1
 - `cvd`: has a cardio-vascular disease (0 or 1)
 - `diabetes`: has diabetes (0 or 1)
 - `bloodpressure`: has high blood pressure (0 or 1)
