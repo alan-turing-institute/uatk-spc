@@ -7,9 +7,7 @@ use geo::Point;
 use serde::{Deserialize, Deserializer};
 
 use super::quant::{get_flows, load_venues, Threshold};
-use crate::utilities::{
-    memory_usage, print_count, progress_count, progress_count_with_msg, progress_file_with_msg,
-};
+use crate::utilities::{memory_usage, print_count, progress_count, progress_file_with_msg};
 use crate::{pb, Activity, Household, Person, PersonID, Population, VenueID, BMI, MSOA};
 
 pub fn read_individual_time_use_and_health_data(
@@ -217,13 +215,10 @@ impl TuPerson {
         }
         pad_durations(&mut duration_per_activity)?;
 
-        let mut flows_per_activity = EnumMap::default();
-        // People only have one home
-        flows_per_activity[Activity::Home] = vec![(household, 1.0)];
-
         Ok(Person {
             id,
             household,
+            workplace: None,
             orig_pid: self.pid,
             location: Point::new(self.lng, self.lat),
 
@@ -286,7 +281,6 @@ impl TuPerson {
                 home_total: self.phometot,
             },
 
-            flows_per_activity,
             duration_per_activity,
         })
     }
@@ -321,28 +315,12 @@ pub fn setup_venue_flows(
     );
 
     // Per MSOA, a list of venues and the probability of going from the MSOA to that venue
-    let flows_per_msoa: BTreeMap<MSOA, Vec<(VenueID, f64)>> =
-        get_flows(activity, &population.msoas, threshold)?;
-
-    // Now let's assign these flows to the people. Near as I can tell, this just copies the flows
-    // to every person in the MSOA. That's loads of duplication -- we could just keep it by (MSOA x
-    // activity), but let's follow the Python for now.
-    let _s = info_span!("Copying flows to people", ?activity).entered();
-    let pb = progress_count_with_msg(population.people.len());
-    for person in &mut population.people {
-        pb.inc(1);
-        if pb.position() % 1000 == 0 {
-            pb.set_message(memory_usage());
-        }
-
-        let msoa = &population.households[person.household].msoa;
-        if let Some(flows) = flows_per_msoa.get(msoa) {
-            // TODO On the national run, we run out of memory around here.
-            person.flows_per_activity[activity] = flows.clone();
-        } else {
-            // I've never observed this, so crash if it ever happens
-            panic!("No flows for {:?} in {}", activity, msoa.0);
-        }
+    for (msoa, flows) in get_flows(activity, &population.msoas, threshold)? {
+        population
+            .info_per_msoa
+            .get_mut(&msoa)
+            .unwrap()
+            .flows_per_activity[activity] = flows;
     }
 
     Ok(())

@@ -4,14 +4,14 @@ The following tables summarizes the resources SPC needs to run in different area
 
 |     study_area     |num_msoas|num_households|num_people|pb_file_size|  runtime |commuting_runtime|memory_usage|
 |--------------------|---------|--------------|----------|------------|----------|-----------------|------------|
-|       bristol      |    55   |    193,873   |  394,739 |  204.51MiB |14 seconds|    2 seconds    |  345.19MiB |
-|        devon       |   107   |    345,882   |  679,259 |  353.06MiB |27 seconds|    6 seconds    |  632.97MiB |
-|        leeds       |   107   |    331,059   |  671,416 |  347.08MiB |31 seconds|    7 seconds    |  628.50MiB |
-|      liverpool     |    61   |    216,559   |  405,738 |  209.54MiB |15 seconds|    3 seconds    |  350.06MiB |
-|       london       |   983   |   3,076,198  | 6,289,513|   3.19GiB  | 8 minutes|    6 minutes    |   5.35GiB  |
-|    two_counties    |    4    |    13,958    |  27,028  |  14.20MiB  |10 seconds|     1 second    |  25.40MiB  |
-|west_yorkshire_small|    3    |    11,033    |  23,575  |  12.40MiB  | 6 seconds|     1 second    |  23.60MiB  |
-|west_yorkshire_large|   299   |    954,106   | 1,961,027| 1009.78MiB |74 seconds|    26 seconds   |   1.53GiB  |
+|       bristol      |    55   |    193,873   |  394,739 |  61.99MiB  | 5 seconds|     1 second    |  141.45MiB |
+|        devon       |   107   |    345,882   |  679,259 |  105.22MiB |16 seconds|    6 seconds    |  277.20MiB |
+|        leeds       |   107   |    331,059   |  671,416 |  104.60MiB |20 seconds|    7 seconds    |  276.95MiB |
+|      liverpool     |    61   |    216,559   |  405,738 |  61.08MiB  | 9 seconds|    3 seconds    |  140.54MiB |
+|       london       |   983   |   3,076,198  | 6,289,513|  969.80MiB | 7 minutes|    6 minutes    |   2.17GiB  |
+|    two_counties    |    4    |    13,958    |  27,028  |   4.49MiB  |10 seconds|     1 second    |  11.55MiB  |
+|west_yorkshire_large|   299   |    954,106   | 1,961,027|  301.93MiB |41 seconds|    25 seconds   |  563.91MiB |
+|west_yorkshire_small|    3    |    11,033    |  23,575  |   4.00MiB  | 7 seconds|     1 second    |  11.42MiB  |
 
 Notes:
 

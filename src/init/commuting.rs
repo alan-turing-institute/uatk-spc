@@ -44,8 +44,7 @@ pub fn create_commuting_flows(population: &mut Population, rng: &mut StdRng) -> 
         })
         .collect();
     for (person, venue_id) in matches.into_iter().flatten() {
-        // Assign the one and only workplace
-        population.people[person].flows_per_activity[Activity::Work] = vec![(venue_id, 1.0)];
+        population.people[person].workplace = Some(venue_id);
     }
 
     // Create venues

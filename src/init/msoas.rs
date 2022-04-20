@@ -2,6 +2,7 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::io::{BufReader, Write};
 
 use anyhow::Result;
+use enum_map::EnumMap;
 use geo::map_coords::MapCoords;
 use geo::prelude::{BoundingRect, Centroid, Contains};
 use geo::{MultiPolygon, Point};
@@ -78,6 +79,7 @@ fn load_msoa_shapes(msoas: &BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA
                         shape,
                         population: *population as usize,
                         buildings: Vec::new(),
+                        flows_per_activity: EnumMap::default(),
                     },
                 );
             }
