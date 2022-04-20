@@ -76,7 +76,7 @@ pub fn calculate_lockdown_per_day(
         // Re-scale the change by total population
         let x = change / total_population as f32;
         // From extra time at home to less time away from home
-        per_day.push((1.0 - (mean_pr_home_tot * x)) / (1.0 - mean_pr_home_tot);
+        per_day.push((1.0 - (mean_pr_home_tot * x)) / (1.0 - mean_pr_home_tot));
     }
 
     Ok(Lockdown {
