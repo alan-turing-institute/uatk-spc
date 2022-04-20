@@ -188,7 +188,6 @@ impl TuPerson {
         duration_per_activity[Activity::Retail] = self.pshop;
         duration_per_activity[Activity::Home] = self.phome;
         duration_per_activity[Activity::Work] = self.pwork;
-        duration_per_activity[Activity::Nightclub] = self.pleisure;
 
         // Use pschool and age to calculate primary/secondary school
         if self.age < 11 {

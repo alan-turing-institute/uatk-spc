@@ -53,7 +53,6 @@ impl Population {
             Duration::ZERO
         };
         population::setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;
-        population::setup_venue_flows(Activity::Nightclub, Threshold::TopN(10), &mut population)?;
         population::setup_venue_flows(
             Activity::PrimarySchool,
             Threshold::TopN(5),

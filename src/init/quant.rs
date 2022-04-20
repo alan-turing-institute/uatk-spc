@@ -36,10 +36,7 @@ pub fn get_flows(
     // Build a mapping from MSOA to zonei
     let mut msoa_to_zonei: HashMap<MSOA, usize> = HashMap::new();
     let (population_csv, prob_sij) = match activity {
-        Activity::Retail | Activity::Nightclub => {
-            ("retailpointsPopulation.csv", "retailpointsProbSij.npy")
-        }
-        // TODO PiJ? SiJ? HiJ?
+        Activity::Retail => ("retailpointsPopulation.csv", "retailpointsProbSij.npy"),
         Activity::PrimarySchool => ("primaryPopulation.csv", "primaryProbPij.npy"),
         Activity::SecondarySchool => ("secondaryPopulation.csv", "secondaryProbPij.npy"),
         Activity::Home | Activity::Work => unreachable!(),
@@ -68,8 +65,7 @@ pub fn get_flows(
         pb.inc(1);
 
         let pr_visit_venue = match activity {
-            // TODO These're treated exactly the same?
-            Activity::Retail | Activity::Nightclub => get_venue_flows(zonei, &table, 0.0)?,
+            Activity::Retail => get_venue_flows(zonei, &table, 0.0)?,
             Activity::PrimarySchool => get_venue_flows(zonei, &table, 0.0)?,
             Activity::SecondarySchool => get_venue_flows(zonei, &table, 0.0)?,
             // Something else must handle these
@@ -134,7 +130,7 @@ pub fn load_venues(activity: Activity) -> Result<TiVec<VenueID, Venue>> {
     let reproject = Proj::new_known_crs("EPSG:27700", "EPSG:4326", None)?;
 
     let csv_path = match activity {
-        Activity::Retail | Activity::Nightclub => "retailpointsZones.csv",
+        Activity::Retail => "retailpointsZones.csv",
         Activity::PrimarySchool => "primaryZones.csv",
         Activity::SecondarySchool => "secondaryZones.csv",
         Activity::Home | Activity::Work => unreachable!(),

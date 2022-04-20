@@ -130,8 +130,6 @@ pub enum Activity {
     SecondarySchool,
     Home,
     Work,
-    Nightclub,
-    // TODO I see quant files for hospitals, why not incorporated yet?
 }
 
 impl Activity {
@@ -142,7 +140,6 @@ impl Activity {
             Activity::SecondarySchool,
             Activity::Home,
             Activity::Work,
-            Activity::Nightclub,
         ]
     }
 }

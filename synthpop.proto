@@ -184,7 +184,6 @@ enum Activity {
     SECONDARY_SCHOOL = 2;
     HOME = 3;
     WORK = 4;
-    NIGHTCLUB = 5;
 }
 
 // Describes a reduction in daily travel behavior due to COVID lockdowns.

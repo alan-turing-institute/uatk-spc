@@ -137,6 +137,5 @@ fn convert_activity(activity: Activity) -> pb::Activity {
         Activity::SecondarySchool => pb::Activity::SecondarySchool,
         Activity::Home => pb::Activity::Home,
         Activity::Work => pb::Activity::Work,
-        Activity::Nightclub => pb::Activity::Nightclub,
     }
 }
