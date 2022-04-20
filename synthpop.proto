@@ -134,7 +134,7 @@ enum BMI {
 }
 
 // The proportion of a day spent doing different daily activities.
-// unknown + work + school + shop + services + leisure + escort + transport = not_home + home + work_home = home_total + not_home + home_total = 1
+// unknown + work + school + shop + services + leisure + escort + transport = not_home; home + work_home = home_total; not_home + home_total = 1
 message TimeUse {
     double unknown = 1;
     double work = 2;
