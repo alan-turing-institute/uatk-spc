@@ -67,7 +67,7 @@ pub fn calculate_lockdown_per_day(
     let mean_pr_home_tot = population
         .people
         .iter()
-        .map(|person| person.time_use.home_tot as f32)
+        .map(|person| person.time_use.home_total as f32)
         .sum::<f32>()
         / total_population as f32;
 
