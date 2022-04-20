@@ -34,6 +34,7 @@ message InfoPerMSOA {
     uint64 population = 2;
     // All building centroids within this MSOA. Guaranteed to be non-empty.
     repeated Point buildings = 3;
+    repeated Flows flows_per_activity = 4;
 }
 
 // In WGS84
@@ -45,17 +46,25 @@ message Point {
 message Person {
     uint64 id = 1;
     uint64 household = 2;
+    // This indexes into venues_per_activity[Activity::WORK]. This is optional;
+    // somebody who doesn't work will have 2^64 - 1 here.
+    uint64 workplace = 3;
     // This is the centroid of the household's MSOA. It's redundant to store it per person, but
     // very convenient.
-    Point location = 3;
+    Point location = 4;
     // An ID from the original data, kept around for debugging
-    int64 orig_pid = 4;
+    int64 orig_pid = 5;
 
-    Demographics demographics = 5;
-    Health health = 6;
-    TimeUse time_use = 7;
+    Demographics demographics = 6;
+    Health health = 7;
+    TimeUse time_use = 8;
+    repeated ActivityDuration activity_durations = 9;
+}
 
-    repeated Flows flows_per_activity = 8;
+// What fraction of a day somebody spends doing an activity.
+message ActivityDuration {
+    Activity activity = 1;
+    double duration = 2;
 }
 
 message Demographics {
@@ -139,12 +148,13 @@ message TimeUse {
     double home_total = 12;
 }
 
-// Per activity, a list of venues where this person is likely to go do that activity.
+// Per activity, a list of venues where anybody living in a certain MSOA is
+// likely to go do that activity.
 message Flows {
+    // Note that HOME and WORK won't be represented here, since it varies
+    // per-person.
     Activity activity = 1;
     repeated Flow flows = 2;
-    // These sum to 1 for all `flows_per_activity`, representing a fraction of a day
-    double activity_duration = 3;
 }
 
 message Flow {

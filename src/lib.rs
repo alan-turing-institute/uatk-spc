@@ -83,6 +83,10 @@ pub struct InfoPerMSOA {
     /// residential, commercial? And some areas don't have any buildings mapped yet!
     // TODO Not guaranteed to be non-empty
     pub buildings: Vec<Point<f32>>,
+    /// Per activity, a list of venues where anybody in this MSOA is likely to go do that activity.
+    /// The probabilities sum to 1.
+    // TODO Consider a distribution type to represent this
+    pub flows_per_activity: EnumMap<Activity, Vec<(VenueID, f64)>>,
 }
 
 /// A special type of venue where people live
@@ -97,6 +101,7 @@ pub struct Household {
 pub struct Person {
     pub id: PersonID,
     pub household: VenueID,
+    pub workplace: Option<VenueID>,
     /// This is the centroid of the household's MSOA. It's redundant to store it per person, but
     /// very convenient.
     pub location: Point<f32>,
@@ -111,10 +116,6 @@ pub struct Person {
 
     pub time_use: pb::TimeUse,
 
-    /// Per activity, a list of venues where this person is likely to go do that activity. The
-    /// probabilities sum to 1.
-    // TODO Consider a distribution type to represent this
-    pub flows_per_activity: EnumMap<Activity, Vec<(VenueID, f64)>>,
     /// These sum to 1, representing a fraction of a day
     pub duration_per_activity: EnumMap<Activity, f64>,
 }

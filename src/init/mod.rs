@@ -35,6 +35,10 @@ impl Population {
             info_per_msoa: BTreeMap::new(),
             lockdown: crate::pb::Lockdown::default(),
         };
+
+        population.info_per_msoa =
+            msoas::get_info_per_msoa(&population.msoas, raw_results.osm_directories)?;
+
         population::read_individual_time_use_and_health_data(
             &mut population,
             raw_results.tus_files,
@@ -63,8 +67,6 @@ impl Population {
 
         // TODO The Python implementation has lots of commented stuff, then some rounding
 
-        population.info_per_msoa =
-            msoas::get_info_per_msoa(&population.msoas, raw_results.osm_directories)?;
         population.lockdown =
             lockdown::calculate_lockdown_per_day(raw_results.msoas_per_county, &population)?;
         population.remove_unused_venues();
@@ -82,8 +84,8 @@ impl Population {
     //  TODO Actually remove the venues from the output entirely, and compact VenueIDs.
     fn remove_unused_venues(&mut self) {
         let mut visited_venues: BTreeSet<(Activity, VenueID)> = BTreeSet::new();
-        for person in &self.people {
-            for (activity, flows) in &person.flows_per_activity {
+        for msoa in self.info_per_msoa.values() {
+            for (activity, flows) in &msoa.flows_per_activity {
                 for (venue, _) in flows {
                     visited_venues.insert((activity, *venue));
                 }
