@@ -71,7 +71,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
         results.osm_directories.push(output_dir);
     }
 
-    let path = download_file("nationaldata", "QUANT_RAMP.tar.gz").await?;
+    let path = download_file("nationaldata", "QUANT_RAMP_spc.tar.gz").await?;
     untar(path, "data/raw_data/nationaldata/QUANT_RAMP/")?;
 
     // CommutingOD is all commented out

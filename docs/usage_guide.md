@@ -60,54 +60,32 @@ This will make the `data` directory in your directory available to the Docker im
 
 ## Troubleshooting
 
-- When you run `cargo build --release`, if you get an error like
+Please [open an issue](https://github.com/dabreegster/spc/issues) if you have any trouble!
 
-  ```shell
-   error: failed to run custom build command for 'proj-sys v0.18.4'
-  ```
+### Building proj
 
-  **Cause**: The Rust code depends on [proj](https://proj.org) to transform coordinates. You may need to install additional dependencies to build it. Please [open an issue](https://github.com/dabreegster/rampfs/issues) if you have any trouble!
+**Symptom**: When you run `cargo build --release`, you get an error like:
 
-  **Suggested Solution**
+```shell
+ error: failed to run custom build command for 'proj-sys v0.18.4'
+```
 
-  On Ubuntu, run:
+**Cause**: The Rust code depends on [proj](https://proj.org) to transform coordinates. You may need to install additional dependencies to build it.
 
-  ```shell
-  apt-get install cmake sqlite3 libclang-dev
-  ```
+**Suggested Solution**
 
-  On Mac, run:
+On Ubuntu, run:
 
-  ```shell
-  brew install pkg-config cmake proj
-  ```
+```shell
+apt-get install cmake sqlite3 libclang-dev
+```
 
-- When you run `cargo run --release`, you get:
+On Mac, run:
 
-  ```
-  ModuleNotFoundError: No module named 'numpy'
-  ```
+```shell
+brew install pkg-config cmake proj
+```
 
-  **Cause**: Although SPC is written in **Rust**, one step of the pipeline needs to run `fix_quant_data.py`, a small Python script. This requires `numpy`. `python3 fix_quant_data.py` will be called, and the `python3` in your path must have `numpy` installed.
+### Downloading
 
-  **Suggested Solution**:
-
-  In Linux e.g. Ubuntu, run:
-
-  ```
-  apt-get install python3-numpy
-  ```
-
-  You can also run
-
-  ```
-  pip install numpy`
-  ```
-
-  In Mac you can run
-
-  ```
-  brew install python numpy
-  ```
-
-  It's not ideal to rely on system-wide dependencies like this. We're working to remove this step entirely and avoid needing Python.
+If you have trouble downloading any of the large files, you can download them manually. The logs will contain a line such as `Downloading https://ramp0storage.blob.core.windows.net/nationaldata/QUANT_RAMP_spc.tar.gz to data/raw_data/nationaldata/QUANT_RAMP_spc.tar.gz`. This tells you the URL to retrieve, and where to put the output file. Note that SPC won't attempt to download files if they already exist, so if you wind up with a partially downloaded file, you have to manually remove it.

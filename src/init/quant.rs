@@ -3,7 +3,6 @@
 
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::path::Path;
-use std::process::Command;
 
 use anyhow::Result;
 use fs_err::File;
@@ -38,11 +37,11 @@ pub fn get_flows(
     let mut msoa_to_zonei: HashMap<MSOA, usize> = HashMap::new();
     let (population_csv, prob_sij) = match activity {
         Activity::Retail | Activity::Nightclub => {
-            ("retailpointsPopulation.csv", "retailpointsProbSij.bin")
+            ("retailpointsPopulation.csv", "retailpointsProbSij.npy")
         }
         // TODO PiJ? SiJ? HiJ?
-        Activity::PrimarySchool => ("primaryPopulation.csv", "primaryProbPij.bin"),
-        Activity::SecondarySchool => ("secondaryPopulation.csv", "secondaryProbPij.bin"),
+        Activity::PrimarySchool => ("primaryPopulation.csv", "primaryProbPij.npy"),
+        Activity::SecondarySchool => ("secondaryPopulation.csv", "secondaryProbPij.npy"),
         Activity::Home | Activity::Work => unreachable!(),
     };
     for rec in csv::Reader::from_reader(File::open(
@@ -54,29 +53,8 @@ pub fn get_flows(
         msoa_to_zonei.insert(rec.msoaiz, rec.zonei);
     }
 
-    let table_path =
-        format!("data/raw_data/nationaldata/QUANT_RAMP/{}", prob_sij).replace(".bin", ".npy");
-
-    if File::open(&table_path).is_err() {
-        info!(
-            "Running a Python script to convert QUANT data from pickle to the regular numpy format"
-        );
-        let status = Command::new("python3")
-            .arg("scripts/fix_quant_data.py")
-            .status()?;
-        if !status.success() {
-            bail!("fix_quant_data.py failed");
-        }
-    }
-    let table = match File::open(table_path) {
-        Ok(file) => Array2::<f64>::read_npy(file)?,
-        Err(err) => {
-            bail!(
-                "Even after fix_quant_data.py, a QUANT file is missing: {}",
-                err
-            );
-        }
-    };
+    let table_path = format!("data/raw_data/nationaldata/QUANT_RAMP/{}", prob_sij);
+    let table = Array2::<f64>::read_npy(File::open(table_path)?)?;
 
     let pb = progress_count_with_msg(msoas.len());
     let mut result = BTreeMap::new();
