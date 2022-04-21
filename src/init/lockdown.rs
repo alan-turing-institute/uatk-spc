@@ -63,11 +63,11 @@ pub fn calculate_lockdown_per_day(
         }
     }
 
-    // Find the mean probability of staying at home, over the entire population
-    let mean_pr_home = population
+    // Find the mean decrease of time spent outside of home, over the entire population
+    let mean_pr_home_tot = population
         .people
         .iter()
-        .map(|person| person.time_use.home as f32)
+        .map(|person| person.time_use.home_total as f32)
         .sum::<f32>()
         / total_population as f32;
 
@@ -76,7 +76,7 @@ pub fn calculate_lockdown_per_day(
         // Re-scale the change by total population
         let x = change / total_population as f32;
         // From extra time at home to less time away from home
-        per_day.push((1.0 - (mean_pr_home * x)) / mean_pr_home);
+        per_day.push((1.0 - (mean_pr_home_tot * x)) / (1.0 - mean_pr_home_tot));
     }
 
     Ok(Lockdown {

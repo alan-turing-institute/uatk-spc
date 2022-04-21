@@ -190,6 +190,6 @@ enum Activity {
 message Lockdown {
     // The YYYY-MM-DD date of the first entry in the daily list.
     string start_date = 1;
-    // A number in [0, 1] for each day of lockdown. 0 means all time just spent at home.
+    // A coefficient to be applied to all not at home activities (unknown; work; school; shop; services; leisure; escort; transport; not_home). Update at home activity so that it still sums to 1.
     repeated float per_day = 2;
 }
