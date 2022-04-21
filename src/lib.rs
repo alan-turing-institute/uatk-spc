@@ -108,8 +108,10 @@ pub struct Person {
     /// This is the centroid of the household's MSOA. It's redundant to store it per person, but
     /// very convenient.
     pub location: Point<f32>,
-    /// An ID from the original data, kept around for debugging
-    pub orig_pid: isize,
+    // IDs from the original data
+    pub orig_pid_census: i64,
+    pub orig_pid_tus: i64,
+    pub orig_pid_hse: i64,
 
     pub demographics: pb::Demographics,
     pub bmi: BMI,
