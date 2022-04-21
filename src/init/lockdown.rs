@@ -4,14 +4,17 @@ use anyhow::Result;
 use fs_err::File;
 use serde::Deserialize;
 
-use crate::{Activity, County, Population, MSOA};
+use crate::pb::Lockdown;
+use crate::utilities::print_count;
+use crate::{County, Population, MSOA};
 
-/// The result is in [0, 1]
 #[instrument(skip_all)]
 pub fn calculate_lockdown_per_day(
     msoas_per_county: BTreeMap<County, Vec<MSOA>>,
     population: &Population,
-) -> Result<Vec<f32>> {
+) -> Result<Lockdown> {
+    let day0 = "2020-02-15";
+
     info!("Calculating per-day lockdown values");
 
     // First get the total population per Google mobility area (which is a bunch of MSOAs)
@@ -27,8 +30,14 @@ pub fn calculate_lockdown_per_day(
             )
         })
         .collect();
+    let total_population = population_per_county.values().sum();
+    info!(
+        "Population has {} people, but based on per-county sum, it's {}",
+        print_count(population.people.len()),
+        print_count(total_population)
+    );
 
-    // Indexed by day
+    // Indexed by day. This is change * population, summed over all matching counties
     let mut total_change_per_day: Vec<f32> = Vec::new();
 
     for rec in csv::Reader::from_reader(File::open(
@@ -37,6 +46,11 @@ pub fn calculate_lockdown_per_day(
     .deserialize()
     {
         let rec: Row = rec?;
+        // Make sure day 0 is consistent across counties
+        if rec.day == 0 {
+            assert_eq!(rec.date, day0);
+        }
+
         // The CSV file seems to list days in order, but just in case, pad with 0's to make sure
         // the vector is the right size
         if rec.day >= total_change_per_day.len() {
@@ -49,24 +63,26 @@ pub fn calculate_lockdown_per_day(
         }
     }
 
-    // Find the mean probability of staying at home, over the entire population
-    let mean_pr_home = population
+    // Find the mean decrease of time spent outside of home, over the entire population
+    let mean_pr_home_tot = population
         .people
         .iter()
-        .map(|person| person.duration_per_activity[Activity::Home] as f32)
+        .map(|person| person.time_use.home_total as f32)
         .sum::<f32>()
-        / population.people.len() as f32;
+        / total_population as f32;
 
-    let mut lockdown_per_day = Vec::new();
-    let total_population = population_per_county.values().sum::<usize>() as f32;
+    let mut per_day = Vec::new();
     for change in total_change_per_day {
         // Re-scale the change by total population
-        let x = change / total_population;
-        // "From extra time at home to less time away from home"
-        lockdown_per_day.push((1.0 - (mean_pr_home * x)) / mean_pr_home);
+        let x = change / total_population as f32;
+        // From extra time at home to less time away from home
+        per_day.push((1.0 - (mean_pr_home_tot * x)) / (1.0 - mean_pr_home_tot));
     }
 
-    Ok(lockdown_per_day)
+    Ok(Lockdown {
+        start_date: day0.to_string(),
+        per_day,
+    })
 }
 
 #[derive(Deserialize)]
@@ -75,5 +91,5 @@ struct Row {
     county: County,
     day: usize,
     change: f32,
-    // date doesn't matter
+    date: String,
 }

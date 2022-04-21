@@ -4,19 +4,18 @@ The following tables summarizes the resources SPC needs to run in different area
 
 |     study_area     |num_msoas|num_households|num_people|pb_file_size|  runtime |commuting_runtime|memory_usage|
 |--------------------|---------|--------------|----------|------------|----------|-----------------|------------|
-|west_yorkshire_large|   299   |    954,106   | 1,961,027| 1009.78MiB |74 seconds|    26 seconds   |   1.53GiB  |
-|       london       |   983   |   3,076,198  | 6,289,513|   3.19GiB  | 8 minutes|    6 minutes    |   5.35GiB  |
-|        leeds       |   107   |    331,059   |  671,416 |  347.08MiB |31 seconds|    7 seconds    |  628.50MiB |
-|        devon       |   107   |    345,882   |  679,259 |  353.06MiB |27 seconds|    6 seconds    |  632.97MiB |
-|    two_counties    |    4    |    13,958    |  27,028  |  14.20MiB  |10 seconds|     1 second    |  25.40MiB  |
-|    two_counties    |    4    |    13,958    |  27,028  |  14.20MiB  |10 seconds|     1 second    |  25.40MiB  |
-|       bristol      |    55   |    193,873   |  394,739 |  204.51MiB |14 seconds|    2 seconds    |  345.19MiB |
-|west_yorkshire_small|    3    |    11,033    |  23,575  |  12.40MiB  | 6 seconds|     1 second    |  23.60MiB  |
-|      liverpool     |    61   |    216,559   |  405,738 |  209.54MiB |15 seconds|    3 seconds    |  350.06MiB |
+|       bristol      |    55   |    196,230   |  456,532 |  70.54MiB  | 5 seconds|     1 second    |  142.14MiB |
+|        devon       |   107   |    347,762   |  783,695 |  119.16MiB |16 seconds|    7 seconds    |  278.37MiB |
+|        leeds       |   107   |    333,449   |  771,520 |  118.60MiB |20 seconds|    7 seconds    |  278.05MiB |
+|      liverpool     |    61   |    218,559   |  494,999 |  73.66MiB  | 9 seconds|    3 seconds    |  141.51MiB |
+|       london       |   983   |   3,135,814  | 8,672,103|   1.28GiB  |11 minutes|    10 minutes   |   3.95GiB  |
+|    two_counties    |    4    |    14,011    |  31,024  |   5.02MiB  |10 seconds|     1 second    |  11.60MiB  |
+|west_yorkshire_large|   299   |    960,426   | 2,272,063|  345.67MiB |43 seconds|    27 seconds   | 1015.37MiB |
+|west_yorkshire_small|    3    |    11,105    |  27,466  |   4.55MiB  | 6 seconds|     1 second    |  11.46MiB  |
 
 Notes:
 
-- `pb_file_size` refers to the size of the protobuf file in `data/output/`
+- `pb_file_size` refers to the size of the uncompressed protobuf file in `data/output/`
 - The total `runtime` is usually dominated by matching workers to businesses, so `commuting_runtime` gives a breakdown
 - Measuring memory usage of Linux processes isn't straightforward, so `memory_usage` should just be a guide
 - These measurements were all taken on one developer's laptop, and they don't represent multiple runs. This table just aims to give a general sense of how long running takes.

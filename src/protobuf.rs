@@ -6,7 +6,7 @@ use geo::coords_iter::CoordsIter;
 use geo::{Coordinate, Point};
 use prost::Message;
 
-use crate::{pb, Activity, Person, Population, BMI};
+use crate::{pb, Activity, InfoPerMSOA, Population, BMI};
 
 /// Returns the bytes written
 pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
@@ -29,6 +29,10 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
         output.people.push(pb::Person {
             id: person.id.0.try_into()?,
             household: person.household.0.try_into()?,
+            workplace: match person.workplace {
+                Some(id) => id.0.try_into()?,
+                None => u64::MAX,
+            },
             location: Some(convert_point(&person.location)),
             orig_pid: person.orig_pid.try_into()?,
             demographics: Some(person.demographics.clone()),
@@ -48,7 +52,14 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
                 has_high_blood_pressure: person.has_high_blood_pressure,
             }),
             time_use: Some(person.time_use.clone()),
-            flows_per_activity: convert_flows(person),
+            activity_durations: person
+                .duration_per_activity
+                .iter()
+                .map(|(activity, duration)| pb::ActivityDuration {
+                    activity: convert_activity(activity).into(),
+                    duration: *duration,
+                })
+                .collect(),
         });
     }
 
@@ -75,6 +86,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
                 shape: info.shape.coords_iter().map(convert_coordinate).collect(),
                 population: info.population.try_into()?,
                 buildings: info.buildings.iter().map(convert_point).collect(),
+                flows_per_activity: convert_flows(info),
             },
         );
     }
@@ -101,12 +113,11 @@ fn convert_coordinate(pt: Coordinate<f32>) -> pb::Point {
     }
 }
 
-fn convert_flows(person: &Person) -> Vec<pb::Flows> {
+fn convert_flows(msoa: &InfoPerMSOA) -> Vec<pb::Flows> {
     let mut output = Vec::new();
-    for (activity, flows) in &person.flows_per_activity {
+    for (activity, flows) in &msoa.flows_per_activity {
         output.push(pb::Flows {
             activity: convert_activity(activity).into(),
-            activity_duration: person.duration_per_activity[activity],
             flows: flows
                 .iter()
                 .map(|(venue, weight)| pb::Flow {
@@ -126,6 +137,5 @@ fn convert_activity(activity: Activity) -> pb::Activity {
         Activity::SecondarySchool => pb::Activity::SecondarySchool,
         Activity::Home => pb::Activity::Home,
         Activity::Work => pb::Activity::Work,
-        Activity::Nightclub => pb::Activity::Nightclub,
     }
 }

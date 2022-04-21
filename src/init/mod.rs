@@ -33,8 +33,12 @@ impl Population {
             people: TiVec::new(),
             venues_per_activity: EnumMap::default(),
             info_per_msoa: BTreeMap::new(),
-            lockdown_per_day: Vec::new(),
+            lockdown: crate::pb::Lockdown::default(),
         };
+
+        population.info_per_msoa =
+            msoas::get_info_per_msoa(&population.msoas, raw_results.osm_directories)?;
+
         population::read_individual_time_use_and_health_data(
             &mut population,
             raw_results.tus_files,
@@ -43,13 +47,12 @@ impl Population {
         // The order doesn't matter for these steps
         let commuting_duration = if input.enable_commuting {
             let now = Instant::now();
-            commuting::create_commuting_flows(&mut population, rng)?;
+            commuting::create_commuting_flows(&mut population, input.sic_threshold, rng)?;
             Instant::now() - now
         } else {
             Duration::ZERO
         };
         population::setup_venue_flows(Activity::Retail, Threshold::TopN(10), &mut population)?;
-        population::setup_venue_flows(Activity::Nightclub, Threshold::TopN(10), &mut population)?;
         population::setup_venue_flows(
             Activity::PrimarySchool,
             Threshold::TopN(5),
@@ -63,9 +66,7 @@ impl Population {
 
         // TODO The Python implementation has lots of commented stuff, then some rounding
 
-        population.info_per_msoa =
-            msoas::get_info_per_msoa(&population.msoas, raw_results.osm_directories)?;
-        population.lockdown_per_day =
+        population.lockdown =
             lockdown::calculate_lockdown_per_day(raw_results.msoas_per_county, &population)?;
         population.remove_unused_venues();
         Ok((population, commuting_duration))
@@ -82,8 +83,8 @@ impl Population {
     //  TODO Actually remove the venues from the output entirely, and compact VenueIDs.
     fn remove_unused_venues(&mut self) {
         let mut visited_venues: BTreeSet<(Activity, VenueID)> = BTreeSet::new();
-        for person in &self.people {
-            for (activity, flows) in &person.flows_per_activity {
+        for msoa in self.info_per_msoa.values() {
+            for (activity, flows) in &msoa.flows_per_activity {
                 for (venue, _) in flows {
                     visited_venues.insert((activity, *venue));
                 }

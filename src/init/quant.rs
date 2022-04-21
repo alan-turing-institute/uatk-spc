@@ -3,7 +3,6 @@
 
 use std::collections::{BTreeMap, BTreeSet, HashMap};
 use std::path::Path;
-use std::process::Command;
 
 use anyhow::Result;
 use fs_err::File;
@@ -37,12 +36,9 @@ pub fn get_flows(
     // Build a mapping from MSOA to zonei
     let mut msoa_to_zonei: HashMap<MSOA, usize> = HashMap::new();
     let (population_csv, prob_sij) = match activity {
-        Activity::Retail | Activity::Nightclub => {
-            ("retailpointsPopulation.csv", "retailpointsProbSij.bin")
-        }
-        // TODO PiJ? SiJ? HiJ?
-        Activity::PrimarySchool => ("primaryPopulation.csv", "primaryProbPij.bin"),
-        Activity::SecondarySchool => ("secondaryPopulation.csv", "secondaryProbPij.bin"),
+        Activity::Retail => ("retailpointsPopulation.csv", "retailpointsProbSij.npy"),
+        Activity::PrimarySchool => ("primaryPopulation.csv", "primaryProbPij.npy"),
+        Activity::SecondarySchool => ("secondaryPopulation.csv", "secondaryProbPij.npy"),
         Activity::Home | Activity::Work => unreachable!(),
     };
     for rec in csv::Reader::from_reader(File::open(
@@ -54,29 +50,8 @@ pub fn get_flows(
         msoa_to_zonei.insert(rec.msoaiz, rec.zonei);
     }
 
-    let table_path =
-        format!("data/raw_data/nationaldata/QUANT_RAMP/{}", prob_sij).replace(".bin", ".npy");
-
-    if File::open(&table_path).is_err() {
-        info!(
-            "Running a Python script to convert QUANT data from pickle to the regular numpy format"
-        );
-        let status = Command::new("python3")
-            .arg("scripts/fix_quant_data.py")
-            .status()?;
-        if !status.success() {
-            bail!("fix_quant_data.py failed");
-        }
-    }
-    let table = match File::open(table_path) {
-        Ok(file) => Array2::<f64>::read_npy(file)?,
-        Err(err) => {
-            bail!(
-                "Even after fix_quant_data.py, a QUANT file is missing: {}",
-                err
-            );
-        }
-    };
+    let table_path = format!("data/raw_data/nationaldata/QUANT_RAMP/{}", prob_sij);
+    let table = Array2::<f64>::read_npy(File::open(table_path)?)?;
 
     let pb = progress_count_with_msg(msoas.len());
     let mut result = BTreeMap::new();
@@ -90,8 +65,7 @@ pub fn get_flows(
         pb.inc(1);
 
         let pr_visit_venue = match activity {
-            // TODO These're treated exactly the same?
-            Activity::Retail | Activity::Nightclub => get_venue_flows(zonei, &table, 0.0)?,
+            Activity::Retail => get_venue_flows(zonei, &table, 0.0)?,
             Activity::PrimarySchool => get_venue_flows(zonei, &table, 0.0)?,
             Activity::SecondarySchool => get_venue_flows(zonei, &table, 0.0)?,
             // Something else must handle these
@@ -156,7 +130,7 @@ pub fn load_venues(activity: Activity) -> Result<TiVec<VenueID, Venue>> {
     let reproject = Proj::new_known_crs("EPSG:27700", "EPSG:4326", None)?;
 
     let csv_path = match activity {
-        Activity::Retail | Activity::Nightclub => "retailpointsZones.csv",
+        Activity::Retail => "retailpointsZones.csv",
         Activity::PrimarySchool => "primaryZones.csv",
         Activity::SecondarySchool => "secondaryZones.csv",
         Activity::Home | Activity::Work => unreachable!(),

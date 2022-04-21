@@ -19,7 +19,6 @@ use anyhow::Result;
 use cap::Cap;
 use enum_map::{Enum, EnumMap};
 use geo::{MultiPolygon, Point};
-use ordered_float::NotNan;
 use serde::Deserialize;
 
 pub mod pb {
@@ -45,14 +44,17 @@ pub struct Population {
     pub venues_per_activity: EnumMap<Activity, TiVec<VenueID, Venue>>,
 
     pub info_per_msoa: BTreeMap<MSOA, InfoPerMSOA>,
-    /// A number in [0, 1] for each day. 0 means all time just spent at home
-    pub lockdown_per_day: Vec<f32>,
+
+    pub lockdown: pb::Lockdown,
 }
 
 pub struct Input {
     pub enable_commuting: bool,
     /// Only people living in MSOAs filled out here will be part of the population
     pub msoas: BTreeSet<MSOA>,
+    /// The minimum proportion of the population that must be preserved when using the sic1d07
+    /// classification
+    pub sic_threshold: f64,
 }
 
 /// Represents a region of the UK.
@@ -84,6 +86,10 @@ pub struct InfoPerMSOA {
     /// residential, commercial? And some areas don't have any buildings mapped yet!
     // TODO Not guaranteed to be non-empty
     pub buildings: Vec<Point<f32>>,
+    /// Per activity, a list of venues where anybody in this MSOA is likely to go do that activity.
+    /// The probabilities sum to 1.
+    // TODO Consider a distribution type to represent this
+    pub flows_per_activity: EnumMap<Activity, Vec<(VenueID, f64)>>,
 }
 
 /// A special type of venue where people live
@@ -98,6 +104,7 @@ pub struct Household {
 pub struct Person {
     pub id: PersonID,
     pub household: VenueID,
+    pub workplace: Option<VenueID>,
     /// This is the centroid of the household's MSOA. It's redundant to store it per person, but
     /// very convenient.
     pub location: Point<f32>,
@@ -112,38 +119,8 @@ pub struct Person {
 
     pub time_use: pb::TimeUse,
 
-    /// Per activity, a list of venues where this person is likely to go do that activity. The
-    /// probabilities sum to 1.
-    // TODO Consider a distribution type to represent this
-    pub flows_per_activity: EnumMap<Activity, Vec<(VenueID, f64)>>,
     /// These sum to 1, representing a fraction of a day
     pub duration_per_activity: EnumMap<Activity, f64>,
-}
-
-impl Person {
-    /// Flatten all the flows, regardless of activity
-    pub fn get_baseline_flows(&self, places_to_keep_per_person: usize) -> Vec<Flow> {
-        let mut flows = Vec::new();
-        for activity in Activity::all() {
-            let duration = self.duration_per_activity[activity];
-            for (venue, flow) in &self.flows_per_activity[activity] {
-                // Weight the flows by duration
-                flows.push(Flow {
-                    activity,
-                    venue: *venue,
-                    weight: (flow * duration) as f32,
-                });
-            }
-        }
-
-        // Sort by flows, descending
-        flows.sort_by_key(|flow| NotNan::new(flow.weight).unwrap());
-        flows.reverse();
-        // Only keep the top few
-        flows.truncate(places_to_keep_per_person);
-
-        flows
-    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Enum)]
@@ -153,8 +130,6 @@ pub enum Activity {
     SecondarySchool,
     Home,
     Work,
-    Nightclub,
-    // TODO I see quant files for hospitals, why not incorporated yet?
 }
 
 impl Activity {
@@ -165,7 +140,6 @@ impl Activity {
             Activity::SecondarySchool,
             Activity::Home,
             Activity::Work,
-            Activity::Nightclub,
         ]
     }
 }
