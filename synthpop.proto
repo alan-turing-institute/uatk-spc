@@ -78,13 +78,17 @@ message Demographics {
     NSSEC5 socioeconomic_classification = 4;
     // The Standard Industrial Classification of Economic Activities 2007, 1st
     // layer (number corresponding to the letter in alphabetical order) for
-    // where this person works. 0 means none. See
+    // where this person works. 0 means not applicable. See
     // https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities.
+    //
+    // For example, 1 means "Agriculture, forestry, & fishing." 3 means "Manufacturing."
     uint64 sic1d07 = 5;
-    // Standard Industrial Classification of Economic Activities 2007, 2nd layer
+    // Standard Industrial Classification of Economic Activities 2007, 2nd
+    // layer. 0 means not applicable.
     uint64 sic2d07 = 6;
     // Previous version of the Standard Occupational Classification
-    // (https://www.ons.gov.uk/methodology/classificationsandstandards/standardoccupationalclassificationsoc/soc2010)
+    // (https://www.ons.gov.uk/methodology/classificationsandstandards/standardoccupationalclassificationsoc/soc2010).
+    // 0 means not applicable.
     uint64 soc2010 = 7;
 }
 
