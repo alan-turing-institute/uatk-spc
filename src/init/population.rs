@@ -120,7 +120,9 @@ struct TuPerson {
     msoa: MSOA,
     #[serde(deserialize_with = "parse_isize")]
     hid: isize,
-    pid: isize,
+    pid: i64,
+    pid_tus: i64,
+    pid_hse: i64,
     lat: f32,
     lng: f32,
 
@@ -130,6 +132,10 @@ struct TuPerson {
     nssec5: usize,
     #[serde(deserialize_with = "parse_u64_or_na")]
     sic1d07: u64,
+    #[serde(deserialize_with = "parse_u64_or_na")]
+    sic2d07: u64,
+    #[serde(deserialize_with = "parse_u64_or_na")]
+    soc2010: u64,
 
     #[serde(rename = "BMIvg6")]
     bmi: String,
@@ -207,7 +213,9 @@ impl TuPerson {
             id,
             household,
             workplace: None,
-            orig_pid: self.pid,
+            orig_pid_census: self.pid,
+            orig_pid_tus: self.pid_tus,
+            orig_pid_hse: self.pid_hse,
             location: Point::new(self.lng, self.lat),
 
             demographics: pb::Demographics {
@@ -238,6 +246,8 @@ impl TuPerson {
                 }
                 .into(),
                 sic1d07: self.sic1d07,
+                sic2d07: self.sic2d07,
+                soc2010: self.soc2010,
             },
 
             bmi: match self.bmi.as_str() {

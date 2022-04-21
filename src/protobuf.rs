@@ -33,8 +33,9 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
                 Some(id) => id.0.try_into()?,
                 None => u64::MAX,
             },
-            location: Some(convert_point(&person.location)),
-            orig_pid: person.orig_pid.try_into()?,
+            orig_pid_census: person.orig_pid_census,
+            orig_pid_tus: person.orig_pid_tus,
+            orig_pid_hse: person.orig_pid_hse,
             demographics: Some(person.demographics.clone()),
             health: Some(pb::Health {
                 bmi: match person.bmi {

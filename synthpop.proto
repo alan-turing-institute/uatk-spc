@@ -21,7 +21,6 @@ message Household {
     /// An ID from the original data, kept around for debugging
     int64 orig_hid = 3;
     // These IDs index into `Population::people`
-    // TODO These're redundant; worth putting here?
     repeated uint64 members = 4;
 }
 
@@ -47,20 +46,23 @@ message Point {
 message Person {
     // This is the index into Population::people
     uint64 id = 1;
+    // This is the index into Population::households
     uint64 household = 2;
     // This indexes into venues_per_activity[Activity::WORK]. This is optional;
     // somebody who doesn't work will have 2^64 - 1 here.
     uint64 workplace = 3;
-    // This is the centroid of the household's MSOA. It's redundant to store it per person, but
-    // very convenient.
-    Point location = 4;
-    // An ID from the original data, kept around for debugging
-    int64 orig_pid = 5;
 
-    Demographics demographics = 6;
-    Health health = 7;
-    TimeUse time_use = 8;
-    repeated ActivityDuration activity_durations = 9;
+    // identifier linking to the 2011 Census
+    int64 orig_pid_census = 4;
+    // identifier linking to the Time Use Survey 2015
+    int64 orig_pid_tus = 5;
+    // identifier linking to the Health Survey for England 2017
+    int64 orig_pid_hse = 6;
+
+    Demographics demographics = 7;
+    Health health = 8;
+    TimeUse time_use = 9;
+    repeated ActivityDuration activity_durations = 10;
 }
 
 // What fraction of a day somebody spends doing an activity.
@@ -74,9 +76,20 @@ message Demographics {
     uint32 age_years = 2;
     Origin origin = 3;
     NSSEC5 socioeconomic_classification = 4;
-    // The Standard Industry Classification for where this person works. 0 means none.
+    // The Standard Industrial Classification of Economic Activities 2007, 1st
+    // layer (number corresponding to the letter in alphabetical order) for
+    // where this person works. 0 means not applicable. See
+    // https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities.
+    //
+    // For example, 1 means "Agriculture, forestry, & fishing." 3 means "Manufacturing."
     uint64 sic1d07 = 5;
-    // TODO Include soc2010, sic2d07?
+    // Standard Industrial Classification of Economic Activities 2007, 2nd
+    // layer. 0 means not applicable.
+    uint64 sic2d07 = 6;
+    // Previous version of the Standard Occupational Classification
+    // (https://www.ons.gov.uk/methodology/classificationsandstandards/standardoccupationalclassificationsoc/soc2010).
+    // 0 means not applicable.
+    uint64 soc2010 = 7;
 }
 
 enum Sex {
@@ -134,7 +147,9 @@ enum BMI {
 }
 
 // The proportion of a day spent doing different daily activities.
-// unknown + work + school + shop + services + leisure + escort + transport = not_home; home + work_home = home_total; not_home + home_total = 1
+// unknown + work + school + shop + services + leisure + escort + transport = not_home
+// home + work_home = home_total
+// not_home + home_total = 1
 message TimeUse {
     double unknown = 1;
     double work = 2;
