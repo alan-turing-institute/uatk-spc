@@ -22,7 +22,7 @@ If you get some errors during the compilation process, take a look at
 ## Generating output for a study area
 
 ```
-cargo run --release -- config/west_yorkshire_small.csv
+cargo run --release -- config/west_yorkshire_small.txt
 ```
 
 This will download some large files the first time. You'll wind up with
@@ -32,14 +32,14 @@ intermediate files in `data/raw_data/`. The next time you run this command
 
 ## Adding a new study area
 
-A study area requires a list of MSOAs to include. Create a new file `config/your_region.csv` with this list, following the format of the other files in there. (The first line must set the column name as `"MSOA11CD"`.)
+A study area requires a list of MSOAs to include. Create a new file `config/your_region.txt` with this list, following the format of the other files in there.
 
 You can use the `scripts/select_msoas.py` script to generate this list based on an ONS geography code. The script looks for every MSOA where the `CTY20NM` is Liverpool. Refer to `data/raw_data/referencedata/lookUp.csv` for all geographies.
 
 After you write a new file, you simply run the pipeline with that as input:
 
 ```
-cargo run --release -- config/your_region.csv
+cargo run --release -- config/your_region.txt
 ```
 
 ## Docker
@@ -53,7 +53,7 @@ cd spc
 # won't be necessary.
 docker build -t spc .
 # Run SPC in Docker
-docker run --mount type=bind,source="$(pwd)"/data,target=/spc/data -t spc /spc/target/release/spc config/west_yorkshire_small.csv
+docker run --mount type=bind,source="$(pwd)"/data,target=/spc/data -t spc /spc/target/release/spc config/west_yorkshire_small.txt
 ```
 
 This will make the `data` directory in your directory available to the Docker image, where it'll download the large input files and produce the final output.

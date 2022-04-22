@@ -64,7 +64,7 @@ pub struct Input {
 // - http://statistics.data.gov.uk/id/statistical-geography/E02002191
 // - https://mapit.mysociety.org/area/36070.html (they have a paid API)
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
-pub struct MSOA(String);
+pub struct MSOA(pub String);
 
 /// This represents a 2020 county boundary, which contains several MSOAs. It's used in Google
 /// mobility data. It's not the same county as defined by ONS.

@@ -1,7 +1,7 @@
 //! This is the command-line interface to SPC.
 
 use std::collections::BTreeSet;
-use std::io::Write;
+use std::io::{BufRead, BufReader, Write};
 use std::path::Path;
 use std::time::Instant;
 
@@ -10,7 +10,6 @@ use clap::Parser;
 use fs_err::File;
 use rand::rngs::StdRng;
 use rand::SeedableRng;
-use serde::Deserialize;
 use tracing::{info, info_span};
 
 use spc::utilities::{memory_usage, print_count};
@@ -98,20 +97,14 @@ impl Args {
             input.msoas = MSOA::all_msoas_nationally().await?;
             Ok((input, "national".to_string()))
         } else {
-            for rec in csv::Reader::from_reader(File::open(&self.msoa_input)?).deserialize() {
-                let rec: Row = rec?;
-                input.msoas.insert(rec.msoa);
+            for line in BufReader::new(File::open(&self.msoa_input)?).lines() {
+                // Strip leading/trailing quotes
+                let msoa = MSOA(line?.trim_matches('"').to_string());
+                input.msoas.insert(msoa);
             }
             Ok((input, region))
         }
     }
-}
-
-// TODO We could just read raw lines
-#[derive(Deserialize)]
-struct Row {
-    #[serde(rename = "MSOA11CD")]
-    msoa: MSOA,
 }
 
 fn write_stats(
