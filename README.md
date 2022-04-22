@@ -3,6 +3,7 @@
 - [Usage guide](docs/usage_guide.md)
 - [Developer guide](docs/developer_guide.md)
 - [Code walkthrough](docs/code_walkthrough.md)
+- [Modelling methods](docs/modelling_methods.md)
 - [Data sources](docs/data_sources.md)
 - [Performance of the pipeline](docs/performance.md)
 
@@ -16,7 +17,7 @@ the population in a given study area.
 
 The history of this project is as follows:
 
-1. DyME was originally written in R, then later converted to Python and OpenCL:
+1. The Dynamic Model for Epidemics (DyME), originally written in R, then later converted to Python and OpenCL was first written:
    [https://github.com/Urban-Analytics/RAMP-UA](https://github.com/Urban-Analytics/RAMP-UA)
 2. The "ecosystem of digital twins" branch heavily refactored the code to
    support running in different study areas and added a new seeding and commuting modelling:

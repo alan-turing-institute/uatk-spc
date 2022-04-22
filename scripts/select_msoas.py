@@ -18,11 +18,10 @@ import os
 def area(lad):
     # By convention, use snake case (west_yorkshire_small)
     region_name = lad.lower().replace(" ", "_")
-    filename = f"config/{region_name}.csv"
+    filename = f"config/{region_name}.txt"
     nonempty = False
 
     with open(filename, "w") as output:
-        output.write('"MSOA11CD"\n')
         # You must run the SPC pipeline to download this file
         with open("data/raw_data/referencedata/lookUp.csv") as lookup:
             for row in csv.DictReader(lookup):

@@ -126,9 +126,8 @@ async fn download_file(url: &str, path: &str) -> Result<()> {
 
     let pb = ProgressBar::new(total_size);
     pb.set_style(ProgressStyle::default_bar()
-        .template("{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({bytes_per_sec}, {eta})")
+        .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({bytes_per_sec}, {eta})")
         .progress_chars("#-"));
-    pb.set_message(format!("Downloading {}", url));
 
     let mut file = File::create(path)?;
     let mut downloaded: u64 = 0;
@@ -142,8 +141,6 @@ async fn download_file(url: &str, path: &str) -> Result<()> {
         pb.set_position(new);
     }
 
-    // TODO It'd almost be nice to print a summary of the time and size, and use the logging format
-    pb.finish_with_message(format!("Downloaded {} to {}", url, path));
     Ok(())
 }
 

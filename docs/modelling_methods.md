@@ -1,0 +1,19 @@
+# Modelling methods
+
+The principles behind the generation of the enriched [SPENSER](https://osf.io/623qz/) population data and behind the modelling of trips to schools and retail from [QUANT](https://github.com/maptube/QUANT_RAMP) are detailed in
+
+> Spooner F et al. A dynamic microsimulation model for epidemics. Soc Sci Med. 291:114461 (2021). ([DOI](https://doi.org/10.1016/j.socscimed.2021.114461))
+
+## Commuting flows
+
+In order to distribute each individual of the population to a unique physical workplace, we first created a population of all individual workplaces in England, based on a combination of the Nomis UK Business Counts 2020 dataset and the Nomis Business register and Employment Survey 2015 (see [Data sources](docs/data_sources.md)). The first dataset gives the number of individual workplace counts per industry, using the SIC 2007 industry classification, with imprecise size (i.e. number of employees) bands at MSOA level. The second dataset gives the total number of jobs available at LSOA level per SIC 2007 industry category. We found that the distribution of workplace sizes follows closely a simple 1/x distribution, allowing us to draw for each workplace a size within their band, with sum constraints given by the total number of jobs available, according to the second dataset.
+
+The workplace 'population' and individual population are then levelled for each SIC 2007 category by removing the exceeding part of whichever dataset lists more items. This takes into account that people and business companies are likely to over-report their working availability (e.g. part time and seasonal contracts are not counted differently than full time contracts, jobseekers or people on maternity leave might report the SIC of their last job). This process can be controlled by a threshold in the parameter file that defines the maximal total proportion of workers or jobs that can be removed. If the two datasets cannot be levelled accordingly, the categories are dropped and the datasets are levelled globally. Tests in the West Yorkshire area have shown than when the level 1 SIC, containing 21 unique categories, is used, 90% of the volume of commuting flows were recovered compared to the Nomis commuting OD matrices at MSOA level.
+
+The employees for each workplace are drawn according to the 'universal law of visitation', see 
+
+> Schläpfer M et al. The universal visitation law of human mobility. Nature 593, 522–527 (2021). ([DOI](https://doi.org/10.1038/s41586-021-03480-9))
+
+This framework predicts that visitors to any destination follow a simple
+<p align=center> &rho;(<i>r</i>,<i>f</i>)= <i>K</i> / (<i>rf</i>)<sup>2</sup> </p align=center>
+distribution, where &rho;(<i>r</i>,<i>f</i>) is the density of visitors coming from a distance <i>r</i> with frequency <i>f</i> and <i>K</i> is a balancing constant depending on the specific area. In the context of commuting, it can be assumed that <i>f</i> = 1. Additionally, we only need to weigh potential employees against each other, which removes the necessity to compute explicitly  <i>K</i>. In the West Yorkshire test, we found a Pearson coefficient of 0.7 between the predicted flows when aggregated at MSOA level and the OD matrix at MSOA level available from Nomis.
