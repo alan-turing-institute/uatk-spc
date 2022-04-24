@@ -35,7 +35,7 @@ pub fn get_info_per_msoa(
 
     for (msoa, info) in &info_per_msoa {
         if info.buildings.is_empty() {
-            bail!("{} has no buildings", msoa.0);
+            error!("{} has no buildings", msoa.0);
         }
     }
 
