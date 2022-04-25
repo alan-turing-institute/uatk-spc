@@ -59,9 +59,14 @@ protobufs. The protobuf is a format optimized for reading and writing; you
 shouldn't use it in your model if there's a more appropriate tool you're
 familiar with, like data frames.
 
-<!-- ## Example: draw all venues
+## Example: draw all venues
 
-Let's draw the location of all the venues that people visit, color-coding by the type of activity happening there. -->
+[This
+script](https://github.com/alan-turing-institute/uatk-spc/blob/main/python/draw_venues.py)
+reads a protobuf file, then draws a dot for every venue, color-coded by
+activity.
+
+![](img/venues.gif)
 
 ## Understand the schema
 
