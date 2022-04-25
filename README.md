@@ -4,25 +4,19 @@
 
 The Synthetic Population Catalyst (SPC) makes it easier for researchers to work
 with synthetic population data in England. It combines a variety of [data
-sources](docs/data_sources.md) and outputs a single file in a format of
-[protocol buffer
-file](https://github.com/dabreegster/spc/blob/main/synthpop.proto) describing
-the population in a given study area. The tool also provides methods to export
-the outcome in diferent formats often use for researchers like CSV or JSON.
+sources](https://alan-turing-institute.github.io/uatk-spc/data_sources.html)
+and outputs a single file in [protocol buffer
+format](https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto),
+describing the population in a given study area. The tool also provides methods
+to export the outcome in diferent formats often use for researchers like CSV or
+JSON.
 
 The input of the SPC tool is a list of the Middle Layer Super Output Area
 (MSOAs) where you want to create a spatially enriched sythetic population to
 feed other dynamic models. SPC includes a script to assist you with the proper
-list of the MSOAs by defining a Local Authority District area in England. To
-start with this tool, go to our [usage guide](docs/usage_guide.md) for
-installation and instruction steps.
-
-- [Usage guide](docs/usage_guide.md)
-- [Developer guide](docs/developer_guide.md)
-- [Code walkthrough](docs/code_walkthrough.md)
-- [Modelling methods](docs/modelling_methods.md)
-- [Data sources](docs/data_sources.md)
-- [Performance of the pipeline](docs/performance.md)
+list of the MSOAs by defining a Local Authority District area in England. [Get
+started](https://alan-turing-institute.github.io/uatk-spc/getting_started.html)
+to download SPC data or run the tool in different MSOAs.
 
 ## Lineage
 

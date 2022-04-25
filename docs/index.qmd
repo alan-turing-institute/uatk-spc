@@ -1,0 +1,20 @@
+---
+title: "Synthetic Population Catalyst"
+---
+
+![SPC Schema](img/UK_LAD.png)
+
+The Synthetic Population Catalyst (SPC) makes it easier for researchers to work
+with synthetic population data in England. It combines a variety of [data
+sources](data_sources.qmd) and outputs a single file in
+[protocol buffer
+format](https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto), describing
+the population in a given study area. The tool also provides methods to export
+the outcome in diferent formats often use for researchers like CSV or JSON.
+
+The input of the SPC tool is a list of the Middle Layer Super Output Area
+(MSOAs) where you want to create a spatially enriched sythetic population to
+feed other dynamic models. SPC includes a script to assist you with the proper
+list of the MSOAs by defining a Local Authority District area in England. [Get
+started](getting_started.qmd) to download SPC data or run the tool in different
+MSOAs.

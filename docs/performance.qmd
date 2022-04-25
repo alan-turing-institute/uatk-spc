@@ -1,4 +1,7 @@
-# Performance
+---
+title: "Performance"
+toc: true
+---
 
 The following tables summarizes the resources SPC needs to run in different areas.
 

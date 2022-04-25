@@ -1,4 +1,7 @@
-# Data sources
+---
+title: "Data sources"
+toc: true
+---
 
 The data is sorted around the 2011 Middle-layer Super Output Area (MSOA) geographical unit. These units where created for census collection and are designed to be relatively homogeneous, with an average population size of 8000. Any list of MSOAs in England can be run, with the exception of the MSOAs forming the City of London (i.e the London borough called the City, not London as a whole).
 

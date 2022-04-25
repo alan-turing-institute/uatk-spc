@@ -93,7 +93,7 @@ pub fn read_individual_time_use_and_health_data(
         actual_msoas.insert(h.msoa.clone());
     }
     if actual_msoas != population.msoas {
-        // See https://github.com/dabreegster/spc/issues/7
+        // See https://github.com/alan-turing-institute/uatk-spc/issues/7
         error!(
             "Some input MSOAs had no people: {:?}",
             population

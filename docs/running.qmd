@@ -1,4 +1,7 @@
-# Usage guide
+---
+title: "Running SPC"
+toc: true
+---
 
 ## Initial Requirements
 
@@ -10,8 +13,8 @@
 ## One-time installation
 
 ```shell
-git clone https://github.com/dabreegster/spc/
-cd spc
+git clone https://github.com/alan-turing-institute/uatk-spc/
+cd uatk-spc
 # The next command will take a few minutes the first time you do it, to build external dependencies
 cargo build --release
 ```
@@ -47,7 +50,7 @@ cargo run --release -- config/your_region.txt
 If you're having trouble building, you can run in Docker. Assuming you have Docker setup:
 
 ```shell
-git clone https://github.com/dabreegster/spc/
+git clone https://github.com/alan-turing-institute/uatk-spc/
 cd spc
 # Build the Docker image initially. Once we publish to Docker Hub, this step
 # won't be necessary.
@@ -60,7 +63,7 @@ This will make the `data` directory in your directory available to the Docker im
 
 ## Troubleshooting
 
-Please [open an issue](https://github.com/dabreegster/spc/issues) if you have any trouble!
+Please [open an issue](https://github.com/alan-turing-institute/uatk-spc/issues) if you have any trouble!
 
 ### Building proj
 
