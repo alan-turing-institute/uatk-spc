@@ -22,16 +22,16 @@ To work with SPC protobufs in Python, you need two dependencies setup:
 - The [protobuf](https://pypi.org/project/protobuf/) library
   - You can install system-wide with `pip install protobuf`
   - Or add as a dependency to a conda, poetry, etc environment
-- The generated Python library, [synthpop_pb2.py](https://raw.githubusercontent.com/dabreegster/uatk-spc/main/protobuf_samples/synthpop_pb2.py)
+- The generated Python library, [synthpop_pb2.py](https://raw.githubusercontent.com/dabreegster/uatk-spc/main/python/synthpop_pb2.py)
   - You can download a copy of this file into your codebase, then `import synthpop_pb2`
-  - You can also generate the file yourself, following the [docs](https://developers.google.com/protocol-buffers/docs/reference/python-generated): `protoc --python_out=protobuf_samples/ synthpop.proto`
+  - You can also generate the file yourself, following the [docs](https://developers.google.com/protocol-buffers/docs/reference/python-generated): `protoc --python_out=python/ synthpop.proto`
 
 ### Example: converting to JSON
 
 To interactively explore the data, viewing JSON is much easier. It shows the
 same structure as the protobuf, but in a human-readable text format. The
 example below uses a [small Python
-script](https://github.com/dabreegster/uatk-spc/blob/main/protobuf_samples/protobuf_to_json.py):
+script](https://github.com/dabreegster/uatk-spc/blob/main/python/protobuf_to_json.py):
 
 ```shell
 # Download a file
@@ -39,7 +39,7 @@ wget https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz
 # Uncompress
 gunzip rutland.pb.gz
 # Convert the .pb to JSON
-python3 protobuf_samples/protobuf_to_json.py data/output/rutland.pb > rutland.json
+python3 python/protobuf_to_json.py data/output/rutland.pb > rutland.json
 # View the output
 less rutland.json
 ```
