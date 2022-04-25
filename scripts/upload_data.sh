@@ -23,4 +23,4 @@ done
 
 echo Uploading
 az storage blob upload-batch --account-name ramp0storage -d spc-output/$VERSION -s $VERSION/
-echo Update docs/outputs.md with urls
+echo Update docs/outputs.md with urls, categorizing manually

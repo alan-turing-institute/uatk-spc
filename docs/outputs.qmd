@@ -3,12 +3,11 @@ title: "Outputs"
 toc: true
 ---
 
-We've run SPC for many different study areas already, including every county in
-England. You can download the gzipped results here:
+We've run SPC for every count in England. You can download the gzipped results
+here:
 
 - [bedfordshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/bedfordshire.pb.gz)
 - [berkshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/berkshire.pb.gz)
-- [bristol](https://ramp0storage.blob.core.windows.net/spc-output/v1/bristol.pb.gz)
 - [buckinghamshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/buckinghamshire.pb.gz)
 - [cambridgeshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/cambridgeshire.pb.gz)
 - [cheshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/cheshire.pb.gz)
@@ -48,15 +47,19 @@ England. You can download the gzipped results here:
 - [staffordshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/staffordshire.pb.gz)
 - [suffolk](https://ramp0storage.blob.core.windows.net/spc-output/v1/suffolk.pb.gz)
 - [surrey](https://ramp0storage.blob.core.windows.net/spc-output/v1/surrey.pb.gz)
-- [two_counties](https://ramp0storage.blob.core.windows.net/spc-output/v1/two_counties.pb.gz)
 - [tyne_and_wear](https://ramp0storage.blob.core.windows.net/spc-output/v1/tyne_and_wear.pb.gz)
 - [warwickshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/warwickshire.pb.gz)
 - [west_midlands](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_midlands.pb.gz)
 - [west_sussex](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_sussex.pb.gz)
-- [west_yorkshire_large](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_yorkshire_large.pb.gz)
-- [west_yorkshire_small](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_yorkshire_small.pb.gz)
 - [wiltshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/wiltshire.pb.gz)
 - [worcestershire](https://ramp0storage.blob.core.windows.net/spc-output/v1/worcestershire.pb.gz)
+
+We also have a few special study areas defined for various projects or tests:
+
+- [bristol](https://ramp0storage.blob.core.windows.net/spc-output/v1/bristol.pb.gz)
+- [two_counties](https://ramp0storage.blob.core.windows.net/spc-output/v1/two_counties.pb.gz)
+- [west_yorkshire_large](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_yorkshire_large.pb.gz)
+- [west_yorkshire_small](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_yorkshire_small.pb.gz)
 
 See [config/](https://github.com/alan-turing-institute/uatk-spc/tree/main/config) for the
 list of MSOAs covered by each study area. If you want to run SPC for a
