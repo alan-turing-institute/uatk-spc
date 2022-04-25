@@ -23,6 +23,7 @@ installation and instruction steps.
 - [Modelling methods](docs/modelling_methods.md)
 - [Data sources](docs/data_sources.md)
 - [Performance of the pipeline](docs/performance.md)
+- [Output data](docs/outputs.md)
 
 ## Lineage
 

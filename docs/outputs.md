@@ -1,0 +1,72 @@
+# Outputs
+
+We've run SPC for many different study areas already, including every county in
+England. You can download the gzipped results here:
+
+- [bedfordshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/bedfordshire.pb.gz)
+- [berkshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/berkshire.pb.gz)
+- [bristol](https://ramp0storage.blob.core.windows.net/spc-output/v1/bristol.pb.gz)
+- [buckinghamshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/buckinghamshire.pb.gz)
+- [cambridgeshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/cambridgeshire.pb.gz)
+- [cheshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/cheshire.pb.gz)
+- [cornwall](https://ramp0storage.blob.core.windows.net/spc-output/v1/cornwall.pb.gz)
+- [cumbria](https://ramp0storage.blob.core.windows.net/spc-output/v1/cumbria.pb.gz)
+- [derbyshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/derbyshire.pb.gz)
+- [devon](https://ramp0storage.blob.core.windows.net/spc-output/v1/devon.pb.gz)
+- [dorset](https://ramp0storage.blob.core.windows.net/spc-output/v1/dorset.pb.gz)
+- [durham](https://ramp0storage.blob.core.windows.net/spc-output/v1/durham.pb.gz)
+- [east_sussex](https://ramp0storage.blob.core.windows.net/spc-output/v1/east_sussex.pb.gz)
+- [east_yorkshire_with_hull](https://ramp0storage.blob.core.windows.net/spc-output/v1/east_yorkshire_with_hull.pb.gz)
+- [essex](https://ramp0storage.blob.core.windows.net/spc-output/v1/essex.pb.gz)
+- [gloucestershire](https://ramp0storage.blob.core.windows.net/spc-output/v1/gloucestershire.pb.gz)
+- [greater_manchester](https://ramp0storage.blob.core.windows.net/spc-output/v1/greater_manchester.pb.gz)
+- [hampshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/hampshire.pb.gz)
+- [herefordshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/herefordshire.pb.gz)
+- [hertfordshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/hertfordshire.pb.gz)
+- [isle_of_wight](https://ramp0storage.blob.core.windows.net/spc-output/v1/isle_of_wight.pb.gz)
+- [kent](https://ramp0storage.blob.core.windows.net/spc-output/v1/kent.pb.gz)
+- [lancashire](https://ramp0storage.blob.core.windows.net/spc-output/v1/lancashire.pb.gz)
+- [leeds](https://ramp0storage.blob.core.windows.net/spc-output/v1/leeds.pb.gz)
+- [leicestershire](https://ramp0storage.blob.core.windows.net/spc-output/v1/leicestershire.pb.gz)
+- [lincolnshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/lincolnshire.pb.gz)
+- [liverpool](https://ramp0storage.blob.core.windows.net/spc-output/v1/liverpool.pb.gz)
+- [london](https://ramp0storage.blob.core.windows.net/spc-output/v1/london.pb.gz)
+- [merseyside](https://ramp0storage.blob.core.windows.net/spc-output/v1/merseyside.pb.gz)
+- [norfolk](https://ramp0storage.blob.core.windows.net/spc-output/v1/norfolk.pb.gz)
+- [northamptonshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/northamptonshire.pb.gz)
+- [northumberland](https://ramp0storage.blob.core.windows.net/spc-output/v1/northumberland.pb.gz)
+- [north_yorkshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/north_yorkshire.pb.gz)
+- [nottinghamshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/nottinghamshire.pb.gz)
+- [oxfordshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/oxfordshire.pb.gz)
+- [rutland](https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz)
+- [shropshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/shropshire.pb.gz)
+- [somerset](https://ramp0storage.blob.core.windows.net/spc-output/v1/somerset.pb.gz)
+- [south_yorkshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/south_yorkshire.pb.gz)
+- [staffordshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/staffordshire.pb.gz)
+- [suffolk](https://ramp0storage.blob.core.windows.net/spc-output/v1/suffolk.pb.gz)
+- [surrey](https://ramp0storage.blob.core.windows.net/spc-output/v1/surrey.pb.gz)
+- [two_counties](https://ramp0storage.blob.core.windows.net/spc-output/v1/two_counties.pb.gz)
+- [tyne_and_wear](https://ramp0storage.blob.core.windows.net/spc-output/v1/tyne_and_wear.pb.gz)
+- [warwickshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/warwickshire.pb.gz)
+- [west_midlands](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_midlands.pb.gz)
+- [west_sussex](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_sussex.pb.gz)
+- [west_yorkshire_large](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_yorkshire_large.pb.gz)
+- [west_yorkshire_small](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_yorkshire_small.pb.gz)
+- [wiltshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/wiltshire.pb.gz)
+- [worcestershire](https://ramp0storage.blob.core.windows.net/spc-output/v1/worcestershire.pb.gz)
+
+See [config/](https://github.com/dabreegster/uatk-spc/tree/main/config) for the
+list of MSOAs covered by each study area. If you want to run SPC for a
+different list of MSOAs, [see the user guide](usage_guide.md).
+
+## Versioning
+
+Over time, we may add more data to SPC or change the schema. Protocol buffers
+are designed to let combinations of new/old code and data files work together,
+but we don't intend to use this feature. We may make breaking changes, like
+deleting fields. We'll release a new version of the schema and output data
+every time and document it here. You should depend on a specific version of the
+data output in your code, so new releases don't affect you until you decide to
+update.
+
+- v1: released 25/04/2022, [schema](https://github.com/dabreegster/uatk-spc/blob/a9e8b361e942ba67a93f9b5b6a7d66b7ff8b0239/synthpop.proto)
