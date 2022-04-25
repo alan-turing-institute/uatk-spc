@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.9.4">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Synthetic Population Catalyst - Running SPC</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+
+  <script src="site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="./">
+  <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="site_libs/quarto-search/fuse.min.js"></script>
+  <script src="site_libs/quarto-search/quarto-search.js"></script>
+  <script src="site_libs/quarto-html/quarto.js"></script>
+  <script src="site_libs/quarto-html/popper.min.js"></script>
+  <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="site_libs/quarto-html/anchor.min.js"></script>
+  <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "sidebar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "start",
+    "type": "textbox",
+    "limit": 20,
+    "language": {
+      "search-no-results-text": "No results",
+      "search-matching-documents-text": "matching documents",
+      "search-copy-link-title": "Copy link to search",
+      "search-hide-matches-text": "Hide additional matches",
+      "search-more-match-text": "more match in this document",
+      "search-more-matches-text": "more matches in this document",
+      "search-clear-button-title": "Clear",
+      "search-detached-cancel-button-title": "Cancel",
+      "search-submit-button-title": "Submit"
+    }
+  }</script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="docked">
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Running SPC</h1>
+      <button type="button" class="quarto-btn-toggle btn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Synthetic Population Catalyst</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Synthetic Population Catalyst</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-using-it" aria-expanded="true">Using it</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-using-it" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-using-it" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting_started.html" class="sidebar-item-text sidebar-link">Getting started</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./outputs.html" class="sidebar-item-text sidebar-link">Outputs</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./running.html" class="sidebar-item-text sidebar-link active">Running SPC</a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-understanding-it" aria-expanded="true">Understanding it</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-understanding-it" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-understanding-it" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modelling_methods.html" class="sidebar-item-text sidebar-link">Modelling methods</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data_sources.html" class="sidebar-item-text sidebar-link">Data sources</a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-internals" aria-expanded="true">Internals</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-internals" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-internals" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./developer_guide.html" class="sidebar-item-text sidebar-link">Developer guide</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code_walkthrough.html" class="sidebar-item-text sidebar-link">Code walkthrough</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./performance.html" class="sidebar-item-text sidebar-link">Performance</a>
+  </div>
+</li>
+    </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#initial-requirements" class="nav-link active" data-scroll-target="#initial-requirements">Initial Requirements</a></li>
+<li><a href="#one-time-installation" class="nav-link" data-scroll-target="#one-time-installation">One-time installation</a></li>
+<li><a href="#generating-output-for-a-study-area" class="nav-link" data-scroll-target="#generating-output-for-a-study-area">Generating output for a study area</a></li>
+<li><a href="#adding-a-new-study-area" class="nav-link" data-scroll-target="#adding-a-new-study-area">Adding a new study area</a></li>
+<li><a href="#docker" class="nav-link" data-scroll-target="#docker">Docker</a></li>
+<li><a href="#troubleshooting" class="nav-link" data-scroll-target="#troubleshooting">Troubleshooting</a>
+<ul class="collapse">
+<li><a href="#building-proj" class="nav-link" data-scroll-target="#building-proj">Building proj</a></li>
+<li><a href="#downloading" class="nav-link" data-scroll-target="#downloading">Downloading</a></li>
+</ul></li>
+</ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+<header id="title-block-header">
+<h1 class="title d-none d-lg-block display-7">Running SPC</h1>
+</header>
+
+<section id="initial-requirements" class="level2">
+<h2 class="anchored" data-anchor-id="initial-requirements">Initial Requirements</h2>
+<ul>
+<li><p><strong>Rust</strong>: The latest version of Rust (1.60): <a href="https://www.rust-lang.org/tools/install">https://www.rust-lang.org/tools/install</a></p></li>
+<li><p>For Mac users, we recommend to have installed <strong>Homebrew</strong>: <a href="https://brew.sh/">https://brew.sh/</a></p></li>
+</ul>
+</section>
+<section id="one-time-installation" class="level2">
+<h2 class="anchored" data-anchor-id="one-time-installation">One-time installation</h2>
+<pre class="shell"><code>git clone https://github.com/alan-turing-institute/uatk-spc/
+cd uatk-spc
+# The next command will take a few minutes the first time you do it, to build external dependencies
+cargo build --release</code></pre>
+<p>If you get some errors during the compilation process, take a look at <a href="#Troubleshooting">Troubleshooting</a> section below.</p>
+</section>
+<section id="generating-output-for-a-study-area" class="level2">
+<h2 class="anchored" data-anchor-id="generating-output-for-a-study-area">Generating output for a study area</h2>
+<pre><code>cargo run --release -- config/west_yorkshire_small.txt</code></pre>
+<p>This will download some large files the first time. You’ll wind up with <code>data/output/west_yorkshire_small.pb</code> as output, as well as lots of intermediate files in <code>data/raw_data/</code>. The next time you run this command (even on a different study area), it should go much faster.</p>
+</section>
+<section id="adding-a-new-study-area" class="level2">
+<h2 class="anchored" data-anchor-id="adding-a-new-study-area">Adding a new study area</h2>
+<p>A study area requires a list of MSOAs to include. Create a new file <code>config/your_region.txt</code> with this list, following the format of the other files in there.</p>
+<p>You can use the <code>scripts/select_msoas.py</code> script to generate this list based on an ONS geography code. The script looks for every MSOA where the <code>CTY20NM</code> is Liverpool. Refer to <code>data/raw_data/referencedata/lookUp.csv</code> for all geographies.</p>
+<p>After you write a new file, you simply run the pipeline with that as input:</p>
+<pre><code>cargo run --release -- config/your_region.txt</code></pre>
+</section>
+<section id="docker" class="level2">
+<h2 class="anchored" data-anchor-id="docker">Docker</h2>
+<p>If you’re having trouble building, you can run in Docker. Assuming you have Docker setup:</p>
+<pre class="shell"><code>git clone https://github.com/alan-turing-institute/uatk-spc/
+cd spc
+# Build the Docker image initially. Once we publish to Docker Hub, this step
+# won't be necessary.
+docker build -t spc .
+# Run SPC in Docker
+docker run --mount type=bind,source="$(pwd)"/data,target=/spc/data -t spc /spc/target/release/spc config/west_yorkshire_small.txt</code></pre>
+<p>This will make the <code>data</code> directory in your directory available to the Docker image, where it’ll download the large input files and produce the final output.</p>
+</section>
+<section id="troubleshooting" class="level2">
+<h2 class="anchored" data-anchor-id="troubleshooting">Troubleshooting</h2>
+<p>Please <a href="https://github.com/alan-turing-institute/uatk-spc/issues">open an issue</a> if you have any trouble!</p>
+<section id="building-proj" class="level3">
+<h3 class="anchored" data-anchor-id="building-proj">Building proj</h3>
+<p><strong>Symptom</strong>: When you run <code>cargo build --release</code>, you get an error like:</p>
+<pre class="shell"><code> error: failed to run custom build command for 'proj-sys v0.18.4'</code></pre>
+<p><strong>Cause</strong>: The Rust code depends on <a href="https://proj.org">proj</a> to transform coordinates. You may need to install additional dependencies to build it.</p>
+<p><strong>Suggested Solution</strong></p>
+<p>On Ubuntu, run:</p>
+<pre class="shell"><code>apt-get install cmake sqlite3 libclang-dev</code></pre>
+<p>On Mac, run:</p>
+<pre class="shell"><code>brew install pkg-config cmake proj</code></pre>
+</section>
+<section id="downloading" class="level3">
+<h3 class="anchored" data-anchor-id="downloading">Downloading</h3>
+<p>If you have trouble downloading any of the large files, you can download them manually. The logs will contain a line such as <code>Downloading https://ramp0storage.blob.core.windows.net/nationaldata/QUANT_RAMP_spc.tar.gz to data/raw_data/nationaldata/QUANT_RAMP_spc.tar.gz</code>. This tells you the URL to retrieve, and where to put the output file. Note that SPC won’t attempt to download files if they already exist, so if you wind up with a partially downloaded file, you have to manually remove it.</p>
+
+
+</section>
+</section>
+</main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+</body></html>

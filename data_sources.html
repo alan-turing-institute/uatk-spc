@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.9.4">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Synthetic Population Catalyst - Data sources</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+
+  <script src="site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="./">
+  <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="site_libs/quarto-search/fuse.min.js"></script>
+  <script src="site_libs/quarto-search/quarto-search.js"></script>
+  <script src="site_libs/quarto-html/quarto.js"></script>
+  <script src="site_libs/quarto-html/popper.min.js"></script>
+  <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="site_libs/quarto-html/anchor.min.js"></script>
+  <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "sidebar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "start",
+    "type": "textbox",
+    "limit": 20,
+    "language": {
+      "search-no-results-text": "No results",
+      "search-matching-documents-text": "matching documents",
+      "search-copy-link-title": "Copy link to search",
+      "search-hide-matches-text": "Hide additional matches",
+      "search-more-match-text": "more match in this document",
+      "search-more-matches-text": "more matches in this document",
+      "search-clear-button-title": "Clear",
+      "search-detached-cancel-button-title": "Cancel",
+      "search-submit-button-title": "Submit"
+    }
+  }</script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="docked">
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Data sources</h1>
+      <button type="button" class="quarto-btn-toggle btn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Synthetic Population Catalyst</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Synthetic Population Catalyst</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-using-it" aria-expanded="true">Using it</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-using-it" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-using-it" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting_started.html" class="sidebar-item-text sidebar-link">Getting started</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./outputs.html" class="sidebar-item-text sidebar-link">Outputs</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./running.html" class="sidebar-item-text sidebar-link">Running SPC</a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-understanding-it" aria-expanded="true">Understanding it</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-understanding-it" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-understanding-it" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modelling_methods.html" class="sidebar-item-text sidebar-link">Modelling methods</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data_sources.html" class="sidebar-item-text sidebar-link active">Data sources</a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-internals" aria-expanded="true">Internals</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-internals" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-internals" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./developer_guide.html" class="sidebar-item-text sidebar-link">Developer guide</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code_walkthrough.html" class="sidebar-item-text sidebar-link">Code walkthrough</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./performance.html" class="sidebar-item-text sidebar-link">Performance</a>
+  </div>
+</li>
+    </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#utility-data" class="nav-link active" data-scroll-target="#utility-data">Utility data</a></li>
+<li><a href="#county-level-data" class="nav-link" data-scroll-target="#county-level-data">County level data</a></li>
+<li><a href="#national-data" class="nav-link" data-scroll-target="#national-data">National data</a></li>
+</ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+<header id="title-block-header">
+<h1 class="title d-none d-lg-block display-7">Data sources</h1>
+</header>
+
+<p>The data is sorted around the 2011 Middle-layer Super Output Area (MSOA) geographical unit. These units where created for census collection and are designed to be relatively homogeneous, with an average population size of 8000. Any list of MSOAs in England can be run, with the exception of the MSOAs forming the City of London (i.e the London borough called the City, not London as a whole).</p>
+<p>The data from Open Street Map (OSM) is downloaded directly from https://www.openstreetmap.org. Everything else is hosted as local copies on one Azure repository that interacts automatically with the model, and divided into utilities, county level data and national data.</p>
+<section id="utility-data" class="level2">
+<h2 class="anchored" data-anchor-id="utility-data">Utility data</h2>
+<pre><code>lookUp.csv</code></pre>
+<p>The look-up table links different geographies together. It is used internally by the model, but can also help the user define their own study area. <code>MSOA11CD</code>, <code>MSOA11NM</code>, <code>LAD20CD</code>, <code>LAD20NM</code>, <code>ITL321CD</code>, <code>ITL321NM</code>, <code>ITL221CD</code>, <code>ITL221NM</code>, <code>ITL121CD</code>, <code>ITL121NM</code> are all standard denominations fully compatible with ONS fields of the same name. They are based on ONS <a href="https://geoportal.statistics.gov.uk/">lookups</a>. See ONS documentation for more details. <code>CTY20NM</code> and <code>CCTY20NM</code> are custom denominations for the counties of England (used to sort the county level population data) and the ceremonial counties of England respectively. Their spelling may vary in different data sources and the field <code>CTY20NM</code> is not compatible with the ONS field of the same name (which excludes all counties that are also unitary authorities). <code>GoogleMob</code> and <code>OSM</code> are different spellings for the counties of England used by Google and OSM for their data releases.</p>
+</section>
+<section id="county-level-data" class="level2">
+<h2 class="anchored" data-anchor-id="county-level-data">County level data</h2>
+<p>Contains 47 files, each representing the population in 2020 of one of the counties of England mentioned above, and named</p>
+<pre><code>tus_hse_&lt;county_name&gt;.gz</code></pre>
+<p>This data is based on the <a href="http://dx.doi.org/10.5257/census/aggregate-2011-1">2011 UK census</a>, the <a href="http://dx.doi.org/10.5255/UKDA-SN-8128-1">Time Use Survey 2014-15</a> and the <a href="http://dx.doi.org/10.5255/UKDA-SN-8488-2">Health Survey for England 2017</a>. The SPENSER (Synthetic Population Estimation and Scenario Projection) microsimulation model (<a href="http://dx.doi.org/10.1111/gean.12320">reference</a>) distributes a synthetic population based on the census at MSOA scale and projects it to 2020 according to estimates from the Office for National Statistics (ONS). This information was enriched with some of the content of the other two datasets through propensity score matching (PSM) by Prof.&nbsp;Karyn Morrissey (Technical University of Denmark). The rest of the datasets can be added <em>a posteriori</em> from the identifiers provided.</p>
+<p>The fields currently contained are: - <code>idp</code>: a unique individual identifier within the present data - <code>MSOA11CD</code>: MSOA code where the individual lives - <code>hid</code>: household identifier, includes communal establishments - <code>pid</code>: identifier linking to the 2011 Census - <code>pid_tus</code>: identifier linking to the Time Use Survey 2015 - <code>pid_hse</code>: identifier linking to the Health Survey for England 2017 - <code>sex</code>: 0 female; 1 male - <code>age</code>: in years - <code>origin</code>: 1 White; 2 Black; 3 Asian; 4 Mixed; 5 Other - <code>nssec5</code>: National Statistics Socio-economic classification: - 1: Higher managerial, administrative and professional occupations - 2: Intermediate occupations - 3: Small employers and own account workers - 4: Lower supervisory and technical occupations - 5: Semi-routine and routine occupations - 0: Never worked and long-term unemployed - <code>soc2010</code>: Previous version of the <a href="https://www.ons.gov.uk/methodology/classificationsandstandards/standardoccupationalclassificationsoc/soc2010">Standard Occupational Classification</a> - <code>sic1d07</code>: Standard <a href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities">Industrial Classification of Economic Activities 2007</a>, 1st layer (number corresponding to the letter in alphabetical order) - <code>sic2d07</code>: Standard <a href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities">Industrial Classification of Economic Activities 2007</a>, 2nd layer - Proportion of 24h spent doing different daily activities: - <code>punknown</code> + <code>pwork</code> + <code>pschool</code> + <code>pshop</code> + <code>pservices</code> + <code>pleisure</code> + <code>pescort</code> + <code>ptransport</code> = <code>pnothome</code> - <code>phome</code> + <code>pworkhome</code> = <code>phometot</code> - <code>pnothome</code> + <code>phometot</code> = 1 - <code>cvd</code>: has a cardio-vascular disease (0 or 1) - <code>diabetes</code>: has diabetes (0 or 1) - <code>bloodpressure</code>: has high blood pressure (0 or 1) - <code>BMIvg6</code>: Body Mass Index: - Not applicable - Underweight: less than 18.5 - Normal: 18.5 to less than 25 - Overweight: 25 to less than 30 - Obese I: 30 to less than 35 - Obese II: 35 to less than 40 - Obese III: 40 or more - <code>lng</code>: longitude of the MSOA11CD centroid - <code>lat</code>: latitude of the MSOA11CD centroid</p>
+<p>Some other fields were kept from specific projects but are not from official sources and should be used.</p>
+</section>
+<section id="national-data" class="level2">
+<h2 class="anchored" data-anchor-id="national-data">National data</h2>
+<pre><code>businessRegistry.csv</code></pre>
+<p>Contains a breakdown of all business units (i.e.&nbsp;a single workplace) in England at LSOA scale (smaller than MSOA), estimated by the project contributors from two nomis datasets: <a href="https://www.nomisweb.co.uk/datasets/idbrlu">UK Business Counts - local units by industry and employment size band 2020</a> and <a href="https://www.nomisweb.co.uk/datasets/newbrespub">Business Register and Employment Survey 2015</a>. Each item contains the <code>size</code> of the unit and its main <code>sic1d07</code> code in reference to standard <a href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities">Industrial Classification of Economic Activities 2007</a> (number corresponding to the letter in alphabetical order). It is used to compute commuting flows.</p>
+<pre><code>MSOAS_shp.tar.gz</code></pre>
+<p>Is a simple shapefile taken from ONS <a href="https://geoportal.statistics.gov.uk/">boundaries</a>.</p>
+<pre><code>QUANT_RAMP.tar.gz</code></pre>
+<p>See: Milton R, Batty M, Dennett A, dedicated <a href="https://github.com/maptube/QUANT_RAMP">RAMP Spatial Interaction Model GitHub repository</a>. It is used to compute the flows towards schools and retail.</p>
+<pre><code>timeAtHomeIncreaseCTY.csv</code></pre>
+<p>This file is a subset from <a href="https://www.google.com/covid19/mobility/">Google COVID-19 Community Mobility Reports</a>, cropped to England. It describes the daily reduction in mobility, averaged at county level, due to lockdown and other COVID-19 restrictions between the 15<sup>th</sup> of February 2020 and 15<sup>th</sup> of April 2022. Missing values have been replaced by the national average. These values can be used directly to reduce <code>pnothome</code> and increase <code>phometot</code> (and their sub-categories) to simulate more accurately the period.</p>
+
+
+</section>
+</main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+</body></html>

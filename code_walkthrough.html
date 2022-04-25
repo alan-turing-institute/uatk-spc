@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.9.4">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>Synthetic Population Catalyst - Code walkthrough</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+  </style>
+
+  <script src="site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="./">
+  <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="site_libs/quarto-search/fuse.min.js"></script>
+  <script src="site_libs/quarto-search/quarto-search.js"></script>
+  <script src="site_libs/quarto-html/quarto.js"></script>
+  <script src="site_libs/quarto-html/popper.min.js"></script>
+  <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="site_libs/quarto-html/anchor.min.js"></script>
+  <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <script src="site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "sidebar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "start",
+    "type": "textbox",
+    "limit": 20,
+    "language": {
+      "search-no-results-text": "No results",
+      "search-matching-documents-text": "matching documents",
+      "search-copy-link-title": "Copy link to search",
+      "search-hide-matches-text": "Hide additional matches",
+      "search-more-match-text": "more match in this document",
+      "search-more-matches-text": "more matches in this document",
+      "search-clear-button-title": "Clear",
+      "search-detached-cancel-button-title": "Cancel",
+      "search-submit-button-title": "Submit"
+    }
+  }</script>
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="docked">
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title">Code walkthrough</h1>
+      <button type="button" class="quarto-btn-toggle btn">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Synthetic Population Catalyst</a> 
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Synthetic Population Catalyst</a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-using-it" aria-expanded="true">Using it</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-using-it" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-using-it" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./getting_started.html" class="sidebar-item-text sidebar-link">Getting started</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./outputs.html" class="sidebar-item-text sidebar-link">Outputs</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./running.html" class="sidebar-item-text sidebar-link">Running SPC</a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-understanding-it" aria-expanded="true">Understanding it</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-understanding-it" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-understanding-it" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./modelling_methods.html" class="sidebar-item-text sidebar-link">Modelling methods</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data_sources.html" class="sidebar-item-text sidebar-link">Data sources</a>
+  </div>
+</li>
+    </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+    <div class="sidebar-item-container"> 
+        <a class="sidebar-item-text sidebar-link text-start " data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-internals" aria-expanded="true">Internals</a>
+      <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-internals" aria-expanded="true">
+        <i class="bi bi-chevron-right ms-2"></i>
+      </a>
+    </div>
+    <ul id="quarto-sidebar-section-internals" class="collapse list-unstyled sidebar-section depth1 show">  
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./developer_guide.html" class="sidebar-item-text sidebar-link">Developer guide</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./code_walkthrough.html" class="sidebar-item-text sidebar-link active">Code walkthrough</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./performance.html" class="sidebar-item-text sidebar-link">Performance</a>
+  </div>
+</li>
+    </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+<h2 id="toc-title">On this page</h2>
+<ul>
+<li><a href="#generally-useful-techniques" class="nav-link active" data-scroll-target="#generally-useful-techniques">Generally useful techniques</a>
+<ul class="collapse">
+<li><a href="#split-code-into-two-stages" class="nav-link" data-scroll-target="#split-code-into-two-stages">Split code into two stages</a></li>
+<li><a href="#explicit-data-schema" class="nav-link" data-scroll-target="#explicit-data-schema">Explicit data schema</a></li>
+<li><a href="#type-safe-ids" class="nav-link" data-scroll-target="#type-safe-ids">Type-safe IDs</a></li>
+<li><a href="#idempotent-data-preparation" class="nav-link" data-scroll-target="#idempotent-data-preparation">Idempotent data preparation</a></li>
+<li><a href="#logging-with-structure" class="nav-link" data-scroll-target="#logging-with-structure">Logging with structure</a></li>
+<li><a href="#determinism" class="nav-link" data-scroll-target="#determinism">Determinism</a></li>
+</ul></li>
+<li><a href="#protocol-buffers" class="nav-link" data-scroll-target="#protocol-buffers">Protocol buffers</a></li>
+</ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+<header id="title-block-header">
+<h1 class="title d-none d-lg-block display-7">Code walkthrough</h1>
+</header>
+
+<section id="generally-useful-techniques" class="level2">
+<h2 class="anchored" data-anchor-id="generally-useful-techniques">Generally useful techniques</h2>
+<p>The code-base makes use of some techniques that may be generally applicable to other projects.</p>
+<section id="split-code-into-two-stages" class="level3">
+<h3 class="anchored" data-anchor-id="split-code-into-two-stages">Split code into two stages</h3>
+<p>Agent-based models and spatial interaction models require some kind of input. Often the effort to transform external data into this input can exceed that of the simulation component. Cleanly separating the two problems has some advantages:</p>
+<ul>
+<li>iterate on the simulation faster, without processing raw data every run</li>
+<li>reuse the prepared input for future projects</li>
+<li>force thinking about the data model needed by the simulation, and transform the external data into that form</li>
+</ul>
+</section>
+<section id="explicit-data-schema" class="level3">
+<h3 class="anchored" data-anchor-id="explicit-data-schema">Explicit data schema</h3>
+<p>Dynamically typed languages like Python don’t force you to explicitly list the shape of input data. It’s common to read CSV files with <code>pandas</code>, filter and transform the data, and use that throughout the program. This can be quick to start prototyping, but is hard to maintain longer-term. Investing in the process of writing down types:</p>
+<ul>
+<li>makes it easier for somebody new to understand your system – they can first focus on <strong>what</strong> you’re modeling, instead of how that’s built up from raw data sources</li>
+<li>clarifies what data actually matters to your system; you don’t carry forward unnecessary input</li>
+<li>makes it impossible to express invalid states
+<ul>
+<li>One example is <a href="https://github.com/alan-turing-institute/uatk-spc/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/lib.rs#L145">here</a> – per person and activity, there’s a list of venues the person may visit, along with a probability of going there. If the list of venues and list of probabilities are stored as separate lists or columns, then their length may not match.</li>
+</ul></li>
+<li>reuse the prepared input for future projects</li>
+</ul>
+<p>There’s a variety of techniques for expressing strongly typed data:</p>
+<ul>
+<li><a href="https://developers.google.com/protocol-buffers/docs/pythontutorial">protocol buffers</a> or <a href="https://google.github.io/flatbuffers/">flatbuffers</a></li>
+<li><a href="https://json-schema.org">JSON schemas</a></li>
+<li><a href="https://docs.python.org/3/library/dataclasses.html">Python data classes</a> and <a href="https://mypy.readthedocs.io/en/stable/index.html">optional type hints</a></li>
+<li><a href="https://github.com/alan-turing-institute/uatk-spc/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/lib.rs#L41">statically typed languages like Rust</a></li>
+</ul>
+</section>
+<section id="type-safe-ids" class="level3">
+<h3 class="anchored" data-anchor-id="type-safe-ids">Type-safe IDs</h3>
+<p>Say your data model has many different objects, each with their own ID – people, households, venues, etc. You might store these in a list and use the index as an ID. This is fine, but nothing stops you from confusing IDs and accidentally passing in venue 5 to a function instead of household 5. In Rust, it’s easy to create “wrapper types” like <a href="https://github.com/alan-turing-institute/uatk-spc/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/lib.rs#L260">this</a> and let the compiler prevent these mistakes.</p>
+<p>This technique is also useful when preparing external data. <a href="https://developers.google.com/transit/gtfs/reference">GTFS data</a> describing public transit routes and timetables contains many string IDs – shapes, trips, stops, routes. As soon as you read the raw input, you can <a href="https://github.com/a-b-street/abstreet/blob/c9de8c691c5e7fcf04817c790aeb9d14371c9328/convert_osm/src/gtfs.rs#L178">store the strings in more precise types</a> that prevent mixing up a stop ID and route ID.</p>
+</section>
+<section id="idempotent-data-preparation" class="level3">
+<h3 class="anchored" data-anchor-id="idempotent-data-preparation">Idempotent data preparation</h3>
+<p>If you’re iterating on your initialisation pipeline’s code, you probably don’t want to download a 2GB external file every single run. A common approach is to first test if a file exists and don’t download it again if so. In practice, you may also need to handle unzipping files, showing a progress bar while downloading, and printing clear error messages. This codebase has some <a href="https://github.com/alan-turing-institute/uatk-spc/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/utilities.rs">common code</a> for doing this in Rust. We intend to publish a separate library to more easily call in your own code.</p>
+</section>
+<section id="logging-with-structure" class="level3">
+<h3 class="anchored" data-anchor-id="logging-with-structure">Logging with structure</h3>
+<p>It’s typical to print information as a complex pipeline runs, for the user to track progress and debug problems. But without any sort of organization, it’s hard to follow what steps take a long time or break. What if your logs could show the logical structure of your pipeline and help you understand where time is spent?</p>
+<p><img src="img/tracing.gif" class="img-fluid"></p>
+<p>The screenshot above shows a summary printed at the end of a long pipeline run. It’s immediately obvious that the slowest step is creating commuting flows.</p>
+<p>This codebase uses the <a href="https://crates.io/crates/tracing">tracing</a> framework for logging, with a <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/src/tracing_span_tree.rs">custom piece</a> to draw the tree. (We’ll publish this as a separate library once it’s more polished.) The tracing framework is hard to understand, but the main conceptual leap over regular logging framworks is the concept of a <strong>span</strong>. When your code starts one logical step, you call a method to create a new span, and when it finishes, you close that span. Spans can be nested in any way – <code>create_commuting_flows</code> happens within the larger step of <code>creating population</code>.</p>
+</section>
+<section id="determinism" class="level3">
+<h3 class="anchored" data-anchor-id="determinism">Determinism</h3>
+<p>Given the same inputs, your code should always produce identical output, no matter where it’s run or how many times. Otherwise, debugging problems becomes very tedious, and it’s more difficult to make conclusions from results. Of course, many projects have a stochastic element – but this should be controlled by a random number generator (RNG) seed, which is part of the input. You vary the seed and repeat the program, then reason about the distribution of results.</p>
+<p>Aside from organizing your code to let a single RNG seed influence everything, another possible source of non-determinism is iteration order. In Rust, a <code>HashMap</code> could have different order every time it’s used, so we use a <code>BTreeMap</code> instead when this matters. In Python, dictionaries are ordered. Be sure to check for your language.</p>
+</section>
+</section>
+<section id="protocol-buffers" class="level2">
+<h2 class="anchored" data-anchor-id="protocol-buffers">Protocol buffers</h2>
+<p>SPC uses protocol buffers for output. This has some advantages explained the “explicit data schema” section above, but the particular choice of protocol buffer has some limitations.</p>
+<p>First, proto3 doesn’t support <a href="https://github.com/protocolbuffers/protobuf/issues/2497">required fields</a>. This is done to allow schemas to evolve better over time, but this isn’t a feature SPC makes use of. There’s no need to have new code work with old data, or vice versa – if the schema is updated, downstream code should adapt accordingly and use the updated input files. The lack of required fields leads to imprecise code – a person’s health structure is always filled out, but in Rust, we wind up with <code>Option&lt;Health&gt;</code>. Differentiating 0 from missing data also becomes impossible – <code>urn</code> is optional, but in protobuf, we’re forced to map the missing case to 0 and document this.</p>
+<p>Second, protocol buffers don’t easily support type-safe wrappers around numeric IDs, so downstream code has to be careful not to mix up household, venue, and person IDs.</p>
+<p>Third, protocol buffers support limited key types for maps. Enumerations can’t be used, so we use the numeric value for the activity enum.</p>
+<p>We’ll evaluate flatbuffers and other alternative encodings.</p>
+<p>Note that in any case, SPC internally doesn’t use the auto-generated code until the very end of the pipeline. It’s always possible to be more precise with native Rust types, and convert to the less strict types last.</p>
+
+
+</section>
+</main> <!-- /main -->
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+</body></html>
