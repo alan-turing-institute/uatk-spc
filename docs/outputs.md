@@ -55,7 +55,7 @@ England. You can download the gzipped results here:
 - [wiltshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/wiltshire.pb.gz)
 - [worcestershire](https://ramp0storage.blob.core.windows.net/spc-output/v1/worcestershire.pb.gz)
 
-See [config/](https://github.com/dabreegster/uatk-spc/tree/main/config) for the
+See [config/](https://github.com/alan-turing-institute/uatk-spc/tree/main/config) for the
 list of MSOAs covered by each study area. If you want to run SPC for a
 different list of MSOAs, [see the user guide](usage_guide.md).
 
@@ -69,4 +69,4 @@ every time and document it here. You should depend on a specific version of the
 data output in your code, so new releases don't affect you until you decide to
 update.
 
-- v1: released 25/04/2022, [schema](https://github.com/dabreegster/uatk-spc/blob/a9e8b361e942ba67a93f9b5b6a7d66b7ff8b0239/synthpop.proto)
+- v1: released 25/04/2022, [schema](https://github.com/alan-turing-institute/uatk-spc/blob/a9e8b361e942ba67a93f9b5b6a7d66b7ff8b0239/synthpop.proto)

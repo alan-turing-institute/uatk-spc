@@ -9,7 +9,7 @@ There's one `.pb.gz` file per study area. After decompressing the `.gz`, you
 have a `.pb` file. The data uses [protocol
 buffers](https://developers.google.com/protocol-buffers/docs/overview) to
 efficiently encode its
-[schema](https://github.com/dabreegster/uatk-spc/blob/main/synthpop.proto). You
+[schema](https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto). You
 can read the "protobuf" (shorthand for a protocol buffer file) in any
 [supported
 language](https://developers.google.com/protocol-buffers/docs/overview#cross-lang),
@@ -22,7 +22,7 @@ To work with SPC protobufs in Python, you need two dependencies setup:
 - The [protobuf](https://pypi.org/project/protobuf/) library
   - You can install system-wide with `pip install protobuf`
   - Or add as a dependency to a conda, poetry, etc environment
-- The generated Python library, [synthpop_pb2.py](https://raw.githubusercontent.com/dabreegster/uatk-spc/main/python/synthpop_pb2.py)
+- The generated Python library, [synthpop_pb2.py](https://raw.githubusercontent.com/alan-turing-institute/uatk-spc/main/python/synthpop_pb2.py)
   - You can download a copy of this file into your codebase, then `import synthpop_pb2`
   - You can also generate the file yourself, following the [docs](https://developers.google.com/protocol-buffers/docs/reference/python-generated): `protoc --python_out=python/ synthpop.proto`
 
@@ -31,7 +31,7 @@ To work with SPC protobufs in Python, you need two dependencies setup:
 To interactively explore the data, viewing JSON is much easier. It shows the
 same structure as the protobuf, but in a human-readable text format. The
 example below uses a [small Python
-script](https://github.com/dabreegster/uatk-spc/blob/main/python/protobuf_to_json.py):
+script](https://github.com/alan-turing-institute/uatk-spc/blob/main/python/protobuf_to_json.py):
 
 ```shell
 # Download a file
@@ -46,9 +46,9 @@ less rutland.json
 
 ### Example: convert to numpy arrays
 
-The [ASPICS](https://github.com/dabreegster/uatk-aspics) project simulates the
+The [ASPICS](https://github.com/alan-turing-institute/uatk-aspics) project simulates the
 spread of COVID through a population. The code uses numpy, and [this
-script](https://github.com/dabreegster/ua-aspics/blob/main/convert_snapshot.py)
+script](https://github.com/alan-turing-institute/uatk-aspics/blob/main/convert_snapshot.py)
 converts the protobuf to a bunch of different numpy arrays.
 
 Note the code doesn't keep using classes from the generated Python code for
@@ -63,7 +63,7 @@ Let's draw the location of all the venues that people visit, color-coding by the
 ## Understand the schema
 
 Here are some helpful tips for understanding the
-[schema](https://github.com/dabreegster/uatk-spc/blob/main/synthpop.proto).
+[schema](https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto).
 
 Each .pb file contains exactly one `Population` message. In contrast to
 datasets consisting of multiple `.csv` files, just a single file contains
@@ -83,7 +83,7 @@ list.
 
 SPC models daily travel behavior of people as "flows." Flows are broken down by
 by an
-[activity](https://github.com/dabreegster/uatk-spc/blob/feffb857c6fbbd7c2b3dd1f3cb46e67677185897/synthpop.proto#L196)
+[activity](https://github.com/alan-turing-institute/uatk-spc/blob/feffb857c6fbbd7c2b3dd1f3cb46e67677185897/synthpop.proto#L196)
 -- shopping/retail, attending primary or secondary school, working, or staying
 at home. For each activity type, a person has a list of venues where they may
 do that activity, weighted by a probability of going to that particular venue.
@@ -105,7 +105,7 @@ they may go shopping, one person may spend much more time on that activity than
 another.
 
 See the [ASPICS conversion
-script](https://github.com/dabreegster/uatk-aspics/blob/c8ad47cb01b084028b2f8ca90fcf078470efbee0/convert_snapshot.py#L166)
+script](https://github.com/alan-turing-institute/uatk-aspics/blob/c8ad47cb01b084028b2f8ca90fcf078470efbee0/convert_snapshot.py#L166)
 for all of this in action -- it has a function to collapse a person's flows
 down into a single weighted list.
 

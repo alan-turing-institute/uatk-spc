@@ -32,7 +32,7 @@ of writing down types:
   unnecessary input
 - makes it impossible to express invalid states
   - One example is
-    [here](https://github.com/dabreegster/rampfs/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/lib.rs#L145)
+    [here](https://github.com/alan-turing-institute/uatk-spc/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/lib.rs#L145)
     -- per person and activity, there's a list of venues the person may visit,
     along with a probability of going there. If the list of venues and list of
     probabilities are stored as separate lists or columns, then their length may
@@ -46,7 +46,7 @@ There's a variety of techniques for expressing strongly typed data:
 - [JSON schemas](https://json-schema.org)
 - [Python data classes](https://docs.python.org/3/library/dataclasses.html) and
   [optional type hints](https://mypy.readthedocs.io/en/stable/index.html)
-- [statically typed languages like Rust](https://github.com/dabreegster/rampfs/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/lib.rs#L41)
+- [statically typed languages like Rust](https://github.com/alan-turing-institute/uatk-spc/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/lib.rs#L41)
 
 ### Type-safe IDs
 
@@ -55,7 +55,7 @@ people, households, venues, etc. You might store these in a list and use the
 index as an ID. This is fine, but nothing stops you from confusing IDs and
 accidentally passing in venue 5 to a function instead of household 5. In Rust,
 it's easy to create "wrapper types" like
-[this](https://github.com/dabreegster/rampfs/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/lib.rs#L260)
+[this](https://github.com/alan-turing-institute/uatk-spc/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/lib.rs#L260)
 and let the compiler prevent these mistakes.
 
 This technique is also useful when preparing external data.
@@ -72,7 +72,7 @@ want to download a 2GB external file every single run. A common approach is to
 first test if a file exists and don't download it again if so. In practice, you
 may also need to handle unzipping files, showing a progress bar while
 downloading, and printing clear error messages. This codebase has some
-[common code](https://github.com/dabreegster/rampfs/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/utilities.rs)
+[common code](https://github.com/alan-turing-institute/uatk-spc/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/utilities.rs)
 for doing this in Rust. We intend to publish a separate library to more easily
 call in your own code.
 
@@ -91,7 +91,7 @@ It's immediately obvious that the slowest step is creating commuting flows.
 
 This codebase uses the [tracing](https://crates.io/crates/tracing) framework for
 logging, with a
-[custom piece](https://github.com/dabreegster/rampfs/blob/main/src/tracing_span_tree.rs)
+[custom piece](https://github.com/alan-turing-institute/uatk-spc/blob/main/src/tracing_span_tree.rs)
 to draw the tree. (We'll publish this as a separate library once it's more
 polished.) The tracing framework is hard to understand, but the main conceptual
 leap over regular logging framworks is the concept of a **span**. When your code
