@@ -84,7 +84,7 @@ hard to follow what steps take a long time or break. What if your logs could
 show the logical structure of your pipeline and help you understand where time
 is spent?
 
-![](tracing.gif)
+![](img/tracing.gif)
 
 The screenshot above shows a summary printed at the end of a long pipeline run.
 It's immediately obvious that the slowest step is creating commuting flows.

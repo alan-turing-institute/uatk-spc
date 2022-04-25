@@ -32,7 +32,7 @@ message InfoPerMSOA {
     repeated Point shape = 1;
     // There's no relationship between this value and the people listed.
     uint64 population = 2;
-    // All building centroids within this MSOA. Guaranteed to be non-empty.
+    // All building centroids within this MSOA. May be empty.
     repeated Point buildings = 3;
     repeated Flows flows_per_activity = 4;
 }
