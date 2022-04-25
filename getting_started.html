@@ -169,6 +169,7 @@
 <li><a href="#example-converting-to-json" class="nav-link" data-scroll-target="#example-converting-to-json">Example: converting to JSON</a></li>
 <li><a href="#example-convert-to-numpy-arrays" class="nav-link" data-scroll-target="#example-convert-to-numpy-arrays">Example: convert to numpy arrays</a></li>
 </ul></li>
+<li><a href="#example-draw-all-venues" class="nav-link" data-scroll-target="#example-draw-all-venues">Example: draw all venues</a></li>
 <li><a href="#understand-the-schema" class="nav-link" data-scroll-target="#understand-the-schema">Understand the schema</a>
 <ul class="collapse">
 <li><a href="#flows" class="nav-link" data-scroll-target="#flows">Flows</a></li>
@@ -215,10 +216,12 @@ less rutland.json</code></pre>
 <h3 class="anchored" data-anchor-id="example-convert-to-numpy-arrays">Example: convert to numpy arrays</h3>
 <p>The <a href="https://github.com/alan-turing-institute/uatk-aspics">ASPICS</a> project simulates the spread of COVID through a population. The code uses numpy, and <a href="https://github.com/alan-turing-institute/uatk-aspics/blob/main/convert_snapshot.py">this script</a> converts the protobuf to a bunch of different numpy arrays.</p>
 <p>Note the code doesn’t keep using classes from the generated Python code for protobufs. The protobuf is a format optimized for reading and writing; you shouldn’t use it in your model if there’s a more appropriate tool you’re familiar with, like data frames.</p>
-<!-- ## Example: draw all venues
-
-Let's draw the location of all the venues that people visit, color-coding by the type of activity happening there. -->
 </section>
+</section>
+<section id="example-draw-all-venues" class="level2">
+<h2 class="anchored" data-anchor-id="example-draw-all-venues">Example: draw all venues</h2>
+<p><a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/python/draw_venues.py">This script</a> reads a protobuf file, then draws a dot for every venue, color-coded by activity.</p>
+<p><img src="img/venues.gif" class="img-fluid"></p>
 </section>
 <section id="understand-the-schema" class="level2">
 <h2 class="anchored" data-anchor-id="understand-the-schema">Understand the schema</h2>

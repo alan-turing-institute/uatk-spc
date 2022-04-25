@@ -63,6 +63,13 @@
     "text": "Python\nTo work with SPC protobufs in Python, you need two dependencies setup:\n\nThe protobuf library\n\nYou can install system-wide with pip install protobuf\nOr add as a dependency to a conda, poetry, etc environment\n\nThe generated Python library, synthpop_pb2.py\n\nYou can download a copy of this file into your codebase, then import synthpop_pb2\nYou can also generate the file yourself, following the docs: protoc --python_out=python/ synthpop.proto\n\n\n\nExample: converting to JSON\nTo interactively explore the data, viewing JSON is much easier. It shows the same structure as the protobuf, but in a human-readable text format. The example below uses a small Python script:\n# Download a file\nwget https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz\n# Uncompress\ngunzip rutland.pb.gz\n# Convert the .pb to JSON\npython3 python/protobuf_to_json.py data/output/rutland.pb > rutland.json\n# View the output\nless rutland.json\n\n\nExample: convert to numpy arrays\nThe ASPICS project simulates the spread of COVID through a population. The code uses numpy, and this script converts the protobuf to a bunch of different numpy arrays.\nNote the code doesn’t keep using classes from the generated Python code for protobufs. The protobuf is a format optimized for reading and writing; you shouldn’t use it in your model if there’s a more appropriate tool you’re familiar with, like data frames."
   },
   {
+    "objectID": "getting_started.html#example-draw-all-venues",
+    "href": "getting_started.html#example-draw-all-venues",
+    "title": "Getting started",
+    "section": "Example: draw all venues",
+    "text": "Example: draw all venues\nThis script reads a protobuf file, then draws a dot for every venue, color-coded by activity."
+  },
+  {
     "objectID": "getting_started.html#understand-the-schema",
     "href": "getting_started.html#understand-the-schema",
     "title": "Getting started",
