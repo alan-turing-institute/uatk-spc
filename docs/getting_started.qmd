@@ -1,9 +1,12 @@
-# Getting started
+---
+title: "Getting started"
+toc: true
+---
 
 SPC generates output for many study areas, including all of the counties in
 England. If the area you want to model is listed or you just want to explore
 the data, no need to run SPC yourself -- just [download data for your
-area](outputs.md).
+area](outputs.qmd).
 
 There's one `.pb.gz` file per study area. After decompressing the `.gz`, you
 have a `.pb` file. The data uses [protocol

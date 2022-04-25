@@ -1,4 +1,7 @@
-# Outputs
+---
+title: "Outputs"
+toc: true
+---
 
 We've run SPC for many different study areas already, including every county in
 England. You can download the gzipped results here:
@@ -57,7 +60,7 @@ England. You can download the gzipped results here:
 
 See [config/](https://github.com/alan-turing-institute/uatk-spc/tree/main/config) for the
 list of MSOAs covered by each study area. If you want to run SPC for a
-different list of MSOAs, [see the user guide](usage_guide.md).
+different list of MSOAs, [see here](running.qmd).
 
 ## Versioning
 

@@ -1,0 +1,29 @@
+project:
+  type: website
+
+website:
+  title: "Synthetic Population Catalyst"
+  sidebar:
+    style: "docked"
+    search: true
+    contents:
+      - index.qmd
+      - section: "Using it"
+        contents:
+          - getting_started.qmd
+          - outputs.qmd
+          - running.qmd
+      - section: "Understanding it"
+        contents:
+          - modelling_methods.qmd
+          - data_sources.qmd
+      - section: "Internals"
+        contents:
+          - developer_guide.qmd
+          - code_walkthrough.qmd
+          - performance.qmd
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css

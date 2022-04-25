@@ -17,6 +17,8 @@ list of the MSOAs by defining a Local Authority District area in England. To
 start with this tool, go to our [usage guide](docs/usage_guide.md) for
 installation and instruction steps.
 
+<!-- TODO, links broken -->
+
 - [Usage guide](docs/usage_guide.md)
 - [Developer guide](docs/developer_guide.md)
 - [Code walkthrough](docs/code_walkthrough.md)

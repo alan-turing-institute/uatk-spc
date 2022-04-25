@@ -1,4 +1,7 @@
-# Usage guide
+---
+title: "Running SPC"
+toc: true
+---
 
 ## Initial Requirements
 

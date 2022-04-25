@@ -1,4 +1,12 @@
-# Developer guide
+---
+title: "Developer guide"
+toc: true
+---
+
+## Updating the docs
+
+The site is built with [Quarto](https://quarto.org/). You can iterate on it
+locally: `cd docs; quarto preview`
 
 ## Code hygiene
 

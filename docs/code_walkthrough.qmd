@@ -1,4 +1,7 @@
-# Code walkthrough
+---
+title: "Code walkthrough"
+toc: true
+---
 
 ## Generally useful techniques
 
