@@ -24,6 +24,7 @@ installation and instruction steps.
 - [Data sources](docs/data_sources.md)
 - [Performance of the pipeline](docs/performance.md)
 - [Output data](docs/outputs.md)
+- [Getting started](docs/getting_started.md)
 
 ## Lineage
 
