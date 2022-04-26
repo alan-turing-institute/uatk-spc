@@ -113,7 +113,7 @@ impl Population {
             }
             *venues = surviving_venues;
 
-            // There's only one other place that stores VenueIDs for  Go through all the places that keep VenueIDs for this activity and fix them up
+            // There's only one other place that stores VenueIDs for these activities
             for info in self.info_per_msoa.values_mut() {
                 for (old_id, _) in &mut info.flows_per_activity[activity] {
                     *old_id = id_mapping[old_id];
