@@ -3,21 +3,25 @@ title: "Transform the output file"
 toc: true
 ---
 
-Once you run SPC to generate a new study area based on your input file text, you will get in `/data/output` folder a `.pb` file. A .pb or [protocol buffer file](https://developers.google.com/protocol-buffers/docs/overview) efficiently encode the the enriched synthetic population [schema](https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto). You
+Once you run SPC to generate a new study area based on your input file text, you will get in `/data/output` folder a `.pb` file. A .pb or [protocol buffer file](https://developers.google.com/protocol-buffers/docs/overview) efficiently encode the enriched synthetic population [schema](https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto). You
 can read the "protobuf" (shorthand for a protocol buffer file) in any
 [supported language](https://developers.google.com/protocol-buffers/docs/overview#cross-lang),
 and then extract and transform just the parts of the data you want.
 
-## Python
+## Conda - Python
 
-To work with SPC protobufs in Python, you need two dependencies setup:
+**Optional**: To work with SPC protobufs in Python, you need aditional dependencies dependencies, we have created a conda environment file to assit you to create an independent conda environment to run the scripts included in SPC:
 
-- The [protobuf](https://pypi.org/project/protobuf/) library
-  - You can install system-wide with `pip install protobuf`
-  - Or add as a dependency to a conda, poetry, etc environment
-- The generated Python library, [synthpop_pb2.py](https://raw.githubusercontent.com/alan-turing-institute/uatk-spc/main/python/synthpop_pb2.py)
-  - You can download a copy of this file into your codebase, then `import synthpop_pb2`
-  - You can also generate the file yourself, following the [docs](https://developers.google.com/protocol-buffers/docs/reference/python-generated): `protoc --python_out=python/ synthpop.proto`
+1. You will need conda to set up your enviroment as well as install the requiered dependencies, we recommend install [miniconda](https://docs.conda.io/en/latest/miniconda.html) as the minimal installer for conda
+
+2. Once miniconda is installed, make sure you are located at `spc` folder and create the environment that will provide the required dependencies.
+
+```
+conda env create -f environment.yml
+```
+
+Adtional note:
+There is a generated Python library you will find in some of the SPC scripts, [synthpop_pb2.py](https://raw.githubusercontent.com/alan-turing-institute/uatk-spc/main/python/synthpop_pb2.py) you can download a copy of this file into your codebase, then `import synthpop_pb2`. You can also generate the file yourself, following the [docs](https://developers.google.com/protocol-buffers/docs/reference/python-generated): `protoc --python_out=python/ synthpop.proto`
 
 ## Converting .pb file to JSON format
 

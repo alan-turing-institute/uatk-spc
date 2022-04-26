@@ -8,11 +8,11 @@ sources](https://alan-turing-institute.github.io/uatk-spc/data_sources.html)
 and outputs a single file in [protocol buffer
 format](https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto),
 describing the population in a given study area. The tool also provides methods
-to export the outcome in diferent formats often use for researchers like CSV or
+to export the outcome in different formats often use for researchers like CSV or
 JSON.
 
 The input of the SPC tool is a list of the Middle Layer Super Output Area
-(MSOAs) where you want to create a spatially enriched sythetic population to
+(MSOAs) where you want to create a spatially enriched synthetic population to
 feed other dynamic models. SPC includes a script to assist you with the proper
 list of the MSOAs by defining a Local Authority District area in England. [Get
 started](https://alan-turing-institute.github.io/uatk-spc/getting_started.html)
