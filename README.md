@@ -1,6 +1,6 @@
 # Synthetic Population Catalyst
 
-![SPC Schema](docs/img/UK_LAD.png)
+![SPC Schema](docs/img/SPC_Schema.png)
 
 The Synthetic Population Catalyst (SPC) makes it easier for researchers to work
 with synthetic population data in England. It combines a variety of [data
