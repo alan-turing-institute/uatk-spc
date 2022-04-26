@@ -12,9 +12,10 @@ website:
         contents:
           - getting_started.qmd
           - outputs.qmd
-          - running.qmd
+          - troubleshooting.qmd
       - section: "Understanding it"
         contents:
+          - understanding.qmd
           - modelling_methods.qmd
           - data_sources.qmd
       - section: "Internals"
