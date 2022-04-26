@@ -1,0 +1,33 @@
+---
+title: "Creating new areas"
+toc: true
+---
+
+Once SPC is installed and you need to create a synthetic population for a **new area** not listed in one of our already genereted (outputs)[outputs.qmd], you need to do the following steps:
+
+## Adding a new area text file in `/config` folder
+
+SPC requieres a list of MSOAs for a given area. The MSOA code is not a conventional way to describe an area, so we have created a python script to assist you create the requiered input file for SPC.
+
+Navigate to the folder `scripts` within SPC folder, and run `python select_msoas.py`, this script will ask you the name of the LAD or County you are interest in. Refer to `data/raw_data/referencedata/lookUp.csv` for all geographies that SPC support. 
+
+A new file will be created in your config folder `config/your_region.txt` with the list of MSOAs.
+
+## Run SPC for the new area list
+
+After you write a new file, you simply run the pipeline with that as input, make sure you are located in the `spc` folder
+
+```
+cargo run --release -- config/your_region.txt
+```
+
+If you like to take a quick look of how SPC process the data, you can use one of our small examples lists (west_yorkshire_small.txt, two_counties.txt)
+
+```
+cargo run --release -- config/west_yorkshire_small.txt
+```
+
+This will download some large files the first time. You'll wind up with
+`data/output/west_yorkshire_small.pb` as output, as well as lots of
+intermediate files in `data/raw_data/`. The next time you run this command
+(even on a different study area), it should go much faster.

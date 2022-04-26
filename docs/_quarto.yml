@@ -11,6 +11,10 @@ website:
       - section: "Using it"
         contents:
           - getting_started.qmd
+          - installation.qmd
+          - using_spc.qmd
+          - transform_it.qmd
+          - created_areas.qmd
           - outputs.qmd
           - troubleshooting.qmd
       - section: "Understanding it"
