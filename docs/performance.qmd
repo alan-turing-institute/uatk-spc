@@ -23,6 +23,7 @@ The following tables summarizes the resources SPC needs to run in different area
 |east_yorkshire_with_hull|    75   |    261,267   |  579,746 |  85.40MiB  | 7 seconds|    2 seconds    |  280.82MiB |
 |          essex         |   211   |    771,734   | 1,798,893|  260.51MiB |36 seconds|    24 seconds   |  602.83MiB |
 |     gloucestershire    |   107   |    392,120   |  901,395 |  129.72MiB |13 seconds|    5 seconds    |  304.15MiB |
+|     greater_london     |   983   |   3,135,814  | 8,672,103|   1.23GiB  |11 minutes|    10 minutes   |   4.32GiB  |
 |   greater_manchester   |   346   |    871,651   | 2,746,858|  388.45MiB | 2 minutes|    83 seconds   |   1.09GiB  |
 |        hampshire       |   225   |    775,203   | 1,803,991|  262.30MiB |41 seconds|    28 seconds   |  603.87MiB |
 |      herefordshire     |    23   |    83,115    |  191,282 |  27.91MiB  | 4 seconds|     1 second    |  76.86MiB  |
@@ -34,7 +35,6 @@ The following tables summarizes the resources SPC needs to run in different area
 |     leicestershire     |   120   |    417,621   | 1,043,283|  147.66MiB |17 seconds|    10 seconds   |  304.30MiB |
 |      lincolnshire      |   134   |    473,854   | 1,064,174|  153.04MiB |13 seconds|    6 seconds    |  553.98MiB |
 |        liverpool       |    61   |    218,559   |  494,999 |  70.81MiB  | 9 seconds|    3 seconds    |  152.88MiB |
-|         london         |   983   |   3,135,814  | 8,672,103|   1.23GiB  |11 minutes|    10 minutes   |   4.32GiB  |
 |       merseyside       |   184   |    546,791   | 1,401,012|  199.91MiB |25 seconds|    17 seconds   |  592.73MiB |
 |         norfolk        |   110   |    379,188   |  891,006 |  129.99MiB |11 seconds|    4 seconds    |  304.41MiB |
 |     north_yorkshire    |   138   |    434,489   | 1,069,514|  154.35MiB |14 seconds|    6 seconds    |  554.40MiB |
