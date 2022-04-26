@@ -146,15 +146,6 @@ impl Activity {
     }
 }
 
-#[derive(Clone, Debug)]
-pub struct Flow {
-    // TODO The biggest simplification we could make is encoding Activity into VenueID directly.
-    // The "global place ID" concept does this, but in a more complicated way.
-    pub activity: Activity,
-    pub venue: VenueID,
-    pub weight: f32,
-}
-
 /// Represents a place where people do an activity
 pub struct Venue {
     pub id: VenueID,

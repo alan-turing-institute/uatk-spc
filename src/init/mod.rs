@@ -72,15 +72,13 @@ impl Population {
         Ok((population, commuting_duration))
     }
 
-    // Remove venues where nobody goes (by zeroing out the location)
+    // Remove venues where nobody goes
     //
     // TODO Should we do this earlier and only keep venues matching our input MSOAs (the same as
     // where people live?)
     // - Since we take the top N flows, it could change the results
     // - Do we have to check if the venue's location is physically inside an MSOA polygon, or do we
     //  use the *Population.csv files somehow?
-    //
-    //  TODO Actually remove the venues from the output entirely, and compact VenueIDs.
     fn remove_unused_venues(&mut self) {
         let mut visited_venues: BTreeSet<(Activity, VenueID)> = BTreeSet::new();
         for msoa in self.info_per_msoa.values() {
@@ -90,15 +88,43 @@ impl Population {
                 }
             }
         }
-        let mut unvisited_venues = 0;
+
         for (activity, venues) in &mut self.venues_per_activity {
-            for (id, venue) in venues.iter_mut_enumerated() {
-                if !visited_venues.contains(&(activity, id)) {
+            // Home and Work are not stored in per-MSOA flows, so don't touch them
+            if activity == Activity::Home || activity == Activity::Work {
+                continue;
+            }
+
+            let mut unvisited_venues = 0;
+
+            // Remove unused venues, which means we'll have to rewrite all VenueIDs for this
+            // activity. Build up an old -> new mapping
+            let mut id_mapping: BTreeMap<VenueID, VenueID> = BTreeMap::new();
+            let mut surviving_venues = TiVec::new();
+            for mut venue in venues.drain(..) {
+                if visited_venues.contains(&(activity, venue.id)) {
+                    let old_id = venue.id;
+                    venue.id = VenueID(surviving_venues.len());
+                    id_mapping.insert(old_id, venue.id);
+                    surviving_venues.push(venue);
+                } else {
                     unvisited_venues += 1;
-                    venue.location = geo::Point::new(0.0, 0.0);
                 }
             }
+            *venues = surviving_venues;
+
+            // There's only one other place that stores VenueIDs for  Go through all the places that keep VenueIDs for this activity and fix them up
+            for info in self.info_per_msoa.values_mut() {
+                for (old_id, _) in &mut info.flows_per_activity[activity] {
+                    *old_id = id_mapping[old_id];
+                }
+            }
+
+            info!(
+                "Removed {} unvisited venues for {:?}",
+                print_count(unvisited_venues),
+                activity
+            );
         }
-        info!("Removed {} unvisited venues", print_count(unvisited_venues));
     }
 }

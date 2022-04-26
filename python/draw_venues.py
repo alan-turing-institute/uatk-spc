@@ -20,9 +20,6 @@ def draw_venues(input_path):
     dots = []
     for activity in pop.venues_per_activity.keys():
         for venue in pop.venues_per_activity[activity].venues:
-            # TODO We should filter out unused venues in SPC
-            if venue.location.latitude == 0.0:
-                continue
             dots.append(
                 (
                     venue.location.latitude,
