@@ -1,9 +1,9 @@
 ---
-title: "Outputs"
+title: "Outputs for England Counties"
 toc: true
 ---
 
-We've run SPC for every count in England. You can download the gzipped results
+We have run SPC for every county in England. You can download the gzipped results
 here:
 
 - [bedfordshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/bedfordshire.pb.gz)

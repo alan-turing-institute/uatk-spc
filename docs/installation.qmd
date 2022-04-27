@@ -1,0 +1,25 @@
+---
+title: "Installation"
+toc: true
+---
+
+## Initial Requirements
+
+- **Rust**: The latest version of Rust (1.60):
+  [https://www.rust-lang.org/tools/install](https://www.rust-lang.org/tools/install)
+
+- For Mac users, we recommend to have installed **Homebrew**: [https://brew.sh/](https://brew.sh/)
+
+- **Python**, there are some scrips and functionalites inside SPC that requiere python. [https://www.python.org/downloads/](https://www.python.org/downloads/)
+
+## One-time installation
+
+```shell
+git clone https://github.com/alan-turing-institute/uatk-spc/
+cd uatk-spc
+# The next command will take a few minutes the first time you do it, to build external dependencies
+cargo build --release
+```
+
+If you get some errors during the compilation process, take a look at
+[Troubleshooting](troubleshooting.qmd) section.

@@ -37,6 +37,5 @@ def area(lad):
             f"No matches for LAD20NM = {lad} in data/raw_data/referencedata/lookUp.csv"
         )
 
-
 if __name__ == "__main__":
     area()

@@ -1,0 +1,59 @@
+---
+title: "Transform the output file"
+toc: true
+---
+
+Once you run SPC to generate a new study area based on your input file text, you will get in `/data/output` folder a `.pb` file. A .pb or [protocol buffer file](https://developers.google.com/protocol-buffers/docs/overview) efficiently encode the the enriched synthetic population [schema](https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto). You
+can read the "protobuf" (shorthand for a protocol buffer file) in any
+[supported language](https://developers.google.com/protocol-buffers/docs/overview#cross-lang),
+and then extract and transform just the parts of the data you want.
+
+## Python
+
+To work with SPC protobufs in Python, you need two dependencies setup:
+
+- The [protobuf](https://pypi.org/project/protobuf/) library
+  - You can install system-wide with `pip install protobuf`
+  - Or add as a dependency to a conda, poetry, etc environment
+- The generated Python library, [synthpop_pb2.py](https://raw.githubusercontent.com/alan-turing-institute/uatk-spc/main/python/synthpop_pb2.py)
+  - You can download a copy of this file into your codebase, then `import synthpop_pb2`
+  - You can also generate the file yourself, following the [docs](https://developers.google.com/protocol-buffers/docs/reference/python-generated): `protoc --python_out=python/ synthpop.proto`
+
+## Converting .pb file to JSON format
+
+To interactively explore the data, viewing JSON is much easier. It shows the
+same structure as the protobuf, but in a human-readable text format. The
+example below uses a [small Python
+script](https://github.com/alan-turing-institute/uatk-spc/blob/main/python/protobuf_to_json.py):
+
+```shell
+# Download a file
+wget https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz
+# Uncompress
+gunzip rutland.pb.gz
+# Convert the .pb to JSON
+python3 python/protobuf_to_json.py data/output/rutland.pb > rutland.json
+# View the output
+less rutland.json
+```
+
+## Converting to numpy arrays
+
+The [ASPICS](https://github.com/alan-turing-institute/uatk-aspics) project simulates the
+spread of COVID through a population. The code uses numpy, and [this
+script](https://github.com/alan-turing-institute/uatk-aspics/blob/main/convert_snapshot.py)
+converts the protobuf to a bunch of different numpy arrays.
+
+Note the code doesn't keep using classes from the generated Python code for
+protobufs. The protobuf is a format optimized for reading and writing; you
+shouldn't use it in your model if there's a more appropriate tool you're
+familiar with, like data frames.
+
+## Visualizing the output files.
+
+Use [this
+script](https://github.com/alan-turing-institute/uatk-spc/blob/main/python/draw_venues.py)
+to read a protobuf file, then draws a dot for every venue, color-coded by
+activity.
+
+![](img/venues.gif)
