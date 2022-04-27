@@ -188,7 +188,51 @@
 <p>Contains 47 files, each representing the population in 2020 of one of the counties of England mentioned above, and named</p>
 <pre><code>tus_hse_&lt;county_name&gt;.gz</code></pre>
 <p>This data is based on the <a href="http://dx.doi.org/10.5257/census/aggregate-2011-1">2011 UK census</a>, the <a href="http://dx.doi.org/10.5255/UKDA-SN-8128-1">Time Use Survey 2014-15</a> and the <a href="http://dx.doi.org/10.5255/UKDA-SN-8488-2">Health Survey for England 2017</a>. The SPENSER (Synthetic Population Estimation and Scenario Projection) microsimulation model (<a href="http://dx.doi.org/10.1111/gean.12320">reference</a>) distributes a synthetic population based on the census at MSOA scale and projects it to 2020 according to estimates from the Office for National Statistics (ONS). This information was enriched with some of the content of the other two datasets through propensity score matching (PSM) by Prof.&nbsp;Karyn Morrissey (Technical University of Denmark). The rest of the datasets can be added <em>a posteriori</em> from the identifiers provided.</p>
-<p>The fields currently contained are: - <code>idp</code>: a unique individual identifier within the present data - <code>MSOA11CD</code>: MSOA code where the individual lives - <code>hid</code>: household identifier, includes communal establishments - <code>pid</code>: identifier linking to the 2011 Census - <code>pid_tus</code>: identifier linking to the Time Use Survey 2015 - <code>pid_hse</code>: identifier linking to the Health Survey for England 2017 - <code>sex</code>: 0 female; 1 male - <code>age</code>: in years - <code>origin</code>: 1 White; 2 Black; 3 Asian; 4 Mixed; 5 Other - <code>nssec5</code>: National Statistics Socio-economic classification: - 1: Higher managerial, administrative and professional occupations - 2: Intermediate occupations - 3: Small employers and own account workers - 4: Lower supervisory and technical occupations - 5: Semi-routine and routine occupations - 0: Never worked and long-term unemployed - <code>soc2010</code>: Previous version of the <a href="https://www.ons.gov.uk/methodology/classificationsandstandards/standardoccupationalclassificationsoc/soc2010">Standard Occupational Classification</a> - <code>sic1d07</code>: Standard <a href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities">Industrial Classification of Economic Activities 2007</a>, 1st layer (number corresponding to the letter in alphabetical order) - <code>sic2d07</code>: Standard <a href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities">Industrial Classification of Economic Activities 2007</a>, 2nd layer - Proportion of 24h spent doing different daily activities: - <code>punknown</code> + <code>pwork</code> + <code>pschool</code> + <code>pshop</code> + <code>pservices</code> + <code>pleisure</code> + <code>pescort</code> + <code>ptransport</code> = <code>pnothome</code> - <code>phome</code> + <code>pworkhome</code> = <code>phometot</code> - <code>pnothome</code> + <code>phometot</code> = 1 - <code>cvd</code>: has a cardio-vascular disease (0 or 1) - <code>diabetes</code>: has diabetes (0 or 1) - <code>bloodpressure</code>: has high blood pressure (0 or 1) - <code>BMIvg6</code>: Body Mass Index: - Not applicable - Underweight: less than 18.5 - Normal: 18.5 to less than 25 - Overweight: 25 to less than 30 - Obese I: 30 to less than 35 - Obese II: 35 to less than 40 - Obese III: 40 or more - <code>lng</code>: longitude of the MSOA11CD centroid - <code>lat</code>: latitude of the MSOA11CD centroid</p>
+<p>The fields currently contained are:</p>
+<ul>
+<li><code>idp</code>: a unique individual identifier within the present data</li>
+<li><code>MSOA11CD</code>: MSOA code where the individual lives</li>
+<li><code>hid</code>: household identifier, includes communal establishments</li>
+<li><code>pid</code>: identifier linking to the 2011 Census</li>
+<li><code>pid_tus</code>: identifier linking to the Time Use Survey 2015</li>
+<li><code>pid_hse</code>: identifier linking to the Health Survey for England 2017</li>
+<li><code>sex</code>: 0 female; 1 male</li>
+<li><code>age</code>: in years</li>
+<li><code>origin</code>: 1 White; 2 Black; 3 Asian; 4 Mixed; 5 Other</li>
+<li><code>nssec5</code>: National Statistics Socio-economic classification:
+<ul>
+<li>1: Higher managerial, administrative and professional occupations</li>
+<li>2: Intermediate occupations</li>
+<li>3: Small employers and own account workers</li>
+<li>4: Lower supervisory and technical occupations</li>
+<li>5: Semi-routine and routine occupations</li>
+<li>0: Never worked and long-term unemployed</li>
+</ul></li>
+<li><code>soc2010</code>: Previous version of the <a href="https://www.ons.gov.uk/methodology/classificationsandstandards/standardoccupationalclassificationsoc/soc2010">Standard Occupational Classification</a></li>
+<li><code>sic1d07</code>: Standard <a href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities">Industrial Classification of Economic Activities 2007</a>, 1st layer (number corresponding to the letter in alphabetical order)</li>
+<li><code>sic2d07</code>: Standard <a href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities">Industrial Classification of Economic Activities 2007</a>, 2nd layer</li>
+<li>Proportion of 24h spent doing different daily activities:
+<ul>
+<li><code>punknown</code> + <code>pwork</code> + <code>pschool</code> + <code>pshop</code> + <code>pservices</code> + <code>pleisure</code> + <code>pescort</code> + <code>ptransport</code> = <code>pnothome</code></li>
+<li><code>phome</code> + <code>pworkhome</code> = <code>phometot</code></li>
+<li><code>pnothome</code> + <code>phometot</code> = 1</li>
+</ul></li>
+<li><code>cvd</code>: has a cardio-vascular disease (0 or 1)</li>
+<li><code>diabetes</code>: has diabetes (0 or 1)</li>
+<li><code>bloodpressure</code>: has high blood pressure (0 or 1)</li>
+<li><code>BMIvg6</code>: Body Mass Index:
+<ul>
+<li>Not applicable</li>
+<li>Underweight: less than 18.5</li>
+<li>Normal: 18.5 to less than 25</li>
+<li>Overweight: 25 to less than 30</li>
+<li>Obese I: 30 to less than 35</li>
+<li>Obese II: 35 to less than 40</li>
+<li>Obese III: 40 or more</li>
+</ul></li>
+<li><code>lng</code>: longitude of the MSOA11CD centroid</li>
+<li><code>lat</code>: latitude of the MSOA11CD centroid</li>
+</ul>
 <p>Some other fields were kept from specific projects but are not from official sources and should be used.</p>
 </section>
 <section id="national-data" class="level2">
