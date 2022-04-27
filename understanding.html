@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="quarto-0.9.4">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Synthetic Population Catalyst - Outputs for England Counties</title>
+  <title>Synthetic Population Catalyst - The Data Schema</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -58,7 +58,7 @@
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Outputs for England Counties</h1>
+      <h1 class="quarto-secondary-nav-title">The Data Schema</h1>
       <button type="button" class="quarto-btn-toggle btn">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -116,7 +116,7 @@
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./outputs.html" class="sidebar-item-text sidebar-link active">Outputs for England Counties</a>
+  <a href="./outputs.html" class="sidebar-item-text sidebar-link">Outputs for England Counties</a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -136,7 +136,7 @@
     <ul id="quarto-sidebar-section-understanding-it" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./understanding.html" class="sidebar-item-text sidebar-link">The Data Schema</a>
+  <a href="./understanding.html" class="sidebar-item-text sidebar-link active">The Data Schema</a>
   </div>
 </li>
         <li class="sidebar-item">
@@ -184,80 +184,32 @@
         <nav id="TOC" role="doc-toc">
 <h2 id="toc-title">On this page</h2>
 <ul>
-<li><a href="#versioning" class="nav-link active" data-scroll-target="#versioning">Versioning</a></li>
+<li><a href="#understanding-the-schema" class="nav-link active" data-scroll-target="#understanding-the-schema">Understanding the schema</a></li>
+<li><a href="#modelling-the-daily-activites---flows" class="nav-link" data-scroll-target="#modelling-the-daily-activites---flows">Modelling the daily activites - Flows</a></li>
 </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 <header id="title-block-header">
-<h1 class="title d-none d-lg-block display-7">Outputs for England Counties</h1>
+<h1 class="title d-none d-lg-block display-7">The Data Schema</h1>
 </header>
 
-<p>We have run SPC for every county in England. You can download the gzipped results here:</p>
-<ul>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/bedfordshire.pb.gz">bedfordshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/berkshire.pb.gz">berkshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/buckinghamshire.pb.gz">buckinghamshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/cambridgeshire.pb.gz">cambridgeshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/cheshire.pb.gz">cheshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/cornwall.pb.gz">cornwall</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/cumbria.pb.gz">cumbria</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/derbyshire.pb.gz">derbyshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/devon.pb.gz">devon</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/dorset.pb.gz">dorset</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/durham.pb.gz">durham</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/east_sussex.pb.gz">east_sussex</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/east_yorkshire_with_hull.pb.gz">east_yorkshire_with_hull</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/essex.pb.gz">essex</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/gloucestershire.pb.gz">gloucestershire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/greater_london.pb.gz">greater_london</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/greater_manchester.pb.gz">greater_manchester</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/hampshire.pb.gz">hampshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/herefordshire.pb.gz">herefordshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/hertfordshire.pb.gz">hertfordshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/isle_of_wight.pb.gz">isle_of_wight</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/kent.pb.gz">kent</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/lancashire.pb.gz">lancashire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/leeds.pb.gz">leeds</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/leicestershire.pb.gz">leicestershire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/lincolnshire.pb.gz">lincolnshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/liverpool.pb.gz">liverpool</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/merseyside.pb.gz">merseyside</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/norfolk.pb.gz">norfolk</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/northamptonshire.pb.gz">northamptonshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/northumberland.pb.gz">northumberland</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/north_yorkshire.pb.gz">north_yorkshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/nottinghamshire.pb.gz">nottinghamshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/oxfordshire.pb.gz">oxfordshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz">rutland</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/shropshire.pb.gz">shropshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/somerset.pb.gz">somerset</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/south_yorkshire.pb.gz">south_yorkshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/staffordshire.pb.gz">staffordshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/suffolk.pb.gz">suffolk</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/surrey.pb.gz">surrey</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/tyne_and_wear.pb.gz">tyne_and_wear</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/warwickshire.pb.gz">warwickshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/west_midlands.pb.gz">west_midlands</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/west_sussex.pb.gz">west_sussex</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/wiltshire.pb.gz">wiltshire</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/worcestershire.pb.gz">worcestershire</a></li>
-</ul>
-<p>We also have a few special study areas defined for various projects or tests:</p>
-<ul>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/bristol.pb.gz">bristol</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/two_counties.pb.gz">two_counties</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/west_yorkshire_large.pb.gz">west_yorkshire_large</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/west_yorkshire_small.pb.gz">west_yorkshire_small</a></li>
-</ul>
-<p>See <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/config">config/</a> for the list of MSOAs covered by each study area. If you want to run SPC for a different list of MSOAs, <a href="running.qmd">see here</a>.</p>
-<section id="versioning" class="level2">
-<h2 class="anchored" data-anchor-id="versioning">Versioning</h2>
-<p>Over time, we may add more data to SPC or change the schema. Protocol buffers are designed to let combinations of new/old code and data files work together, but we don’t intend to use this feature. We may make breaking changes, like deleting fields. We’ll release a new version of the schema and output data every time and document it here. You should depend on a specific version of the data output in your code, so new releases don’t affect you until you decide to update.</p>
-<ul>
-<li>v1: released 25/04/2022, <a href="https://github.com/alan-turing-institute/uatk-spc/blob/a9e8b361e942ba67a93f9b5b6a7d66b7ff8b0239/synthpop.proto">schema</a></li>
-</ul>
+<section id="understanding-the-schema" class="level2">
+<h2 class="anchored" data-anchor-id="understanding-the-schema">Understanding the schema</h2>
+<p>Here are some helpful tips for understanding the <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto">schema</a>.</p>
+<p>Each .pb file contains exactly one <code>Population</code> message. In contrast to datasets consisting of multiple <code>.csv</code> files, just a single file contains everything. Some of the fields in <code>Population</code> are lists (of people and households) or maps (of venues keyed by activity, or of MSOAs). Unlike a flat <code>.csv</code> table, there may be more lists embedded later. Each <code>Household</code> has a list of <code>members</code>, for example.</p>
+<p>The different objects refer to each other, forming a graph structure. The protobuf uses <code>uint64</code> IDs to index into other lists. For example, if some household has <code>members = [3, 10]</code>, then those two people can be found at <code>population.people[3]</code> and <code>population.people[10]</code>. Each of them will have the same <code>household</code> ID, pointing back to something in the <code>population.households</code> list.</p>
+</section>
+<section id="modelling-the-daily-activites---flows" class="level2">
+<h2 class="anchored" data-anchor-id="modelling-the-daily-activites---flows">Modelling the daily activites - Flows</h2>
+<p>SPC models daily travel behavior of people as “flows.” Flows are broken down by by an <a href="https://github.com/alan-turing-institute/uatk-spc/blob/feffb857c6fbbd7c2b3dd1f3cb46e67677185897/synthpop.proto#L196">activity</a> – shopping/retail, attending primary or secondary school, working, or staying at home. For each activity type, a person has a list of venues where they may do that activity, weighted by a probability of going to that particular venue.</p>
+<p>Note that <code>flows_per_activity</code> is stored in <code>InfoPerMSOA</code>, not <code>Person</code>. The flows for retail and school are only known at the MSOA level, not individually. So given a particular <code>Person</code> object, you first look up their household’s MSOA – <code>msoa = population.households[ person.household ].msoa</code> and then look up flows for that MSOA – <code>population.info_per_msoa[msoa].flows_per_activity</code>.</p>
+<p>Each person has exactly 1 flow for home – it’s just <code>person.household</code> with probability 1. A person has 0 or 1 flows to work, based on the value of <code>person.workplace</code>.</p>
+<p>This doesn’t mean that all people in the same MSOA share the same travel behavior. Each person has their own <code>activity_durations</code> field, based on time-use survey data. Even if two people share the same set of places where they may go shopping, one person may spend much more time on that activity than another.</p>
+<p>See the <a href="https://github.com/alan-turing-institute/uatk-aspics/blob/c8ad47cb01b084028b2f8ca90fcf078470efbee0/convert_snapshot.py#L166">ASPICS conversion script</a> for all of this in action – it has a function to collapse a person’s flows down into a single weighted list.</p>
+<p>How do you interpret the probabilities/weights for flows? If your model needs people to visit specific places each day, you could randomly sample a venue from the flows, weighting them appropriately. For retail, you may want to repeat this sampling every day of the simulation, so they visit different venues. For primary and secondary school, it may be more appropriate to sample once and store that for the simulation – a student probably doesn’t switch schools daily.</p>
+<p>Alternatively, you can follow what ASPICS does. Every day, each person logically visits all possible venues, but their interaction there (possibly receiving or transmitting COVID) is weighted by the probability of each venue.</p>
 
 
 </section>
