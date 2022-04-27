@@ -112,6 +112,9 @@ time-use survey data. Even if two people share the same set of places where
 they may go shopping, one person may spend much more time on that activity than
 another.
 
+Note that per MSOA, very few venues are represented as destinations -- 10 for
+retail and 5 for school. Only the most likely venues from QUANT are used.
+
 See the [ASPICS conversion
 script](https://github.com/alan-turing-institute/uatk-aspics/blob/c8ad47cb01b084028b2f8ca90fcf078470efbee0/convert_snapshot.py#L166)
 for all of this in action -- it has a function to collapse a person's flows
