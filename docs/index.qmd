@@ -18,3 +18,6 @@ feed other dynamic models. SPC includes a script to assist you with the proper
 list of the MSOAs by defining a Local Authority District area in England. [Get
 started](getting_started.qmd) to download SPC data or run the tool in different
 MSOAs.
+
+You can also download this site as [a
+PDF](https://alan-turing-institute.github.io/uatk-spc/Synthetic-Population-Catalyst.pdf)

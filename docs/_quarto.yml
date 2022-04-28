@@ -27,5 +27,4 @@ book:
 format:
   html:
     theme: cosmo
-  pdf:
-    documentclass: scrreport
+  pdf: default

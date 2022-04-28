@@ -56,4 +56,4 @@ script](https://github.com/alan-turing-institute/uatk-spc/blob/main/python/draw_
 to read a protobuf file, then draws a dot for every venue, color-coded by
 activity.
 
-![](img/venues.gif)
+![](img/venues.png)
