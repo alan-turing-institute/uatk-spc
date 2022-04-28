@@ -116,7 +116,7 @@
     "href": "developer_guide.html#code-hygiene",
     "title": "9  Developer guide",
     "section": "9.2 Code hygiene",
-    "text": "9.2 Code hygiene\nWe use automated tools to format the code.\ncargo fmt\n\n# Format Markdown docs\nprettier --write *.md docs/*.md\nInstall prettier for Markdown."
+    "text": "9.2 Code hygiene\nWe use automated tools to format the code.\ncargo fmt\n\n# Format Markdown docs\nprettier --write *.md\nprettier --write docs/*.qmd --parser markdown\nInstall prettier for Markdown."
   },
   {
     "objectID": "developer_guide.html#some-tips-for-working-with-rust",
