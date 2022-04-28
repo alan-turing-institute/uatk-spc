@@ -23,7 +23,7 @@ Contains 47 files, each representing the population in 2020 of one of the counti
 tus_hse_<county_name>.gz
 ```
 
-This data is based on the [2011 UK census](http://dx.doi.org/10.5257/census/aggregate-2011-1), the [Time Use Survey 2014-15](http://dx.doi.org/10.5255/UKDA-SN-8128-1) and the [Health Survey for England 2017](http://dx.doi.org/10.5255/UKDA-SN-8488-2). The SPENSER (Synthetic Population Estimation and Scenario Projection) microsimulation model ([reference](http://dx.doi.org/10.1111/gean.12320)) distributes a synthetic population based on the census at MSOA scale and projects it to 2020 according to estimates from the Office for National Statistics (ONS). This information was enriched with some of the content of the other two datasets through propensity score matching (PSM) by Prof. Karyn Morrissey (Technical University of Denmark). The rest of the datasets can be added *a posteriori* from the identifiers provided.
+This data is based on the [2011 UK census](http://dx.doi.org/10.5257/census/aggregate-2011-1), the [Time Use Survey 2014-15](http://dx.doi.org/10.5255/UKDA-SN-8128-1) and the [Health Survey for England 2017](http://dx.doi.org/10.5255/UKDA-SN-8488-2). The SPENSER (Synthetic Population Estimation and Scenario Projection) microsimulation model ([reference](http://dx.doi.org/10.1111/gean.12320)) distributes a synthetic population based on the census at MSOA scale and projects it to 2020 according to estimates from the Office for National Statistics (ONS). This information was enriched with some of the content of the other two datasets through propensity score matching (PSM) by Prof. Karyn Morrissey (Technical University of Denmark). The rest of the datasets can be added _a posteriori_ from the identifiers provided.
 
 The fields currently contained are:
 
@@ -37,35 +37,34 @@ The fields currently contained are:
 - `age`: in years
 - `origin`: 1 White; 2 Black; 3 Asian; 4 Mixed; 5 Other
 - `nssec5`: National Statistics Socio-economic classification:
-    - 1: Higher managerial, administrative and professional occupations
-    - 2: Intermediate occupations
-    - 3: Small employers and own account workers
-    - 4: Lower supervisory and technical occupations
-    - 5: Semi-routine and routine occupations
-    - 0: Never worked and long-term unemployed
-- `soc2010`: Previous version of the [Standard Occupational Classification]( https://www.ons.gov.uk/methodology/classificationsandstandards/standardoccupationalclassificationsoc/soc2010)
+  - 1: Higher managerial, administrative and professional occupations
+  - 2: Intermediate occupations
+  - 3: Small employers and own account workers
+  - 4: Lower supervisory and technical occupations
+  - 5: Semi-routine and routine occupations
+  - 0: Never worked and long-term unemployed
+- `soc2010`: Previous version of the [Standard Occupational Classification](https://www.ons.gov.uk/methodology/classificationsandstandards/standardoccupationalclassificationsoc/soc2010)
 - `sic1d07`: Standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities), 1st layer (number corresponding to the letter in alphabetical order)
-- `sic2d07`: Standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities), 2nd layer 
+- `sic2d07`: Standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities), 2nd layer
 - Proportion of 24h spent doing different daily activities:
-    - `punknown` + `pwork` + `pschool` + `pshop` + `pservices` + `pleisure` + `pescort` + `ptransport` = `pnothome`
-    - `phome` + `pworkhome` = `phometot`
-    - `pnothome` + `phometot` = 1
+  - `punknown` + `pwork` + `pschool` + `pshop` + `pservices` + `pleisure` + `pescort` + `ptransport` = `pnothome`
+  - `phome` + `pworkhome` = `phometot`
+  - `pnothome` + `phometot` = 1
 - `cvd`: has a cardio-vascular disease (0 or 1)
 - `diabetes`: has diabetes (0 or 1)
 - `bloodpressure`: has high blood pressure (0 or 1)
 - `BMIvg6`: Body Mass Index:
-    - Not applicable
-    - Underweight: less than 18.5
-    - Normal: 18.5 to less than 25
-    - Overweight: 25 to less than 30
-    - Obese I: 30 to less than 35
-    - Obese II: 35 to less than 40
-    - Obese III: 40 or more
+  - Not applicable
+  - Underweight: less than 18.5
+  - Normal: 18.5 to less than 25
+  - Overweight: 25 to less than 30
+  - Obese I: 30 to less than 35
+  - Obese II: 35 to less than 40
+  - Obese III: 40 or more
 - `lng`: longitude of the MSOA11CD centroid
 - `lat`: latitude of the MSOA11CD centroid
 
 Some other fields were kept from specific projects but are not from official sources and should be used.
-
 
 ## National data
 
@@ -73,7 +72,7 @@ Some other fields were kept from specific projects but are not from official sou
 businessRegistry.csv
 ```
 
-Contains a breakdown of all business units (i.e. a single workplace) in England at LSOA scale (smaller than MSOA), estimated by the project contributors from two nomis datasets: [UK Business Counts - local units by industry and employment size band 2020](https://www.nomisweb.co.uk/datasets/idbrlu) and [Business Register and Employment Survey 2015](https://www.nomisweb.co.uk/datasets/newbrespub). Each item contains the `size`  of the unit and its main `sic1d07` code in reference to standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities) (number corresponding to the letter in alphabetical order). It is used to compute commuting flows.
+Contains a breakdown of all business units (i.e. a single workplace) in England at LSOA scale (smaller than MSOA), estimated by the project contributors from two nomis datasets: [UK Business Counts - local units by industry and employment size band 2020](https://www.nomisweb.co.uk/datasets/idbrlu) and [Business Register and Employment Survey 2015](https://www.nomisweb.co.uk/datasets/newbrespub). Each item contains the `size` of the unit and its main `sic1d07` code in reference to standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities) (number corresponding to the letter in alphabetical order). It is used to compute commuting flows.
 
 ```
 MSOAS_shp.tar.gz

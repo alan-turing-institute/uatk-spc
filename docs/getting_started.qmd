@@ -17,7 +17,7 @@ other researchers or urban analysts to feed other dynamic models for multiples
 purposes where an enriched synthetic population file is required. SPC includes
 a comprehensive set of variables that include sociodemographic characteristics,
 daily activities, and other extra data sources to help you model the complexity
-of British society. 
+of British society.
 
 ## What output SPC generates
 

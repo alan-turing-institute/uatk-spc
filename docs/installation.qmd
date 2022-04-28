@@ -32,9 +32,7 @@ any trouble.
 ## Troubleshooting downloading
 
 If you have trouble downloading any of the large files, you can download them
-manually. The logs will contain a line such as `Downloading
-https://ramp0storage.blob.core.windows.net/nationaldata/QUANT_RAMP_spc.tar.gz
-to data/raw_data/nationaldata/QUANT_RAMP_spc.tar.gz`. This tells you the URL to
+manually. The logs will contain a line such as `Downloading https://ramp0storage.blob.core.windows.net/nationaldata/QUANT_RAMP_spc.tar.gz to data/raw_data/nationaldata/QUANT_RAMP_spc.tar.gz`. This tells you the URL to
 retrieve, and where to put the output file. Note that SPC won't attempt to
 download files if they already exist, so if you wind up with a partially
 downloaded file, you have to manually remove it.
