@@ -1,0 +1,27 @@
+---
+title: "Creating new study areas"
+toc: true
+---
+
+If the area you want to model isn't [already generated](outputs.qmd), then you
+can follow this guide to run SPC on a custom area. You must first [compile
+SPC](installation.qmd).
+
+## Specifying the area
+
+SPC takes a newline-separated list of MSOAs in the `config/` directory as input, like [this](https://github.com/alan-turing-institute/uatk-spc/blob/main/config/bristol.txt). You can generate this list from a LAD (local authority district). From the main SPC directory, run `python scripts/select_msoas.py`. Refer to `data/raw_data/referencedata/lookUp.csv` (only available after running SPC once) for all geographies available.
+
+This script will create a new file, `config/your_region.txt`.
+
+## Run SPC for the new area
+
+From the main directory, just run:
+
+```
+cargo run --release -- config/your_region.txt
+```
+
+This will download some large files the first time. You'll wind up with
+`data/output/your_region.pb` as output, as well as lots of intermediate files
+in `data/raw_data/`. The next time you run this command (even on a different
+study area), it should go much faster.

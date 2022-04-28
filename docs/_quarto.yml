@@ -5,19 +5,19 @@ book:
   title: "Synthetic Population Catalyst"
   chapters:
     - index.qmd
-    - part: "Using it"
+    - part: "Using SPC"
       chapters:
         - getting_started.qmd
-        - installation.qmd
-        - using_spc.qmd
-        - transform_it.qmd
         - outputs.qmd
-    - part: "Understanding it"
+        - use_output.qmd
+        - installation.qmd
+        - custom_areas.qmd
+    - part: "Understanding SPC"
       chapters:
-        - understanding.qmd
+        - schema.qmd
         - modelling_methods.qmd
         - data_sources.qmd
-    - part: "Internals"
+    - part: "Advanced"
       chapters:
         - developer_guide.qmd
         - code_walkthrough.qmd

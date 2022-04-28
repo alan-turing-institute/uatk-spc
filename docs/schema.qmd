@@ -1,5 +1,5 @@
 ---
-title: "The Data Schema"
+title: "Data schema"
 toc: true
 ---
 
@@ -22,7 +22,7 @@ household has `members = [3, 10]`, then those two people can be found at
 same `household` ID, pointing back to something in the `population.households`
 list.
 
-## Modelling the daily activites - Flows
+## Flows: modelling daily activites
 
 SPC models daily travel behavior of people as "flows." Flows are broken down by
 by an
@@ -51,6 +51,11 @@ See the [ASPICS conversion
 script](https://github.com/alan-turing-institute/uatk-aspics/blob/c8ad47cb01b084028b2f8ca90fcf078470efbee0/convert_snapshot.py#L166)
 for all of this in action -- it has a function to collapse a person's flows
 down into a single weighted list.
+
+Note that per MSOA, very few venues are represented as destinations -- 10 for
+retail and 5 for school. Only the most likely venues from QUANT are used.
+
+## Flow weights
 
 How do you interpret the probabilities/weights for flows? If your model needs
 people to visit specific places each day, you could randomly sample a venue
