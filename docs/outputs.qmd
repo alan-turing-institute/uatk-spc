@@ -3,15 +3,16 @@ title: "Outputs for England Counties"
 toc: true
 ---
 
-We have run SPC for every county in England. You can download the gzipped results
-here:
+This list contains 47 ceremonial counties -- it's missing the City of London.
 
 - [bedfordshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/bedfordshire.pb.gz)
 - [berkshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/berkshire.pb.gz)
+- [bristol](https://ramp0storage.blob.core.windows.net/spc-output/v1/bristol.pb.gz)
 - [buckinghamshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/buckinghamshire.pb.gz)
 - [cambridgeshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/cambridgeshire.pb.gz)
 - [cheshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/cheshire.pb.gz)
 - [cornwall](https://ramp0storage.blob.core.windows.net/spc-output/v1/cornwall.pb.gz)
+  - Within this area, we're missing the Isles of Scilly (about 2,000 inhabitants)
 - [cumbria](https://ramp0storage.blob.core.windows.net/spc-output/v1/cumbria.pb.gz)
 - [derbyshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/derbyshire.pb.gz)
 - [devon](https://ramp0storage.blob.core.windows.net/spc-output/v1/devon.pb.gz)
@@ -23,17 +24,15 @@ here:
 - [gloucestershire](https://ramp0storage.blob.core.windows.net/spc-output/v1/gloucestershire.pb.gz)
 - [greater_london](https://ramp0storage.blob.core.windows.net/spc-output/v1/greater_london.pb.gz)
 - [greater_manchester](https://ramp0storage.blob.core.windows.net/spc-output/v1/greater_manchester.pb.gz)
-- [hampshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/hampshire.pb.gz)
+- [hampshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/hampshire.pb.gz) (Southhampton)
 - [herefordshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/herefordshire.pb.gz)
 - [hertfordshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/hertfordshire.pb.gz)
 - [isle_of_wight](https://ramp0storage.blob.core.windows.net/spc-output/v1/isle_of_wight.pb.gz)
 - [kent](https://ramp0storage.blob.core.windows.net/spc-output/v1/kent.pb.gz)
 - [lancashire](https://ramp0storage.blob.core.windows.net/spc-output/v1/lancashire.pb.gz)
-- [leeds](https://ramp0storage.blob.core.windows.net/spc-output/v1/leeds.pb.gz)
 - [leicestershire](https://ramp0storage.blob.core.windows.net/spc-output/v1/leicestershire.pb.gz)
 - [lincolnshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/lincolnshire.pb.gz)
-- [liverpool](https://ramp0storage.blob.core.windows.net/spc-output/v1/liverpool.pb.gz)
-- [merseyside](https://ramp0storage.blob.core.windows.net/spc-output/v1/merseyside.pb.gz)
+- [merseyside](https://ramp0storage.blob.core.windows.net/spc-output/v1/merseyside.pb.gz) (Liverpool)
 - [norfolk](https://ramp0storage.blob.core.windows.net/spc-output/v1/norfolk.pb.gz)
 - [northamptonshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/northamptonshire.pb.gz)
 - [northumberland](https://ramp0storage.blob.core.windows.net/spc-output/v1/northumberland.pb.gz)
@@ -47,19 +46,18 @@ here:
 - [staffordshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/staffordshire.pb.gz)
 - [suffolk](https://ramp0storage.blob.core.windows.net/spc-output/v1/suffolk.pb.gz)
 - [surrey](https://ramp0storage.blob.core.windows.net/spc-output/v1/surrey.pb.gz)
-- [tyne_and_wear](https://ramp0storage.blob.core.windows.net/spc-output/v1/tyne_and_wear.pb.gz)
+- [tyne_and_wear](https://ramp0storage.blob.core.windows.net/spc-output/v1/tyne_and_wear.pb.gz) (Newcastle)
 - [warwickshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/warwickshire.pb.gz)
-- [west_midlands](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_midlands.pb.gz)
+- [west_midlands](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_midlands.pb.gz) (Birmingham)
 - [west_sussex](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_sussex.pb.gz)
+- [west_yorkshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_yorkshire.pb.gz) (Leeds)
 - [wiltshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/wiltshire.pb.gz)
 - [worcestershire](https://ramp0storage.blob.core.windows.net/spc-output/v1/worcestershire.pb.gz)
 
-We also have a few special study areas defined for various projects or tests:
+We also have a few special study areas defined:
 
-- [bristol](https://ramp0storage.blob.core.windows.net/spc-output/v1/bristol.pb.gz)
-- [two_counties](https://ramp0storage.blob.core.windows.net/spc-output/v1/two_counties.pb.gz)
-- [west_yorkshire_large](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_yorkshire_large.pb.gz)
-- [west_yorkshire_small](https://ramp0storage.blob.core.windows.net/spc-output/v1/west_yorkshire_small.pb.gz)
+- [northwest_transpennine](https://ramp0storage.blob.core.windows.net/spc-output/v1/northwest_transpennine.pb.gz) (Liverpool, Manchester, Leeds)
+- [oxford_cambridge_arc](https://ramp0storage.blob.core.windows.net/spc-output/v1/oxford_cambridge_arc.pb.gz) (Oxford, Milton Keynes, Cambridge)
 
 See [config/](https://github.com/alan-turing-institute/uatk-spc/tree/main/config) for the
 list of MSOAs covered by each study area. If you want to run SPC for a
