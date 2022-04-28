@@ -16,7 +16,7 @@ cd spc
 # won't be necessary.
 docker build -t spc .
 # Run SPC in Docker
-docker run --mount type=bind,source="$(pwd)"/data,target=/spc/data -t spc /spc/target/release/spc config/west_yorkshire_small.txt
+docker run --mount type=bind,source="$(pwd)"/data,target=/spc/data -t spc /spc/target/release/spc config/bristol.txt
 ```
 This will make the `data` directory in your directory available to the Docker image, where it'll download the large input files and produce the final output.
 

@@ -21,13 +21,13 @@ After you write a new file, you simply run the pipeline with that as input, make
 cargo run --release -- config/your_region.txt
 ```
 
-If you like to take a quick look of how SPC process the data, you can use one of our small examples lists (west_yorkshire_small.txt, two_counties.txt)
+If you like to take a quick look of how SPC process the data, you can use one of our small examples lists:
 
 ```
-cargo run --release -- config/west_yorkshire_small.txt
+cargo run --release -- config/bristol.txt
 ```
 
 This will download some large files the first time. You'll wind up with
-`data/output/west_yorkshire_small.pb` as output, as well as lots of
+`data/output/bristol.pb` as output, as well as lots of
 intermediate files in `data/raw_data/`. The next time you run this command
 (even on a different study area), it should go much faster.
