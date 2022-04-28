@@ -15,10 +15,15 @@ jobs:
         wget https://github.com/quarto-dev/quarto-cli/releases/download/v0.9.4/quarto-0.9.4-linux-amd64.deb
         sudo dpkg -i quarto-0.9.4-linux-amd64.deb
 
-    - name: Render
+    - name: Render site
       run: |
         cd docs
         quarto render
+
+    - name: Render to PDF
+      run: |
+        cd docs
+        pandoc -s index.qmd getting_started.qmd installation.qmd using_spc.qmd transform_it.qmd outputs.qmd troubleshooting.qmd understanding.qmd data_sources.qmd developer_guide.qmd code_walkthrough.qmd performance.qmd -o _site/site.pdf
 
     - name: Publish
       uses: peaceiris/actions-gh-pages@v3
