@@ -46,3 +46,16 @@ you want to use debug mode, just omit the flag.
 If you're working on the Rust code outside of an IDE like
 [VSCode](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust),
 then you can check if the code compiles much faster by doing `cargo check`.
+
+## Docker
+
+We provide a Dockerfile in case it's helpful for running, but don't recommend
+using it. If you want to, then assuming you have Docker setup:
+
+```shell
+docker build -t spc .
+docker run --mount type=bind,source="$(pwd)"/data,target=/spc/data -t spc /spc/target/release/spc config/bristol.txt
+```
+
+This will make the `data` directory in your directory available to the Docker
+image, where it'll download the large input files and produce the final output.

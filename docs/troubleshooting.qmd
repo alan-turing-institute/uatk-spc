@@ -5,22 +5,6 @@ toc: true
 
 Please [open an issue](https://github.com/alan-turing-institute/uatk-spc/issues) if you have any trouble!
 
-## Docker 
-
-If you're having trouble building, you can run in Docker. Assuming you have Docker setup:
-
-```shell
-git clone https://github.com/alan-turing-institute/uatk-spc/
-cd spc
-# Build the Docker image initially. Once we publish to Docker Hub, this step
-# won't be necessary.
-docker build -t spc .
-# Run SPC in Docker
-docker run --mount type=bind,source="$(pwd)"/data,target=/spc/data -t spc /spc/target/release/spc config/bristol.txt
-```
-This will make the `data` directory in your directory available to the Docker image, where it'll download the large input files and produce the final output.
-
-
 ## Building proj
 
 **Symptom**: When you run `cargo build --release`, you get an error like:
