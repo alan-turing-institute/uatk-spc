@@ -46,7 +46,7 @@
     "href": "troubleshooting.html#docker",
     "title": "Troubleshooting",
     "section": "Docker",
-    "text": "Docker\nIf you’re having trouble building, you can run in Docker. Assuming you have Docker setup:\ngit clone https://github.com/alan-turing-institute/uatk-spc/\ncd spc\n# Build the Docker image initially. Once we publish to Docker Hub, this step\n# won't be necessary.\ndocker build -t spc .\n# Run SPC in Docker\ndocker run --mount type=bind,source=\"$(pwd)\"/data,target=/spc/data -t spc /spc/target/release/spc config/west_yorkshire_small.txt\nThis will make the data directory in your directory available to the Docker image, where it’ll download the large input files and produce the final output."
+    "text": "Docker\nIf you’re having trouble building, you can run in Docker. Assuming you have Docker setup:\ngit clone https://github.com/alan-turing-institute/uatk-spc/\ncd spc\n# Build the Docker image initially. Once we publish to Docker Hub, this step\n# won't be necessary.\ndocker build -t spc .\n# Run SPC in Docker\ndocker run --mount type=bind,source=\"$(pwd)\"/data,target=/spc/data -t spc /spc/target/release/spc config/bristol.txt\nThis will make the data directory in your directory available to the Docker image, where it’ll download the large input files and produce the final output."
   },
   {
     "objectID": "troubleshooting.html#building-proj",
@@ -137,7 +137,7 @@
     "href": "using_spc.html#run-spc-for-the-new-area-list",
     "title": "Creating new areas",
     "section": "Run SPC for the new area list",
-    "text": "Run SPC for the new area list\nAfter you write a new file, you simply run the pipeline with that as input, make sure you are located in the spc folder\ncargo run --release -- config/your_region.txt\nIf you like to take a quick look of how SPC process the data, you can use one of our small examples lists (west_yorkshire_small.txt, two_counties.txt)\ncargo run --release -- config/west_yorkshire_small.txt\nThis will download some large files the first time. You’ll wind up with data/output/west_yorkshire_small.pb as output, as well as lots of intermediate files in data/raw_data/. The next time you run this command (even on a different study area), it should go much faster."
+    "text": "Run SPC for the new area list\nAfter you write a new file, you simply run the pipeline with that as input, make sure you are located in the spc folder\ncargo run --release -- config/your_region.txt\nIf you like to take a quick look of how SPC process the data, you can use one of our small examples lists:\ncargo run --release -- config/bristol.txt\nThis will download some large files the first time. You’ll wind up with data/output/bristol.pb as output, as well as lots of intermediate files in data/raw_data/. The next time you run this command (even on a different study area), it should go much faster."
   },
   {
     "objectID": "performance.html",
