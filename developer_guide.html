@@ -188,6 +188,7 @@
 <li><a href="#updating-the-docs" class="nav-link active" data-scroll-target="#updating-the-docs"> <span class="header-section-number">11.1</span> Updating the docs</a></li>
 <li><a href="#code-hygiene" class="nav-link" data-scroll-target="#code-hygiene"> <span class="header-section-number">11.2</span> Code hygiene</a></li>
 <li><a href="#some-tips-for-working-with-rust" class="nav-link" data-scroll-target="#some-tips-for-working-with-rust"> <span class="header-section-number">11.3</span> Some tips for working with Rust</a></li>
+<li><a href="#docker" class="nav-link" data-scroll-target="#docker"> <span class="header-section-number">11.4</span> Docker</a></li>
 </ul>
 </nav>
     </div>
@@ -219,6 +220,13 @@ prettier --write *.md docs/*.md</code></pre>
 ./target/release/aspics devon</code></pre>
 <p>You can build the code in two ways – <strong>debug</strong> and <strong>release</strong>. There’s a simple tradeoff – debug mode is fast to build, but slow to run. Release mode is slow to build, but fast to run. For the ASPICS codebase, since the input data is so large and the codebase so small, I’d recommend always using <code>--release</code>. If you want to use debug mode, just omit the flag.</p>
 <p>If you’re working on the Rust code outside of an IDE like <a href="https://marketplace.visualstudio.com/items?itemName=rust-lang.rust">VSCode</a>, then you can check if the code compiles much faster by doing <code>cargo check</code>.</p>
+</section>
+<section id="docker" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="docker"><span class="header-section-number">11.4</span> Docker</h2>
+<p>We provide a Dockerfile in case it’s helpful for running, but don’t recommend using it. If you want to, then assuming you have Docker setup:</p>
+<pre class="shell"><code>docker build -t spc .
+docker run --mount type=bind,source="$(pwd)"/data,target=/spc/data -t spc /spc/target/release/spc config/bristol.txt</code></pre>
+<p>This will make the <code>data</code> directory in your directory available to the Docker image, where it’ll download the large input files and produce the final output.</p>
 
 
 </section>

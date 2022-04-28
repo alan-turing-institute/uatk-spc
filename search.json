@@ -91,25 +91,18 @@
     "text": "6.1 Versioning\nOver time, we may add more data to SPC or change the schema. Protocol buffers are designed to let combinations of new/old code and data files work together, but we don’t intend to use this feature. We may make breaking changes, like deleting fields. We’ll release a new version of the schema and output data every time and document it here. You should depend on a specific version of the data output in your code, so new releases don’t affect you until you decide to update.\n\nv1: released 25/04/2022, schema"
   },
   {
-    "objectID": "troubleshooting.html#docker",
-    "href": "troubleshooting.html#docker",
-    "title": "7  Troubleshooting",
-    "section": "7.1 Docker",
-    "text": "7.1 Docker\nIf you’re having trouble building, you can run in Docker. Assuming you have Docker setup:\ngit clone https://github.com/alan-turing-institute/uatk-spc/\ncd spc\n# Build the Docker image initially. Once we publish to Docker Hub, this step\n# won't be necessary.\ndocker build -t spc .\n# Run SPC in Docker\ndocker run --mount type=bind,source=\"$(pwd)\"/data,target=/spc/data -t spc /spc/target/release/spc config/bristol.txt\nThis will make the data directory in your directory available to the Docker image, where it’ll download the large input files and produce the final output."
-  },
-  {
     "objectID": "troubleshooting.html#building-proj",
     "href": "troubleshooting.html#building-proj",
     "title": "7  Troubleshooting",
-    "section": "7.2 Building proj",
-    "text": "7.2 Building proj\nSymptom: When you run cargo build --release, you get an error like:\n error: failed to run custom build command for 'proj-sys v0.18.4'\nCause: The Rust code depends on proj to transform coordinates. You may need to install additional dependencies to build it.\nSuggested Solution\nOn Ubuntu, run:\napt-get install cmake sqlite3 libclang-dev\nOn Mac, run:\nbrew install pkg-config cmake proj"
+    "section": "7.1 Building proj",
+    "text": "7.1 Building proj\nSymptom: When you run cargo build --release, you get an error like:\n error: failed to run custom build command for 'proj-sys v0.18.4'\nCause: The Rust code depends on proj to transform coordinates. You may need to install additional dependencies to build it.\nSuggested Solution\nOn Ubuntu, run:\napt-get install cmake sqlite3 libclang-dev\nOn Mac, run:\nbrew install pkg-config cmake proj"
   },
   {
     "objectID": "troubleshooting.html#downloading",
     "href": "troubleshooting.html#downloading",
     "title": "7  Troubleshooting",
-    "section": "7.3 Downloading",
-    "text": "7.3 Downloading\nIf you have trouble downloading any of the large files, you can download them manually. The logs will contain a line such as Downloading https://ramp0storage.blob.core.windows.net/nationaldata/QUANT_RAMP_spc.tar.gz to data/raw_data/nationaldata/QUANT_RAMP_spc.tar.gz. This tells you the URL to retrieve, and where to put the output file. Note that SPC won’t attempt to download files if they already exist, so if you wind up with a partially downloaded file, you have to manually remove it."
+    "section": "7.2 Downloading",
+    "text": "7.2 Downloading\nIf you have trouble downloading any of the large files, you can download them manually. The logs will contain a line such as Downloading https://ramp0storage.blob.core.windows.net/nationaldata/QUANT_RAMP_spc.tar.gz to data/raw_data/nationaldata/QUANT_RAMP_spc.tar.gz. This tells you the URL to retrieve, and where to put the output file. Note that SPC won’t attempt to download files if they already exist, so if you wind up with a partially downloaded file, you have to manually remove it."
   },
   {
     "objectID": "understanding.html#understanding-the-schema",
@@ -173,6 +166,13 @@
     "title": "11  Developer guide",
     "section": "11.3 Some tips for working with Rust",
     "text": "11.3 Some tips for working with Rust\nThere are two equivalent ways to rebuild and then run the code. First:\ncargo run --release -- devon\nThe -- separates arguments to cargo, the Rust build tool, and arguments to the program itself. The second way:\ncargo build --release\n./target/release/aspics devon\nYou can build the code in two ways – debug and release. There’s a simple tradeoff – debug mode is fast to build, but slow to run. Release mode is slow to build, but fast to run. For the ASPICS codebase, since the input data is so large and the codebase so small, I’d recommend always using --release. If you want to use debug mode, just omit the flag.\nIf you’re working on the Rust code outside of an IDE like VSCode, then you can check if the code compiles much faster by doing cargo check."
+  },
+  {
+    "objectID": "developer_guide.html#docker",
+    "href": "developer_guide.html#docker",
+    "title": "11  Developer guide",
+    "section": "11.4 Docker",
+    "text": "11.4 Docker\nWe provide a Dockerfile in case it’s helpful for running, but don’t recommend using it. If you want to, then assuming you have Docker setup:\ndocker build -t spc .\ndocker run --mount type=bind,source=\"$(pwd)\"/data,target=/spc/data -t spc /spc/target/release/spc config/bristol.txt\nThis will make the data directory in your directory available to the Docker image, where it’ll download the large input files and produce the final output."
   },
   {
     "objectID": "code_walkthrough.html#generally-useful-techniques",
