@@ -12,7 +12,6 @@ book:
         - using_spc.qmd
         - transform_it.qmd
         - outputs.qmd
-        - troubleshooting.qmd
     - part: "Understanding it"
       chapters:
         - understanding.qmd
