@@ -1,33 +1,31 @@
 project:
-  type: website
+  type: book
 
-website:
+book:
   title: "Synthetic Population Catalyst"
-  sidebar:
-    style: "docked"
-    search: true
-    contents:
-      - index.qmd
-      - section: "Using it"
-        contents:
-          - getting_started.qmd
-          - installation.qmd
-          - using_spc.qmd
-          - transform_it.qmd
-          - outputs.qmd
-          - troubleshooting.qmd
-      - section: "Understanding it"
-        contents:
-          - understanding.qmd
-          - modelling_methods.qmd
-          - data_sources.qmd
-      - section: "Internals"
-        contents:
-          - developer_guide.qmd
-          - code_walkthrough.qmd
-          - performance.qmd
+  chapters:
+    - index.qmd
+    - part: "Using it"
+      chapters:
+        - getting_started.qmd
+        - installation.qmd
+        - using_spc.qmd
+        - transform_it.qmd
+        - outputs.qmd
+        - troubleshooting.qmd
+    - part: "Understanding it"
+      chapters:
+        - understanding.qmd
+        - modelling_methods.qmd
+        - data_sources.qmd
+    - part: "Internals"
+      chapters:
+        - developer_guide.qmd
+        - code_walkthrough.qmd
+        - performance.qmd
 
 format:
   html:
     theme: cosmo
-    css: styles.css
+  pdf:
+    documentclass: scrreport
