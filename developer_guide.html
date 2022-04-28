@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="quarto-0.9.4">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Synthetic Population Catalyst - Developer guide</title>
+  <title>Synthetic Population Catalyst - 11&nbsp; Developer guide</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -20,6 +20,8 @@
   <script src="site_libs/quarto-search/autocomplete.umd.js"></script>
   <script src="site_libs/quarto-search/fuse.min.js"></script>
   <script src="site_libs/quarto-search/quarto-search.js"></script>
+  <link href="./code_walkthrough.html" rel="next">
+  <link href="./data_sources.html" rel="prev">
   <script src="site_libs/quarto-html/quarto.js"></script>
   <script src="site_libs/quarto-html/popper.min.js"></script>
   <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -51,14 +53,13 @@
   <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
   <![endif]-->
-  <link rel="stylesheet" href="styles.css">
 </head>
-<body class="docked">
+<body class="floating">
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title">Developer guide</h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Developer guide</span></h1>
       <button type="button" class="quarto-btn-toggle btn">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -68,7 +69,7 @@
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
 <!-- sidebar -->
-  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation docked overflow-auto">
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Synthetic Population Catalyst</a> 
@@ -83,7 +84,7 @@
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link">Home</a>
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Home</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -96,32 +97,32 @@
     <ul id="quarto-sidebar-section-using-it" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./getting_started.html" class="sidebar-item-text sidebar-link">Getting started</a>
+  <a href="./getting_started.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Getting started</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./installation.html" class="sidebar-item-text sidebar-link">Installation</a>
+  <a href="./installation.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Installation</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./using_spc.html" class="sidebar-item-text sidebar-link">Creating new areas</a>
+  <a href="./using_spc.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Creating new areas</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./transform_it.html" class="sidebar-item-text sidebar-link">Transform the output file</a>
+  <a href="./transform_it.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Transform the output file</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./outputs.html" class="sidebar-item-text sidebar-link">Outputs for England Counties</a>
+  <a href="./outputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Outputs for England Counties</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./troubleshooting.html" class="sidebar-item-text sidebar-link">Troubleshooting</a>
+  <a href="./troubleshooting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Troubleshooting</span></a>
   </div>
 </li>
     </ul>
@@ -136,17 +137,17 @@
     <ul id="quarto-sidebar-section-understanding-it" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./understanding.html" class="sidebar-item-text sidebar-link">The Data Schema</a>
+  <a href="./understanding.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">The Data Schema</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./modelling_methods.html" class="sidebar-item-text sidebar-link">Modelling methods</a>
+  <a href="./modelling_methods.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Modelling methods</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./data_sources.html" class="sidebar-item-text sidebar-link">Data sources</a>
+  <a href="./data_sources.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data sources</span></a>
   </div>
 </li>
     </ul>
@@ -161,17 +162,17 @@
     <ul id="quarto-sidebar-section-internals" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./developer_guide.html" class="sidebar-item-text sidebar-link active">Developer guide</a>
+  <a href="./developer_guide.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Developer guide</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./code_walkthrough.html" class="sidebar-item-text sidebar-link">Code walkthrough</a>
+  <a href="./code_walkthrough.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Code walkthrough</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./performance.html" class="sidebar-item-text sidebar-link">Performance</a>
+  <a href="./performance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Performance</span></a>
   </div>
 </li>
     </ul>
@@ -182,26 +183,26 @@
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         <nav id="TOC" role="doc-toc">
-<h2 id="toc-title">On this page</h2>
+<h2 id="toc-title">Table of contents</h2>
 <ul>
-<li><a href="#updating-the-docs" class="nav-link active" data-scroll-target="#updating-the-docs">Updating the docs</a></li>
-<li><a href="#code-hygiene" class="nav-link" data-scroll-target="#code-hygiene">Code hygiene</a></li>
-<li><a href="#some-tips-for-working-with-rust" class="nav-link" data-scroll-target="#some-tips-for-working-with-rust">Some tips for working with Rust</a></li>
+<li><a href="#updating-the-docs" class="nav-link active" data-scroll-target="#updating-the-docs"> <span class="header-section-number">11.1</span> Updating the docs</a></li>
+<li><a href="#code-hygiene" class="nav-link" data-scroll-target="#code-hygiene"> <span class="header-section-number">11.2</span> Code hygiene</a></li>
+<li><a href="#some-tips-for-working-with-rust" class="nav-link" data-scroll-target="#some-tips-for-working-with-rust"> <span class="header-section-number">11.3</span> Some tips for working with Rust</a></li>
 </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 <header id="title-block-header">
-<h1 class="title d-none d-lg-block display-7">Developer guide</h1>
+<h1 class="title d-none d-lg-block display-7"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Developer guide</span></h1>
 </header>
 
-<section id="updating-the-docs" class="level2">
-<h2 class="anchored" data-anchor-id="updating-the-docs">Updating the docs</h2>
+<section id="updating-the-docs" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="updating-the-docs"><span class="header-section-number">11.1</span> Updating the docs</h2>
 <p>The site is built with <a href="https://quarto.org/">Quarto</a>. You can iterate on it locally: <code>cd docs; quarto preview</code></p>
 </section>
-<section id="code-hygiene" class="level2">
-<h2 class="anchored" data-anchor-id="code-hygiene">Code hygiene</h2>
+<section id="code-hygiene" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="code-hygiene"><span class="header-section-number">11.2</span> Code hygiene</h2>
 <p>We use automated tools to format the code.</p>
 <pre class="shell"><code>cargo fmt
 
@@ -209,8 +210,8 @@
 prettier --write *.md docs/*.md</code></pre>
 <p>Install <a href="https://prettier.io">prettier</a> for Markdown.</p>
 </section>
-<section id="some-tips-for-working-with-rust" class="level2">
-<h2 class="anchored" data-anchor-id="some-tips-for-working-with-rust">Some tips for working with Rust</h2>
+<section id="some-tips-for-working-with-rust" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="some-tips-for-working-with-rust"><span class="header-section-number">11.3</span> Some tips for working with Rust</h2>
 <p>There are two equivalent ways to rebuild and then run the code. First:</p>
 <pre class="shell"><code>cargo run --release -- devon</code></pre>
 <p>The <code>--</code> separates arguments to <code>cargo</code>, the Rust build tool, and arguments to the program itself. The second way:</p>
@@ -298,6 +299,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./data_sources.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data sources</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./code_walkthrough.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Code walkthrough</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
 </div> <!-- /content -->
 
 
