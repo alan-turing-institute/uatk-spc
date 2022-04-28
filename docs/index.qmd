@@ -1,23 +1,28 @@
 ---
-title: "Home"
+title: "Getting started"
 ---
 
 ![](img/SPC_Schema.png)
 
 The Synthetic Population Catalyst (SPC) makes it easier for researchers to work
 with synthetic population data in England. It combines a variety of [data
-sources](data_sources.qmd) and outputs a single file in
-[protocol buffer
-format](https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto), describing
-the population in a given study area. The tool also provides methods to export
-the outcome in diferent formats often use for researchers like CSV or JSON.
+sources](data_sources.qmd) and outputs a single file in [protocol buffer
+format](https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto),
+describing the population in a given study area. The data includes demographic,
+health, and daily activity data per person, and information about the venues
+where people conduct activities.
 
-The input of the SPC tool is a list of the Middle Layer Super Output Area
-(MSOAs) where you want to create a spatially enriched sythetic population to
-feed other dynamic models. SPC includes a script to assist you with the proper
-list of the MSOAs by defining a Local Authority District area in England. [Get
-started](getting_started.qmd) to download SPC data or run the tool in different
-MSOAs.
+You can use SPC output to catalyze your own project. Rather than join together
+many [raw data sources](data_sources.qmd) yourself and deal with missing and
+messy data, you can leverage SPC's effort and well-documented schema.
+
+To get started:
+
+1.  [Download sample data for a county in England](outputs.qmd)
+2.  [Explore how to use the data](use_output.qmd)
+3.  If you need a different study area, [build](installation.qmd) and then [run](custom_areas.qmd) SPC
 
 You can also download this site as [a
 PDF](https://alan-turing-institute.github.io/uatk-spc/Synthetic-Population-Catalyst.pdf)
+
+<!-- TODO: Credits, funding note -->

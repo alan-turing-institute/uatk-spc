@@ -7,7 +7,6 @@ book:
     - index.qmd
     - part: "Using SPC"
       chapters:
-        - getting_started.qmd
         - outputs.qmd
         - use_output.qmd
         - installation.qmd

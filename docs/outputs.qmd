@@ -3,7 +3,8 @@ title: "Outputs for England Counties"
 toc: true
 ---
 
-This list contains 47 ceremonial counties -- it's missing the City of London.
+You don't need to run SPC yourself. We provide output data for 47 ceremonial
+counties in England. (Note this list is missing the City of London.)
 
 - [bedfordshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/bedfordshire.pb.gz)
 - [berkshire](https://ramp0storage.blob.core.windows.net/spc-output/v1/berkshire.pb.gz)
