@@ -3,7 +3,7 @@
   <meta charset="utf-8">
   <meta name="generator" content="quarto-0.9.4">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <title>Synthetic Population Catalyst - 12&nbsp; Code walkthrough</title>
+  <title>Synthetic Population Catalyst - 11&nbsp; Code walkthrough</title>
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -59,7 +59,7 @@
   <header id="quarto-header" class="headroom fixed-top">
   <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
     <div class="container-fluid d-flex justify-content-between">
-      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Code walkthrough</span></h1>
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Code walkthrough</span></h1>
       <button type="button" class="quarto-btn-toggle btn">
         <i class="bi bi-chevron-right"></i>
       </button>
@@ -120,11 +120,6 @@
   <a href="./outputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Outputs for England Counties</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./troubleshooting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Troubleshooting</span></a>
-  </div>
-</li>
     </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -137,17 +132,17 @@
     <ul id="quarto-sidebar-section-understanding-it" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./understanding.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">The Data Schema</span></a>
+  <a href="./understanding.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">The Data Schema</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./modelling_methods.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Modelling methods</span></a>
+  <a href="./modelling_methods.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Modelling methods</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./data_sources.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data sources</span></a>
+  <a href="./data_sources.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data sources</span></a>
   </div>
 </li>
     </ul>
@@ -162,17 +157,17 @@
     <ul id="quarto-sidebar-section-internals" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./developer_guide.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Developer guide</span></a>
+  <a href="./developer_guide.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Developer guide</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./code_walkthrough.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Code walkthrough</span></a>
+  <a href="./code_walkthrough.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Code walkthrough</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./performance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Performance</span></a>
+  <a href="./performance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Performance</span></a>
   </div>
 </li>
     </ul>
@@ -185,30 +180,30 @@
         <nav id="TOC" role="doc-toc">
 <h2 id="toc-title">Table of contents</h2>
 <ul>
-<li><a href="#generally-useful-techniques" class="nav-link active" data-scroll-target="#generally-useful-techniques"> <span class="header-section-number">12.1</span> Generally useful techniques</a>
+<li><a href="#generally-useful-techniques" class="nav-link active" data-scroll-target="#generally-useful-techniques"> <span class="header-section-number">11.1</span> Generally useful techniques</a>
 <ul class="collapse">
-<li><a href="#split-code-into-two-stages" class="nav-link" data-scroll-target="#split-code-into-two-stages"> <span class="header-section-number">12.1.1</span> Split code into two stages</a></li>
-<li><a href="#explicit-data-schema" class="nav-link" data-scroll-target="#explicit-data-schema"> <span class="header-section-number">12.1.2</span> Explicit data schema</a></li>
-<li><a href="#type-safe-ids" class="nav-link" data-scroll-target="#type-safe-ids"> <span class="header-section-number">12.1.3</span> Type-safe IDs</a></li>
-<li><a href="#idempotent-data-preparation" class="nav-link" data-scroll-target="#idempotent-data-preparation"> <span class="header-section-number">12.1.4</span> Idempotent data preparation</a></li>
-<li><a href="#logging-with-structure" class="nav-link" data-scroll-target="#logging-with-structure"> <span class="header-section-number">12.1.5</span> Logging with structure</a></li>
-<li><a href="#determinism" class="nav-link" data-scroll-target="#determinism"> <span class="header-section-number">12.1.6</span> Determinism</a></li>
+<li><a href="#split-code-into-two-stages" class="nav-link" data-scroll-target="#split-code-into-two-stages"> <span class="header-section-number">11.1.1</span> Split code into two stages</a></li>
+<li><a href="#explicit-data-schema" class="nav-link" data-scroll-target="#explicit-data-schema"> <span class="header-section-number">11.1.2</span> Explicit data schema</a></li>
+<li><a href="#type-safe-ids" class="nav-link" data-scroll-target="#type-safe-ids"> <span class="header-section-number">11.1.3</span> Type-safe IDs</a></li>
+<li><a href="#idempotent-data-preparation" class="nav-link" data-scroll-target="#idempotent-data-preparation"> <span class="header-section-number">11.1.4</span> Idempotent data preparation</a></li>
+<li><a href="#logging-with-structure" class="nav-link" data-scroll-target="#logging-with-structure"> <span class="header-section-number">11.1.5</span> Logging with structure</a></li>
+<li><a href="#determinism" class="nav-link" data-scroll-target="#determinism"> <span class="header-section-number">11.1.6</span> Determinism</a></li>
 </ul></li>
-<li><a href="#protocol-buffers" class="nav-link" data-scroll-target="#protocol-buffers"> <span class="header-section-number">12.2</span> Protocol buffers</a></li>
+<li><a href="#protocol-buffers" class="nav-link" data-scroll-target="#protocol-buffers"> <span class="header-section-number">11.2</span> Protocol buffers</a></li>
 </ul>
 </nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 <header id="title-block-header">
-<h1 class="title d-none d-lg-block display-7"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Code walkthrough</span></h1>
+<h1 class="title d-none d-lg-block display-7"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Code walkthrough</span></h1>
 </header>
 
-<section id="generally-useful-techniques" class="level2" data-number="12.1">
-<h2 data-number="12.1" class="anchored" data-anchor-id="generally-useful-techniques"><span class="header-section-number">12.1</span> Generally useful techniques</h2>
+<section id="generally-useful-techniques" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="generally-useful-techniques"><span class="header-section-number">11.1</span> Generally useful techniques</h2>
 <p>The code-base makes use of some techniques that may be generally applicable to other projects.</p>
-<section id="split-code-into-two-stages" class="level3" data-number="12.1.1">
-<h3 data-number="12.1.1" class="anchored" data-anchor-id="split-code-into-two-stages"><span class="header-section-number">12.1.1</span> Split code into two stages</h3>
+<section id="split-code-into-two-stages" class="level3" data-number="11.1.1">
+<h3 data-number="11.1.1" class="anchored" data-anchor-id="split-code-into-two-stages"><span class="header-section-number">11.1.1</span> Split code into two stages</h3>
 <p>Agent-based models and spatial interaction models require some kind of input. Often the effort to transform external data into this input can exceed that of the simulation component. Cleanly separating the two problems has some advantages:</p>
 <ul>
 <li>iterate on the simulation faster, without processing raw data every run</li>
@@ -216,8 +211,8 @@
 <li>force thinking about the data model needed by the simulation, and transform the external data into that form</li>
 </ul>
 </section>
-<section id="explicit-data-schema" class="level3" data-number="12.1.2">
-<h3 data-number="12.1.2" class="anchored" data-anchor-id="explicit-data-schema"><span class="header-section-number">12.1.2</span> Explicit data schema</h3>
+<section id="explicit-data-schema" class="level3" data-number="11.1.2">
+<h3 data-number="11.1.2" class="anchored" data-anchor-id="explicit-data-schema"><span class="header-section-number">11.1.2</span> Explicit data schema</h3>
 <p>Dynamically typed languages like Python don’t force you to explicitly list the shape of input data. It’s common to read CSV files with <code>pandas</code>, filter and transform the data, and use that throughout the program. This can be quick to start prototyping, but is hard to maintain longer-term. Investing in the process of writing down types:</p>
 <ul>
 <li>makes it easier for somebody new to understand your system – they can first focus on <strong>what</strong> you’re modeling, instead of how that’s built up from raw data sources</li>
@@ -236,30 +231,30 @@
 <li><a href="https://github.com/alan-turing-institute/uatk-spc/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/lib.rs#L41">statically typed languages like Rust</a></li>
 </ul>
 </section>
-<section id="type-safe-ids" class="level3" data-number="12.1.3">
-<h3 data-number="12.1.3" class="anchored" data-anchor-id="type-safe-ids"><span class="header-section-number">12.1.3</span> Type-safe IDs</h3>
+<section id="type-safe-ids" class="level3" data-number="11.1.3">
+<h3 data-number="11.1.3" class="anchored" data-anchor-id="type-safe-ids"><span class="header-section-number">11.1.3</span> Type-safe IDs</h3>
 <p>Say your data model has many different objects, each with their own ID – people, households, venues, etc. You might store these in a list and use the index as an ID. This is fine, but nothing stops you from confusing IDs and accidentally passing in venue 5 to a function instead of household 5. In Rust, it’s easy to create “wrapper types” like <a href="https://github.com/alan-turing-institute/uatk-spc/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/lib.rs#L260">this</a> and let the compiler prevent these mistakes.</p>
 <p>This technique is also useful when preparing external data. <a href="https://developers.google.com/transit/gtfs/reference">GTFS data</a> describing public transit routes and timetables contains many string IDs – shapes, trips, stops, routes. As soon as you read the raw input, you can <a href="https://github.com/a-b-street/abstreet/blob/c9de8c691c5e7fcf04817c790aeb9d14371c9328/convert_osm/src/gtfs.rs#L178">store the strings in more precise types</a> that prevent mixing up a stop ID and route ID.</p>
 </section>
-<section id="idempotent-data-preparation" class="level3" data-number="12.1.4">
-<h3 data-number="12.1.4" class="anchored" data-anchor-id="idempotent-data-preparation"><span class="header-section-number">12.1.4</span> Idempotent data preparation</h3>
+<section id="idempotent-data-preparation" class="level3" data-number="11.1.4">
+<h3 data-number="11.1.4" class="anchored" data-anchor-id="idempotent-data-preparation"><span class="header-section-number">11.1.4</span> Idempotent data preparation</h3>
 <p>If you’re iterating on your initialisation pipeline’s code, you probably don’t want to download a 2GB external file every single run. A common approach is to first test if a file exists and don’t download it again if so. In practice, you may also need to handle unzipping files, showing a progress bar while downloading, and printing clear error messages. This codebase has some <a href="https://github.com/alan-turing-institute/uatk-spc/blob/ddca656761c818a2d586ca5fa6260e1138b94d36/src/utilities.rs">common code</a> for doing this in Rust. We intend to publish a separate library to more easily call in your own code.</p>
 </section>
-<section id="logging-with-structure" class="level3" data-number="12.1.5">
-<h3 data-number="12.1.5" class="anchored" data-anchor-id="logging-with-structure"><span class="header-section-number">12.1.5</span> Logging with structure</h3>
+<section id="logging-with-structure" class="level3" data-number="11.1.5">
+<h3 data-number="11.1.5" class="anchored" data-anchor-id="logging-with-structure"><span class="header-section-number">11.1.5</span> Logging with structure</h3>
 <p>It’s typical to print information as a complex pipeline runs, for the user to track progress and debug problems. But without any sort of organization, it’s hard to follow what steps take a long time or break. What if your logs could show the logical structure of your pipeline and help you understand where time is spent?</p>
 <p><img src="img/tracing.png" class="img-fluid"></p>
 <p>The screenshot above shows a summary printed at the end of a long pipeline run. It’s immediately obvious that the slowest step is creating commuting flows.</p>
 <p>This codebase uses the <a href="https://crates.io/crates/tracing">tracing</a> framework for logging, with a <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/src/tracing_span_tree.rs">custom piece</a> to draw the tree. (We’ll publish this as a separate library once it’s more polished.) The tracing framework is hard to understand, but the main conceptual leap over regular logging framworks is the concept of a <strong>span</strong>. When your code starts one logical step, you call a method to create a new span, and when it finishes, you close that span. Spans can be nested in any way – <code>create_commuting_flows</code> happens within the larger step of <code>creating population</code>.</p>
 </section>
-<section id="determinism" class="level3" data-number="12.1.6">
-<h3 data-number="12.1.6" class="anchored" data-anchor-id="determinism"><span class="header-section-number">12.1.6</span> Determinism</h3>
+<section id="determinism" class="level3" data-number="11.1.6">
+<h3 data-number="11.1.6" class="anchored" data-anchor-id="determinism"><span class="header-section-number">11.1.6</span> Determinism</h3>
 <p>Given the same inputs, your code should always produce identical output, no matter where it’s run or how many times. Otherwise, debugging problems becomes very tedious, and it’s more difficult to make conclusions from results. Of course, many projects have a stochastic element – but this should be controlled by a random number generator (RNG) seed, which is part of the input. You vary the seed and repeat the program, then reason about the distribution of results.</p>
 <p>Aside from organizing your code to let a single RNG seed influence everything, another possible source of non-determinism is iteration order. In Rust, a <code>HashMap</code> could have different order every time it’s used, so we use a <code>BTreeMap</code> instead when this matters. In Python, dictionaries are ordered. Be sure to check for your language.</p>
 </section>
 </section>
-<section id="protocol-buffers" class="level2" data-number="12.2">
-<h2 data-number="12.2" class="anchored" data-anchor-id="protocol-buffers"><span class="header-section-number">12.2</span> Protocol buffers</h2>
+<section id="protocol-buffers" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="protocol-buffers"><span class="header-section-number">11.2</span> Protocol buffers</h2>
 <p>SPC uses protocol buffers for output. This has some advantages explained the “explicit data schema” section above, but the particular choice of protocol buffer has some limitations.</p>
 <p>First, proto3 doesn’t support <a href="https://github.com/protocolbuffers/protobuf/issues/2497">required fields</a>. This is done to allow schemas to evolve better over time, but this isn’t a feature SPC makes use of. There’s no need to have new code work with old data, or vice versa – if the schema is updated, downstream code should adapt accordingly and use the updated input files. The lack of required fields leads to imprecise code – a person’s health structure is always filled out, but in Rust, we wind up with <code>Option&lt;Health&gt;</code>. Differentiating 0 from missing data also becomes impossible – <code>urn</code> is optional, but in protobuf, we’re forced to map the missing case to 0 and document this.</p>
 <p>Second, protocol buffers don’t easily support type-safe wrappers around numeric IDs, so downstream code has to be careful not to mix up household, venue, and person IDs.</p>
@@ -349,12 +344,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./developer_guide.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Developer guide</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Developer guide</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./performance.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Performance</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Performance</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

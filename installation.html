@@ -120,11 +120,6 @@
   <a href="./outputs.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Outputs for England Counties</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./troubleshooting.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Troubleshooting</span></a>
-  </div>
-</li>
     </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -137,17 +132,17 @@
     <ul id="quarto-sidebar-section-understanding-it" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./understanding.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">The Data Schema</span></a>
+  <a href="./understanding.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">The Data Schema</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./modelling_methods.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Modelling methods</span></a>
+  <a href="./modelling_methods.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Modelling methods</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./data_sources.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data sources</span></a>
+  <a href="./data_sources.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data sources</span></a>
   </div>
 </li>
     </ul>
@@ -162,17 +157,17 @@
     <ul id="quarto-sidebar-section-internals" class="collapse list-unstyled sidebar-section depth1 show">  
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./developer_guide.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Developer guide</span></a>
+  <a href="./developer_guide.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Developer guide</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./code_walkthrough.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Code walkthrough</span></a>
+  <a href="./code_walkthrough.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Code walkthrough</span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./performance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Performance</span></a>
+  <a href="./performance.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Performance</span></a>
   </div>
 </li>
     </ul>
@@ -185,8 +180,9 @@
         <nav id="TOC" role="doc-toc">
 <h2 id="toc-title">Table of contents</h2>
 <ul>
-<li><a href="#initial-requirements" class="nav-link active" data-scroll-target="#initial-requirements"> <span class="header-section-number">3.1</span> Initial Requirements</a></li>
-<li><a href="#one-time-installation" class="nav-link" data-scroll-target="#one-time-installation"> <span class="header-section-number">3.2</span> One-time installation</a></li>
+<li><a href="#dependencies" class="nav-link active" data-scroll-target="#dependencies"> <span class="header-section-number">3.1</span> Dependencies</a></li>
+<li><a href="#compiling-spc" class="nav-link" data-scroll-target="#compiling-spc"> <span class="header-section-number">3.2</span> Compiling SPC</a></li>
+<li><a href="#troubleshooting-downloading" class="nav-link" data-scroll-target="#troubleshooting-downloading"> <span class="header-section-number">3.3</span> Troubleshooting downloading</a></li>
 </ul>
 </nav>
     </div>
@@ -196,21 +192,29 @@
 <h1 class="title d-none d-lg-block display-7"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Installation</span></h1>
 </header>
 
-<section id="initial-requirements" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="initial-requirements"><span class="header-section-number">3.1</span> Initial Requirements</h2>
+<p>You only need to compile SPC to run for a custom set of MSOAs. Just <a href="./outputs.html">download existing output</a> if your study area matches what we provide.</p>
+<section id="dependencies" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="dependencies"><span class="header-section-number">3.1</span> Dependencies</h2>
 <ul>
 <li><p><strong>Rust</strong>: The latest version of Rust (1.60): <a href="https://www.rust-lang.org/tools/install">https://www.rust-lang.org/tools/install</a></p></li>
-<li><p>For Mac users, we recommend to have installed <strong>Homebrew</strong>: <a href="https://brew.sh/">https://brew.sh/</a></p></li>
-<li><p><strong>Python</strong>, there are some scrips and functionalites inside SPC that requiere python. <a href="https://www.python.org/downloads/">https://www.python.org/downloads/</a></p></li>
+<li><p>A build environment for <a href="https://proj.org">proj</a>, to transform coordinates.</p>
+<ul>
+<li>On Ubuntu, run <code>apt-get install cmake sqlite3 libclang-dev</code></li>
+<li>On Mac, <a href="https://brew.sh">install Homebrew</a> and run <code>brew install pkg-config cmake proj</code></li>
+</ul></li>
 </ul>
 </section>
-<section id="one-time-installation" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="one-time-installation"><span class="header-section-number">3.2</span> One-time installation</h2>
+<section id="compiling-spc" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="compiling-spc"><span class="header-section-number">3.2</span> Compiling SPC</h2>
 <pre class="shell"><code>git clone https://github.com/alan-turing-institute/uatk-spc/
 cd uatk-spc
 # The next command will take a few minutes the first time you do it, to build external dependencies
 cargo build --release</code></pre>
-<p>If you get some errors during the compilation process, take a look at <a href="./troubleshooting.html">Troubleshooting</a> section.</p>
+<p>If you get <code>error: failed to run custom build command for 'proj-sys v0.18.4'</code>, then you’re likely missing dependencies listed above. Please <a href="https://github.com/alan-turing-institute/uatk-spc/issues">open an issue</a> if you have any trouble.</p>
+</section>
+<section id="troubleshooting-downloading" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="troubleshooting-downloading"><span class="header-section-number">3.3</span> Troubleshooting downloading</h2>
+<p>If you have trouble downloading any of the large files, you can download them manually. The logs will contain a line such as <code>Downloading https://ramp0storage.blob.core.windows.net/nationaldata/QUANT_RAMP_spc.tar.gz to data/raw_data/nationaldata/QUANT_RAMP_spc.tar.gz</code>. This tells you the URL to retrieve, and where to put the output file. Note that SPC won’t attempt to download files if they already exist, so if you wind up with a partially downloaded file, you have to manually remove it.</p>
 
 
 </section>
