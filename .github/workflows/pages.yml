@@ -19,7 +19,8 @@ jobs:
     - name: Render site
       run: |
         cd docs
-        quarto render --to all
+        # tinyex gets installed here, but who knows how the shell gets up
+        PATH=$PATH:~/bin quarto render --to all
 
     - name: Publish
       uses: peaceiris/actions-gh-pages@v3
