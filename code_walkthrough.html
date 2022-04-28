@@ -248,7 +248,7 @@
 <section id="logging-with-structure" class="level3" data-number="12.1.5">
 <h3 data-number="12.1.5" class="anchored" data-anchor-id="logging-with-structure"><span class="header-section-number">12.1.5</span> Logging with structure</h3>
 <p>It’s typical to print information as a complex pipeline runs, for the user to track progress and debug problems. But without any sort of organization, it’s hard to follow what steps take a long time or break. What if your logs could show the logical structure of your pipeline and help you understand where time is spent?</p>
-<p><img src="img/tracing.gif" class="img-fluid"></p>
+<p><img src="img/tracing.png" class="img-fluid"></p>
 <p>The screenshot above shows a summary printed at the end of a long pipeline run. It’s immediately obvious that the slowest step is creating commuting flows.</p>
 <p>This codebase uses the <a href="https://crates.io/crates/tracing">tracing</a> framework for logging, with a <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/src/tracing_span_tree.rs">custom piece</a> to draw the tree. (We’ll publish this as a separate library once it’s more polished.) The tracing framework is hard to understand, but the main conceptual leap over regular logging framworks is the concept of a <strong>span</strong>. When your code starts one logical step, you call a method to create a new span, and when it finishes, you close that span. Spans can be nested in any way – <code>create_commuting_flows</code> happens within the larger step of <code>creating population</code>.</p>
 </section>
