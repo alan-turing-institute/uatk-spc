@@ -252,7 +252,7 @@
 <li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/northwest_transpennine.pb.gz">northwest_transpennine</a> (Liverpool, Manchester, Leeds)</li>
 <li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1/oxford_cambridge_arc.pb.gz">oxford_cambridge_arc</a> (Oxford, Milton Keynes, Cambridge)</li>
 </ul>
-<p>See <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/config">config/</a> for the list of MSOAs covered by each study area. If you want to run SPC for a different list of MSOAs, <a href="running.qmd">see here</a>.</p>
+<p>See <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/config">config/</a> for the list of MSOAs covered by each study area. If you want to run SPC for a different list of MSOAs, <a href="./using_spc.html">see here</a>.</p>
 <section id="versioning" class="level2">
 <h2 class="anchored" data-anchor-id="versioning">Versioning</h2>
 <p>Over time, we may add more data to SPC or change the schema. Protocol buffers are designed to let combinations of new/old code and data files work together, but we don’t intend to use this feature. We may make breaking changes, like deleting fields. We’ll release a new version of the schema and output data every time and document it here. You should depend on a specific version of the data output in your code, so new releases don’t affect you until you decide to update.</p>
