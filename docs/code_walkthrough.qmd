@@ -3,10 +3,15 @@ title: "Code walkthrough"
 toc: true
 ---
 
+SPC is implemented in [Rust](https://www.rust-lang.org), and its code can be
+found [here](https://github.com/alan-turing-institute/uatk-spc/tree/main/src).
+This is an unusual implementation choice in the data science world, so this
+page has some notes about it.
+
 ## Generally useful techniques
 
 The code-base makes use of some techniques that may be generally applicable to
-other projects.
+other projects, independent of the language chosen.
 
 ### Split code into two stages
 
@@ -19,6 +24,10 @@ advantages:
 - reuse the prepared input for future projects
 - force thinking about the data model needed by the simulation, and transform
   the external data into that form
+
+SPC is exactly this first stage, originally split from
+[ASPICS](https://github.com/alan-turing-institute/uatk-aspics) when further
+uses of the same population data were identified.
 
 ### Explicit data schema
 
@@ -83,9 +92,9 @@ call in your own code.
 
 It's typical to print information as a complex pipeline runs, for the user to
 track progress and debug problems. But without any sort of organization, it's
-hard to follow what steps take a long time or break. What if your logs could
-show the logical structure of your pipeline and help you understand where time
-is spent?
+hard to follow what steps take a long time or encounter problems. What if your
+logs could show the logical structure of your pipeline and help you understand
+where time is spent?
 
 ![](img/tracing.png)
 
@@ -147,3 +156,45 @@ We'll evaluate flatbuffers and other alternative encodings.
 Note that in any case, SPC internally doesn't use the auto-generated code until
 the very end of the pipeline. It's always possible to be more precise with
 native Rust types, and convert to the less strict types last.
+
+## An example of the power of static type checking
+
+Imagine we want to add a new activity type to represent people going to
+university and higher education. SPC already has activities for primary and
+secondary school, so we'll probably want to follow those as a guide. In any
+language, we could search the codebase for relevant terms to get a sense of
+what to update. In languages like Python without an up-front compilation step,
+if we fail to update something or write blatantly incorrect code (such as
+making a typo in variable names or passing a list where a string was expected),
+we only find out when that code happens to run. In pipelines with many steps
+and large input files, it could be a while before we reach the problematic
+code.
+
+Let's walk through the same exercise for SPC's Rust code. We start by adding a
+new `University` case to the [Activity
+enum](https://github.com/alan-turing-institute/uatk-spc/blob/03bd8152a33ba43d6de96e308df6748e4e4183ea/src/lib.rs#L128).
+If we try to compile the code here (with `cargo check` or an IDE), we
+immediately get 4 errors.
+
+![](img/error1.png)
+
+Three of the errors are in the QUANT module. The first is
+[here](https://github.com/alan-turing-institute/uatk-spc/blob/03bd8152a33ba43d6de96e308df6748e4e4183ea/src/init/quant.rs#L38).
+It's immediately clear that for retail and primary/secondary school, we read in
+two files from QUANT representing venues where these activities take place and
+the probability of going to each venue. Even if we were unfamiliar with this
+codebase, the compiler has told us one thing we'll need to figure out, and
+where to wire it up.
+
+![](img/error2.png)
+
+The other error is in the [code that writes the protobuf
+output](https://github.com/alan-turing-institute/uatk-spc/blob/03bd8152a33ba43d6de96e308df6748e4e4183ea/src/protobuf.rs#L134).
+Similarly, we need a way to represent university activities in the protobuf
+scheme.
+
+Extending an unfamiliar code-base backed by compiler errors is a very guided
+experience. If you wanted to add more demographic attributes to people or
+energy use information to households, you don't need to guess all of the places
+in the code you'll need to update. You can just add the field, then let the
+compiler tell you all places where those objects get created.

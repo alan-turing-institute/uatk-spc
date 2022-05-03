@@ -132,18 +132,7 @@ pub enum Activity {
     SecondarySchool,
     Home,
     Work,
-}
-
-impl Activity {
-    pub fn all() -> Vec<Activity> {
-        vec![
-            Activity::Retail,
-            Activity::PrimarySchool,
-            Activity::SecondarySchool,
-            Activity::Home,
-            Activity::Work,
-        ]
-    }
+    University,
 }
 
 /// Represents a place where people do an activity

@@ -23,6 +23,8 @@ To get started:
 3.  If you need a different study area, [build](installation.qmd) and then [run](custom_areas.qmd) SPC
 
 You can also download this site as [a
-PDF](https://alan-turing-institute.github.io/uatk-spc/Synthetic-Population-Catalyst.pdf)
+PDF](https://alan-turing-institute.github.io/uatk-spc/Synthetic-Population-Catalyst.pdf) and find all code [on Github](https://github.com/alan-turing-institute/uatk-spc).
 
-<!-- TODO: Credits, funding note -->
+This work is supported by Wave 1 of The UKRI Strategic Priorities Fund under
+the EPSRC Grant EP/W006022/1, particularly the "Ecosystem of Digital Twins"
+theme within that grant and The Alan Turing Institute.
