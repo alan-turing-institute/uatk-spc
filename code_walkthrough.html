@@ -185,6 +185,7 @@
 <li><a href="#determinism" class="nav-link" data-scroll-target="#determinism"> <span class="header-section-number">10.1.6</span> Determinism</a></li>
 </ul></li>
 <li><a href="#protocol-buffers" class="nav-link" data-scroll-target="#protocol-buffers"> <span class="header-section-number">10.2</span> Protocol buffers</a></li>
+<li><a href="#an-example-of-the-power-of-static-type-checking" class="nav-link" data-scroll-target="#an-example-of-the-power-of-static-type-checking"> <span class="header-section-number">10.3</span> An example of the power of static type checking</a></li>
 </ul>
 </nav>
     </div>
@@ -194,9 +195,10 @@
 <h1 class="title d-none d-lg-block display-7"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Code walkthrough</span></h1>
 </header>
 
+<p>SPC is implemented in <a href="https://www.rust-lang.org">Rust</a>, and its code can be found <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/src">here</a>. This is an unusual implementation choice in the data science world, so this page has some notes about it.</p>
 <section id="generally-useful-techniques" class="level2" data-number="10.1">
 <h2 data-number="10.1" class="anchored" data-anchor-id="generally-useful-techniques"><span class="header-section-number">10.1</span> Generally useful techniques</h2>
-<p>The code-base makes use of some techniques that may be generally applicable to other projects.</p>
+<p>The code-base makes use of some techniques that may be generally applicable to other projects, independent of the language chosen.</p>
 <section id="split-code-into-two-stages" class="level3" data-number="10.1.1">
 <h3 data-number="10.1.1" class="anchored" data-anchor-id="split-code-into-two-stages"><span class="header-section-number">10.1.1</span> Split code into two stages</h3>
 <p>Agent-based models and spatial interaction models require some kind of input. Often the effort to transform external data into this input can exceed that of the simulation component. Cleanly separating the two problems has some advantages:</p>
@@ -205,6 +207,7 @@
 <li>reuse the prepared input for future projects</li>
 <li>force thinking about the data model needed by the simulation, and transform the external data into that form</li>
 </ul>
+<p>SPC is exactly this first stage, originally split from <a href="https://github.com/alan-turing-institute/uatk-aspics">ASPICS</a> when further uses of the same population data were identified.</p>
 </section>
 <section id="explicit-data-schema" class="level3" data-number="10.1.2">
 <h3 data-number="10.1.2" class="anchored" data-anchor-id="explicit-data-schema"><span class="header-section-number">10.1.2</span> Explicit data schema</h3>
@@ -237,7 +240,7 @@
 </section>
 <section id="logging-with-structure" class="level3" data-number="10.1.5">
 <h3 data-number="10.1.5" class="anchored" data-anchor-id="logging-with-structure"><span class="header-section-number">10.1.5</span> Logging with structure</h3>
-<p>It’s typical to print information as a complex pipeline runs, for the user to track progress and debug problems. But without any sort of organization, it’s hard to follow what steps take a long time or break. What if your logs could show the logical structure of your pipeline and help you understand where time is spent?</p>
+<p>It’s typical to print information as a complex pipeline runs, for the user to track progress and debug problems. But without any sort of organization, it’s hard to follow what steps take a long time or encounter problems. What if your logs could show the logical structure of your pipeline and help you understand where time is spent?</p>
 <p><img src="img/tracing.png" class="img-fluid"></p>
 <p>The screenshot above shows a summary printed at the end of a long pipeline run. It’s immediately obvious that the slowest step is creating commuting flows.</p>
 <p>This codebase uses the <a href="https://crates.io/crates/tracing">tracing</a> framework for logging, with a <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/src/tracing_span_tree.rs">custom piece</a> to draw the tree. (We’ll publish this as a separate library once it’s more polished.) The tracing framework is hard to understand, but the main conceptual leap over regular logging framworks is the concept of a <strong>span</strong>. When your code starts one logical step, you call a method to create a new span, and when it finishes, you close that span. Spans can be nested in any way – <code>create_commuting_flows</code> happens within the larger step of <code>creating population</code>.</p>
@@ -256,6 +259,16 @@
 <p>Third, protocol buffers support limited key types for maps. Enumerations can’t be used, so we use the numeric value for the activity enum.</p>
 <p>We’ll evaluate flatbuffers and other alternative encodings.</p>
 <p>Note that in any case, SPC internally doesn’t use the auto-generated code until the very end of the pipeline. It’s always possible to be more precise with native Rust types, and convert to the less strict types last.</p>
+</section>
+<section id="an-example-of-the-power-of-static-type-checking" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="an-example-of-the-power-of-static-type-checking"><span class="header-section-number">10.3</span> An example of the power of static type checking</h2>
+<p>Imagine we want to add a new activity type to represent people going to university and higher education. SPC already has activities for primary and secondary school, so we’ll probably want to follow those as a guide. In any language, we could search the codebase for relevant terms to get a sense of what to update. In languages like Python without an up-front compilation step, if we fail to update something or write blatantly incorrect code (such as making a typo in variable names or passing a list where a string was expected), we only find out when that code happens to run. In pipelines with many steps and large input files, it could be a while before we reach the problematic code.</p>
+<p>Let’s walk through the same exercise for SPC’s Rust code. We start by adding a new <code>University</code> case to the <a href="https://github.com/alan-turing-institute/uatk-spc/blob/03bd8152a33ba43d6de96e308df6748e4e4183ea/src/lib.rs#L128">Activity enum</a>. If we try to compile the code here (with <code>cargo check</code> or an IDE), we immediately get 4 errors.</p>
+<p><img src="img/error1.png" class="img-fluid"></p>
+<p>Three of the errors are in the QUANT module. The first is <a href="https://github.com/alan-turing-institute/uatk-spc/blob/03bd8152a33ba43d6de96e308df6748e4e4183ea/src/init/quant.rs#L38">here</a>. It’s immediately clear that for retail and primary/secondary school, we read in two files from QUANT representing venues where these activities take place and the probability of going to each venue. Even if we were unfamiliar with this codebase, the compiler has told us one thing we’ll need to figure out, and where to wire it up.</p>
+<p><img src="img/error2.png" class="img-fluid"></p>
+<p>The other error is in the <a href="https://github.com/alan-turing-institute/uatk-spc/blob/03bd8152a33ba43d6de96e308df6748e4e4183ea/src/protobuf.rs#L134">code that writes the protobuf output</a>. Similarly, we need a way to represent university activities in the protobuf scheme.</p>
+<p>Extending an unfamiliar code-base backed by compiler errors is a very guided experience. If you wanted to add more demographic attributes to people or energy use information to households, you don’t need to guess all of the places in the code you’ll need to update. You can just add the field, then let the compiler tell you all places where those objects get created.</p>
 
 
 </section>
