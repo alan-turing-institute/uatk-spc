@@ -15,7 +15,7 @@ The input of the SPC tool is a list of the Middle Layer Super Output Area
 (MSOAs) where you want to create a spatially enriched sythetic population to
 feed other dynamic models. SPC includes a script to assist you with the proper
 list of the MSOAs by defining a Local Authority District area in England. [Get
-started](https://alan-turing-institute.github.io/uatk-spc/getting_started.html)
+started](https://alan-turing-institute.github.io/uatk-spc/)
 to download SPC data or run the tool in different MSOAs.
 
 ## Lineage
