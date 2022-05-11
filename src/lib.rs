@@ -132,7 +132,6 @@ pub enum Activity {
     SecondarySchool,
     Home,
     Work,
-    University,
 }
 
 /// Represents a place where people do an activity
