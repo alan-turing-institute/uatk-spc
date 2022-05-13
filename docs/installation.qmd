@@ -31,6 +31,8 @@ any trouble.
 
 ## Troubleshooting downloading
 
+If you get an error `No such file or directory (os error 2)` it might be because a previous attempt to run SPC failed, and some necessary files were not fully downloaded. In these cases you could try deleting the `data/raw_data` directory and then running SPC again. It should automatically try to download the big files again.
+
 If you have trouble downloading any of the large files, you can download them
 manually. The logs will contain a line such as `Downloading https://ramp0storage.blob.core.windows.net/nationaldata/QUANT_RAMP_spc.tar.gz to data/raw_data/nationaldata/QUANT_RAMP_spc.tar.gz`. This tells you the URL to
 retrieve, and where to put the output file. Note that SPC won't attempt to
