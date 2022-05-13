@@ -177,6 +177,7 @@
 <ul>
 <li><a href="#specifying-the-area" class="nav-link active" data-scroll-target="#specifying-the-area"> <span class="header-section-number">5.1</span> Specifying the area</a></li>
 <li><a href="#run-spc-for-the-new-area" class="nav-link" data-scroll-target="#run-spc-for-the-new-area"> <span class="header-section-number">5.2</span> Run SPC for the new area</a></li>
+<li><a href="#optional-run-spc-for-lots-of-areas" class="nav-link" data-scroll-target="#optional-run-spc-for-lots-of-areas"> <span class="header-section-number">5.3</span> (Optional) run SPC for lots of areas</a></li>
 </ul>
 </nav>
     </div>
@@ -197,6 +198,11 @@
 <p>From the main directory, just run:</p>
 <pre><code>cargo run --release -- config/your_region.txt</code></pre>
 <p>This will download some large files the first time. You’ll wind up with <code>data/output/your_region.pb</code> as output, as well as lots of intermediate files in <code>data/raw_data/</code>. The next time you run this command (even on a different study area), it should go much faster.</p>
+</section>
+<section id="optional-run-spc-for-lots-of-areas" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="optional-run-spc-for-lots-of-areas"><span class="header-section-number">5.3</span> (Optional) run SPC for lots of areas</h2>
+<p>If you want to run the program over lots of areas at once and are using mac/linux you can use a for loop in a terminal to repeatedly run SPC over all files in the config directory. For example, this will run SPC on all <code>.txt</code> files in the <code>config</code> directory:</p>
+<pre><code>for file in config/*.csv; do cargo run --release -- config/$file; done</code></pre>
 
 
 </section>

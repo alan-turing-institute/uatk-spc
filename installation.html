@@ -209,6 +209,7 @@ cargo build --release</code></pre>
 </section>
 <section id="troubleshooting-downloading" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="troubleshooting-downloading"><span class="header-section-number">4.3</span> Troubleshooting downloading</h2>
+<p>If you get an error <code>No such file or directory (os error 2)</code> it might be because a previous attempt to run SPC failed, and some necessary files were not fully downloaded. In these cases you could try deleting the <code>data/raw_data</code> directory and then running SPC again. It should automatically try to download the big files again.</p>
 <p>If you have trouble downloading any of the large files, you can download them manually. The logs will contain a line such as <code>Downloading https://ramp0storage.blob.core.windows.net/nationaldata/QUANT_RAMP_spc.tar.gz to data/raw_data/nationaldata/QUANT_RAMP_spc.tar.gz</code>. This tells you the URL to retrieve, and where to put the output file. Note that SPC won’t attempt to download files if they already exist, so if you wind up with a partially downloaded file, you have to manually remove it.</p>
 
 
