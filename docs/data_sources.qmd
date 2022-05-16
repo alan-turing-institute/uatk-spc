@@ -27,7 +27,7 @@ This data is based on the [2011 UK census](http://dx.doi.org/10.5257/census/aggr
 
 The fields currently contained are:
 
-- `idp`: a unique individual identifier within the present data
+- `idp`: a unique global individual identifier across all counties
 - `MSOA11CD`: MSOA code where the individual lives
 - `hid`: household identifier, includes communal establishments
 - `pid`: identifier linking to the 2011 Census
