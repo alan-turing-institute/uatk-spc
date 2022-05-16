@@ -11,4 +11,6 @@ f = open(sys.argv[1], "rb")
 pop.ParseFromString(f.read())
 f.close()
 
-print(MessageToJson(pop))
+# SPC uses 0 for some IDs. Proto3 optimizes "default values" away, but this is
+# incredibly misleading when viewing the JSON.
+print(MessageToJson(pop, including_default_value_fields=True))
