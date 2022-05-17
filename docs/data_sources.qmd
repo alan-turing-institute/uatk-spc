@@ -64,7 +64,7 @@ The fields currently contained are:
 - `lng`: longitude of the MSOA11CD centroid
 - `lat`: latitude of the MSOA11CD centroid
 
-Some other fields were kept from specific projects but are not from official sources and should be used.
+Some other fields were kept from and for other specific projects but are not from official sources and should generally not be used.
 
 ## National data
 
