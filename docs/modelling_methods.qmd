@@ -32,7 +32,7 @@ The data are far from complete (only about 15% of all possible values), especial
 
 A percentile is chosen randomly (uniformly) for each individual, and the salary is then deduced according to their full-time/part-time status, region, sex and SOC category. A basic hourly salary column is added to the unprocessed SPC data, as well as a corresponding annual salary based on their estimated hours worked per day, according to the Time Use Survey matching. In addition, we repeat this process for all individuals that are categorised as 'Self-employed' or 'Employee unspecified' by the Time Use Survey matching as if they were full time employees. These values are recorded in the columns `IncomeHAsIF` and `IncomeYAsIf`. We noticed that a high number of employees were given no worked hours by the Time Use Survey. We have added to the `IncomeYAsIf` column an estimation of the annual salry based on [Table 15.9a: Paid hours worked - Total 2020](Earnings and hours worked, region by occupation by four-digit SOC: ASHE Table 15) and also depending on the same four variable as above (full-time/part-time status, region, sex and SOC category).
 
-The <i>R</i> code for this modelling is [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/incomeModelling.R).
+The <i>R</i> codes for this modelling are [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/incomeModelling.R).
 
 The methods are validated in the next section. Since it is not possible to optimise every criterion at once, this next secton can also be used as a reference to re-adjust some values to match exactly the ONS estimated means for one particular criterion of interest.
 
