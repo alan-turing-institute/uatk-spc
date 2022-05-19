@@ -252,14 +252,14 @@
 <h2 data-number="8.3" class="anchored" data-anchor-id="national-data"><span class="header-section-number">8.3</span> National data</h2>
 <pre><code>businessRegistry.csv</code></pre>
 <p>Contains a breakdown of all business units (i.e.&nbsp;a single workplace) in England at LSOA scale (smaller than MSOA), estimated by the project contributors from two nomis datasets: <a href="https://www.nomisweb.co.uk/datasets/idbrlu">UK Business Counts - local units by industry and employment size band 2020</a> and <a href="https://www.nomisweb.co.uk/datasets/newbrespub">Business Register and Employment Survey 2015</a>. Each item contains the <code>size</code> of the unit and its main <code>sic1d07</code> code in reference to standard <a href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities">Industrial Classification of Economic Activities 2007</a> (number corresponding to the letter in alphabetical order). It is used to compute commuting flows.</p>
-<p>The <i>R</i> code to compute this file is <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createWorkplaceFile.R">here</a>.</p>
+<p>The <i>R</i> codes to compute this file are <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createWorkplaceFile.R">here</a>.</p>
 <pre><code>MSOAS_shp.tar.gz</code></pre>
 <p>Is a simple shapefile taken from ONS <a href="https://geoportal.statistics.gov.uk/">boundaries</a>.</p>
 <pre><code>QUANT_RAMP.tar.gz</code></pre>
 <p>See: Milton R, Batty M, Dennett A, dedicated <a href="https://github.com/maptube/QUANT_RAMP">RAMP Spatial Interaction Model GitHub repository</a>. It is used to compute the flows towards schools and retail.</p>
 <pre><code>timeAtHomeIncreaseCTY.csv</code></pre>
 <p>This file is a subset from <a href="https://www.google.com/covid19/mobility/">Google COVID-19 Community Mobility Reports</a>, cropped to England. It describes the daily reduction in mobility, averaged at county level, due to lockdown and other COVID-19 restrictions between the 15<sup>th</sup> of February 2020 and 15<sup>th</sup> of April 2022. Missing values have been replaced by the national average. These values can be used directly to reduce <code>pnothome</code> and increase <code>phometot</code> (and their sub-categories) to simulate more accurately the period.</p>
-<p>The <i>R</i> code to process these data is <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createMobilityFile.R">here</a>.</p>
+<p>The <i>R</i> codes to process these data are <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createMobilityFile.R">here</a>.</p>
 
 
 </section>
