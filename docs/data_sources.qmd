@@ -51,7 +51,7 @@ The fields currently contained are:
   - `punknown` + `pwork` + `pschool` + `pshop` + `pservices` + `pleisure` + `pescort` + `ptransport` = `pnothome`
   - `phome` + `pworkhome` = `phometot`
   - `pnothome` + `phometot` = 1
-- `IncomeX`: hourly (X = H) and annual (X = Y) income for employees, see [modelling methods](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html) for more details
+- `IncomeX`: hourly (X = "H") and annual (X = "Y") income for employees, see [modelling methods](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html) for more details
 - `cvd`: has a cardio-vascular disease (0 or 1)
 - `diabetes`: has diabetes (0 or 1)
 - `bloodpressure`: has high blood pressure (0 or 1)
