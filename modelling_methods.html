@@ -221,36 +221,107 @@
 <section id="comparison-to-reference-values-from-ons" class="level3" data-number="7.2.2">
 <h3 data-number="7.2.2" class="anchored" data-anchor-id="comparison-to-reference-values-from-ons"><span class="header-section-number">7.2.2</span> Comparison to reference values from ONS</h3>
 <p>We compare the results of the modelling to the raw datasets from ONS (M means modelled, H means hourly gross salary, Y means annual gross salary, Nat means National, FT means Full-Time, PT means Part-Time). Only individuals recorded as employees (i.e.&nbsp;not self-employed) are taken into account in this section.</p>
-<p><em>Number of employees (varies depending on reference dataset, reported by ONS as indicative only)</em></p>
-<pre><code>       | Nat All | Nat FT | Nat PT | Nat Male | Nat Male FT | Nat Male PT | Nat Female | Nat Female FT | Nat Female PT |
-       |---------|--------|--------|----------|-------------|-------------|------------|---------------|---------------|</code></pre>
-<p>number | 22-26k | 16-19k | 6-8k | 11-13k | 9-11k | 1.5-2k | 11-13k | 6.5-7.5k | 4.5-5.5k | M number H | 23.1k | 18.5k | 4.6k | 11.8k | 11k | 0.8k | 11.3k | 7.5k | 3.8k | M number Y | 17.6k | 14.8k | 2.8k | 9.4k | 8.9k | 0.5k | 8.2k | 5.9k | 2.3k |</p>
+<p><strong>Number of employees (varies depending on reference dataset, reported by ONS as indicative only)</strong></p>
+<table class="table">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 7%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 8%">
+<col style="width: 11%">
+<col style="width: 11%">
+<col style="width: 10%">
+<col style="width: 13%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Nat All</th>
+<th>Nat FT</th>
+<th>Nat PT</th>
+<th>Nat Male</th>
+<th>Nat Male FT</th>
+<th>Nat Male PT</th>
+<th>Nat Female</th>
+<th>Nat Female FT</th>
+<th>Nat Female PT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>number</td>
+<td>22-26k</td>
+<td>16-19k</td>
+<td>6-8k</td>
+<td>11-13k</td>
+<td>9-11k</td>
+<td>1.5-2k</td>
+<td>11-13k</td>
+<td>6.5-7.5k</td>
+<td>4.5-5.5k</td>
+</tr>
+<tr class="even">
+<td>M number H</td>
+<td>23.1k</td>
+<td>18.5k</td>
+<td>4.6k</td>
+<td>11.8k</td>
+<td>11k</td>
+<td>0.8k</td>
+<td>11.3k</td>
+<td>7.5k</td>
+<td>3.8k</td>
+</tr>
+<tr class="odd">
+<td>M number Y</td>
+<td>17.6k</td>
+<td>14.8k</td>
+<td>2.8k</td>
+<td>9.4k</td>
+<td>8.9k</td>
+<td>0.5k</td>
+<td>8.2k</td>
+<td>5.9k</td>
+<td>2.3k</td>
+</tr>
+</tbody>
+</table>
 <p>A significant number of individuals listed as working either full or part time have 0 effective worked hours per day according to the Time Use Survey matching. In those cases, an hourly salary is modelled depending on their SOC, region and sex, as for any other employee, but the annual salary will be displayed as 0. It is possible to estimate their likely true number of hours worked from the same ONS dataset (Table 15.9a: Paid hours worked - Total 2020), also depending on their sex, soc and region. This calculation has been added to the “As If” column.</p>
-<p><em>Hourly gross salary per sex and full-time/part-time classification</em></p>
+<p><strong>Hourly gross salary per sex and full-time/part-time classification</strong></p>
 <pre><code>     | Nat All | Nat FT | Nat PT | Nat Male | Nat Male FT | Nat Male PT | Nat Female | Nat Female FT | Nat Female PT |
      |---------|--------|--------|----------|-------------|-------------|------------|---------------|---------------|</code></pre>
 <p>mean | 17.63 | 18.32 | 13.93 | 18.81 | 19.12 | 14.69 | 16.19 | 17.08 | 13.68 | median | 13.71 | 15.15 | 10.38 | 14.84 | 15.58 | 10.12 | 12.58 | 14.42 | 10.47 | M mean | 16.52 | 17.30 | 13.36 | 17.69 | 18.08 | 12.35 | 15.28 | 16.17 | 13.57 | M median | 13.79 | 14.71 | 10.30 | 14.75 | 15.16 | 9.16 | 12.80 | 14.10 | 10.55 |</p>
 <p>The median values are quite close to the ONS values, but the mean values are always lower. This is expected, see the description of the modelling above.</p>
-<p><em>Annual gross salary per sex and full-time/part-time classification</em></p>
+<p><strong>Annual gross salary per sex and full-time/part-time classification</strong></p>
 <p>Only values &gt; 0 are retained for these calculations.</p>
 <pre><code>     | Nat All | Nat FT | Nat PT | Nat Male | Nat Male FT | Nat Male PT | Nat Female | Nat Female FT | Nat Female PT |
      |---------|--------|--------|----------|-------------|-------------|------------|---------------|---------------|</code></pre>
 <p>mean | 31,646 | 38,552 | 13,819 | 38,421 | 42,072 | 14,796 | 24,871 | 33,253 | 13,512 | median | 25,886 | 31,487 | 11,240 | 31,393 | 33,915 | 10,883 | 20,614 | 28,002 | 4,743 | M mean | 34,613 | 36,974 | 22,111 | 38,082 | 39,062 | 20,153 | 30,647 | 33,826 | 22,524 | M median | 29,249 | 31,625 | 17,947 | 32,441 | 33311 | 17,760 | 25,964 | 29,122 | 18,138 |</p>
 <p>The average salary for part-time employees is correct when values equal to 0 are taken into account. This suggests that the total number of hours worked for part-time employees is correct, but the way they are distributed among individuals is not. It could be due to the TUS taking a snapshot of the situation during a particular week, rather than averaging their data over the year. It appears that the TUS matching also overestimates the average number of hours worked for female employees.</p>
-<p><em>Regional differences (hourly gross salary only)</em></p>
+<p><strong>Regional differences (hourly gross salary only)</strong></p>
 <pre><code>     | East  | East Midlands | London | North East | North West | South East | South West | West Midlands | Yorkshire and The Humber |
      |-------|---------------|--------|------------|------------|------------|------------|---------------|--------------------------|</code></pre>
 <p>mean | 16.74 | 15.87 | 23.78 | 15.69 | 16.36 | 17.88 | 16.36 | 16.34 | 15.76 | median | 13.28 | 12.65 | 18.30 | 12.40 | 12.90 | 14.33 | 12.74 | 12.92 | 12.46 | M mean | 16.68 | 15.39 | 19.38 | 5.27308 | 15.43 | 17.36 | 16.01 | 15.47 | 14.56 | M median | 13.91 | 13.00 | 16.42 | 12.64 | 12.78 | 14.95 | 13.66 | 12.89 | 12.72720 |</p>
 <p>The pearson correlations for mean and median between the modelled and raw values are and 0.93 and 0.94.</p>
-<p><em>SOC (1-digit level, hourly gross salary only)</em></p>
+<p><strong>SOC (1-digit level, hourly gross salary only)</strong></p>
 <pre><code>     | 1     | 2     | 3     | 4     | 5     | 6     | 7     | 8     | 9     |
      |-------|-------|-------|-------|-------|-------|-------|-------|-------|</code></pre>
 <p>mean | 26.77 | 23.38 | 18.29 | 13.42 | 13.35 | 10.87 | 10.94 | 12.23 | 10.77 | median | 20.96 | 21.34 | 15.66 | 11.54 | 12.04 | 10.08 | 9.52 | 10.93 | 9.22 | M mean | 20.94 | 22.27 | 16.39 | 12.74 | 12.82 | 10.46 | 10.67 | 12.07 | 9.89 | M median | 17.06 | 20.78 | 14.68 | 11.58 | 11.74 | 9.85 | 9.73 | 10.96 | 9.14 |</p>
 <ol type="1">
-<li>Managers, directors and senior officials; 2. Professional occupations; 3. Associate professional and technical occupations; 4. Administrative and secretarial occupations; 5. Skilled trades occupations; 6. Caring, leisure and other service occupations; 7. Sales and customer service occupations; 8. Process, plant and machine operatives; 9. Elementary occupations.</li>
+<li>Managers, directors and senior officials</li>
+<li>Professional occupations</li>
+<li>Associate professional and technical occupations</li>
+<li>Administrative and secretarial occupations</li>
+<li>Skilled trades occupations</li>
+<li>Caring, leisure and other service occupations</li>
+<li>Sales and customer service occupations</li>
+<li>Process, plant and machine operatives</li>
+<li>Elementary occupations.</li>
 </ol>
 <p>The pearson correlations for mean and median between the modelled and raw values are 0.97 and 0.97.</p>
-<p><em>Age</em></p>
+<p><strong>Age</strong></p>
 <p>The reference for this table is: <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6">Table 6.5a Hourly pay - Gross 2020</a></p>
 <pre><code>     | 16-17 | 18-21 | 22-29 | 30-39 | 40-49 | 50-59 | 60+   |
      |-------|-------|-------|-------|-------|-------|-------|</code></pre>
