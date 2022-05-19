@@ -220,7 +220,17 @@
 </section>
 <section id="comparison-to-reference-values-from-ons" class="level3" data-number="7.2.2">
 <h3 data-number="7.2.2" class="anchored" data-anchor-id="comparison-to-reference-values-from-ons"><span class="header-section-number">7.2.2</span> Comparison to reference values from ONS</h3>
-<p>We compare the results of the modelling to the raw datasets from ONS. - <code>Mod</code> for modelled - <code>M</code> for male - <code>F</code> for female - <code>H</code> for hourly gross salary - <code>Y</code> for annual gross salary - <code>FT</code> for Full-Time - <code>PT</code> for Part-Time Only individuals recorded as employees (i.e.&nbsp;not self-employed) are taken into account in this section.</p>
+<p>We compare the results of the modelling to the raw datasets from ONS.</p>
+<ul>
+<li><code>Mod</code> for modelled</li>
+<li><code>M</code> for male</li>
+<li><code>F</code> for female</li>
+<li><code>H</code> for hourly gross salary</li>
+<li><code>Y</code> for annual gross salary</li>
+<li><code>FT</code> for full-Time</li>
+<li><code>PT</code> for part-Time</li>
+<li>Only individuals recorded as employees (i.e.&nbsp;not self-employed) are taken into account in this section.</li>
+</ul>
 <p><strong>Number of employees per sex and full-time/part-time classification</strong></p>
 <p>The numbers given by ONS vary from dataset to dataset and are reported by ONS as indicative only. For the modelled values, we give the total number of individuals with a non-zero salary in each category.</p>
 <table class="table">
@@ -252,7 +262,7 @@
 </thead>
 <tbody>
 <tr class="odd">
-<td>Tot</td>
+<td>ONS tot</td>
 <td>22-26k</td>
 <td>16-19k</td>
 <td>6-8k</td>
@@ -291,25 +301,325 @@
 </table>
 <p>A significant number of individuals listed as working either full or part time have 0 effective worked hours per day according to the Time Use Survey matching. In those cases, an hourly salary is modelled depending on their SOC, region and sex, as for any other employee, but the annual salary will be displayed as 0. It is possible to estimate their likely true number of hours worked from the same ONS dataset (Table 15.9a: Paid hours worked - Total 2020), also depending on their sex, soc and region. This calculation has been added to the “As If” column.</p>
 <p><strong>Hourly gross salary per sex and full-time/part-time classification</strong></p>
-<pre><code>     | Nat All | Nat FT | Nat PT | Nat Male | Nat Male FT | Nat Male PT | Nat Female | Nat Female FT | Nat Female PT |
-     |---------|--------|--------|----------|-------------|-------------|------------|---------------|---------------|</code></pre>
-<p>mean | 17.63 | 18.32 | 13.93 | 18.81 | 19.12 | 14.69 | 16.19 | 17.08 | 13.68 | median | 13.71 | 15.15 | 10.38 | 14.84 | 15.58 | 10.12 | 12.58 | 14.42 | 10.47 | M mean | 16.52 | 17.30 | 13.36 | 17.69 | 18.08 | 12.35 | 15.28 | 16.17 | 13.57 | M median | 13.79 | 14.71 | 10.30 | 14.75 | 15.16 | 9.16 | 12.80 | 14.10 | 10.55 |</p>
+<table class="table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>All</th>
+<th>FT</th>
+<th>PT</th>
+<th>M</th>
+<th>M FT</th>
+<th>M PT</th>
+<th>F</th>
+<th>F FT</th>
+<th>F PT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ONS mean</td>
+<td>17.63</td>
+<td>18.32</td>
+<td>13.93</td>
+<td>18.81</td>
+<td>19.12</td>
+<td>14.69</td>
+<td>16.19</td>
+<td>17.08</td>
+<td>13.68</td>
+</tr>
+<tr class="even">
+<td>ONS median</td>
+<td>13.71</td>
+<td>15.15</td>
+<td>10.38</td>
+<td>14.84</td>
+<td>15.58</td>
+<td>10.12</td>
+<td>12.58</td>
+<td>14.42</td>
+<td>10.47</td>
+</tr>
+<tr class="odd">
+<td>Mod mean</td>
+<td>16.52</td>
+<td>17.30</td>
+<td>13.36</td>
+<td>17.69</td>
+<td>18.08</td>
+<td>12.35</td>
+<td>15.28</td>
+<td>16.17</td>
+<td>13.57</td>
+</tr>
+<tr class="even">
+<td>Mod median</td>
+<td>13.79</td>
+<td>14.71</td>
+<td>10.30</td>
+<td>14.75</td>
+<td>15.16</td>
+<td>9.16</td>
+<td>12.80</td>
+<td>14.10</td>
+<td>10.55</td>
+</tr>
+</tbody>
+</table>
 <p>The median values are quite close to the ONS values, but the mean values are always lower. This is expected, see the description of the modelling above.</p>
 <p><strong>Annual gross salary per sex and full-time/part-time classification</strong></p>
 <p>Only values &gt; 0 are retained for these calculations.</p>
-<pre><code>     | Nat All | Nat FT | Nat PT | Nat Male | Nat Male FT | Nat Male PT | Nat Female | Nat Female FT | Nat Female PT |
-     |---------|--------|--------|----------|-------------|-------------|------------|---------------|---------------|</code></pre>
-<p>mean | 31,646 | 38,552 | 13,819 | 38,421 | 42,072 | 14,796 | 24,871 | 33,253 | 13,512 | median | 25,886 | 31,487 | 11,240 | 31,393 | 33,915 | 10,883 | 20,614 | 28,002 | 4,743 | M mean | 34,613 | 36,974 | 22,111 | 38,082 | 39,062 | 20,153 | 30,647 | 33,826 | 22,524 | M median | 29,249 | 31,625 | 17,947 | 32,441 | 33311 | 17,760 | 25,964 | 29,122 | 18,138 |</p>
+<table class="table">
+<colgroup>
+<col style="width: 14%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>All</th>
+<th>FT</th>
+<th>PT</th>
+<th>M</th>
+<th>M FT</th>
+<th>M PT</th>
+<th>F</th>
+<th>F FT</th>
+<th>F PT</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ONS mean</td>
+<td>31,646</td>
+<td>38,552</td>
+<td>13,819</td>
+<td>38,421</td>
+<td>42,072</td>
+<td>14,796</td>
+<td>24,871</td>
+<td>33,253</td>
+<td>13,512</td>
+</tr>
+<tr class="even">
+<td>ONS median</td>
+<td>25,886</td>
+<td>31,487</td>
+<td>11,240</td>
+<td>31,393</td>
+<td>33,915</td>
+<td>10,883</td>
+<td>20,614</td>
+<td>28,002</td>
+<td>4,743</td>
+</tr>
+<tr class="odd">
+<td>Mod mean</td>
+<td>34,613</td>
+<td>36,974</td>
+<td>22,111</td>
+<td>38,082</td>
+<td>39,062</td>
+<td>20,153</td>
+<td>30,647</td>
+<td>33,826</td>
+<td>22,524</td>
+</tr>
+<tr class="even">
+<td>Mod median</td>
+<td>29,249</td>
+<td>31,625</td>
+<td>17,947</td>
+<td>32,441</td>
+<td>33311</td>
+<td>17,760</td>
+<td>25,964</td>
+<td>29,122</td>
+<td>18,138</td>
+</tr>
+</tbody>
+</table>
 <p>The average salary for part-time employees is correct when values equal to 0 are taken into account. This suggests that the total number of hours worked for part-time employees is correct, but the way they are distributed among individuals is not. It could be due to the TUS taking a snapshot of the situation during a particular week, rather than averaging their data over the year. It appears that the TUS matching also overestimates the average number of hours worked for female employees.</p>
-<p><strong>Regional differences (hourly gross salary only)</strong></p>
-<pre><code>     | East  | East Midlands | London | North East | North West | South East | South West | West Midlands | Yorkshire and The Humber |
-     |-------|---------------|--------|------------|------------|------------|------------|---------------|--------------------------|</code></pre>
-<p>mean | 16.74 | 15.87 | 23.78 | 15.69 | 16.36 | 17.88 | 16.36 | 16.34 | 15.76 | median | 13.28 | 12.65 | 18.30 | 12.40 | 12.90 | 14.33 | 12.74 | 12.92 | 12.46 | M mean | 16.68 | 15.39 | 19.38 | 5.27308 | 15.43 | 17.36 | 16.01 | 15.47 | 14.56 | M median | 13.91 | 13.00 | 16.42 | 12.64 | 12.78 | 14.95 | 13.66 | 12.89 | 12.72720 |</p>
+<p><strong>Regional differences (hourly gross salary)</strong></p>
+<table class="table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 5%">
+<col style="width: 11%">
+<col style="width: 6%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 11%">
+<col style="width: 19%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Region</th>
+<th>East</th>
+<th>East Midlands</th>
+<th>London</th>
+<th>North East</th>
+<th>North West</th>
+<th>South East</th>
+<th>South West</th>
+<th>West Midlands</th>
+<th>Yorkshire and The Humber</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ONS mean</td>
+<td>16.74</td>
+<td>15.87</td>
+<td>23.78</td>
+<td>15.69</td>
+<td>16.36</td>
+<td>17.88</td>
+<td>16.36</td>
+<td>16.34</td>
+<td>15.76</td>
+</tr>
+<tr class="even">
+<td>ONS median</td>
+<td>13.28</td>
+<td>12.65</td>
+<td>18.30</td>
+<td>12.40</td>
+<td>12.90</td>
+<td>14.33</td>
+<td>12.74</td>
+<td>12.92</td>
+<td>12.46</td>
+</tr>
+<tr class="odd">
+<td>Mod mean</td>
+<td>16.68</td>
+<td>15.39</td>
+<td>19.38</td>
+<td>5.27308</td>
+<td>15.43</td>
+<td>17.36</td>
+<td>16.01</td>
+<td>15.47</td>
+<td>14.56</td>
+</tr>
+<tr class="even">
+<td>Mod median</td>
+<td>13.91</td>
+<td>13.00</td>
+<td>16.42</td>
+<td>12.64</td>
+<td>12.78</td>
+<td>14.95</td>
+<td>13.66</td>
+<td>12.89</td>
+<td>12.72720</td>
+</tr>
+</tbody>
+</table>
 <p>The pearson correlations for mean and median between the modelled and raw values are and 0.93 and 0.94.</p>
-<p><strong>SOC (1-digit level, hourly gross salary only)</strong></p>
-<pre><code>     | 1     | 2     | 3     | 4     | 5     | 6     | 7     | 8     | 9     |
-     |-------|-------|-------|-------|-------|-------|-------|-------|-------|</code></pre>
-<p>mean | 26.77 | 23.38 | 18.29 | 13.42 | 13.35 | 10.87 | 10.94 | 12.23 | 10.77 | median | 20.96 | 21.34 | 15.66 | 11.54 | 12.04 | 10.08 | 9.52 | 10.93 | 9.22 | M mean | 20.94 | 22.27 | 16.39 | 12.74 | 12.82 | 10.46 | 10.67 | 12.07 | 9.89 | M median | 17.06 | 20.78 | 14.68 | 11.58 | 11.74 | 9.85 | 9.73 | 10.96 | 9.14 |</p>
+<p><strong>Hourly gross salary per one-digit SOC</strong></p>
+<table class="table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>1d SOC</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+<th>7</th>
+<th>8</th>
+<th>9</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ONS mean</td>
+<td>26.77</td>
+<td>23.38</td>
+<td>18.29</td>
+<td>13.42</td>
+<td>13.35</td>
+<td>10.87</td>
+<td>10.94</td>
+<td>12.23</td>
+<td>10.77</td>
+</tr>
+<tr class="even">
+<td>ONS median</td>
+<td>20.96</td>
+<td>21.34</td>
+<td>15.66</td>
+<td>11.54</td>
+<td>12.04</td>
+<td>10.08</td>
+<td>9.52</td>
+<td>10.93</td>
+<td>9.22</td>
+</tr>
+<tr class="odd">
+<td>Mod mean</td>
+<td>20.94</td>
+<td>22.27</td>
+<td>16.39</td>
+<td>12.74</td>
+<td>12.82</td>
+<td>10.46</td>
+<td>10.67</td>
+<td>12.07</td>
+<td>9.89</td>
+</tr>
+<tr class="even">
+<td>Mod median</td>
+<td>17.06</td>
+<td>20.78</td>
+<td>14.68</td>
+<td>11.58</td>
+<td>11.74</td>
+<td>9.85</td>
+<td>9.73</td>
+<td>10.96</td>
+<td>9.14</td>
+</tr>
+</tbody>
+</table>
 <ol type="1">
 <li>Managers, directors and senior officials</li>
 <li>Professional occupations</li>
@@ -322,11 +632,64 @@
 <li>Elementary occupations.</li>
 </ol>
 <p>The pearson correlations for mean and median between the modelled and raw values are 0.97 and 0.97.</p>
-<p><strong>Age</strong></p>
+<p><strong>Hourly gross salary per age</strong></p>
 <p>The reference for this table is: <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6">Table 6.5a Hourly pay - Gross 2020</a></p>
-<pre><code>     | 16-17 | 18-21 | 22-29 | 30-39 | 40-49 | 50-59 | 60+   |
-     |-------|-------|-------|-------|-------|-------|-------|</code></pre>
-<p>mean | 7.21 | 9.59 | 14.09 | 18.13 | 20.04 | 19.12 | 16.32 | median | 6.36 | 9.00 | 12.26 | 15.08 | 15.89 | 14.39 | 12.17 | M mean | 12.77 | 14.96 | 16.33 | 16.93 | 16.83 | 16.66 | 16.29 | M median | 10.93 | 12.71 | 13.88 | 14.02 | 13.96 | 13.85 | 13.65 |</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Age</th>
+<th>16-17</th>
+<th>18-21</th>
+<th>22-29</th>
+<th>30-39</th>
+<th>40-49</th>
+<th>50-59</th>
+<th>60+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ONS mean</td>
+<td>7.21</td>
+<td>9.59</td>
+<td>14.09</td>
+<td>18.13</td>
+<td>20.04</td>
+<td>19.12</td>
+<td>16.32</td>
+</tr>
+<tr class="even">
+<td>ONS median</td>
+<td>6.36</td>
+<td>9.00</td>
+<td>12.26</td>
+<td>15.08</td>
+<td>15.89</td>
+<td>14.39</td>
+<td>12.17</td>
+</tr>
+<tr class="odd">
+<td>Mod mean</td>
+<td>12.77</td>
+<td>14.96</td>
+<td>16.33</td>
+<td>16.93</td>
+<td>16.83</td>
+<td>16.66</td>
+<td>16.29</td>
+</tr>
+<tr class="even">
+<td>Mod median</td>
+<td>10.93</td>
+<td>12.71</td>
+<td>13.88</td>
+<td>14.02</td>
+<td>13.96</td>
+<td>13.85</td>
+<td>13.65</td>
+</tr>
+</tbody>
+</table>
 <p>The pearson correlations for mean and median between the modelled and raw values are 0.92 and 0.92.</p>
 <p>Note that age is not part of the inputs used to compute the estimations. It can therefore be considered as an independent control of the accuracy of the method and of the SPENSER/TUS/HSE matching.</p>
 
