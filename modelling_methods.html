@@ -176,6 +176,11 @@
 <h2 id="toc-title">Table of contents</h2>
 <ul>
 <li><a href="#commuting-flows" class="nav-link active" data-scroll-target="#commuting-flows"> <span class="header-section-number">7.1</span> Commuting flows</a></li>
+<li><a href="#income-data" class="nav-link" data-scroll-target="#income-data"> <span class="header-section-number">7.2</span> Income data</a>
+<ul class="collapse">
+<li><a href="#methods" class="nav-link" data-scroll-target="#methods"> <span class="header-section-number">7.2.1</span> Methods</a></li>
+<li><a href="#comparison-to-reference-values-from-ons" class="nav-link" data-scroll-target="#comparison-to-reference-values-from-ons"> <span class="header-section-number">7.2.2</span> Comparison to reference values from ONS</a></li>
+</ul></li>
 </ul>
 </nav>
     </div>
@@ -202,8 +207,59 @@
 ρ(<i>r</i>,<i>f</i>)= <i>K</i> / (<i>rf</i>)<sup>2</sup>
 </p>
 <p>distribution, where ρ(<i>r</i>,<i>f</i>) is the density of visitors coming from a distance <i>r</i> with frequency <i>f</i> and <i>K</i> is a balancing constant depending on the specific area. In the context of commuting, it can be assumed that <i>f</i> = 1. Additionally, we only need to weigh potential employees against each other, which removes the necessity to compute explicitly <i>K</i>. In the West Yorkshire test, we found a Pearson coefficient of 0.7 between the predicted flows when aggregated at MSOA level and the OD matrix at MSOA level available from Nomis.</p>
+</section>
+<section id="income-data" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="income-data"><span class="header-section-number">7.2</span> Income data</h2>
+<p>This modelling is based on the 2020 revised edition of the <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/regionbyoccupation4digitsoc2010ashetable15">Earnings and hours worked, region by occupation by four-digit SOC: ASHE Table 15</a> database from ONS. Some percentiles for employees’ gross hourly salaries are provided for each full-time and part-time job according to their four-digit SOC classification per region, and separated by sex.</p>
+<section id="methods" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="methods"><span class="header-section-number">7.2.1</span> Methods</h3>
+<p>The data are far from complete (only about 15% of all possible values), especially for the highest deciles. We found that an order 3 polynomial fit was satisfactory for most categories (93.11%) to complete the partially filled SOCs. SOCs with too many missing values are given the value for the category that is immediately higher in the SOC hierarchy. Some jobs appear to have a ‘ceiling’ for the highest percentiles, making the polynomial fit fail. In that case, we have replaced the unknown values by the highest known value in the raw data (as there is no clear and systemic fit for these special cases). In addition, there is no information for the highest decile in all cases, which means that the highest salaries are underestimated (and exceptionally high salaries cannot be obtained). The result of this phase is four tables {male full-time, male part-time, female full-time, female part-time} containing the coefficients of the fitted order 3 polynomial, with an optional ceiling percentile when relevant.</p>
+<p>A percentile is chosen randomly (uniformly) for each individual, and the salary is then deduced according to their full-time/part-time status, region, sex and SOC category. A basic hourly salary column is added to the unprocessed SPC data, as well as a corresponding annual salary based on their estimated hours worked per day, according to the Time Use Survey matching. In addition, we repeat this process for all individuals that are categorised as ‘Self-employed’ or ‘Employee unspecified’ by the Time Use Survey matching as if they were full time employees. These values are recorded in the columns <code>IncomeHAsIF</code> and <code>IncomeYAsIf</code>. We noticed that a high number of employees were given no worked hours by the Time Use Survey. We have added to the <code>IncomeYAsIf</code> column an estimation of the annual salry based on <a href="Earnings%20and%20hours%20worked,%20region%20by%20occupation%20by%20four-digit%20SOC:%20ASHE%20Table%2015">Table 15.9a: Paid hours worked - Total 2020</a> and also depending on the same four variable as above (full-time/part-time status, region, sex and SOC category).</p>
+<p>The <i>R</i> code for this modelling is <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/incomeModelling.R">here</a>.</p>
+<p>The methods are validated in the next section. Since it is not possible to optimise every criterion at once, this next secton can also be used as a reference to re-adjust some values to match exactly the ONS estimated means for one particular criterion of interest.</p>
+</section>
+<section id="comparison-to-reference-values-from-ons" class="level3" data-number="7.2.2">
+<h3 data-number="7.2.2" class="anchored" data-anchor-id="comparison-to-reference-values-from-ons"><span class="header-section-number">7.2.2</span> Comparison to reference values from ONS</h3>
+<p>We compare the results of the modelling to the raw datasets from ONS (M means modelled, H means hourly gross salary, Y means annual gross salary, Nat means National, FT means Full-Time, PT means Part-Time). Only individuals recorded as employees (i.e.&nbsp;not self-employed) are taken into account in this section.</p>
+<p><em>Number of employees (varies depending on reference dataset, reported by ONS as indicative only)</em></p>
+<pre><code>       | Nat All | Nat FT | Nat PT | Nat Male | Nat Male FT | Nat Male PT | Nat Female | Nat Female FT | Nat Female PT |
+       |---------|--------|--------|----------|-------------|-------------|------------|---------------|---------------|</code></pre>
+<p>number | 22-26k | 16-19k | 6-8k | 11-13k | 9-11k | 1.5-2k | 11-13k | 6.5-7.5k | 4.5-5.5k | M number H | 23.1k | 18.5k | 4.6k | 11.8k | 11k | 0.8k | 11.3k | 7.5k | 3.8k | M number Y | 17.6k | 14.8k | 2.8k | 9.4k | 8.9k | 0.5k | 8.2k | 5.9k | 2.3k |</p>
+<p>A significant number of individuals listed as working either full or part time have 0 effective worked hours per day according to the Time Use Survey matching. In those cases, an hourly salary is modelled depending on their SOC, region and sex, as for any other employee, but the annual salary will be displayed as 0. It is possible to estimate their likely true number of hours worked from the same ONS dataset (Table 15.9a: Paid hours worked - Total 2020), also depending on their sex, soc and region. This calculation has been added to the “As If” column.</p>
+<p><em>Hourly gross salary per sex and full-time/part-time classification</em></p>
+<pre><code>     | Nat All | Nat FT | Nat PT | Nat Male | Nat Male FT | Nat Male PT | Nat Female | Nat Female FT | Nat Female PT |
+     |---------|--------|--------|----------|-------------|-------------|------------|---------------|---------------|</code></pre>
+<p>mean | 17.63 | 18.32 | 13.93 | 18.81 | 19.12 | 14.69 | 16.19 | 17.08 | 13.68 | median | 13.71 | 15.15 | 10.38 | 14.84 | 15.58 | 10.12 | 12.58 | 14.42 | 10.47 | M mean | 16.52 | 17.30 | 13.36 | 17.69 | 18.08 | 12.35 | 15.28 | 16.17 | 13.57 | M median | 13.79 | 14.71 | 10.30 | 14.75 | 15.16 | 9.16 | 12.80 | 14.10 | 10.55 |</p>
+<p>The median values are quite close to the ONS values, but the mean values are always lower. This is expected, see the description of the modelling above.</p>
+<p><em>Annual gross salary per sex and full-time/part-time classification</em></p>
+<p>Only values &gt; 0 are retained for these calculations.</p>
+<pre><code>     | Nat All | Nat FT | Nat PT | Nat Male | Nat Male FT | Nat Male PT | Nat Female | Nat Female FT | Nat Female PT |
+     |---------|--------|--------|----------|-------------|-------------|------------|---------------|---------------|</code></pre>
+<p>mean | 31,646 | 38,552 | 13,819 | 38,421 | 42,072 | 14,796 | 24,871 | 33,253 | 13,512 | median | 25,886 | 31,487 | 11,240 | 31,393 | 33,915 | 10,883 | 20,614 | 28,002 | 4,743 | M mean | 34,613 | 36,974 | 22,111 | 38,082 | 39,062 | 20,153 | 30,647 | 33,826 | 22,524 | M median | 29,249 | 31,625 | 17,947 | 32,441 | 33311 | 17,760 | 25,964 | 29,122 | 18,138 |</p>
+<p>The average salary for part-time employees is correct when values equal to 0 are taken into account. This suggests that the total number of hours worked for part-time employees is correct, but the way they are distributed among individuals is not. It could be due to the TUS taking a snapshot of the situation during a particular week, rather than averaging their data over the year. It appears that the TUS matching also overestimates the average number of hours worked for female employees.</p>
+<p><em>Regional differences (hourly gross salary only)</em></p>
+<pre><code>     | East  | East Midlands | London | North East | North West | South East | South West | West Midlands | Yorkshire and The Humber |
+     |-------|---------------|--------|------------|------------|------------|------------|---------------|--------------------------|</code></pre>
+<p>mean | 16.74 | 15.87 | 23.78 | 15.69 | 16.36 | 17.88 | 16.36 | 16.34 | 15.76 | median | 13.28 | 12.65 | 18.30 | 12.40 | 12.90 | 14.33 | 12.74 | 12.92 | 12.46 | M mean | 16.68 | 15.39 | 19.38 | 5.27308 | 15.43 | 17.36 | 16.01 | 15.47 | 14.56 | M median | 13.91 | 13.00 | 16.42 | 12.64 | 12.78 | 14.95 | 13.66 | 12.89 | 12.72720 |</p>
+<p>The pearson correlations for mean and median between the modelled and raw values are and 0.93 and 0.94.</p>
+<p><em>SOC (1-digit level, hourly gross salary only)</em></p>
+<pre><code>     | 1     | 2     | 3     | 4     | 5     | 6     | 7     | 8     | 9     |
+     |-------|-------|-------|-------|-------|-------|-------|-------|-------|</code></pre>
+<p>mean | 26.77 | 23.38 | 18.29 | 13.42 | 13.35 | 10.87 | 10.94 | 12.23 | 10.77 | median | 20.96 | 21.34 | 15.66 | 11.54 | 12.04 | 10.08 | 9.52 | 10.93 | 9.22 | M mean | 20.94 | 22.27 | 16.39 | 12.74 | 12.82 | 10.46 | 10.67 | 12.07 | 9.89 | M median | 17.06 | 20.78 | 14.68 | 11.58 | 11.74 | 9.85 | 9.73 | 10.96 | 9.14 |</p>
+<ol type="1">
+<li>Managers, directors and senior officials; 2. Professional occupations; 3. Associate professional and technical occupations; 4. Administrative and secretarial occupations; 5. Skilled trades occupations; 6. Caring, leisure and other service occupations; 7. Sales and customer service occupations; 8. Process, plant and machine operatives; 9. Elementary occupations.</li>
+</ol>
+<p>The pearson correlations for mean and median between the modelled and raw values are 0.97 and 0.97.</p>
+<p><em>Age</em></p>
+<p>The reference for this table is: <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6">Table 6.5a Hourly pay - Gross 2020</a></p>
+<pre><code>     | 16-17 | 18-21 | 22-29 | 30-39 | 40-49 | 50-59 | 60+   |
+     |-------|-------|-------|-------|-------|-------|-------|</code></pre>
+<p>mean | 7.21 | 9.59 | 14.09 | 18.13 | 20.04 | 19.12 | 16.32 | median | 6.36 | 9.00 | 12.26 | 15.08 | 15.89 | 14.39 | 12.17 | M mean | 12.77 | 14.96 | 16.33 | 16.93 | 16.83 | 16.66 | 16.29 | M median | 10.93 | 12.71 | 13.88 | 14.02 | 13.96 | 13.85 | 13.65 |</p>
+<p>The pearson correlations for mean and median between the modelled and raw values are 0.92 and 0.92.</p>
+<p>Note that age is not part of the inputs used to compute the estimations. It can therefore be considered as an independent control of the accuracy of the method and of the SPENSER/TUS/HSE matching.</p>
 
 
+</section>
 </section>
 </main> <!-- /main -->
 <script type="application/javascript">
