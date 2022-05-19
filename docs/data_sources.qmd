@@ -46,10 +46,12 @@ The fields currently contained are:
 - `soc2010`: Previous version of the [Standard Occupational Classification](https://www.ons.gov.uk/methodology/classificationsandstandards/standardoccupationalclassificationsoc/soc2010)
 - `sic1d07`: Standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities), 1st layer (number corresponding to the letter in alphabetical order)
 - `sic2d07`: Standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities), 2nd layer
+- `pwkstat`: Employment status according to the TUS
 - Proportion of 24h spent doing different daily activities:
   - `punknown` + `pwork` + `pschool` + `pshop` + `pservices` + `pleisure` + `pescort` + `ptransport` = `pnothome`
   - `phome` + `pworkhome` = `phometot`
   - `pnothome` + `phometot` = 1
+- `IncomeX`: hourly (X = H) and annual (X = Y) income for employees, see [modelling methods](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html) for more details
 - `cvd`: has a cardio-vascular disease (0 or 1)
 - `diabetes`: has diabetes (0 or 1)
 - `bloodpressure`: has high blood pressure (0 or 1)
