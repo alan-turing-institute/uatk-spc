@@ -38,15 +38,25 @@ The methods are validated in the next section. Since it is not possible to optim
 
 ### Comparison to reference values from ONS
 
-We compare the results of the modelling to the raw datasets from ONS (M means modelled, H means hourly gross salary, Y means annual gross salary, Nat means National, FT means Full-Time, PT means Part-Time). Only individuals recorded as employees (i.e. not self-employed) are taken into account in this section.
+We compare the results of the modelling to the raw datasets from ONS.
+- `Mod` for modelled
+- `M` for male
+- `F` for female
+- `H` for hourly gross salary
+- `Y` for annual gross salary
+- `FT` for Full-Time
+- `PT` for Part-Time
+Only individuals recorded as employees (i.e. not self-employed) are taken into account in this section.
 
-**Number of employees (varies depending on reference dataset, reported by ONS as indicative only)**
+**Number of employees per sex and full-time/part-time classification**
 
-| Variable   | Nat All | Nat FT | Nat PT | Nat Male | Nat Male FT | Nat Male PT | Nat Female | Nat Female FT | Nat Female PT |
-|------------|---------|--------|--------|----------|-------------|-------------|------------|---------------|---------------|
-| number     | 22-26k  | 16-19k | 6-8k   | 11-13k   | 9-11k       | 1.5-2k      | 11-13k     | 6.5-7.5k      | 4.5-5.5k      |
-| M number H | 23.1k   | 18.5k  | 4.6k   | 11.8k    | 11k         | 0.8k        | 11.3k      | 7.5k          | 3.8k          |
-| M number Y | 17.6k   | 14.8k  | 2.8k   | 9.4k     | 8.9k        | 0.5k        | 8.2k       | 5.9k          | 2.3k          |
+The numbers given by ONS vary from dataset to dataset and are reported by ONS as indicative only. For the modelled values, we give the total number of individuals with a non-zero salary in each category.
+
+| Variable   | All    | FT     | PT   | M      | M FT  | M PT   | F      | F FT     | F PT     |
+|------------|--------|--------|------|--------|-------|--------|--------|----------|----------|
+| Tot        | 22-26k | 16-19k | 6-8k | 11-13k | 9-11k | 1.5-2k | 11-13k | 6.5-7.5k | 4.5-5.5k |
+| Mod tot H  | 23.1k  | 18.5k  | 4.6k | 11.8k  | 11k   | 0.8k   | 11.3k  | 7.5k     | 3.8k     |
+| Mod tot Y  | 17.6k  | 14.8k  | 2.8k | 9.4k   | 8.9k  | 0.5k   | 8.2k   | 5.9k     | 2.3k     |
 
 A significant number of individuals listed as working either full or part time have 0 effective worked hours per day according to the Time Use Survey matching. In those cases, an hourly salary is modelled depending on their SOC, region and sex, as for any other employee, but the annual salary will be displayed as 0. It is possible to estimate their likely true number of hours worked from the same ONS dataset (Table 15.9a: Paid hours worked - Total 2020), also depending on their sex, soc and region. This calculation has been added to the "As If" column.
 
