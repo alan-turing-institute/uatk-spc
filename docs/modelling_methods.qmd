@@ -93,7 +93,7 @@ The average salary for part-time employees is correct when values equal to 0 are
 | ONS mean   | 16.74 | 15.87         | 23.78  | 15.69      | 16.36      | 17.88      | 16.36      | 16.34         | 15.76                    |
 | ONS median | 13.28 | 12.65         | 18.30  | 12.40      | 12.90      | 14.33      | 12.74      | 12.92         | 12.46                    |
 | Mod mean   | 16.68 | 15.39         | 19.38  | 5.27308    | 15.43      | 17.36      | 16.01      | 15.47         | 14.56                    |
-| Mod median | 13.91 | 13.00         | 16.42  | 12.64      | 12.78      | 14.95      | 13.66      | 12.89         | 12.72720                 |
+| Mod median | 13.91 | 13.00         | 16.42  | 12.64      | 12.78      | 14.95      | 13.66      | 12.89         | 12.72.                   |
 
 The pearson correlations for mean and median between the modelled and raw values are and 0.93 and 0.94.
 
