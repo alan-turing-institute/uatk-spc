@@ -76,6 +76,8 @@ businessRegistry.csv
 
 Contains a breakdown of all business units (i.e. a single workplace) in England at LSOA scale (smaller than MSOA), estimated by the project contributors from two nomis datasets: [UK Business Counts - local units by industry and employment size band 2020](https://www.nomisweb.co.uk/datasets/idbrlu) and [Business Register and Employment Survey 2015](https://www.nomisweb.co.uk/datasets/newbrespub). Each item contains the `size` of the unit and its main `sic1d07` code in reference to standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities) (number corresponding to the letter in alphabetical order). It is used to compute commuting flows.
 
+The <i>R</i> code to compute this file is [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createWorkplaceFile.R).
+
 ```
 MSOAS_shp.tar.gz
 ```
@@ -93,3 +95,5 @@ timeAtHomeIncreaseCTY.csv
 ```
 
 This file is a subset from [Google COVID-19 Community Mobility Reports](https://www.google.com/covid19/mobility/), cropped to England. It describes the daily reduction in mobility, averaged at county level, due to lockdown and other COVID-19 restrictions between the 15<sup>th</sup> of February 2020 and 15<sup>th</sup> of April 2022. Missing values have been replaced by the national average. These values can be used directly to reduce `pnothome` and increase `phometot` (and their sub-categories) to simulate more accurately the period.
+
+The <i>R</i> code to process these data is [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createMobilityFile.R).
