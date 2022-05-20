@@ -24,13 +24,15 @@ distribution, where &rho;(<i>r</i>,<i>f</i>) is the density of visitors coming f
 
 ## Income data
 
-This modelling is based on the 2020 revised edition of the [Earnings and hours worked, region by occupation by four-digit SOC: ASHE Table 15](https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/regionbyoccupation4digitsoc2010ashetable15) database from ONS. Some percentiles for employees' gross hourly salaries are provided for each full-time and  part-time job according to their four-digit SOC classification per region, and separated by sex.
+This modelling is mainly based on the 2020 revised edition of the [Earnings and hours worked, region by occupation by four-digit SOC: ASHE Table 15](https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/regionbyoccupation4digitsoc2010ashetable15) database from ONS. Some percentiles for employees' gross hourly salaries are provided for each full-time and part-time job according to their four-digit SOC classification per region, and separated by sex.
 
 ### Methods
 
 The data are far from complete (only about 15% of all possible values), especially for the highest deciles. We found that an order 3 polynomial fit was satisfactory for most categories (93.11%) to complete the partially filled SOCs. SOCs with too many missing values are given the value for the category that is immediately higher in the SOC hierarchy. Some jobs appear to have a 'ceiling' for the highest percentiles, making the polynomial fit fail. In that case, we have replaced the unknown values by the highest known value in the raw data (as there is no clear and systemic fit for these special cases). In addition, there is no information for the highest decile in all cases, which means that the highest salaries are underestimated (and exceptionally high salaries cannot be obtained). The result of this phase is four tables {male full-time, male part-time, female full-time, female part-time} containing the coefficients of the fitted order 3 polynomial, with an optional ceiling percentile when relevant.
 
-A percentile is chosen randomly (uniformly) for each individual, and the salary is then deduced according to their full-time/part-time status, region, sex and SOC category. A basic hourly salary column is added to the unprocessed SPC data, as well as a corresponding annual salary based on their estimated hours worked per day, according to the Time Use Survey matching. In addition, we repeat this process for all individuals that are categorised as 'Self-employed' or 'Employee unspecified' by the Time Use Survey matching as if they were full time employees. These values are recorded in the columns `IncomeHAsIF` and `IncomeYAsIf`. We noticed that a high number of employees were given no worked hours by the Time Use Survey. We have added to the `IncomeYAsIf` column an estimation of the annual salry based on [Table 15.9a: Paid hours worked - Total 2020](Earnings and hours worked, region by occupation by four-digit SOC: ASHE Table 15) and also depending on the same four variable as above (full-time/part-time status, region, sex and SOC category).
+A percentile is chosen randomly (uniformly) for each individual, and the salary is then deduced according to their full-time/part-time status, region, sex and SOC category. A basic hourly salary column is added to the unprocessed SPC data, as well as a corresponding annual salary based on their estimated hours worked per day, according to the Time Use Survey matching. In addition, we repeat this process for all individuals that are categorised as 'Self-employed' or 'Employee unspecified' by the Time Use Survey matching,, as if they were full time employees. These values are recorded in the columns `IncomeHAsIF` and `IncomeYAsIf`. We noticed that a high number of employees were given no worked hours by the Time Use Survey. We have added to the `IncomeYAsIf` column an estimation of their annual salary based on [Table 15.9a: Paid hours worked - Total 2020](Earnings and hours worked, region by occupation by four-digit SOC: ASHE Table 15), and also depending on the same four variables as above (full-time/part-time status, region, sex and SOC category).
+
+In addition, [age data](https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6) are made available by ONS. Part of the differences that can be observed between different age groups are already taken into account through the fact that the SOC category can evolve during a career. To take into account that dependence, we first run the above method without weighing by age. The results are shown in the age validation section below. The residual impact of age alone is then added to the model in the following way. When the percentile is drawn for a specific individual, it is morphed to fit within the usual percentage range accessible to that age category. The function that operates this morphing is inferred beforehand and takes into account the salary distribution per age computed by the previous non-age weighted iteration of the modelling (see figure - TBA - for a more detailed description of this function).
 
 The <i>R</i> codes for this modelling are [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/incomeModelling.R).
 
@@ -68,8 +70,8 @@ A significant number of individuals listed as working either full or part time h
 |------------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
 | ONS mean   | 17.63 | 18.32 | 13.93 | 18.81 | 19.12 | 14.69 | 16.19 | 17.08 | 13.68 |
 | ONS median | 13.71 | 15.15 | 10.38 | 14.84 | 15.58 | 10.12 | 12.58 | 14.42 | 10.47 |
-| Mod mean   | 16.52 | 17.30 | 13.36 | 17.69 | 18.08 | 12.35 | 15.28 | 16.17 | 13.57 |
-| Mod median | 13.79 | 14.71 | 10.30 | 14.75 | 15.16 | 9.16  | 12.80 | 14.10 | 10.55 |
+| Mod mean   |  |  |  |  |  |  |  |  |  |
+| Mod median |  |  |  |  |  |  |  |  |  |
 
 The median values are quite close to the ONS values, but the mean values are always lower. This is expected, see the description of the modelling above.
 
@@ -81,8 +83,8 @@ Only values > 0 are retained for these calculations.
 |------------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
 | ONS mean   | 31,646 | 38,552 | 13,819 | 38,421 | 42,072 | 14,796 | 24,871 | 33,253 | 13,512 |
 | ONS median | 25,886 | 31,487 | 11,240 | 31,393 | 33,915 | 10,883 | 20,614 | 28,002 | 4,743  |
-| Mod mean   | 34,613 | 36,974 | 22,111 | 38,082 | 39,062 | 20,153 | 30,647 | 33,826 | 22,524 |
-| Mod median | 29,249 | 31,625 | 17,947 | 32,441 | 33311  | 17,760 | 25,964 | 29,122 | 18,138 |
+| Mod mean   |  |  |  |  |  |  |  |  |  |
+| Mod median |  |  |  |  |  |  |  |  |  |
 
 The average salary for part-time employees is correct when values equal to 0 are taken into account. This suggests that the total number of hours worked for part-time employees is correct, but the way they are distributed among individuals is not. It could be due to the TUS taking a snapshot of the situation during a particular week, rather than averaging their data over the year. It appears that the TUS matching also overestimates the average number of hours worked for female employees.
 
@@ -92,10 +94,10 @@ The average salary for part-time employees is correct when values equal to 0 are
 |------------|-------|---------------|--------|------------|------------|------------|------------|---------------|--------------------------|
 | ONS mean   | 16.74 | 15.87         | 23.78  | 15.69      | 16.36      | 17.88      | 16.36      | 16.34         | 15.76                    |
 | ONS median | 13.28 | 12.65         | 18.30  | 12.40      | 12.90      | 14.33      | 12.74      | 12.92         | 12.46                    |
-| Mod mean   | 16.68 | 15.39         | 19.38  | 5.27308    | 15.43      | 17.36      | 16.01      | 15.47         | 14.56                    |
-| Mod median | 13.91 | 13.00         | 16.42  | 12.64      | 12.78      | 14.95      | 13.66      | 12.89         | 12.72.                   |
+| Mod mean   |  |  |  |  |  |  |  |  |  |
+| Mod median |  |  |  |  |  |  |  |  |  |
 
-The pearson correlations for mean and median between the modelled and raw values are and 0.93 and 0.94.
+The pearson correlations for mean and median between the modelled and raw values are and and .
 
 **Hourly gross salary per one-digit SOC**
 
@@ -104,8 +106,8 @@ The pearson correlations for mean and median between the modelled and raw values
 |------------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
 | ONS mean   | 26.77 | 23.38 | 18.29 | 13.42 | 13.35 | 10.87 | 10.94 | 12.23 | 10.77 |
 | ONS median | 20.96 | 21.34 | 15.66 | 11.54 | 12.04 | 10.08 | 9.52  | 10.93 | 9.22  |
-| Mod mean   | 20.94 | 22.27 | 16.39 | 12.74 | 12.82 | 10.46 | 10.67 | 12.07 | 9.89  |
-| Mod median | 17.06 | 20.78 | 14.68 | 11.58 | 11.74 | 9.85  | 9.73  | 10.96 | 9.14  |
+| Mod mean   |  |  |  |  |  |  |  |  |  |
+| Mod median |  |  |  |  |  |  |  |  |  |
 
 1. Managers, directors and senior officials
 2. Professional occupations
@@ -117,11 +119,13 @@ The pearson correlations for mean and median between the modelled and raw values
 8. Process, plant and machine operatives
 9. Elementary occupations.
 
-The pearson correlations for mean and median between the modelled and raw values are 0.97 and 0.97.
+The pearson correlations for mean and median between the modelled and raw values are and .
 
 **Hourly gross salary per age**
 
 The reference for this table is: [Table 6.5a   Hourly pay - Gross 2020](https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6)
+
+Table before weighting by age:
 
 | Age        | 16-17 | 18-21 | 22-29 | 30-39 | 40-49 | 50-59 | 60+   |
 |------------|-------|-------|-------|-------|-------|-------|-------|
@@ -132,4 +136,13 @@ The reference for this table is: [Table 6.5a   Hourly pay - Gross 2020](https://
 
 The pearson correlations for mean and median between the modelled and raw values are 0.92 and 0.92.
 
-Note that age is not part of the inputs used to compute the estimations. It can therefore be considered as an independent control of the accuracy of the method and of the SPENSER/TUS/HSE matching.
+Table after weighting by age:
+
+| Age        | 16-17 | 18-21 | 22-29 | 30-39 | 40-49 | 50-59 | 60+   |
+|------------|-------|-------|-------|-------|-------|-------|-------|
+| ONS mean   | 7.21  | 9.59  | 14.09 | 18.13 | 20.04 | 19.12 | 16.32 |
+| ONS median | 6.36  | 9.00  | 12.26 | 15.08 | 15.89 | 14.39 | 12.17 |
+| Mod mean   |  |  |  |  |  |  |  |
+| Mod median |  |  |  |  |  |  |  |
+
+The pearson correlations for mean and median between the modelled and raw values are and .
