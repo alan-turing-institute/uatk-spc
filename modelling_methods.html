@@ -210,11 +210,12 @@
 </section>
 <section id="income-data" class="level2" data-number="7.2">
 <h2 data-number="7.2" class="anchored" data-anchor-id="income-data"><span class="header-section-number">7.2</span> Income data</h2>
-<p>This modelling is based on the 2020 revised edition of the <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/regionbyoccupation4digitsoc2010ashetable15">Earnings and hours worked, region by occupation by four-digit SOC: ASHE Table 15</a> database from ONS. Some percentiles for employees’ gross hourly salaries are provided for each full-time and part-time job according to their four-digit SOC classification per region, and separated by sex.</p>
+<p>This modelling is mainly based on the 2020 revised edition of the <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/regionbyoccupation4digitsoc2010ashetable15">Earnings and hours worked, region by occupation by four-digit SOC: ASHE Table 15</a> database from ONS. Some percentiles for employees’ gross hourly salaries are provided for each full-time and part-time job according to their four-digit SOC classification per region, and separated by sex.</p>
 <section id="methods" class="level3" data-number="7.2.1">
 <h3 data-number="7.2.1" class="anchored" data-anchor-id="methods"><span class="header-section-number">7.2.1</span> Methods</h3>
 <p>The data are far from complete (only about 15% of all possible values), especially for the highest deciles. We found that an order 3 polynomial fit was satisfactory for most categories (93.11%) to complete the partially filled SOCs. SOCs with too many missing values are given the value for the category that is immediately higher in the SOC hierarchy. Some jobs appear to have a ‘ceiling’ for the highest percentiles, making the polynomial fit fail. In that case, we have replaced the unknown values by the highest known value in the raw data (as there is no clear and systemic fit for these special cases). In addition, there is no information for the highest decile in all cases, which means that the highest salaries are underestimated (and exceptionally high salaries cannot be obtained). The result of this phase is four tables {male full-time, male part-time, female full-time, female part-time} containing the coefficients of the fitted order 3 polynomial, with an optional ceiling percentile when relevant.</p>
-<p>A percentile is chosen randomly (uniformly) for each individual, and the salary is then deduced according to their full-time/part-time status, region, sex and SOC category. A basic hourly salary column is added to the unprocessed SPC data, as well as a corresponding annual salary based on their estimated hours worked per day, according to the Time Use Survey matching. In addition, we repeat this process for all individuals that are categorised as ‘Self-employed’ or ‘Employee unspecified’ by the Time Use Survey matching as if they were full time employees. These values are recorded in the columns <code>IncomeHAsIF</code> and <code>IncomeYAsIf</code>. We noticed that a high number of employees were given no worked hours by the Time Use Survey. We have added to the <code>IncomeYAsIf</code> column an estimation of the annual salry based on <a href="Earnings%20and%20hours%20worked,%20region%20by%20occupation%20by%20four-digit%20SOC:%20ASHE%20Table%2015">Table 15.9a: Paid hours worked - Total 2020</a> and also depending on the same four variable as above (full-time/part-time status, region, sex and SOC category).</p>
+<p>A percentile is chosen randomly (uniformly) for each individual, and the salary is then deduced according to their full-time/part-time status, region, sex and SOC category. A basic hourly salary column is added to the unprocessed SPC data, as well as a corresponding annual salary based on their estimated hours worked per day, according to the Time Use Survey matching. In addition, we repeat this process for all individuals that are categorised as ‘Self-employed’ or ‘Employee unspecified’ by the Time Use Survey matching,, as if they were full time employees. These values are recorded in the columns <code>IncomeHAsIF</code> and <code>IncomeYAsIf</code>. We noticed that a high number of employees were given no worked hours by the Time Use Survey. We have added to the <code>IncomeYAsIf</code> column an estimation of their annual salary based on <a href="Earnings%20and%20hours%20worked,%20region%20by%20occupation%20by%20four-digit%20SOC:%20ASHE%20Table%2015">Table 15.9a: Paid hours worked - Total 2020</a>, and also depending on the same four variables as above (full-time/part-time status, region, sex and SOC category).</p>
+<p>In addition, <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6">age data</a> are made available by ONS. Part of the differences that can be observed between different age groups are already taken into account through the fact that the SOC category can evolve during a career. To take into account that dependence, we first run the above method without weighing by age. The results are shown in the age validation section below. The residual impact of age alone is then added to the model in the following way. When the percentile is drawn for a specific individual, it is morphed to fit within the usual percentage range accessible to that age category. The function that operates this morphing is inferred beforehand and takes into account the salary distribution per age computed by the previous non-age weighted iteration of the modelling (see figure - TBA - for a more detailed description of this function).</p>
 <p>The <i>R</i> codes for this modelling are <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/incomeModelling.R">here</a>.</p>
 <p>The methods are validated in the next section. Since it is not possible to optimise every criterion at once, this next secton can also be used as a reference to re-adjust some values to match exactly the ONS estimated means for one particular criterion of interest.</p>
 </section>
@@ -355,27 +356,27 @@
 </tr>
 <tr class="odd">
 <td>Mod mean</td>
-<td>16.52</td>
-<td>17.30</td>
-<td>13.36</td>
-<td>17.69</td>
-<td>18.08</td>
-<td>12.35</td>
-<td>15.28</td>
-<td>16.17</td>
-<td>13.57</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 <tr class="even">
 <td>Mod median</td>
-<td>13.79</td>
-<td>14.71</td>
-<td>10.30</td>
-<td>14.75</td>
-<td>15.16</td>
-<td>9.16</td>
-<td>12.80</td>
-<td>14.10</td>
-<td>10.55</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -436,27 +437,27 @@
 </tr>
 <tr class="odd">
 <td>Mod mean</td>
-<td>34,613</td>
-<td>36,974</td>
-<td>22,111</td>
-<td>38,082</td>
-<td>39,062</td>
-<td>20,153</td>
-<td>30,647</td>
-<td>33,826</td>
-<td>22,524</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 <tr class="even">
 <td>Mod median</td>
-<td>29,249</td>
-<td>31,625</td>
-<td>17,947</td>
-<td>32,441</td>
-<td>33311</td>
-<td>17,760</td>
-<td>25,964</td>
-<td>29,122</td>
-<td>18,138</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -516,31 +517,31 @@
 </tr>
 <tr class="odd">
 <td>Mod mean</td>
-<td>16.68</td>
-<td>15.39</td>
-<td>19.38</td>
-<td>5.27308</td>
-<td>15.43</td>
-<td>17.36</td>
-<td>16.01</td>
-<td>15.47</td>
-<td>14.56</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 <tr class="even">
 <td>Mod median</td>
-<td>13.91</td>
-<td>13.00</td>
-<td>16.42</td>
-<td>12.64</td>
-<td>12.78</td>
-<td>14.95</td>
-<td>13.66</td>
-<td>12.89</td>
-<td>12.72.</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
-<p>The pearson correlations for mean and median between the modelled and raw values are and 0.93 and 0.94.</p>
+<p>The pearson correlations for mean and median between the modelled and raw values are and and .</p>
 <p><strong>Hourly gross salary per one-digit SOC</strong></p>
 <table class="table">
 <colgroup>
@@ -596,27 +597,27 @@
 </tr>
 <tr class="odd">
 <td>Mod mean</td>
-<td>20.94</td>
-<td>22.27</td>
-<td>16.39</td>
-<td>12.74</td>
-<td>12.82</td>
-<td>10.46</td>
-<td>10.67</td>
-<td>12.07</td>
-<td>9.89</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 <tr class="even">
 <td>Mod median</td>
-<td>17.06</td>
-<td>20.78</td>
-<td>14.68</td>
-<td>11.58</td>
-<td>11.74</td>
-<td>9.85</td>
-<td>9.73</td>
-<td>10.96</td>
-<td>9.14</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -631,9 +632,10 @@
 <li>Process, plant and machine operatives</li>
 <li>Elementary occupations.</li>
 </ol>
-<p>The pearson correlations for mean and median between the modelled and raw values are 0.97 and 0.97.</p>
+<p>The pearson correlations for mean and median between the modelled and raw values are and .</p>
 <p><strong>Hourly gross salary per age</strong></p>
 <p>The reference for this table is: <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6">Table 6.5a Hourly pay - Gross 2020</a></p>
+<p>Table before weighting by age:</p>
 <table class="table">
 <thead>
 <tr class="header">
@@ -691,7 +693,64 @@
 </tbody>
 </table>
 <p>The pearson correlations for mean and median between the modelled and raw values are 0.92 and 0.92.</p>
-<p>Note that age is not part of the inputs used to compute the estimations. It can therefore be considered as an independent control of the accuracy of the method and of the SPENSER/TUS/HSE matching.</p>
+<p>Table after weighting by age:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Age</th>
+<th>16-17</th>
+<th>18-21</th>
+<th>22-29</th>
+<th>30-39</th>
+<th>40-49</th>
+<th>50-59</th>
+<th>60+</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ONS mean</td>
+<td>7.21</td>
+<td>9.59</td>
+<td>14.09</td>
+<td>18.13</td>
+<td>20.04</td>
+<td>19.12</td>
+<td>16.32</td>
+</tr>
+<tr class="even">
+<td>ONS median</td>
+<td>6.36</td>
+<td>9.00</td>
+<td>12.26</td>
+<td>15.08</td>
+<td>15.89</td>
+<td>14.39</td>
+<td>12.17</td>
+</tr>
+<tr class="odd">
+<td>Mod mean</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Mod median</td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>The pearson correlations for mean and median between the modelled and raw values are and .</p>
 
 
 </section>
