@@ -3,6 +3,10 @@ project:
 
 book:
   title: "Synthetic Population Catalyst"
+  search: true
+  repo-url: https://github.com/alan-turing-institute/uatk-spc/docs
+  repo-actions: [edit]
+  downloads: [pdf]
   chapters:
     - index.qmd
     - part: "Using SPC"
