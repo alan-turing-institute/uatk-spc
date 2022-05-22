@@ -55,10 +55,10 @@ spread of COVID through a population. The code uses numpy, and [this
 script](https://github.com/alan-turing-institute/uatk-aspics/blob/main/convert_snapshot.py)
 converts the protobuf to a bunch of different numpy arrays.
 
-Note the code doesn't keep using classes from the generated Python code for
-protobufs. The protobuf is a format optimized for reading and writing; you
-shouldn't use it in your model if there's a more appropriate tool you're
-familiar with, like data frames.
+Note the ASPICS code doesn't keep using the generated Python protobuf classes
+for the rest of the pipeline. Data frames and numpy arrays may be more familiar
+and appropriate. The protobuf is a format optimized for reading and writing;
+you don't need to use it throughout all of your model code.
 
 ### Visualizing venues
 

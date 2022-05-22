@@ -28,8 +28,12 @@ study area), it should go much faster.
 
 ## (Optional) run SPC for lots of areas
 
-If you want to run the program over lots of areas at once and are using mac/linux you can use a for loop in a terminal to repeatedly run SPC over all files in the config directory. For example, this will run SPC on all `.txt` files in the `config` directory:
+If you want to run the program over lots of areas at once and are using Mac/Linux, you can use a `for` loop in a terminal to repeatedly run SPC over all files in the config directory. For example, this will run SPC on all `.txt` files in the `config` directory:
 
 ```
 for file in config/*.csv; do cargo run --release -- config/$file; done
 ```
+
+## Using the output
+
+After you generate the files, see [here](use_output.qmd) for how to use them in your project.
