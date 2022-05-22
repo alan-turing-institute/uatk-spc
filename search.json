@@ -18,7 +18,7 @@
     "href": "use_output.html#python",
     "title": "3  Using the SPC output file",
     "section": "3.1 Python",
-    "text": "3.1 Python\nTo work with SPC protobufs in Python, you need two dependencies setup:\n\nThe protobuf library\n\nYou can install system-wide with pip install protobuf\nOr add as a dependency to a conda, poetry, etc environment\n\nThe generated Python library, synthpop_pb2.py\n\nYou can download a copy of this file into your codebase, then import synthpop_pb2\nYou can also generate the file yourself, following the docs: protoc --python_out=python/ synthpop.proto\n\n\n\n3.1.1 Converting .pb file to JSON format\nTo interactively explore the data, viewing JSON is much easier. It shows the same structure as the protobuf, but in a human-readable text format. The example below uses a small Python script:\n# Download a file\nwget https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz\n# Uncompress\ngunzip rutland.pb.gz\n# Convert the .pb to JSON\npython3 python/protobuf_to_json.py data/output/rutland.pb > rutland.json\n# View the output\nless rutland.json\n\n\n3.1.2 Converting to numpy arrays\nThe ASPICS project simulates the spread of COVID through a population. The code uses numpy, and this script converts the protobuf to a bunch of different numpy arrays.\nNote the code doesn’t keep using classes from the generated Python code for protobufs. The protobuf is a format optimized for reading and writing; you shouldn’t use it in your model if there’s a more appropriate tool you’re familiar with, like data frames.\n\n\n3.1.3 Visualizing venues\nUse this script to read a protobuf file, then draws a dot for every venue, color-coded by activity."
+    "text": "3.1 Python\nTo work with SPC protobufs in Python, you need two dependencies setup:\n\nThe protobuf library\n\nYou can install system-wide with pip install protobuf\nOr add as a dependency to a conda, poetry, etc environment\n\nThe generated Python library, synthpop_pb2.py\n\nYou can download a copy of this file into your codebase, then import synthpop_pb2\nYou can also generate the file yourself, following the docs: protoc --python_out=python/ synthpop.proto\n\n\n\n3.1.1 Converting .pb file to JSON format\nTo interactively explore the data, viewing JSON is much easier. It shows the same structure as the protobuf, but in a human-readable text format. The example below uses a small Python script:\n# Download a file\nwget https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz\n# Uncompress\ngunzip rutland.pb.gz\n# Convert the .pb to JSON\npython3 python/protobuf_to_json.py data/output/rutland.pb > rutland.json\n# View the output\nless rutland.json\n\n\n3.1.2 Converting to numpy arrays\nThe ASPICS project simulates the spread of COVID through a population. The code uses numpy, and this script converts the protobuf to a bunch of different numpy arrays.\nNote the ASPICS code doesn’t keep using the generated Python protobuf classes for the rest of the pipeline. Data frames and numpy arrays may be more familiar and appropriate. The protobuf is a format optimized for reading and writing; you don’t need to use it throughout all of your model code.\n\n\n3.1.3 Visualizing venues\nUse this script to read a protobuf file, then draws a dot for every venue, color-coded by activity."
   },
   {
     "objectID": "installation.html#dependencies",
@@ -60,7 +60,14 @@
     "href": "custom_areas.html#optional-run-spc-for-lots-of-areas",
     "title": "5  Creating new study areas",
     "section": "5.3 (Optional) run SPC for lots of areas",
-    "text": "5.3 (Optional) run SPC for lots of areas\nIf you want to run the program over lots of areas at once and are using mac/linux you can use a for loop in a terminal to repeatedly run SPC over all files in the config directory. For example, this will run SPC on all .txt files in the config directory:\nfor file in config/*.csv; do cargo run --release -- config/$file; done"
+    "text": "5.3 (Optional) run SPC for lots of areas\nIf you want to run the program over lots of areas at once and are using Mac/Linux, you can use a for loop in a terminal to repeatedly run SPC over all files in the config directory. For example, this will run SPC on all .txt files in the config directory:\nfor file in config/*.csv; do cargo run --release -- config/$file; done"
+  },
+  {
+    "objectID": "custom_areas.html#using-the-output",
+    "href": "custom_areas.html#using-the-output",
+    "title": "5  Creating new study areas",
+    "section": "5.4 Using the output",
+    "text": "5.4 Using the output\nAfter you generate the files, see here for how to use them in your project."
   },
   {
     "objectID": "schema.html#understanding-the-schema",

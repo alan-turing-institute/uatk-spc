@@ -182,6 +182,7 @@
 <li><a href="#specifying-the-area" class="nav-link active" data-scroll-target="#specifying-the-area"> <span class="header-section-number">5.1</span> Specifying the area</a></li>
 <li><a href="#run-spc-for-the-new-area" class="nav-link" data-scroll-target="#run-spc-for-the-new-area"> <span class="header-section-number">5.2</span> Run SPC for the new area</a></li>
 <li><a href="#optional-run-spc-for-lots-of-areas" class="nav-link" data-scroll-target="#optional-run-spc-for-lots-of-areas"> <span class="header-section-number">5.3</span> (Optional) run SPC for lots of areas</a></li>
+<li><a href="#using-the-output" class="nav-link" data-scroll-target="#using-the-output"> <span class="header-section-number">5.4</span> Using the output</a></li>
 </ul>
 <div class="toc-actions"><div><i class="bi bi-github"></i></div><div class="action-links"><p><a href="https://github.com/alan-turing-institute/uatk-spc/docs/edit/main/custom_areas.qmd" class="toc-action">Edit this page</a></p></div></div></nav>
     </div>
@@ -205,8 +206,12 @@
 </section>
 <section id="optional-run-spc-for-lots-of-areas" class="level2" data-number="5.3">
 <h2 data-number="5.3" class="anchored" data-anchor-id="optional-run-spc-for-lots-of-areas"><span class="header-section-number">5.3</span> (Optional) run SPC for lots of areas</h2>
-<p>If you want to run the program over lots of areas at once and are using mac/linux you can use a for loop in a terminal to repeatedly run SPC over all files in the config directory. For example, this will run SPC on all <code>.txt</code> files in the <code>config</code> directory:</p>
+<p>If you want to run the program over lots of areas at once and are using Mac/Linux, you can use a <code>for</code> loop in a terminal to repeatedly run SPC over all files in the config directory. For example, this will run SPC on all <code>.txt</code> files in the <code>config</code> directory:</p>
 <pre><code>for file in config/*.csv; do cargo run --release -- config/$file; done</code></pre>
+</section>
+<section id="using-the-output" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="using-the-output"><span class="header-section-number">5.4</span> Using the output</h2>
+<p>After you generate the files, see <a href="./use_output.html">here</a> for how to use them in your project.</p>
 
 
 </section>
