@@ -49,29 +49,28 @@ We compare the results of the modelling to the raw datasets from ONS.
 - `Y` for annual gross salary
 - `FT` for full-Time
 - `PT` for part-Time
-- 
-Only individuals recorded as employees (i.e. not self-employed) are taken into account in this section.
+- Only individuals recorded as employees (i.e. not self-employed) are taken into account in this section.
 
 **Number of employees per sex and full-time/part-time classification**
 
 The numbers given by ONS vary from dataset to dataset and are reported by ONS as indicative only. For the modelled values, we give the total number of individuals with a non-zero salary in each category.
 
-| Variable   | All    | FT     | PT   | M      | M FT  | M PT   | F      | F FT     | F PT     |
-|------------|--------|--------|------|--------|-------|--------|--------|----------|----------|
-| ONS tot    | 22-26k | 16-19k | 6-8k | 11-13k | 9-11k | 1.5-2k | 11-13k | 6.5-7.5k | 4.5-5.5k |
-| Mod tot H  | 23.1k  | 18.5k  | 4.6k | 11.8k  | 11k   | 0.8k   | 11.3k  | 7.5k     | 3.8k     |
-| Mod tot Y  | 17.6k  | 14.8k  | 2.8k | 9.4k   | 8.9k  | 0.5k   | 8.2k   | 5.9k     | 2.3k     |
+| Variable  | All    | FT     | PT   | M      | M FT  | M PT   | F      | F FT     | F PT     |
+| --------- | ------ | ------ | ---- | ------ | ----- | ------ | ------ | -------- | -------- |
+| ONS tot   | 22-26k | 16-19k | 6-8k | 11-13k | 9-11k | 1.5-2k | 11-13k | 6.5-7.5k | 4.5-5.5k |
+| Mod tot H | 23.1k  | 18.5k  | 4.6k | 11.8k  | 11k   | 0.8k   | 11.3k  | 7.5k     | 3.8k     |
+| Mod tot Y | 17.6k  | 14.8k  | 2.8k | 9.4k   | 8.9k  | 0.5k   | 8.2k   | 5.9k     | 2.3k     |
 
 A significant number of individuals listed as working either full or part time have 0 effective worked hours per day according to the Time Use Survey matching. In those cases, an hourly salary is modelled depending on their SOC, region and sex, as for any other employee, but the annual salary will be displayed as 0. It is possible to estimate their likely true number of hours worked from the same ONS dataset (Table 15.9a: Paid hours worked - Total 2020), also depending on their sex, soc and region. This calculation has been added to the "As If" column.
 
 **Hourly gross salary per sex and full-time/part-time classification**
 
 | Variable   | All   | FT    | PT    | M     | M FT  | M PT  | F     | F FT  | F PT  |
-|------------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+| ---------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
 | ONS mean   | 17.63 | 18.32 | 13.93 | 18.81 | 19.12 | 14.69 | 16.19 | 17.08 | 13.68 |
 | ONS median | 13.71 | 15.15 | 10.38 | 14.84 | 15.58 | 10.12 | 12.58 | 14.42 | 10.47 |
-| Mod mean   |  |  |  |  |  |  |  |  |  |
-| Mod median |  |  |  |  |  |  |  |  |  |
+| Mod mean   |       |       |       |       |       |       |       |       |       |
+| Mod median |       |       |       |       |       |       |       |       |       |
 
 The median values are quite close to the ONS values, but the mean values are always lower. This is expected, see the description of the modelling above.
 
@@ -80,38 +79,37 @@ The median values are quite close to the ONS values, but the mean values are alw
 Only values > 0 are retained for these calculations.
 
 | Variable   | All    | FT     | PT     | M      | M FT   | M PT   | F      | F FT   | F PT   |
-|------------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
+| ---------- | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
 | ONS mean   | 31,646 | 38,552 | 13,819 | 38,421 | 42,072 | 14,796 | 24,871 | 33,253 | 13,512 |
 | ONS median | 25,886 | 31,487 | 11,240 | 31,393 | 33,915 | 10,883 | 20,614 | 28,002 | 4,743  |
-| Mod mean   |  |  |  |  |  |  |  |  |  |
-| Mod median |  |  |  |  |  |  |  |  |  |
+| Mod mean   |        |        |        |        |        |        |        |        |        |
+| Mod median |        |        |        |        |        |        |        |        |        |
 
 The average salary for part-time employees is correct when values equal to 0 are taken into account. This suggests that the total number of hours worked for part-time employees is correct, but the way they are distributed among individuals is not. It could be due to the TUS taking a snapshot of the situation during a particular week, rather than averaging their data over the year. It appears that the TUS matching also overestimates the average number of hours worked for female employees.
 
 **Regional differences (hourly gross salary)**
 
 | Region     | East  | East Midlands | London | North East | North West | South East | South West | West Midlands | Yorkshire and The Humber |
-|------------|-------|---------------|--------|------------|------------|------------|------------|---------------|--------------------------|
+| ---------- | ----- | ------------- | ------ | ---------- | ---------- | ---------- | ---------- | ------------- | ------------------------ |
 | ONS mean   | 16.74 | 15.87         | 23.78  | 15.69      | 16.36      | 17.88      | 16.36      | 16.34         | 15.76                    |
 | ONS median | 13.28 | 12.65         | 18.30  | 12.40      | 12.90      | 14.33      | 12.74      | 12.92         | 12.46                    |
-| Mod mean   |  |  |  |  |  |  |  |  |  |
-| Mod median |  |  |  |  |  |  |  |  |  |
+| Mod mean   |       |               |        |            |            |            |            |               |                          |
+| Mod median |       |               |        |            |            |            |            |               |                          |
 
 The pearson correlations for mean and median between the modelled and raw values are and and .
 
 **Hourly gross salary per one-digit SOC**
 
-
 | 1d SOC     | 1     | 2     | 3     | 4     | 5     | 6     | 7     | 8     | 9     |
-|------------|-------|-------|-------|-------|-------|-------|-------|-------|-------|
+| ---------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
 | ONS mean   | 26.77 | 23.38 | 18.29 | 13.42 | 13.35 | 10.87 | 10.94 | 12.23 | 10.77 |
 | ONS median | 20.96 | 21.34 | 15.66 | 11.54 | 12.04 | 10.08 | 9.52  | 10.93 | 9.22  |
-| Mod mean   |  |  |  |  |  |  |  |  |  |
-| Mod median |  |  |  |  |  |  |  |  |  |
+| Mod mean   |       |       |       |       |       |       |       |       |       |
+| Mod median |       |       |       |       |       |       |       |       |       |
 
 1. Managers, directors and senior officials
 2. Professional occupations
-3. Associate professional and technical occupations 
+3. Associate professional and technical occupations
 4. Administrative and secretarial occupations
 5. Skilled trades occupations
 6. Caring, leisure and other service occupations
@@ -123,12 +121,12 @@ The pearson correlations for mean and median between the modelled and raw values
 
 **Hourly gross salary per age**
 
-The reference for this table is: [Table 6.5a   Hourly pay - Gross 2020](https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6)
+The reference for this table is: [Table 6.5a Hourly pay - Gross 2020](https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6)
 
 Table before weighting by age:
 
 | Age        | 16-17 | 18-21 | 22-29 | 30-39 | 40-49 | 50-59 | 60+   |
-|------------|-------|-------|-------|-------|-------|-------|-------|
+| ---------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
 | ONS mean   | 7.21  | 9.59  | 14.09 | 18.13 | 20.04 | 19.12 | 16.32 |
 | ONS median | 6.36  | 9.00  | 12.26 | 15.08 | 15.89 | 14.39 | 12.17 |
 | Mod mean   | 12.77 | 14.96 | 16.33 | 16.93 | 16.83 | 16.66 | 16.29 |
@@ -139,10 +137,10 @@ The pearson correlations for mean and median between the modelled and raw values
 Table after weighting by age:
 
 | Age        | 16-17 | 18-21 | 22-29 | 30-39 | 40-49 | 50-59 | 60+   |
-|------------|-------|-------|-------|-------|-------|-------|-------|
+| ---------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
 | ONS mean   | 7.21  | 9.59  | 14.09 | 18.13 | 20.04 | 19.12 | 16.32 |
 | ONS median | 6.36  | 9.00  | 12.26 | 15.08 | 15.89 | 14.39 | 12.17 |
-| Mod mean   |  |  |  |  |  |  |  |
-| Mod median |  |  |  |  |  |  |  |
+| Mod mean   |       |       |       |       |       |       |       |
+| Mod median |       |       |       |       |       |       |       |
 
 The pearson correlations for mean and median between the modelled and raw values are and .
