@@ -69,8 +69,8 @@ A significant number of individuals listed as working either full or part time h
 | ---------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
 | ONS mean   | 17.63 | 18.32 | 13.93 | 18.81 | 19.12 | 14.69 | 16.19 | 17.08 | 13.68 |
 | ONS median | 13.71 | 15.15 | 10.38 | 14.84 | 15.58 | 10.12 | 12.58 | 14.42 | 10.47 |
-| Mod mean   |       |       |       |       |       |       |       |       |       |
-| Mod median |       |       |       |       |       |       |       |       |       |
+| Mod mean   | 16.45 | 17.19 | 13.45 | 17.50 | 17.84 | 12.75 | 15.35 | 16.23 | 13.60 |
+| Mod median | 13.55 | 14.46 | 10.23 | 14.27 | 14.72 | 9.16  | 12.79 | 14.12 | 10.51 |
 
 The median values are quite close to the ONS values, but the mean values are always lower. This is expected, see the description of the modelling above.
 
@@ -82,8 +82,8 @@ Only values > 0 are retained for these calculations.
 | ---------- | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ | ------ |
 | ONS mean   | 31,646 | 38,552 | 13,819 | 38,421 | 42,072 | 14,796 | 24,871 | 33,253 | 13,512 |
 | ONS median | 25,886 | 31,487 | 11,240 | 31,393 | 33,915 | 10,883 | 20,614 | 28,002 | 4,743  |
-| Mod mean   |        |        |        |        |        |        |        |        |        |
-| Mod median |        |        |        |        |        |        |        |        |        |
+| Mod mean   | 34,317 | 36,595 | 22,257 | 37,574 | 38,496 | 20,698 | 30,594 | 33,729 | 22,585 |
+| Mod median | 28,713 | 30,942 | 17,928 | 31,404 | 32,382 | 17,382 | 25,875 | 29,028 | 18,137 |
 
 The average salary for part-time employees is correct when values equal to 0 are taken into account. This suggests that the total number of hours worked for part-time employees is correct, but the way they are distributed among individuals is not. It could be due to the TUS taking a snapshot of the situation during a particular week, rather than averaging their data over the year. It appears that the TUS matching also overestimates the average number of hours worked for female employees.
 
@@ -93,10 +93,10 @@ The average salary for part-time employees is correct when values equal to 0 are
 | ---------- | ----- | ------------- | ------ | ---------- | ---------- | ---------- | ---------- | ------------- | ------------------------ |
 | ONS mean   | 16.74 | 15.87         | 23.78  | 15.69      | 16.36      | 17.88      | 16.36      | 16.34         | 15.76                    |
 | ONS median | 13.28 | 12.65         | 18.30  | 12.40      | 12.90      | 14.33      | 12.74      | 12.92         | 12.46                    |
-| Mod mean   |       |               |        |            |            |            |            |               |                          |
-| Mod median |       |               |        |            |            |            |            |               |                          |
+| Mod mean   | 16.67 | 15.29         | 19.39  | 15.05      | 15.22      | 17.34      | 15.92      | 15.47         | 14.41                    |
+| Mod median | 13.69 | 12.79         | 16.25  | 12.42      | 12.44      | 14.84      | 13.35      | 12.64         | 12.44                    |
 
-The pearson correlations for mean and median between the modelled and raw values are and and .
+The pearson correlations for mean and median between the modelled and raw values are 0.92 and and 0.93.
 
 **Hourly gross salary per one-digit SOC**
 
