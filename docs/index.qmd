@@ -25,6 +25,6 @@ To get started:
 You can also download this site as [a
 PDF](https://alan-turing-institute.github.io/uatk-spc/Synthetic-Population-Catalyst.pdf) and find all code [on Github](https://github.com/alan-turing-institute/uatk-spc).
 
-This work is supported by Wave 1 of The UKRI Strategic Priorities Fund under
-the EPSRC Grant EP/W006022/1, particularly the "Ecosystem of Digital Twins"
-theme within that grant and The Alan Turing Institute.
+This work was supported by Wave 1 of The UKRI Strategic Priorities Fund under
+the EPSRC Grant EP/W006022/1, particularly the “Ecosystem of Digital Twins”  
+and "Shocks and  Resilience" themes within that grant & The Alan Turing Institute
