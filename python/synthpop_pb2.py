@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='synthpop',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\x0esynthpop.proto\x12\x08synthpop\"\x9f\x03\n\nPopulation\x12\'\n\nhouseholds\x18\x01 \x03(\x0b\x32\x13.synthpop.Household\x12 \n\x06people\x18\x02 \x03(\x0b\x32\x10.synthpop.Person\x12H\n\x13venues_per_activity\x18\x03 \x03(\x0b\x32+.synthpop.Population.VenuesPerActivityEntry\x12<\n\rinfo_per_msoa\x18\x04 \x03(\x0b\x32%.synthpop.Population.InfoPerMsoaEntry\x12$\n\x08lockdown\x18\x05 \x01(\x0b\x32\x12.synthpop.Lockdown\x1aM\n\x16VenuesPerActivityEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.synthpop.VenueList:\x02\x38\x01\x1aI\n\x10InfoPerMsoaEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12$\n\x05value\x18\x02 \x01(\x0b\x32\x15.synthpop.InfoPerMSOA:\x02\x38\x01\"H\n\tHousehold\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x0c\n\x04msoa\x18\x02 \x01(\t\x12\x10\n\x08orig_hid\x18\x03 \x01(\x03\x12\x0f\n\x07members\x18\x04 \x03(\x04\",\n\tVenueList\x12\x1f\n\x06venues\x18\x01 \x03(\x0b\x32\x0f.synthpop.Venue\"\x92\x01\n\x0bInfoPerMSOA\x12\x1e\n\x05shape\x18\x01 \x03(\x0b\x32\x0f.synthpop.Point\x12\x12\n\npopulation\x18\x02 \x01(\x04\x12\"\n\tbuildings\x18\x03 \x03(\x0b\x32\x0f.synthpop.Point\x12+\n\x12\x66lows_per_activity\x18\x04 \x03(\x0b\x32\x0f.synthpop.Flows\",\n\x05Point\x12\x11\n\tlongitude\x18\x01 \x01(\x02\x12\x10\n\x08latitude\x18\x02 \x01(\x02\"\xac\x02\n\x06Person\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x11\n\thousehold\x18\x02 \x01(\x04\x12\x11\n\tworkplace\x18\x03 \x01(\x04\x12\x17\n\x0forig_pid_census\x18\x04 \x01(\x03\x12\x14\n\x0corig_pid_tus\x18\x05 \x01(\x03\x12\x14\n\x0corig_pid_hse\x18\x06 \x01(\x03\x12,\n\x0c\x64\x65mographics\x18\x07 \x01(\x0b\x32\x16.synthpop.Demographics\x12 \n\x06health\x18\x08 \x01(\x0b\x32\x10.synthpop.Health\x12#\n\x08time_use\x18\t \x01(\x0b\x32\x11.synthpop.TimeUse\x12\x36\n\x12\x61\x63tivity_durations\x18\n \x03(\x0b\x32\x1a.synthpop.ActivityDuration\"J\n\x10\x41\x63tivityDuration\x12$\n\x08\x61\x63tivity\x18\x01 \x01(\x0e\x32\x12.synthpop.Activity\x12\x10\n\x08\x64uration\x18\x02 \x01(\x01\"\xca\x01\n\x0c\x44\x65mographics\x12\x1a\n\x03sex\x18\x01 \x01(\x0e\x32\r.synthpop.Sex\x12\x11\n\tage_years\x18\x02 \x01(\r\x12 \n\x06origin\x18\x03 \x01(\x0e\x32\x10.synthpop.Origin\x12\x36\n\x1csocioeconomic_classification\x18\x04 \x01(\x0e\x32\x10.synthpop.NSSEC5\x12\x0f\n\x07sic1d07\x18\x05 \x01(\x04\x12\x0f\n\x07sic2d07\x18\x06 \x01(\x04\x12\x0f\n\x07soc2010\x18\x07 \x01(\x04\"\x7f\n\x06Health\x12\x1a\n\x03\x62mi\x18\x01 \x01(\x0e\x32\r.synthpop.BMI\x12\"\n\x1ahas_cardiovascular_disease\x18\x02 \x01(\x08\x12\x14\n\x0chas_diabetes\x18\x03 \x01(\x08\x12\x1f\n\x17has_high_blood_pressure\x18\x04 \x01(\x08\"\xd3\x01\n\x07TimeUse\x12\x0f\n\x07unknown\x18\x01 \x01(\x01\x12\x0c\n\x04work\x18\x02 \x01(\x01\x12\x0e\n\x06school\x18\x03 \x01(\x01\x12\x0c\n\x04shop\x18\x04 \x01(\x01\x12\x10\n\x08services\x18\x05 \x01(\x01\x12\x0f\n\x07leisure\x18\x06 \x01(\x01\x12\x0e\n\x06\x65scort\x18\x07 \x01(\x01\x12\x11\n\ttransport\x18\x08 \x01(\x01\x12\x10\n\x08not_home\x18\t \x01(\x01\x12\x0c\n\x04home\x18\n \x01(\x01\x12\x11\n\twork_home\x18\x0b \x01(\x01\x12\x12\n\nhome_total\x18\x0c \x01(\x01\"L\n\x05\x46lows\x12$\n\x08\x61\x63tivity\x18\x01 \x01(\x0e\x32\x12.synthpop.Activity\x12\x1d\n\x05\x66lows\x18\x02 \x03(\x0b\x32\x0e.synthpop.Flow\"(\n\x04\x46low\x12\x10\n\x08venue_id\x18\x01 \x01(\x04\x12\x0e\n\x06weight\x18\x02 \x01(\x01\"i\n\x05Venue\x12\n\n\x02id\x18\x01 \x01(\x04\x12$\n\x08\x61\x63tivity\x18\x02 \x01(\x0e\x32\x12.synthpop.Activity\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x0b\n\x03urn\x18\x04 \x01(\x04\"/\n\x08Lockdown\x12\x12\n\nstart_date\x18\x01 \x01(\t\x12\x0f\n\x07per_day\x18\x02 \x03(\x02*\x1b\n\x03Sex\x12\n\n\x06\x46\x45MALE\x10\x00\x12\x08\n\x04MALE\x10\x01*?\n\x06Origin\x12\t\n\x05WHITE\x10\x00\x12\t\n\x05\x42LACK\x10\x01\x12\t\n\x05\x41SIAN\x10\x02\x12\t\n\x05MIXED\x10\x03\x12\t\n\x05OTHER\x10\x04*Y\n\x06NSSEC5\x12\x0e\n\nUNEMPLOYED\x10\x00\x12\n\n\x06HIGHER\x10\x01\x12\x10\n\x0cINTERMEDIATE\x10\x02\x12\t\n\x05SMALL\x10\x03\x12\t\n\x05LOWER\x10\x04\x12\x0b\n\x07ROUTINE\x10\x05*m\n\x03\x42MI\x12\x12\n\x0eNOT_APPLICABLE\x10\x00\x12\x0f\n\x0bUNDERWEIGHT\x10\x01\x12\n\n\x06NORMAL\x10\x02\x12\x0e\n\nOVERWEIGHT\x10\x03\x12\x0b\n\x07OBESE_1\x10\x04\x12\x0b\n\x07OBESE_2\x10\x05\x12\x0b\n\x07OBESE_3\x10\x06*T\n\x08\x41\x63tivity\x12\n\n\x06RETAIL\x10\x00\x12\x12\n\x0ePRIMARY_SCHOOL\x10\x01\x12\x14\n\x10SECONDARY_SCHOOL\x10\x02\x12\x08\n\x04HOME\x10\x03\x12\x08\n\x04WORK\x10\x04\x62\x06proto3')
+  serialized_pb=_b('\n\x0esynthpop.proto\x12\x08synthpop\"\x9f\x03\n\nPopulation\x12\'\n\nhouseholds\x18\x01 \x03(\x0b\x32\x13.synthpop.Household\x12 \n\x06people\x18\x02 \x03(\x0b\x32\x10.synthpop.Person\x12H\n\x13venues_per_activity\x18\x03 \x03(\x0b\x32+.synthpop.Population.VenuesPerActivityEntry\x12<\n\rinfo_per_msoa\x18\x04 \x03(\x0b\x32%.synthpop.Population.InfoPerMsoaEntry\x12$\n\x08lockdown\x18\x05 \x01(\x0b\x32\x12.synthpop.Lockdown\x1aM\n\x16VenuesPerActivityEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\"\n\x05value\x18\x02 \x01(\x0b\x32\x13.synthpop.VenueList:\x02\x38\x01\x1aI\n\x10InfoPerMsoaEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12$\n\x05value\x18\x02 \x01(\x0b\x32\x15.synthpop.InfoPerMSOA:\x02\x38\x01\"H\n\tHousehold\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x0c\n\x04msoa\x18\x02 \x01(\t\x12\x10\n\x08orig_hid\x18\x03 \x01(\x03\x12\x0f\n\x07members\x18\x04 \x03(\x04\",\n\tVenueList\x12\x1f\n\x06venues\x18\x01 \x03(\x0b\x32\x0f.synthpop.Venue\"\x92\x01\n\x0bInfoPerMSOA\x12\x1e\n\x05shape\x18\x01 \x03(\x0b\x32\x0f.synthpop.Point\x12\x12\n\npopulation\x18\x02 \x01(\x04\x12\"\n\tbuildings\x18\x03 \x03(\x0b\x32\x0f.synthpop.Point\x12+\n\x12\x66lows_per_activity\x18\x04 \x03(\x0b\x32\x0f.synthpop.Flows\",\n\x05Point\x12\x11\n\tlongitude\x18\x01 \x01(\x02\x12\x10\n\x08latitude\x18\x02 \x01(\x02\"\xd6\x02\n\x06Person\x12\n\n\x02id\x18\x01 \x01(\x04\x12\x11\n\thousehold\x18\x02 \x01(\x04\x12\x11\n\tworkplace\x18\x03 \x01(\x04\x12\x17\n\x0forig_pid_census\x18\x04 \x01(\x03\x12\x14\n\x0corig_pid_tus\x18\x05 \x01(\x03\x12\x14\n\x0corig_pid_hse\x18\x06 \x01(\x03\x12,\n\x0c\x64\x65mographics\x18\x07 \x01(\x0b\x32\x16.synthpop.Demographics\x12(\n\nemployment\x18\x08 \x01(\x0b\x32\x14.synthpop.Employment\x12 \n\x06health\x18\t \x01(\x0b\x32\x10.synthpop.Health\x12#\n\x08time_use\x18\n \x01(\x0b\x32\x11.synthpop.TimeUse\x12\x36\n\x12\x61\x63tivity_durations\x18\x0b \x03(\x0b\x32\x1a.synthpop.ActivityDuration\"J\n\x10\x41\x63tivityDuration\x12$\n\x08\x61\x63tivity\x18\x01 \x01(\x0e\x32\x12.synthpop.Activity\x12\x10\n\x08\x64uration\x18\x02 \x01(\x01\"\x97\x01\n\x0c\x44\x65mographics\x12\x1a\n\x03sex\x18\x01 \x01(\x0e\x32\r.synthpop.Sex\x12\x11\n\tage_years\x18\x02 \x01(\r\x12 \n\x06origin\x18\x03 \x01(\x0e\x32\x10.synthpop.Origin\x12\x36\n\x1csocioeconomic_classification\x18\x04 \x01(\x0e\x32\x10.synthpop.NSSEC5\"\x91\x01\n\nEmployment\x12\x0f\n\x07sic1d07\x18\x01 \x01(\x04\x12\x0f\n\x07sic2d07\x18\x02 \x01(\x04\x12\x0f\n\x07soc2010\x18\x03 \x01(\x04\x12\"\n\x07pwkstat\x18\x04 \x01(\x0e\x32\x11.synthpop.PwkStat\x12\x15\n\rsalary_yearly\x18\x05 \x01(\x02\x12\x15\n\rsalary_hourly\x18\x06 \x01(\x02\"\x7f\n\x06Health\x12\x1a\n\x03\x62mi\x18\x01 \x01(\x0e\x32\r.synthpop.BMI\x12\"\n\x1ahas_cardiovascular_disease\x18\x02 \x01(\x08\x12\x14\n\x0chas_diabetes\x18\x03 \x01(\x08\x12\x1f\n\x17has_high_blood_pressure\x18\x04 \x01(\x08\"\xd3\x01\n\x07TimeUse\x12\x0f\n\x07unknown\x18\x01 \x01(\x01\x12\x0c\n\x04work\x18\x02 \x01(\x01\x12\x0e\n\x06school\x18\x03 \x01(\x01\x12\x0c\n\x04shop\x18\x04 \x01(\x01\x12\x10\n\x08services\x18\x05 \x01(\x01\x12\x0f\n\x07leisure\x18\x06 \x01(\x01\x12\x0e\n\x06\x65scort\x18\x07 \x01(\x01\x12\x11\n\ttransport\x18\x08 \x01(\x01\x12\x10\n\x08not_home\x18\t \x01(\x01\x12\x0c\n\x04home\x18\n \x01(\x01\x12\x11\n\twork_home\x18\x0b \x01(\x01\x12\x12\n\nhome_total\x18\x0c \x01(\x01\"L\n\x05\x46lows\x12$\n\x08\x61\x63tivity\x18\x01 \x01(\x0e\x32\x12.synthpop.Activity\x12\x1d\n\x05\x66lows\x18\x02 \x03(\x0b\x32\x0e.synthpop.Flow\"(\n\x04\x46low\x12\x10\n\x08venue_id\x18\x01 \x01(\x04\x12\x0e\n\x06weight\x18\x02 \x01(\x01\"i\n\x05Venue\x12\n\n\x02id\x18\x01 \x01(\x04\x12$\n\x08\x61\x63tivity\x18\x02 \x01(\x0e\x32\x12.synthpop.Activity\x12!\n\x08location\x18\x03 \x01(\x0b\x32\x0f.synthpop.Point\x12\x0b\n\x03urn\x18\x04 \x01(\x04\"/\n\x08Lockdown\x12\x12\n\nstart_date\x18\x01 \x01(\t\x12\x0f\n\x07per_day\x18\x02 \x03(\x02*\x1b\n\x03Sex\x12\n\n\x06\x46\x45MALE\x10\x00\x12\x08\n\x04MALE\x10\x01*?\n\x06Origin\x12\t\n\x05WHITE\x10\x00\x12\t\n\x05\x42LACK\x10\x01\x12\t\n\x05\x41SIAN\x10\x02\x12\t\n\x05MIXED\x10\x03\x12\t\n\x05OTHER\x10\x04*Y\n\x06NSSEC5\x12\x0e\n\nUNEMPLOYED\x10\x00\x12\n\n\x06HIGHER\x10\x01\x12\x10\n\x0cINTERMEDIATE\x10\x02\x12\t\n\x05SMALL\x10\x03\x12\t\n\x05LOWER\x10\x04\x12\x0b\n\x07ROUTINE\x10\x05*\xbe\x01\n\x07PwkStat\x12\x06\n\x02NA\x10\x00\x12\x0f\n\x0b\x45MPLOYEE_FT\x10\x01\x12\x0f\n\x0b\x45MPLOYEE_PT\x10\x02\x12\x13\n\x0f\x45MPLOYEE_UNSPEC\x10\x03\x12\x11\n\rSELF_EMPLOYED\x10\x04\x12\x12\n\x0ePWK_UNEMPLOYED\x10\x05\x12\x0b\n\x07RETIRED\x10\x06\x12\r\n\tHOMEMAKER\x10\x07\x12\x0e\n\nSTUDENT_FT\x10\x08\x12\x12\n\x0eLONG_TERM_SICK\x10\t\x12\r\n\tPWK_OTHER\x10\n*m\n\x03\x42MI\x12\x12\n\x0eNOT_APPLICABLE\x10\x00\x12\x0f\n\x0bUNDERWEIGHT\x10\x01\x12\n\n\x06NORMAL\x10\x02\x12\x0e\n\nOVERWEIGHT\x10\x03\x12\x0b\n\x07OBESE_1\x10\x04\x12\x0b\n\x07OBESE_2\x10\x05\x12\x0b\n\x07OBESE_3\x10\x06*T\n\x08\x41\x63tivity\x12\n\n\x06RETAIL\x10\x00\x12\x12\n\x0ePRIMARY_SCHOOL\x10\x01\x12\x14\n\x10SECONDARY_SCHOOL\x10\x02\x12\x08\n\x04HOME\x10\x03\x12\x08\n\x04WORK\x10\x04\x62\x06proto3')
 )
 
 _SEX = _descriptor.EnumDescriptor(
@@ -40,8 +40,8 @@ _SEX = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1964,
-  serialized_end=1991,
+  serialized_start=2103,
+  serialized_end=2130,
 )
 _sym_db.RegisterEnumDescriptor(_SEX)
 
@@ -75,8 +75,8 @@ _ORIGIN = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=1993,
-  serialized_end=2056,
+  serialized_start=2132,
+  serialized_end=2195,
 )
 _sym_db.RegisterEnumDescriptor(_ORIGIN)
 
@@ -114,12 +114,71 @@ _NSSEC5 = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=2058,
-  serialized_end=2147,
+  serialized_start=2197,
+  serialized_end=2286,
 )
 _sym_db.RegisterEnumDescriptor(_NSSEC5)
 
 NSSEC5 = enum_type_wrapper.EnumTypeWrapper(_NSSEC5)
+_PWKSTAT = _descriptor.EnumDescriptor(
+  name='PwkStat',
+  full_name='synthpop.PwkStat',
+  filename=None,
+  file=DESCRIPTOR,
+  values=[
+    _descriptor.EnumValueDescriptor(
+      name='NA', index=0, number=0,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='EMPLOYEE_FT', index=1, number=1,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='EMPLOYEE_PT', index=2, number=2,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='EMPLOYEE_UNSPEC', index=3, number=3,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='SELF_EMPLOYED', index=4, number=4,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='PWK_UNEMPLOYED', index=5, number=5,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='RETIRED', index=6, number=6,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='HOMEMAKER', index=7, number=7,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='STUDENT_FT', index=8, number=8,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='LONG_TERM_SICK', index=9, number=9,
+      serialized_options=None,
+      type=None),
+    _descriptor.EnumValueDescriptor(
+      name='PWK_OTHER', index=10, number=10,
+      serialized_options=None,
+      type=None),
+  ],
+  containing_type=None,
+  serialized_options=None,
+  serialized_start=2289,
+  serialized_end=2479,
+)
+_sym_db.RegisterEnumDescriptor(_PWKSTAT)
+
+PwkStat = enum_type_wrapper.EnumTypeWrapper(_PWKSTAT)
 _BMI = _descriptor.EnumDescriptor(
   name='BMI',
   full_name='synthpop.BMI',
@@ -157,8 +216,8 @@ _BMI = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=2149,
-  serialized_end=2258,
+  serialized_start=2481,
+  serialized_end=2590,
 )
 _sym_db.RegisterEnumDescriptor(_BMI)
 
@@ -192,8 +251,8 @@ _ACTIVITY = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=2260,
-  serialized_end=2344,
+  serialized_start=2592,
+  serialized_end=2676,
 )
 _sym_db.RegisterEnumDescriptor(_ACTIVITY)
 
@@ -211,6 +270,17 @@ INTERMEDIATE = 2
 SMALL = 3
 LOWER = 4
 ROUTINE = 5
+NA = 0
+EMPLOYEE_FT = 1
+EMPLOYEE_PT = 2
+EMPLOYEE_UNSPEC = 3
+SELF_EMPLOYED = 4
+PWK_UNEMPLOYED = 5
+RETIRED = 6
+HOMEMAKER = 7
+STUDENT_FT = 8
+LONG_TERM_SICK = 9
+PWK_OTHER = 10
 NOT_APPLICABLE = 0
 UNDERWEIGHT = 1
 NORMAL = 2
@@ -589,22 +659,29 @@ _PERSON = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='health', full_name='synthpop.Person.health', index=7,
+      name='employment', full_name='synthpop.Person.employment', index=7,
       number=8, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='time_use', full_name='synthpop.Person.time_use', index=8,
+      name='health', full_name='synthpop.Person.health', index=8,
       number=9, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='activity_durations', full_name='synthpop.Person.activity_durations', index=9,
-      number=10, type=11, cpp_type=10, label=3,
+      name='time_use', full_name='synthpop.Person.time_use', index=9,
+      number=10, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='activity_durations', full_name='synthpop.Person.activity_durations', index=10,
+      number=11, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -622,7 +699,7 @@ _PERSON = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=762,
-  serialized_end=1062,
+  serialized_end=1104,
 )
 
 
@@ -659,8 +736,8 @@ _ACTIVITYDURATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1064,
-  serialized_end=1138,
+  serialized_start=1106,
+  serialized_end=1180,
 )
 
 
@@ -699,24 +776,69 @@ _DEMOGRAPHICS = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=1183,
+  serialized_end=1334,
+)
+
+
+_EMPLOYMENT = _descriptor.Descriptor(
+  name='Employment',
+  full_name='synthpop.Employment',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
     _descriptor.FieldDescriptor(
-      name='sic1d07', full_name='synthpop.Demographics.sic1d07', index=4,
-      number=5, type=4, cpp_type=4, label=1,
+      name='sic1d07', full_name='synthpop.Employment.sic1d07', index=0,
+      number=1, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='sic2d07', full_name='synthpop.Demographics.sic2d07', index=5,
-      number=6, type=4, cpp_type=4, label=1,
+      name='sic2d07', full_name='synthpop.Employment.sic2d07', index=1,
+      number=2, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
-      name='soc2010', full_name='synthpop.Demographics.soc2010', index=6,
-      number=7, type=4, cpp_type=4, label=1,
+      name='soc2010', full_name='synthpop.Employment.soc2010', index=2,
+      number=3, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='pwkstat', full_name='synthpop.Employment.pwkstat', index=3,
+      number=4, type=14, cpp_type=8, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='salary_yearly', full_name='synthpop.Employment.salary_yearly', index=4,
+      number=5, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR),
+    _descriptor.FieldDescriptor(
+      name='salary_hourly', full_name='synthpop.Employment.salary_hourly', index=5,
+      number=6, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -732,8 +854,8 @@ _DEMOGRAPHICS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1141,
-  serialized_end=1343,
+  serialized_start=1337,
+  serialized_end=1482,
 )
 
 
@@ -784,8 +906,8 @@ _HEALTH = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1345,
-  serialized_end=1472,
+  serialized_start=1484,
+  serialized_end=1611,
 )
 
 
@@ -892,8 +1014,8 @@ _TIMEUSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1475,
-  serialized_end=1686,
+  serialized_start=1614,
+  serialized_end=1825,
 )
 
 
@@ -930,8 +1052,8 @@ _FLOWS = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1688,
-  serialized_end=1764,
+  serialized_start=1827,
+  serialized_end=1903,
 )
 
 
@@ -968,8 +1090,8 @@ _FLOW = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1766,
-  serialized_end=1806,
+  serialized_start=1905,
+  serialized_end=1945,
 )
 
 
@@ -1020,8 +1142,8 @@ _VENUE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1808,
-  serialized_end=1913,
+  serialized_start=1947,
+  serialized_end=2052,
 )
 
 
@@ -1058,8 +1180,8 @@ _LOCKDOWN = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1915,
-  serialized_end=1962,
+  serialized_start=2054,
+  serialized_end=2101,
 )
 
 _POPULATION_VENUESPERACTIVITYENTRY.fields_by_name['value'].message_type = _VENUELIST
@@ -1076,6 +1198,7 @@ _INFOPERMSOA.fields_by_name['shape'].message_type = _POINT
 _INFOPERMSOA.fields_by_name['buildings'].message_type = _POINT
 _INFOPERMSOA.fields_by_name['flows_per_activity'].message_type = _FLOWS
 _PERSON.fields_by_name['demographics'].message_type = _DEMOGRAPHICS
+_PERSON.fields_by_name['employment'].message_type = _EMPLOYMENT
 _PERSON.fields_by_name['health'].message_type = _HEALTH
 _PERSON.fields_by_name['time_use'].message_type = _TIMEUSE
 _PERSON.fields_by_name['activity_durations'].message_type = _ACTIVITYDURATION
@@ -1083,6 +1206,7 @@ _ACTIVITYDURATION.fields_by_name['activity'].enum_type = _ACTIVITY
 _DEMOGRAPHICS.fields_by_name['sex'].enum_type = _SEX
 _DEMOGRAPHICS.fields_by_name['origin'].enum_type = _ORIGIN
 _DEMOGRAPHICS.fields_by_name['socioeconomic_classification'].enum_type = _NSSEC5
+_EMPLOYMENT.fields_by_name['pwkstat'].enum_type = _PWKSTAT
 _HEALTH.fields_by_name['bmi'].enum_type = _BMI
 _FLOWS.fields_by_name['activity'].enum_type = _ACTIVITY
 _FLOWS.fields_by_name['flows'].message_type = _FLOW
@@ -1096,6 +1220,7 @@ DESCRIPTOR.message_types_by_name['Point'] = _POINT
 DESCRIPTOR.message_types_by_name['Person'] = _PERSON
 DESCRIPTOR.message_types_by_name['ActivityDuration'] = _ACTIVITYDURATION
 DESCRIPTOR.message_types_by_name['Demographics'] = _DEMOGRAPHICS
+DESCRIPTOR.message_types_by_name['Employment'] = _EMPLOYMENT
 DESCRIPTOR.message_types_by_name['Health'] = _HEALTH
 DESCRIPTOR.message_types_by_name['TimeUse'] = _TIMEUSE
 DESCRIPTOR.message_types_by_name['Flows'] = _FLOWS
@@ -1105,6 +1230,7 @@ DESCRIPTOR.message_types_by_name['Lockdown'] = _LOCKDOWN
 DESCRIPTOR.enum_types_by_name['Sex'] = _SEX
 DESCRIPTOR.enum_types_by_name['Origin'] = _ORIGIN
 DESCRIPTOR.enum_types_by_name['NSSEC5'] = _NSSEC5
+DESCRIPTOR.enum_types_by_name['PwkStat'] = _PWKSTAT
 DESCRIPTOR.enum_types_by_name['BMI'] = _BMI
 DESCRIPTOR.enum_types_by_name['Activity'] = _ACTIVITY
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
@@ -1180,6 +1306,13 @@ Demographics = _reflection.GeneratedProtocolMessageType('Demographics', (_messag
   # @@protoc_insertion_point(class_scope:synthpop.Demographics)
   ))
 _sym_db.RegisterMessage(Demographics)
+
+Employment = _reflection.GeneratedProtocolMessageType('Employment', (_message.Message,), dict(
+  DESCRIPTOR = _EMPLOYMENT,
+  __module__ = 'synthpop_pb2'
+  # @@protoc_insertion_point(class_scope:synthpop.Employment)
+  ))
+_sym_db.RegisterMessage(Employment)
 
 Health = _reflection.GeneratedProtocolMessageType('Health', (_message.Message,), dict(
   DESCRIPTOR = _HEALTH,

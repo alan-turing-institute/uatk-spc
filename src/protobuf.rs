@@ -37,6 +37,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
             orig_pid_tus: person.orig_pid_tus,
             orig_pid_hse: person.orig_pid_hse,
             demographics: Some(person.demographics.clone()),
+            employment: Some(person.employment.clone()),
             health: Some(pb::Health {
                 bmi: match person.bmi {
                     BMI::NotApplicable => pb::Bmi::NotApplicable,

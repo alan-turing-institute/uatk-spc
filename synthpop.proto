@@ -9,6 +9,7 @@ message Population {
     // `Activity::Home`; see `households` for that.
     map<int32, VenueList> venues_per_activity = 3;
 
+    // Keyed by MSOA11CD
     map<string, InfoPerMSOA> info_per_msoa = 4;
 
     Lockdown lockdown = 5;
@@ -17,6 +18,7 @@ message Population {
 message Household {
     // This is the index into Population::households
     uint64 id = 1;
+    // 2011 MSOA code
     string msoa = 2;
     /// An ID from the original data, kept around for debugging
     int64 orig_hid = 3;
@@ -60,9 +62,10 @@ message Person {
     int64 orig_pid_hse = 6;
 
     Demographics demographics = 7;
-    Health health = 8;
-    TimeUse time_use = 9;
-    repeated ActivityDuration activity_durations = 10;
+    Employment employment = 8;
+    Health health = 9;
+    TimeUse time_use = 10;
+    repeated ActivityDuration activity_durations = 11;
 }
 
 // What fraction of a day somebody spends doing an activity.
@@ -76,20 +79,28 @@ message Demographics {
     uint32 age_years = 2;
     Origin origin = 3;
     NSSEC5 socioeconomic_classification = 4;
+}
+
+message Employment {
     // The Standard Industrial Classification of Economic Activities 2007, 1st
     // layer (number corresponding to the letter in alphabetical order) for
     // where this person works. 0 means not applicable. See
     // https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities.
     //
     // For example, 1 means "Agriculture, forestry, & fishing." 3 means "Manufacturing."
-    uint64 sic1d07 = 5;
+    uint64 sic1d07 = 1;
     // Standard Industrial Classification of Economic Activities 2007, 2nd
     // layer. 0 means not applicable.
-    uint64 sic2d07 = 6;
+    uint64 sic2d07 = 2;
     // Previous version of the Standard Occupational Classification
     // (https://www.ons.gov.uk/methodology/classificationsandstandards/standardoccupationalclassificationsoc/soc2010).
     // 0 means not applicable.
-    uint64 soc2010 = 7;
+    uint64 soc2010 = 3;
+    PwkStat pwkstat = 4;
+    // Yearly salary in GBP.
+    float salary_yearly = 5;
+    // Hourly salary in GBP.
+    float salary_hourly = 6;
 }
 
 enum Sex {
@@ -119,6 +130,32 @@ enum NSSEC5 {
     LOWER = 4;
     // Semi-routine and routine occupations
     ROUTINE = 5;
+}
+
+// Professional working status, from the time-use survey
+enum PwkStat {
+    // Not applicable (age < 16)
+    NA = 0;
+    // Full-time employee
+    EMPLOYEE_FT = 1;
+    // Part-time employee
+    EMPLOYEE_PT = 2;
+    // Unspecified employee
+    EMPLOYEE_UNSPEC = 3;
+    // Self-employed
+    SELF_EMPLOYED = 4;
+    // Unemployed (note this has a PWK_ prefix due to protobuf scoping rules)
+    PWK_UNEMPLOYED = 5;
+    // Retired
+    RETIRED = 6;
+    // Homemaker / maternity leave
+    HOMEMAKER = 7;
+    // Full-time student
+    STUDENT_FT = 8;
+    // Long-term sick / disability
+    LONG_TERM_SICK = 9;
+    // Other (note this has a PWK_ prefix due to protobuf scoping rules)
+    PWK_OTHER = 10;
 }
 
 message Health {
