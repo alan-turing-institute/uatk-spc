@@ -7,11 +7,18 @@
     "text": "The Synthetic Population Catalyst (SPC) makes it easier for researchers to work with synthetic population data in England. It combines a variety of data sources and outputs a single file in protocol buffer format, describing the population in a given study area. The data includes demographic, health, and daily activity data per person, and information about the venues where people conduct activities.\nYou can use SPC output to catalyze your own project. Rather than join together many raw data sources yourself and deal with missing and messy data, you can leverage SPC’s effort and well-documented schema.\nTo get started:\n\nDownload sample data for a county in England\nExplore how to use the data\nIf you need a different study area, build and then run SPC\n\nYou can also download this site as a PDF and find all code on Github.\nThis work was supported by Wave 1 of The UKRI Strategic Priorities Fund under the EPSRC Grant EP/W006022/1, particularly the “Ecosystem of Digital Twins”\nand “Shocks and Resilience” themes within that grant & The Alan Turing Institute"
   },
   {
+    "objectID": "outputs.html#citing",
+    "href": "outputs.html#citing",
+    "title": "2  Outputs for England Counties",
+    "section": "2.1 Citing",
+    "text": "2.1 Citing\nIf you use SPC code or data in your work, please cite using the Zenodo DOI (using the bottom-right tool to generate the citation)."
+  },
+  {
     "objectID": "outputs.html#versioning",
     "href": "outputs.html#versioning",
     "title": "2  Outputs for England Counties",
-    "section": "2.1 Versioning",
-    "text": "2.1 Versioning\nOver time, we may add more data to SPC or change the schema. Protocol buffers are designed to let combinations of new/old code and data files work together, but we don’t intend to use this feature. We may make breaking changes, like deleting fields. We’ll release a new version of the schema and output data every time and document it here. You should depend on a specific version of the data output in your code, so new releases don’t affect you until you decide to update.\n\nv1: released 25/04/2022, schema\nv1.1, released 27/05/2022, schema\n\nadded pwkstat, salary_hourly, salary_yearly, and idp\nreorganized Identifiers and Employment attributes"
+    "section": "2.2 Versioning",
+    "text": "2.2 Versioning\nOver time, we may add more data to SPC or change the schema. Protocol buffers are designed to let combinations of new/old code and data files work together, but we don’t intend to use this feature. We may make breaking changes, like deleting fields. We’ll release a new version of the schema and output data every time and document it here. You should depend on a specific version of the data output in your code, so new releases don’t affect you until you decide to update.\n\nv1: released 25/04/2022, schema\nv1.1, released 27/05/2022, schema\n\nadded pwkstat, salary_hourly, salary_yearly, and idp\nreorganized Identifiers and Employment attributes"
   },
   {
     "objectID": "use_output.html#python",
@@ -67,7 +74,7 @@
     "href": "custom_areas.html#using-the-output",
     "title": "5  Creating new study areas",
     "section": "5.4 Using the output",
-    "text": "5.4 Using the output\nAfter you generate the files, see here for how to use them in your project."
+    "text": "5.4 Using the output\nAfter you generate the files, see here for how to use them in your project.\nIf you use SPC code or data in your work, please cite using the Zenodo DOI (using the bottom-right tool to generate the citation)."
   },
   {
     "objectID": "schema.html#understanding-the-schema",

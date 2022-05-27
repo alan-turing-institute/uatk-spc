@@ -179,7 +179,8 @@
         <nav id="TOC" role="doc-toc">
 <h2 id="toc-title">Table of contents</h2>
 <ul>
-<li><a href="#versioning" class="nav-link active" data-scroll-target="#versioning"> <span class="header-section-number">2.1</span> Versioning</a></li>
+<li><a href="#citing" class="nav-link active" data-scroll-target="#citing"> <span class="header-section-number">2.1</span> Citing</a></li>
+<li><a href="#versioning" class="nav-link" data-scroll-target="#versioning"> <span class="header-section-number">2.2</span> Versioning</a></li>
 </ul>
 </nav>
     </div>
@@ -248,8 +249,12 @@
 <li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v1.1/oxford_cambridge_arc.pb.gz">oxford_cambridge_arc</a> (Oxford, Milton Keynes, Cambridge)</li>
 </ul>
 <p>See <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/config">config/</a> for the list of MSOAs covered by each study area. If you want to run SPC for a different list of MSOAs, <a href="./custom_areas.html">see here</a>.</p>
-<section id="versioning" class="level2" data-number="2.1">
-<h2 data-number="2.1" class="anchored" data-anchor-id="versioning"><span class="header-section-number">2.1</span> Versioning</h2>
+<section id="citing" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="citing"><span class="header-section-number">2.1</span> Citing</h2>
+<p>If you use SPC code or data in your work, please cite using the <a href="https://zenodo.org/badge/latestdoi/479038905">Zenodo DOI</a> (using the bottom-right tool to generate the citation).</p>
+</section>
+<section id="versioning" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="versioning"><span class="header-section-number">2.2</span> Versioning</h2>
 <p>Over time, we may add more data to SPC or change the schema. Protocol buffers are designed to let combinations of new/old code and data files work together, but we don’t intend to use this feature. We may make breaking changes, like deleting fields. We’ll release a new version of the schema and output data every time and document it here. You should depend on a specific version of the data output in your code, so new releases don’t affect you until you decide to update.</p>
 <ul>
 <li>v1: released 25/04/2022, <a href="https://github.com/alan-turing-institute/uatk-spc/blob/a9e8b361e942ba67a93f9b5b6a7d66b7ff8b0239/synthpop.proto">schema</a></li>
