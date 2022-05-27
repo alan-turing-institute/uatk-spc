@@ -136,6 +136,11 @@ struct TuPerson {
     sic2d07: u64,
     #[serde(deserialize_with = "parse_u64_or_na")]
     soc2010: u64,
+    pwkstat: String,
+    #[serde(rename = "incomeH", deserialize_with = "parse_f32_or_na")]
+    salary_hourly: f32,
+    #[serde(rename = "incomeY", deserialize_with = "parse_f32_or_na")]
+    salary_yearly: f32,
 
     #[serde(rename = "BMIvg6")]
     bmi: String,
@@ -175,6 +180,23 @@ fn parse_u64_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<u64, D::Error> {
     }
     Err(serde::de::Error::custom(format!(
         "Not a u64 or \"NA\": {}",
+        raw
+    )))
+}
+
+/// Parses either a float or the string "NA". "NA" maps to 0. It's fine if 0 also appears as a
+/// value.
+fn parse_f32_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<f32, D::Error> {
+    // We have to parse it as a string first, or we lose the chance to check that it's "NA" later
+    let raw = <String>::deserialize(d)?;
+    if let Ok(x) = raw.parse::<f32>() {
+        return Ok(x);
+    }
+    if raw == "NA" {
+        return Ok(0.0);
+    }
+    Err(serde::de::Error::custom(format!(
+        "Not a f32 or \"NA\": {}",
         raw
     )))
 }
@@ -245,9 +267,28 @@ impl TuPerson {
                     x => bail!("Unknown nssec5 {}", x),
                 }
                 .into(),
+            },
+            employment: pb::Employment {
                 sic1d07: self.sic1d07,
                 sic2d07: self.sic2d07,
                 soc2010: self.soc2010,
+                pwkstat: match self.pwkstat.as_str() {
+                    "0. N/A (age<16)" => pb::PwkStat::Na,
+                    "1. Employee FT" => pb::PwkStat::EmployeeFt,
+                    "2. Employee PT" => pb::PwkStat::EmployeePt,
+                    "3. Employee unspec." => pb::PwkStat::EmployeeUnspec,
+                    "4. Self-Employed" => pb::PwkStat::SelfEmployed,
+                    "5. Unemployed" => pb::PwkStat::PwkUnemployed,
+                    "6. Retired" => pb::PwkStat::Retired,
+                    "7. Homemaker/Mat.Leave" => pb::PwkStat::Homemaker,
+                    "8. Student FT" => pb::PwkStat::StudentFt,
+                    "9. Long-term Sick/Dis" => pb::PwkStat::LongTermSick,
+                    "10. Other" => pb::PwkStat::PwkOther,
+                    x => bail!("Unknown pwkstat value {}", x),
+                }
+                .into(),
+                salary_hourly: self.salary_hourly,
+                salary_yearly: self.salary_yearly,
             },
 
             bmi: match self.bmi.as_str() {

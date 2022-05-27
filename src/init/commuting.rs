@@ -157,7 +157,7 @@ impl JobMarket {
             // Find workers with a matching SIC
             let mut workers: Vec<PersonID> = Vec::new();
             for id in &all_workers {
-                if population.people[*id].demographics.sic1d07 == *sic {
+                if population.people[*id].employment.sic1d07 == *sic {
                     workers.push(*id);
                 }
             }

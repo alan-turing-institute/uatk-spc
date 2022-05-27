@@ -114,6 +114,7 @@ pub struct Person {
     pub orig_pid_hse: i64,
 
     pub demographics: pb::Demographics,
+    pub employment: pb::Employment,
     pub bmi: BMI,
     pub has_cardiovascular_disease: bool,
     pub has_diabetes: bool,
