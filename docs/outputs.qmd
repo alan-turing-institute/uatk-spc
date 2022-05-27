@@ -64,6 +64,12 @@ See [config/](https://github.com/alan-turing-institute/uatk-spc/tree/main/config
 list of MSOAs covered by each study area. If you want to run SPC for a
 different list of MSOAs, [see here](custom_areas.qmd).
 
+## Citing
+
+If you use SPC code or data in your work, please cite using the [Zenodo
+DOI](https://zenodo.org/badge/latestdoi/479038905) (using the bottom-right tool
+to generate the citation).
+
 ## Versioning
 
 Over time, we may add more data to SPC or change the schema. Protocol buffers

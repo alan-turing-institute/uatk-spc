@@ -1,5 +1,7 @@
 # Synthetic Population Catalyst
 
+[![DOI](https://zenodo.org/badge/479038905.svg)](https://zenodo.org/badge/latestdoi/479038905)
+
 ![SPC Schema](docs/img/SPC_Schema.png)
 
 The Synthetic Population Catalyst (SPC) makes it easier for researchers to work
