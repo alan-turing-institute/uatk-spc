@@ -75,6 +75,6 @@ data output in your code, so new releases don't affect you until you decide to
 update.
 
 - v1: released 25/04/2022, [schema](https://github.com/alan-turing-institute/uatk-spc/blob/a9e8b361e942ba67a93f9b5b6a7d66b7ff8b0239/synthpop.proto)
-- v1.1, released 27/05/2022, schema
+- v1.1, released 27/05/2022, [schema](https://github.com/alan-turing-institute/uatk-spc/blob/570b65962d0595c0b28e0cf3554d1dd668b3932b/synthpop.proto)
   - added `pwkstat`, `salary_hourly`, `salary_yearly`, and `idp`
   - reorganized `Identifiers` and `Employment` attributes
