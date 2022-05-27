@@ -19,7 +19,7 @@ message Household {
     // This is the index into Population::households
     uint64 id = 1;
     // 2011 MSOA code
-    string msoa = 2;
+    string msoa11cd = 2;
     /// An ID from the original data, kept around for debugging
     int64 orig_hid = 3;
     // These IDs index into `Population::people`
@@ -54,24 +54,29 @@ message Person {
     // somebody who doesn't work will have 2^64 - 1 here.
     uint64 workplace = 3;
 
-    // identifier linking to the 2011 Census
-    int64 orig_pid_census = 4;
-    // identifier linking to the Time Use Survey 2015
-    int64 orig_pid_tus = 5;
-    // identifier linking to the Health Survey for England 2017
-    int64 orig_pid_hse = 6;
-
-    Demographics demographics = 7;
-    Employment employment = 8;
-    Health health = 9;
-    TimeUse time_use = 10;
-    repeated ActivityDuration activity_durations = 11;
+    Identifiers identifiers = 4;
+    Demographics demographics = 5;
+    Employment employment = 6;
+    Health health = 7;
+    TimeUse time_use = 8;
+    repeated ActivityDuration activity_durations = 9;
 }
 
 // What fraction of a day somebody spends doing an activity.
 message ActivityDuration {
     Activity activity = 1;
     double duration = 2;
+}
+
+message Identifiers {
+    // identifier linking to the 2011 Census
+    int64 pid_census = 1;
+    // identifier linking to the Time Use Survey 2015
+    int64 pid_tus = 2;
+    // identifier linking to the Health Survey for England 2017
+    int64 pid_hse = 3;
+    // a globally unique ID across all counties
+    string idp = 4;
 }
 
 message Demographics {
@@ -97,7 +102,7 @@ message Employment {
     // 0 means not applicable.
     uint64 soc2010 = 3;
     PwkStat pwkstat = 4;
-    // Yearly salary in GBP.
+    // Yearly salary in GBP. Note this may be 0 when salary_hourly is nonzero, when TimeUse is 0 for work.
     float salary_yearly = 5;
     // Hourly salary in GBP.
     float salary_hourly = 6;

@@ -15,7 +15,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
     for household in &input.households {
         output.households.push(pb::Household {
             id: household.id.0.try_into()?,
-            msoa: household.msoa.0.clone(),
+            msoa11cd: household.msoa.0.clone(),
             orig_hid: household.orig_hid.try_into()?,
             members: household
                 .members
@@ -33,9 +33,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
                 Some(id) => id.0.try_into()?,
                 None => u64::MAX,
             },
-            orig_pid_census: person.orig_pid_census,
-            orig_pid_tus: person.orig_pid_tus,
-            orig_pid_hse: person.orig_pid_hse,
+            identifiers: Some(person.identifiers.clone()),
             demographics: Some(person.demographics.clone()),
             employment: Some(person.employment.clone()),
             health: Some(pb::Health {

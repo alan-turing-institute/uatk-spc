@@ -123,6 +123,7 @@ struct TuPerson {
     pid: i64,
     pid_tus: i64,
     pid_hse: i64,
+    idp: String,
     lat: f32,
     lng: f32,
 
@@ -235,11 +236,14 @@ impl TuPerson {
             id,
             household,
             workplace: None,
-            orig_pid_census: self.pid,
-            orig_pid_tus: self.pid_tus,
-            orig_pid_hse: self.pid_hse,
             location: Point::new(self.lng, self.lat),
 
+            identifiers: pb::Identifiers {
+                pid_census: self.pid,
+                pid_tus: self.pid_tus,
+                pid_hse: self.pid_hse,
+                idp: self.idp,
+            },
             demographics: pb::Demographics {
                 sex: match self.sex {
                     x if x == 0 => pb::Sex::Female,
