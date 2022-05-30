@@ -30,6 +30,26 @@ To work with SPC protobufs in Python, you need two dependencies setup:
   - You can download a copy of this file into your codebase, then `import synthpop_pb2`
   - You can also generate the file yourself, following the [docs](https://developers.google.com/protocol-buffers/docs/reference/python-generated): `protoc --python_out=python/ synthpop.proto`
 
+### Converting to Pandas data-frames and CSV
+
+The [schema](schema.qmd) expresses relationships between people, households,
+and venues that can't all be captured by a simple 2D table. Nevertheless, you
+can extract per-person information and express as a dataframe or CSV file. See
+[this example Python
+script](https://github.com/alan-turing-institute/uatk-spc/blob/main/python/protobuf_to_csv.py)
+for inspiration. You can try it out:
+
+```shell
+# Download a file
+wget https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz
+# Uncompress
+gunzip rutland.pb.gz
+# Convert the .pb to JSON
+python3 python/protobuf_to_csv.py data/output/rutland.pb
+# View the output
+less people.csv
+```
+
 ### Converting .pb file to JSON format
 
 To interactively explore the data, viewing JSON is much easier. It shows the
