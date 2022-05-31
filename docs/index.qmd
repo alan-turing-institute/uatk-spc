@@ -27,4 +27,4 @@ PDF](https://alan-turing-institute.github.io/uatk-spc/Synthetic-Population-Catal
 
 This work was supported by Wave 1 of The UKRI Strategic Priorities Fund under
 the EPSRC Grant EP/W006022/1, particularly the “Ecosystem of Digital Twins”  
-and "Shocks and  Resilience" themes within that grant & The Alan Turing Institute
+and "Shocks and Resilience" themes within that grant & The Alan Turing Institute

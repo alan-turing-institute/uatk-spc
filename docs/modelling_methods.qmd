@@ -105,7 +105,7 @@ The pearson correlations for mean and median between the modelled and raw values
 | ONS mean   | 26.77 | 23.38 | 18.29 | 13.42 | 13.35 | 10.87 | 10.94 | 12.23 | 10.77 |
 | ONS median | 20.96 | 21.34 | 15.66 | 11.54 | 12.04 | 10.08 | 9.52  | 10.93 | 9.22  |
 | Mod mean   | 21.52 | 22.14 | 16.00 | 12.76 | 12.55 | 10.49 | 10.50 | 12.05 | 9.87  |
-| Mod median | 17.22 | 20.66 | 14.12 | 11.46 | 11.34 | 9.71  | 9.59  | 10.82 | 9.12 |
+| Mod median | 17.22 | 20.66 | 14.12 | 11.46 | 11.34 | 9.71  | 9.59  | 10.82 | 9.12  |
 
 1. Managers, directors and senior officials
 2. Professional occupations
