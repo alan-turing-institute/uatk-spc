@@ -34,7 +34,7 @@ A percentile is chosen randomly (uniformly) for each individual, and the salary 
 
 In addition, [age data](https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6) are made available by ONS. Part of the differences that can be observed between different age groups are already taken into account through the fact that the SOC category can evolve during a career. To take into account that dependence, we first run the above method without weighing by age. The results are shown in the age validation section below. The residual impact of age alone is then added to the model in the following way. When the percentile is drawn for a specific individual, it is morphed to fit within the usual percentage range accessible to that age category. The function that operates this morphing is inferred beforehand and takes into account the salary distribution per age computed by the previous non-age weighted iteration of the modelling (see figure - TBA - for a more detailed description of this function).
 
-The <i>R</i> codes for this modelling are [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/incomeModelling.R).
+The <i>R</i> codes for this modelling are [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createIncome.R).
 
 The methods are validated in the next section. Since it is not possible to optimise every criterion at once, this next secton can also be used as a reference to re-adjust some values to match exactly the ONS estimated means for one particular criterion of interest.
 
