@@ -6,6 +6,7 @@
 import csv
 import click
 import os
+import urllib.request
 
 
 @click.command()
@@ -20,22 +21,30 @@ def area(lad):
     region_name = lad.lower().replace(" ", "_")
     filename = f"config/{region_name}.txt"
     nonempty = False
-
+    
     with open(filename, "w") as output:
-        # You must run the SPC pipeline to download this file
-        with open("data/raw_data/referencedata/lookUp.csv") as lookup:
-            for row in csv.DictReader(lookup):
-                if row["LAD20NM"] == lad:
-                    output.write('"{}"\n'.format(row["MSOA11CD"]))
-                    nonempty = True
-
+        url = 'https://ramp0storage.blob.core.windows.net/referencedata/lookUp.csv'
+        response = urllib.request.urlopen(url)
+        lines = [l.decode('utf-8') for l in response.readlines()]
+        cr = csv.DictReader(lines)
+        for row in cr:
+            if row["LAD20NM"] == lad:
+                output.write('"{}"\n'.format(row["MSOA11CD"]))
+                nonempty = True
     if nonempty:
         print(f"Wrote {filename}")
     else:
         os.remove(filename)
         print(
-            f"No matches for LAD20NM = {lad} in data/raw_data/referencedata/lookUp.csv"
+            f"No matches for LAD20NM = {lad} in the lookUp.csv table, try the inital letter in upper case"
         )
-
 if __name__ == "__main__":
     area()
+            
+"""     with open(filename, "w") as output: 
+        with open("data/raw_data/referencedata/lookUp.csv") as lookup:
+            for row in csv.DictReader(lookup):
+                if row["LAD20NM"] == lad:
+                    output.write('"{}"\n'.format(row["MSOA11CD"]))
+                    nonempty = True """
+
