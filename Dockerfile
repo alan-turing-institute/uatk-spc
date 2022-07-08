@@ -4,7 +4,14 @@ FROM jupyter/base-notebook:807999a41207
 # Rust stack
 USER root
 RUN apt-get update \
- && apt-get install -y curl cmake sqlite3 libclang-dev \
+ && apt-get install -y \
+         curl \
+         cmake \
+         sqlite3 \
+         libclang-dev \
+         pkg-config \
+         libssl-dev \
+         libproj15 \
  && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs > install.sh \
  && sh install.sh -y \
  && rm install.sh
@@ -22,9 +29,7 @@ RUN mamba install --yes --quiet \
 USER root
 RUN mkdir $HOME/spc
 ADD . $HOME/spc/
-#RUN cd $HOME/spc \
-# && apt-get install -y pkg-config libssl-dev libproj15 \
-# && cargo build --release
+RUN cd $HOME/spc && cargo build --release
 
 # Quarto/jupytext
 RUN wget https://github.com/quarto-dev/quarto-cli/releases/download/v0.9.655/quarto-0.9.655-linux-amd64.deb \
