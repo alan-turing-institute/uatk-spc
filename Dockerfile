@@ -25,6 +25,14 @@ ADD . $HOME/spc/
 #RUN cd $HOME/spc \
 # && apt-get install -y pkg-config libssl-dev libproj15 \
 # && cargo build --release
+
+# Quarto/jupytext
+RUN wget https://github.com/quarto-dev/quarto-cli/releases/download/v0.9.655/quarto-0.9.655-linux-amd64.deb \
+ && dpkg -i quarto-0.9.655-linux-amd64.deb \
+ && rm quarto-0.9.655-linux-amd64.deb
+RUN fix-permissions $HOME/spc/python/demos/
 USER $NB_UID
+RUN mamba install --yes --quiet jupytext
+
 ENV PYTHONPATH="$PYTHONPATH:$HOME/spc/python"
 
