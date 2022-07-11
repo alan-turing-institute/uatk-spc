@@ -11,7 +11,6 @@ RUN apt-get update \
          libclang-dev \
          pkg-config \
          libssl-dev \
-         libproj15 \
          g++ \
          build-essential \
          libsqlite3-dev \
