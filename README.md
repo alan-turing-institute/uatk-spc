@@ -4,6 +4,8 @@
 
 ![SPC Schema](docs/img/SPC_Schema.png)
 
+<img src="docs/logo_SPC_Black.png" align="left" width="130"/>
+
 The Synthetic Population Catalyst (SPC) makes it easier for researchers to work
 with synthetic population data in England. It combines a variety of [data
 sources](https://alan-turing-institute.github.io/uatk-spc/data_sources.html)
