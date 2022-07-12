@@ -36,3 +36,11 @@ The history of this project is as follows:
 
 There are many contributors to the project through these different stages; the
 version control history can be seen on Github in the other repositories.
+
+## Docker
+
+Build an image to play with the codebase locally by running:
+
+`docker build -t spc_demo .`
+
+from the base directory of this repository.
