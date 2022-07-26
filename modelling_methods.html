@@ -185,6 +185,7 @@
 <li><a href="#methods" class="nav-link" data-scroll-target="#methods"> <span class="header-section-number">7.2.1</span> Methods</a></li>
 <li><a href="#comparison-to-reference-values-from-ons" class="nav-link" data-scroll-target="#comparison-to-reference-values-from-ons"> <span class="header-section-number">7.2.2</span> Comparison to reference values from ONS</a></li>
 </ul></li>
+<li><a href="#bmi-data" class="nav-link" data-scroll-target="#bmi-data"> <span class="header-section-number">7.3</span> BMI data</a></li>
 </ul>
 </nav>
     </div>
@@ -755,9 +756,20 @@
 </tbody>
 </table>
 <p>The pearson correlations for mean and median between the modelled and raw values are 0.99 and 0.99.</p>
-
-
 </section>
+</section>
+<section id="bmi-data" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="bmi-data"><span class="header-section-number">7.3</span> BMI data</h2>
+<p>Body Max Index (BMI) is calculated for each individual from the <a href="https://digital.nhs.uk/data-and-information/areas-of-interest/public-health/health-survey-for-england---health-social-care-and-lifestyles#top">Health Survey for England 2019</a> (access needs to be requested to the UK Data Service). This calculation is completely indepedent from the PSM to the HSE 2017, and therefore the new BMI values will not fit within the categories indicated by this earlier PSM. As the BMI variable is not necessarily independent from the other health variables (diabetes etc.), the new variable should only be used for studies where all other variables are considered equal. The new variable is continuous (a float).</p>
+<p>According to the HSE 2019, the distribution of BMI values should follow figure 1. Socio-economic category was discarded for the modelling as it is not independent from the other variables and “mixed” and “other” ethnicities have been merged due to small sample sizes.</p>
+<p><img src="docs/img/BMIStart.png" align="left" width="1000"> Figure 1. BMI per age. Columns represent ethnicity (White, Black, Asian, Other), and the rows sex (female, male).</p>
+<p>The distribution for each age group is a gamma distribution. See figure 2.</p>
+<p><img src="docs/img/BMIDistrib.png" align="left" width="1000"> Figure 2. Distribution of BMI values for white females aged 30-34.</p>
+<p>Due to small sample sizes, the BMI is calculated for each individual depending on their age according to a gamma distribution whose mean is the mean for the corrresponding age, sex and ethnicity (thick line in figure 1), but whose variance is only determined by the total variance by sex and ethnicity. The resulting BMI where validated for Bedfordshire, and correlations of 0.93 and 0.97 were found between the mean and variance of the modelled data compared to those for the reference HSE 2019 data. See figure 3. The distribution per age, as in figure 1, were also validated.</p>
+<p><img src="docs/img/BMIControl.png" align="left" width="1000"> Figure 3. Modelled mean and variance compared to the reference mean and variance from the HSE 2019 data for each of the eight categories of figure 1.</p>
+<p>The <i>R</i> codes for this modelling are <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createBMI.R">here</a>.</p>
+
+
 </section>
 </main> <!-- /main -->
 <script type="application/javascript">
