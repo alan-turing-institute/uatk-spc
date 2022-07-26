@@ -63,7 +63,7 @@ The fields currently contained are:
   - Obese I: 30 to less than 35
   - Obese II: 35 to less than 40
   - Obese III: 40 or more
-- `bmiNew` is a float estimated value for the BMI of the individual. THis were drawn directly according to age, sex and ethnicity and are completely independent of the above values (see [modelling methods](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html)).
+- `bmiNew` is a float estimated value for the BMI of the individual. These were drawn directly according to age, sex and ethnicity and are completely independent of the above values (see [modelling methods](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html)).
 - `lng`: longitude of the MSOA11CD centroid
 - `lat`: latitude of the MSOA11CD centroid
 
