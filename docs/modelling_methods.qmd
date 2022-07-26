@@ -152,17 +152,17 @@ Body Max Index (BMI) is calculated for each individual from the [Health Survey f
 
 According to the HSE 2019, the distribution of BMI values should follow figure 1. Socio-economic category was discarded for the modelling as it is not independent from the other variables and "mixed" and "other" ethnicities have been merged due to small sample sizes.
 
-<img src="img/BMIStart.png" align="left" width="1000"/>
+<img src="img/BMIStart.png" align="left" width="600"/>
 Figure 1. BMI per age. Columns represent ethnicity (White, Black, Asian, Other), and the rows sex (female, male).
 
 The distribution for each age group is a gamma distribution. See figure 2.
 
-<img src="img/BMIDistrib.png" align="left" width="1000"/>
+<img src="img/BMIDistrib.png" align="left" width="600"/>
 Figure 2. Distribution of BMI values for white females aged 30-34.
 
 Due to small sample sizes, the BMI is calculated for each individual depending on their age according to a gamma distribution whose mean is the mean for the corrresponding age, sex and ethnicity (thick line in figure 1), but whose variance is only determined by the total variance by sex and ethnicity. The resulting BMI where validated for Bedfordshire, and correlations of 0.93 and 0.97 were found between the mean and variance of the modelled data compared to those for the reference HSE 2019 data. See figure 3. The distribution per age, as in figure 1, were also validated.
 
-<img src="img/BMIControl.png" align="left" width="1000"/>
+<img src="img/BMIControl.png" align="left" width="600"/>
 Figure 3. Modelled mean and variance compared to the reference mean and variance from the HSE 2019 data for each of the eight categories of figure 1.
 
 The <i>R</i> codes for this modelling are [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createBMI.R).
