@@ -7,55 +7,59 @@ The following tables summarizes the resources SPC needs to run in different area
 
 | study_area               | num_msoas | num_households | num_people | pb_file_size | runtime    | commuting_runtime | memory_usage |
 | ------------------------ | --------- | -------------- | ---------- | ------------ | ---------- | ----------------- | ------------ |
-| bedfordshire             | 74        | 271,487        | 650,950    | 111.88MiB    | 9 seconds  | 5 seconds         | 343.79MiB    |
-| berkshire                | 107       | 363,653        | 878,045    | 150.47MiB    | 11 seconds | 6 seconds         | 353.77MiB    |
-| bristol                  | 55        | 196,230        | 456,532    | 80.66MiB     | 5 seconds  | 1 second          | 178.53MiB    |
-| buckinghamshire          | 99        | 324,843        | 759,879    | 129.01MiB    | 9 seconds  | 4 seconds         | 349.16MiB    |
-| cambridgeshire           | 98        | 346,532        | 834,141    | 142.28MiB    | 11 seconds | 5 seconds         | 353.06MiB    |
-| cheshire                 | 139       | 463,106        | 1,040,634  | 178.77MiB    | 12 seconds | 5 seconds         | 361.23MiB    |
-| cornwall                 | 74        | 246,873        | 564,604    | 98.35MiB     | 6 seconds  | 2 seconds         | 326.03MiB    |
-| cumbria                  | 64        | 224,779        | 485,035    | 83.46MiB     | 6 seconds  | 2 seconds         | 179.53MiB    |
-| derbyshire               | 131       | 457,791        | 1,024,952  | 175.94MiB    | 14 seconds | 7 seconds         | 360.48MiB    |
-| devon                    | 156       | 521,790        | 1,178,315  | 202.97MiB    | 16 seconds | 7 seconds         | 654.43MiB    |
-| dorset                   | 95        | 344,246        | 751,334    | 129.13MiB    | 9 seconds  | 3 seconds         | 350.63MiB    |
-| durham                   | 117       | 406,164        | 904,785    | 154.56MiB    | 8 seconds  | 3 seconds         | 353.70MiB    |
-| east_sussex              | 102       | 380,180        | 830,761    | 142.07MiB    | 9 seconds  | 4 seconds         | 352.62MiB    |
-| east_yorkshire_with_hull | 75        | 261,267        | 579,746    | 100.62MiB    | 6 seconds  | 2 seconds         | 327.72MiB    |
-| essex                    | 211       | 771,734        | 1,798,893  | 308.22MiB    | 28 seconds | 17 seconds        | 708.37MiB    |
-| gloucestershire          | 107       | 392,120        | 901,395    | 153.74MiB    | 11 seconds | 4 seconds         | 356.12MiB    |
-| greater_london           | 983       | 3,135,814      | 8,672,103  | 1.46GiB      | 8 minutes  | 7 minutes         | 5.07GiB      |
-| greater_manchester       | 346       | 871,651        | 2,746,858  | 462.05MiB    | 75 seconds | 60 seconds        | 1.28GiB      |
-| hampshire                | 225       | 775,203        | 1,803,991  | 310.31MiB    | 32 seconds | 21 seconds        | 709.56MiB    |
-| herefordshire            | 23        | 83,115         | 191,282    | 32.85MiB     | 3 seconds  | 1 second          | 87.82MiB     |
-| hertfordshire            | 153       | 492,783        | 1,144,974  | 195.70MiB    | 15 seconds | 8 seconds         | 653.54MiB    |
-| isle_of_wight            | 18        | 64,602         | 135,125    | 24.05MiB     | 2 seconds  | 1 second          | 82.18MiB     |
-| kent                     | 220       | 692,896        | 1,808,206  | 307.15MiB    | 24 seconds | 13 seconds        | 707.24MiB    |
-| lancashire               | 191       | 597,317        | 1,472,550  | 249.28MiB    | 18 seconds | 9 seconds         | 694.72MiB    |
-| leicestershire           | 120       | 417,621        | 1,043,283  | 175.53MiB    | 14 seconds | 8 seconds         | 358.30MiB    |
-| lincolnshire             | 134       | 434,060        | 1,064,174  | 180.30MiB    | 11 seconds | 5 seconds         | 647.65MiB    |
-| merseyside               | 184       | 546,791        | 1,401,012  | 236.74MiB    | 20 seconds | 12 seconds        | 692.18MiB    |
-| norfolk                  | 110       | 379,188        | 891,006    | 153.48MiB    | 9 seconds  | 3 seconds         | 356.10MiB    |
-| north_yorkshire          | 138       | 434,489        | 1,069,514  | 182.58MiB    | 12 seconds | 5 seconds         | 648.94MiB    |
-| northamptonshire         | 91        | 293,580        | 733,190    | 125.64MiB    | 8 seconds  | 3 seconds         | 348.52MiB    |
-| northumberland           | 40        | 113,436        | 316,618    | 53.46MiB     | 4 seconds  | 1 second          | 164.67MiB    |
-| northwest_transpennine   | 829       | 1,919,598      | 6,419,933  | 1.06GiB      | 5 minutes  | 4 minutes         | 2.60GiB      |
-| nottinghamshire          | 138       | 413,097        | 1,139,096  | 193.89MiB    | 15 seconds | 8 seconds         | 650.85MiB    |
-| oxford_cambridge_arc     | 353       | 1,152,245      | 2,823,838  | 484.18MiB    | 77 seconds | 58 seconds        | 1.36GiB      |
-| oxfordshire              | 86        | 254,974        | 669,237    | 114.13MiB    | 8 seconds  | 3 seconds         | 329.91MiB    |
-| rutland                  | 5         | 16,688         | 39,475     | 6.57MiB      | 2 seconds  | 1 second          | 21.78MiB     |
-| shropshire               | 62        | 153,284        | 497,064    | 83.62MiB     | 5 seconds  | 2 seconds         | 177.97MiB    |
-| somerset                 | 124       | 384,165        | 944,394    | 162.97MiB    | 12 seconds | 5 seconds         | 357.18MiB    |
-| south_yorkshire          | 172       | 358,717        | 1,373,401  | 227.91MiB    | 20 seconds | 13 seconds        | 655.11MiB    |
-| staffordshire            | 143       | 439,176        | 1,104,925  | 186.74MiB    | 12 seconds | 5 seconds         | 649.64MiB    |
-| suffolk                  | 90        | 326,760        | 739,296    | 126.15MiB    | 8 seconds  | 3 seconds         | 348.31MiB    |
-| surrey                   | 151       | 461,466        | 1,136,090  | 194.14MiB    | 17 seconds | 10 seconds        | 653.18MiB    |
-| tyne_and_wear            | 145       | 414,128        | 1,111,239  | 186.80MiB    | 11 seconds | 5 seconds         | 648.22MiB    |
-| warwickshire             | 108       | 319,511        | 933,391    | 157.07MiB    | 13 seconds | 7 seconds         | 354.84MiB    |
-| west_midlands            | 314       | 523,264        | 2,475,918  | 413.02MiB    | 31 seconds | 19 seconds        | 1.24GiB      |
-| west_sussex              | 100       | 373,326        | 838,440    | 143.98MiB    | 9 seconds  | 3 seconds         | 353.52MiB    |
-| west_yorkshire           | 299       | 501,156        | 2,272,063  | 380.46MiB    | 32 seconds | 21 seconds        | 1.23GiB      |
-| wiltshire                | 89        | 305,679        | 686,963    | 118.65MiB    | 7 seconds  | 2 seconds         | 346.00MiB    |
-| worcestershire           | 85        | 254,383        | 572,751    | 98.94MiB     | 8 seconds  | 4 seconds         | 326.61MiB    |
+|      bedfordshire      |    74   |    271,487   |  650,950 |  115.00MiB |17 seconds|    9 seconds    |  351.79MiB |
+|        berkshire       |   107   |    363,653   |  878,045 |  154.68MiB |21 seconds|    10 seconds   |  361.80MiB |
+|       birmingham       |   132   |    88,364    | 1,086,773|  183.55MiB |23 seconds|    8 seconds    |  635.58MiB |
+|    bristol,_city_of    |    55   |    196,230   |  456,532 |  82.86MiB  | 8 seconds|    2 seconds    |  182.57MiB |
+|     buckinghamshire    |    99   |    324,843   |  759,879 |  132.66MiB |15 seconds|    6 seconds    |  357.15MiB |
+|     cambridgeshire     |    98   |    346,532   |  834,141 |  146.29MiB |20 seconds|    9 seconds    |  361.06MiB |
+|        cheshire        |   139   |    463,106   | 1,040,634|  183.88MiB |23 seconds|    8 seconds    |  369.31MiB |
+|        cornwall        |    74   |    246,873   |  564,604 |  101.06MiB |12 seconds|    3 seconds    |  334.05MiB |
+|         cumbria        |    64   |    224,779   |  485,035 |  85.79MiB  |12 seconds|    4 seconds    |  183.52MiB |
+|       derbyshire       |   131   |    457,791   | 1,024,952|  180.87MiB |26 seconds|    12 seconds   |  368.50MiB |
+|          devon         |   156   |    521,790   | 1,178,315|  208.69MiB |31 seconds|    14 seconds   |  670.46MiB |
+|         dorset         |    95   |    344,246   |  751,334 |  132.75MiB |16 seconds|    6 seconds    |  358.64MiB |
+|         durham         |   117   |    406,164   |  904,785 |  158.92MiB |16 seconds|    5 seconds    |  361.70MiB |
+|       east_sussex      |   102   |    380,180   |  830,761 |  146.08MiB |18 seconds|    7 seconds    |  360.65MiB |
+|east_yorkshire_with_hull|    75   |    261,267   |  579,746 |  103.41MiB |12 seconds|    3 seconds    |  335.73MiB |
+|          essex         |   211   |    771,734   | 1,798,893|  316.85MiB |51 seconds|    30 seconds   |  724.36MiB |
+|     gloucestershire    |   107   |    392,120   |  901,395 |  158.12MiB |21 seconds|    7 seconds    |  364.13MiB |
+|     greater_london     |   983   |   2,970,319  | 8,672,103|   1.50GiB  |13 minutes|    12 minutes   |   5.20GiB  |
+|   greater_manchester   |   346   |    871,651   | 2,746,858|  475.28MiB | 2 minutes|    2 minutes    |   1.31GiB  |
+|        hampshire       |   225   |    775,203   | 1,803,991|  319.04MiB |62 seconds|    40 seconds   |  725.62MiB |
+|      herefordshire     |    23   |    83,115    |  191,282 |  33.77MiB  | 6 seconds|    2 seconds    |  89.81MiB  |
+|      hertfordshire     |   153   |    476,641   | 1,144,974|  200.84MiB |28 seconds|    15 seconds   |  669.35MiB |
+|      isle_of_wight     |    18   |    64,602    |  135,125 |  24.70MiB  | 4 seconds|     1 second    |  84.20MiB  |
+|          kent          |   220   |    692,896   | 1,808,206|  315.86MiB |44 seconds|    24 seconds   |  723.26MiB |
+|       lancashire       |   191   |    597,317   | 1,472,550|  256.39MiB |34 seconds|    16 seconds   |  710.77MiB |
+|     leicestershire     |   120   |    417,621   | 1,043,283|  180.56MiB |29 seconds|    18 seconds   |  366.32MiB |
+|      lincolnshire      |   134   |    434,060   | 1,064,174|  185.41MiB |11 seconds|    5 seconds    |  663.65MiB |
+|        liverpool       |    61   |    218,559   |  494,999 |  86.13MiB  | 7 seconds|    2 seconds    |  182.48MiB |
+|       manchester       |    57   |    88,488    |  541,974 |  91.77MiB  |14 seconds|    6 seconds    |  322.00MiB |
+|       merseyside       |   184   |    546,791   | 1,401,012|  243.46MiB |20 seconds|    12 seconds   |  708.18MiB |
+|         norfolk        |   110   |    379,188   |  891,006 |  157.77MiB | 9 seconds|    3 seconds    |  364.09MiB |
+|     north_yorkshire    |   138   |    434,489   | 1,069,514|  187.73MiB |12 seconds|    5 seconds    |  664.99MiB |
+|    northamptonshire    |    91   |    293,580   |  733,190 |  129.17MiB | 8 seconds|    3 seconds    |  356.58MiB |
+|     northumberland     |    40   |    113,436   |  316,618 |  55.00MiB  | 4 seconds|     1 second    |  168.67MiB |
+| northwest_transpennine |   829   |   1,919,598  | 6,419,933|   1.09GiB  | 5 minutes|    4 minutes    |   2.66GiB  |
+|     nottinghamshire    |   138   |    413,097   | 1,139,096|  199.36MiB |15 seconds|    8 seconds    |  666.84MiB |
+|         oxford         |    18   |    50,198    |  149,308 |  26.04MiB  | 3 seconds|     1 second    |  83.68MiB  |
+|  oxford_cambridge_arc  |   353   |   1,152,245  | 2,823,838|  497.75MiB |76 seconds|    57 seconds   |   1.39GiB  |
+|       oxfordshire      |    86   |    254,974   |  669,237 |  117.34MiB | 7 seconds|    3 seconds    |  337.92MiB |
+|         rutland        |    5    |    16,688    |  39,475  |   6.76MiB  | 1 second |    0 seconds    |  22.27MiB  |
+|       shropshire       |    62   |    153,284   |  497,064 |  86.03MiB  | 5 seconds|     1 second    |  181.96MiB |
+|        somerset        |   124   |    384,165   |  944,394 |  167.51MiB |11 seconds|    5 seconds    |  365.22MiB |
+|     south_yorkshire    |   172   |    358,717   | 1,373,401|  234.51MiB |20 seconds|    13 seconds   |  671.11MiB |
+|      staffordshire     |   143   |    439,176   | 1,104,925|  192.11MiB |12 seconds|    5 seconds    |  665.69MiB |
+|         suffolk        |    90   |    326,760   |  739,296 |  129.71MiB | 8 seconds|    3 seconds    |  356.32MiB |
+|         surrey         |   151   |    461,466   | 1,136,090|  199.59MiB |17 seconds|    10 seconds   |  669.18MiB |
+|      tyne_and_wear     |   145   |    414,128   | 1,111,239|  192.16MiB |11 seconds|    4 seconds    |  664.23MiB |
+|      warwickshire      |   108   |    319,511   |  933,391 |  161.57MiB |13 seconds|    7 seconds    |  362.86MiB |
+|      west_midlands     |   314   |    523,264   | 2,475,918|  424.91MiB |31 seconds|    19 seconds   |   1.27GiB  |
+|       west_sussex      |   100   |    373,326   |  838,440 |  148.08MiB | 9 seconds|    3 seconds    |  361.60MiB |
+|     west_yorkshire     |   299   |    501,156   | 2,272,063|  391.36MiB |32 seconds|    20 seconds   |   1.27GiB  |
+|        wiltshire       |    89   |    305,679   |  686,963 |  121.95MiB | 6 seconds|    2 seconds    |  354.02MiB |
+|     worcestershire     |    85   |    254,383   |  572,751 |  101.69MiB | 7 seconds|    3 seconds    |  334.60MiB |
 
 Notes:
 
