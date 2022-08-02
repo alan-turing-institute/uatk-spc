@@ -9,7 +9,7 @@ use crate::utilities::{basename, download, filename, print_count, untar, unzip};
 use crate::{County, Input, MSOA};
 
 pub struct RawDataResults {
-    pub tus_files: Vec<String>,
+    pub population_files: Vec<String>,
     pub osm_directories: Vec<String>,
     pub msoas_per_county: BTreeMap<County, Vec<MSOA>>,
 }
@@ -17,23 +17,20 @@ pub struct RawDataResults {
 #[instrument(skip_all)]
 pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     let mut results = RawDataResults {
-        tus_files: Vec::new(),
+        population_files: Vec::new(),
         osm_directories: Vec::new(),
         msoas_per_county: BTreeMap::new(),
     };
 
     // This maps MSOA IDs to things like OSM geofabrik URL
-    // TODO Who creates/maintains this?
     let lookup_path = download_file("referencedata", "lookUp.csv").await?;
 
-    // TODO Who creates these TUS?
-    // tu = time use
-    let mut tus_needed = BTreeSet::new();
+    let mut pop_files_needed = BTreeSet::new();
     let mut osm_needed = BTreeSet::new();
     for rec in csv::Reader::from_reader(File::open(lookup_path)?).deserialize() {
         let rec: MsoaLookupRow = rec?;
         if input.msoas.contains(&rec.msoa) {
-            tus_needed.insert(rec.new_tu);
+            pop_files_needed.insert(rec.new_tu);
             osm_needed.insert(rec.osm);
             results
                 .msoas_per_county
@@ -45,15 +42,15 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     info!(
         "From {} MSOAs, we need {} time use files and {} OSM files",
         print_count(input.msoas.len()),
-        print_count(tus_needed.len()),
+        print_count(pop_files_needed.len()),
         print_count(osm_needed.len())
     );
 
-    for tu in tus_needed {
-        let gzip_path = download_file("countydata", format!("tus_hse_{}.gz", tu)).await?;
-        let output_path = format!("data/raw_data/countydata/tus_hse_{}.csv", tu);
+    for area in pop_files_needed {
+        let gzip_path = download_file("countydata", format!("pop_{area}.gz")).await?;
+        let output_path = format!("data/raw_data/countydata/pop_{area}.csv");
         untar(gzip_path, &output_path)?;
-        results.tus_files.push(output_path);
+        results.population_files.push(output_path);
     }
 
     for osm_url in osm_needed {

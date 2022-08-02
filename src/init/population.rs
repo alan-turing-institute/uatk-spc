@@ -8,11 +8,11 @@ use serde::{Deserialize, Deserializer};
 
 use super::quant::{get_flows, load_venues, Threshold};
 use crate::utilities::{memory_usage, print_count, progress_count, progress_file_with_msg};
-use crate::{pb, Activity, Household, Person, PersonID, Population, VenueID, BMI, MSOA};
+use crate::{pb, Activity, Household, Person, PersonID, Population, VenueID, MSOA};
 
 pub fn read_individual_time_use_and_health_data(
     population: &mut Population,
-    tus_files: Vec<String>,
+    population_files: Vec<String>,
 ) -> Result<()> {
     let _s = info_span!("read_individual_time_use_and_health_data").entered();
 
@@ -25,7 +25,7 @@ pub fn read_individual_time_use_and_health_data(
     let mut no_household = 0;
 
     // TODO Two-level progress bar. MultiProgress seems to demand two threads and calling join() :(
-    for path in tus_files {
+    for path in population_files {
         let _s = info_span!("Reading", ?path).entered();
         let file = File::open(path)?;
         let pb = progress_file_with_msg(&file)?;
@@ -145,6 +145,8 @@ struct TuPerson {
 
     #[serde(rename = "BMIvg6")]
     bmi: String,
+    #[serde(rename = "bmiNew", deserialize_with = "parse_f32_or_na_neg1")]
+    bmi_new: f32,
     cvd: u8,
     diabetes: u8,
     bloodpressure: u8,
@@ -202,9 +204,31 @@ fn parse_f32_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<f32, D::Error> {
     )))
 }
 
+/// Parses either a float or the string "NA". "NA" maps to -1, and -1 isn't allowed to appear as
+/// input.
+fn parse_f32_or_na_neg1<'de, D: Deserializer<'de>>(d: D) -> Result<f32, D::Error> {
+    // We have to parse it as a string first, or we lose the chance to check that it's "NA" later
+    let raw = <String>::deserialize(d)?;
+    if let Ok(x) = raw.parse::<f32>() {
+        if x == -1.0 {
+            return Err(serde::de::Error::custom(format!(
+                "The value -1 appears in the data, so we can't safely map NA to it"
+            )));
+        }
+        return Ok(x);
+    }
+    if raw == "NA" {
+        return Ok(-1.0);
+    }
+    Err(serde::de::Error::custom(format!(
+        "Not a f32 or \"NA\": {}",
+        raw
+    )))
+}
+
 /// Parses a signed integer, handling scientific notation
 fn parse_isize<'de, D: Deserializer<'de>>(d: D) -> Result<isize, D::Error> {
-    // tus_hse_northamptonshire.csv expresses HID in scientific notation: 2.00563e+11
+    // pop_northamptonshire.csv expresses HID in scientific notation: 2.00563e+11
     // Parse to f64, then cast
     let float = <f64>::deserialize(d)?;
     // TODO Is there a safety check we should do? Make sure it's already rounded?
@@ -294,21 +318,23 @@ impl TuPerson {
                 salary_hourly: self.salary_hourly,
                 salary_yearly: self.salary_yearly,
             },
-
-            bmi: match self.bmi.as_str() {
-                "Not applicable" => BMI::NotApplicable,
-                "Underweight: less than 18.5" => BMI::Underweight,
-                "Normal: 18.5 to less than 25" => BMI::Normal,
-                "Overweight: 25 to less than 30" => BMI::Overweight,
-                "Obese I: 30 to less than 35" => BMI::Obese1,
-                "Obese II: 35 to less than 40" => BMI::Obese2,
-                "Obese III: 40 or more" => BMI::Obese3,
-                x => bail!("Unknown BMIvg6 value {}", x),
+            health: pb::Health {
+                bmi: match self.bmi.as_str() {
+                    "Not applicable" => pb::Bmi::NotApplicable,
+                    "Underweight: less than 18.5" => pb::Bmi::Underweight,
+                    "Normal: 18.5 to less than 25" => pb::Bmi::Normal,
+                    "Overweight: 25 to less than 30" => pb::Bmi::Overweight,
+                    "Obese I: 30 to less than 35" => pb::Bmi::Obese1,
+                    "Obese II: 35 to less than 40" => pb::Bmi::Obese2,
+                    "Obese III: 40 or more" => pb::Bmi::Obese3,
+                    x => bail!("Unknown BMIvg6 value {}", x),
+                }
+                .into(),
+                bmi_new: self.bmi_new,
+                has_cardiovascular_disease: self.cvd > 0,
+                has_diabetes: self.diabetes > 0,
+                has_high_blood_pressure: self.bloodpressure > 0,
             },
-            has_cardiovascular_disease: self.cvd > 0,
-            has_diabetes: self.diabetes > 0,
-            has_high_blood_pressure: self.bloodpressure > 0,
-
             time_use: pb::TimeUse {
                 unknown: self.punknown,
                 work: self.pwork,
