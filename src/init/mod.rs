@@ -41,7 +41,7 @@ impl Population {
 
         population::read_individual_time_use_and_health_data(
             &mut population,
-            raw_results.tus_files,
+            raw_results.population_files,
         )?;
 
         // The order doesn't matter for these steps

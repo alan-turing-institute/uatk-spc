@@ -6,7 +6,7 @@ use geo::coords_iter::CoordsIter;
 use geo::{Coordinate, Point};
 use prost::Message;
 
-use crate::{pb, Activity, InfoPerMSOA, Population, BMI};
+use crate::{pb, Activity, InfoPerMSOA, Population};
 
 /// Returns the bytes written
 pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
@@ -36,21 +36,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
             identifiers: Some(person.identifiers.clone()),
             demographics: Some(person.demographics.clone()),
             employment: Some(person.employment.clone()),
-            health: Some(pb::Health {
-                bmi: match person.bmi {
-                    BMI::NotApplicable => pb::Bmi::NotApplicable,
-                    BMI::Underweight => pb::Bmi::Underweight,
-                    BMI::Normal => pb::Bmi::Normal,
-                    BMI::Overweight => pb::Bmi::Overweight,
-                    BMI::Obese1 => pb::Bmi::Obese1,
-                    BMI::Obese2 => pb::Bmi::Obese2,
-                    BMI::Obese3 => pb::Bmi::Obese3,
-                }
-                .into(),
-                has_cardiovascular_disease: person.has_cardiovascular_disease,
-                has_diabetes: person.has_diabetes,
-                has_high_blood_pressure: person.has_high_blood_pressure,
-            }),
+            health: Some(person.health.clone()),
             time_use: Some(person.time_use.clone()),
             activity_durations: person
                 .duration_per_activity

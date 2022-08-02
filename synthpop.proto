@@ -164,7 +164,13 @@ enum PwkStat {
 }
 
 message Health {
+    // Sourced from the Health Survey for England 2019
     BMI bmi = 1;
+    // See
+    // https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#bmi-data.
+    // Some values are missing, indicated by -1 (proto3 cannot encode optional
+    // fields).
+    float bmi_new = 5;
     bool has_cardiovascular_disease = 2;
     bool has_diabetes = 3;
     bool has_high_blood_pressure = 4;

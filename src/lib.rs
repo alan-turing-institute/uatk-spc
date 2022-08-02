@@ -112,11 +112,7 @@ pub struct Person {
     pub identifiers: pb::Identifiers,
     pub demographics: pb::Demographics,
     pub employment: pb::Employment,
-    pub bmi: BMI,
-    pub has_cardiovascular_disease: bool,
-    pub has_diabetes: bool,
-    pub has_high_blood_pressure: bool,
-
+    pub health: pb::Health,
     pub time_use: pb::TimeUse,
 
     /// These sum to 1, representing a fraction of a day
@@ -141,16 +137,6 @@ pub struct Venue {
     /// This only exists for PrimarySchool and SecondarySchool. It's a
     /// https://en.wikipedia.org/wiki/Unique_Reference_Number
     pub urn: Option<usize>,
-}
-
-pub enum BMI {
-    NotApplicable,
-    Underweight,
-    Normal,
-    Overweight,
-    Obese1,
-    Obese2,
-    Obese3,
 }
 
 // These are unsigned integers, used to index into different vectors. They're wrapped in a type, so
