@@ -57,7 +57,11 @@ counties in England. (Note this list is missing the City of London.)
 
 We also have a few special study areas defined:
 
+- [birmingham](https://ramp0storage.blob.core.windows.net/spc-output/v1.1/birmingham.pb.gz)
+- [manchester](https://ramp0storage.blob.core.windows.net/spc-output/v1.1/manchester.pb.gz)
+- [liverpool](https://ramp0storage.blob.core.windows.net/spc-output/v1.1/liverpool.pb.gz)
 - [northwest_transpennine](https://ramp0storage.blob.core.windows.net/spc-output/v1.1/northwest_transpennine.pb.gz) (Liverpool, Manchester, Leeds)
+- [oxford](https://ramp0storage.blob.core.windows.net/spc-output/v1.1/oxford.pb.gz)
 - [oxford_cambridge_arc](https://ramp0storage.blob.core.windows.net/spc-output/v1.1/oxford_cambridge_arc.pb.gz) (Oxford, Milton Keynes, Cambridge)
 
 See [config/](https://github.com/alan-turing-institute/uatk-spc/tree/main/config) for the
