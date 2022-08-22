@@ -10,7 +10,7 @@ The following tables summarizes the resources SPC needs to run in different area
 |      bedfordshire      |    74   |    271,487   |  650,950 |  115.00MiB |17 seconds|    9 seconds    |  351.79MiB |
 |        berkshire       |   107   |    363,653   |  878,045 |  154.68MiB |21 seconds|    10 seconds   |  361.80MiB |
 |       birmingham       |   132   |    88,364    | 1,086,773|  183.55MiB |23 seconds|    8 seconds    |  635.58MiB |
-|    bristol,_city_of    |    55   |    196,230   |  456,532 |  82.86MiB  | 8 seconds|    2 seconds    |  182.57MiB |
+|        bristol         |    55   |    196,230   |  456,532 |  82.86MiB  | 8 seconds|    2 seconds    |  182.57MiB |
 |     buckinghamshire    |    99   |    324,843   |  759,879 |  132.66MiB |15 seconds|    6 seconds    |  357.15MiB |
 |     cambridgeshire     |    98   |    346,532   |  834,141 |  146.29MiB |20 seconds|    9 seconds    |  361.06MiB |
 |        cheshire        |   139   |    463,106   | 1,040,634|  183.88MiB |23 seconds|    8 seconds    |  369.31MiB |
