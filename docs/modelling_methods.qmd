@@ -6,6 +6,7 @@ toc: true
 The principles behind the generation of the enriched [SPENSER](https://github.com/nismod/microsimulation) population data and behind the modelling of trips to schools and retail from [QUANT](https://github.com/maptube/QUANT_RAMP) are detailed in
 
 > Spooner F et al. A dynamic microsimulation model for epidemics. Soc Sci Med., 291:114461 (2021). ([DOI](https://doi.org/10.1016/j.socscimed.2021.114461))
+
 > Lomax N et al. An Open-Source Model for Projecting Small Area Demographic and Land-Use Change. Geographical analysis, 54(3), 599-622 (2022). ([DOI](https://doi.org/10.1111/gean.12320))
 
 ## Commuting flows
