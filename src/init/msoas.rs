@@ -79,7 +79,7 @@ fn load_msoa_shapes(msoas: &BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA
                     msoa,
                     InfoPerMSOA {
                         shape,
-                        population: *population as usize,
+                        population: *population as u64,
                         buildings: Vec::new(),
                         flows_per_activity: EnumMap::default(),
                     },

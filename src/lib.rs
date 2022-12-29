@@ -79,7 +79,7 @@ impl MSOA {
 
 pub struct InfoPerMSOA {
     pub shape: MultiPolygon<f32>,
-    pub population: usize,
+    pub population: u64,
     /// All building centroids within this MSOA.
     ///
     /// Note there are many caveats about building data in OpenStreetMap -- what counts as
@@ -97,7 +97,7 @@ pub struct Household {
     pub id: VenueID,
     pub msoa: MSOA,
     /// An ID from the original data, kept around for debugging
-    pub orig_hid: isize,
+    pub orig_hid: i64,
     pub members: Vec<PersonID>,
 }
 
@@ -136,7 +136,7 @@ pub struct Venue {
     pub location: Point<f32>,
     /// This only exists for PrimarySchool and SecondarySchool. It's a
     /// https://en.wikipedia.org/wiki/Unique_Reference_Number
-    pub urn: Option<usize>,
+    pub urn: Option<u64>,
 }
 
 // These are unsigned integers, used to index into different vectors. They're wrapped in a type, so

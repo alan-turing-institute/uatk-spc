@@ -18,7 +18,7 @@ pub fn calculate_lockdown_per_day(
     info!("Calculating per-day lockdown values");
 
     // First get the total population per Google mobility area (which is a bunch of MSOAs)
-    let population_per_county: BTreeMap<County, usize> = msoas_per_county
+    let population_per_county: BTreeMap<County, u64> = msoas_per_county
         .into_iter()
         .map(|(county, msoas)| {
             (
@@ -30,11 +30,11 @@ pub fn calculate_lockdown_per_day(
             )
         })
         .collect();
-    let total_population = population_per_county.values().sum();
+    let total_population: u64 = population_per_county.values().sum();
     info!(
         "Population has {} people, but based on per-county sum, it's {}",
         print_count(population.people.len()),
-        print_count(total_population)
+        print_count(total_population as usize)
     );
 
     // Indexed by day. This is change * population, summed over all matching counties
