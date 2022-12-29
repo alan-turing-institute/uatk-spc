@@ -10,7 +10,7 @@ jobs:
         build: [linux, macos]
         include:
           - build: linux
-            os: ubuntu-18.04
+            os: ubuntu-latest
           - build: macos
             os: macos-latest
 
@@ -19,7 +19,7 @@ jobs:
 
       - uses: hecrj/setup-rust-action@v1
         with:
-          rust-version: 1.61.0
+          rust-version: stable
 
       - name: Cache build
         uses: actions/cache@v2
