@@ -1,4 +1,4 @@
-syntax = "proto3";
+syntax = "proto2";
 package synthpop;
 
 message Population {
@@ -12,16 +12,16 @@ message Population {
     // Keyed by MSOA11CD
     map<string, InfoPerMSOA> info_per_msoa = 4;
 
-    Lockdown lockdown = 5;
+    required Lockdown lockdown = 5;
 }
 
 message Household {
     // This is the index into Population::households
-    uint64 id = 1;
+    required uint64 id = 1;
     // 2011 MSOA code
-    string msoa11cd = 2;
+    required string msoa11cd = 2;
     /// An ID from the original data, kept around for debugging
-    int64 orig_hid = 3;
+    required int64 orig_hid = 3;
     // These IDs index into `Population::people`
     repeated uint64 members = 4;
 }
@@ -33,7 +33,7 @@ message VenueList {
 message InfoPerMSOA {
     repeated Point shape = 1;
     // There's no relationship between this value and the people listed.
-    uint64 population = 2;
+    required uint64 population = 2;
     // All building centroids within this MSOA. May be empty.
     repeated Point buildings = 3;
     repeated Flows flows_per_activity = 4;
@@ -41,49 +41,49 @@ message InfoPerMSOA {
 
 // In WGS84
 message Point {
-    float longitude = 1;
-    float latitude = 2;
+    required float longitude = 1;
+    required float latitude = 2;
 }
 
 message Person {
     // This is the index into Population::people
-    uint64 id = 1;
+    required uint64 id = 1;
     // This is the index into Population::households
-    uint64 household = 2;
+    required uint64 household = 2;
     // This indexes into venues_per_activity[Activity::WORK]. This is optional;
     // somebody who doesn't work will have 2^64 - 1 here.
-    uint64 workplace = 3;
+    required uint64 workplace = 3;
 
-    Identifiers identifiers = 4;
-    Demographics demographics = 5;
-    Employment employment = 6;
-    Health health = 7;
-    TimeUse time_use = 8;
+    required Identifiers identifiers = 4;
+    required Demographics demographics = 5;
+    required Employment employment = 6;
+    required Health health = 7;
+    required TimeUse time_use = 8;
     repeated ActivityDuration activity_durations = 9;
 }
 
 // What fraction of a day somebody spends doing an activity.
 message ActivityDuration {
-    Activity activity = 1;
-    double duration = 2;
+    required Activity activity = 1;
+    required double duration = 2;
 }
 
 message Identifiers {
     // identifier linking to the 2011 Census
-    int64 pid_census = 1;
+    required int64 pid_census = 1;
     // identifier linking to the Time Use Survey 2015
-    int64 pid_tus = 2;
+    required int64 pid_tus = 2;
     // identifier linking to the Health Survey for England 2017
-    int64 pid_hse = 3;
+    required int64 pid_hse = 3;
     // a globally unique ID across all counties
-    string idp = 4;
+    required string idp = 4;
 }
 
 message Demographics {
-    Sex sex = 1;
-    uint32 age_years = 2;
-    Origin origin = 3;
-    NSSEC5 socioeconomic_classification = 4;
+    required Sex sex = 1;
+    required uint32 age_years = 2;
+    required Origin origin = 3;
+    required NSSEC5 socioeconomic_classification = 4;
 }
 
 message Employment {
@@ -93,19 +93,19 @@ message Employment {
     // https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities.
     //
     // For example, 1 means "Agriculture, forestry, & fishing." 3 means "Manufacturing."
-    uint64 sic1d07 = 1;
+    required uint64 sic1d07 = 1;
     // Standard Industrial Classification of Economic Activities 2007, 2nd
     // layer. 0 means not applicable.
-    uint64 sic2d07 = 2;
+    required uint64 sic2d07 = 2;
     // Previous version of the Standard Occupational Classification
     // (https://www.ons.gov.uk/methodology/classificationsandstandards/standardoccupationalclassificationsoc/soc2010).
     // 0 means not applicable.
-    uint64 soc2010 = 3;
-    PwkStat pwkstat = 4;
+    required uint64 soc2010 = 3;
+    required PwkStat pwkstat = 4;
     // Yearly salary in GBP. Note this may be 0 when salary_hourly is nonzero, when TimeUse is 0 for work.
-    float salary_yearly = 5;
+    required float salary_yearly = 5;
     // Hourly salary in GBP.
-    float salary_hourly = 6;
+    required float salary_hourly = 6;
 }
 
 enum Sex {
@@ -165,15 +165,15 @@ enum PwkStat {
 
 message Health {
     // Sourced from the Health Survey for England 2019
-    BMI bmi = 1;
+    required BMI bmi = 1;
     // See
     // https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#bmi-data.
     // Some values are missing, indicated by -1 (proto3 cannot encode optional
     // fields).
-    float bmi_new = 5;
-    bool has_cardiovascular_disease = 2;
-    bool has_diabetes = 3;
-    bool has_high_blood_pressure = 4;
+    required float bmi_new = 5;
+    required bool has_cardiovascular_disease = 2;
+    required bool has_diabetes = 3;
+    required bool has_high_blood_pressure = 4;
 }
 
 // Body Mass Index
@@ -199,18 +199,18 @@ enum BMI {
 // home + work_home = home_total
 // not_home + home_total = 1
 message TimeUse {
-    double unknown = 1;
-    double work = 2;
-    double school = 3;
-    double shop = 4;
-    double services = 5;
-    double leisure = 6;
-    double escort = 7;
-    double transport = 8;
-    double not_home = 9;
-    double home = 10;
-    double work_home = 11;
-    double home_total = 12;
+    required double unknown = 1;
+    required double work = 2;
+    required double school = 3;
+    required double shop = 4;
+    required double services = 5;
+    required double leisure = 6;
+    required double escort = 7;
+    required double transport = 8;
+    required double not_home = 9;
+    required double home = 10;
+    required double work_home = 11;
+    required double home_total = 12;
 }
 
 // Per activity, a list of venues where anybody living in a certain MSOA is
@@ -218,27 +218,27 @@ message TimeUse {
 message Flows {
     // Note that HOME and WORK won't be represented here, since it varies
     // per-person.
-    Activity activity = 1;
+    required Activity activity = 1;
     repeated Flow flows = 2;
 }
 
 message Flow {
-    uint64 venue_id = 1;
+    required uint64 venue_id = 1;
     // The probabilities sum to 1 for all `flows`
-    double weight = 2;
+    required double weight = 2;
 }
 
 // Represents a place where people do an activity
 message Venue {
     // IDs are reused across different activities; both this id and an Activity
     // is needed to lookup from venues_per_activity.
-    uint64 id = 1;
-    Activity activity = 2;
+    required uint64 id = 1;
+    required Activity activity = 2;
 
-    Point location = 3;
+    required Point location = 3;
     // This only exists for PrimarySchool and SecondarySchool. It's a
     // https://en.wikipedia.org/wiki/Unique_Reference_Number. 0 means none.
-    uint64 urn = 4;
+    required uint64 urn = 4;
 }
 
 enum Activity {
@@ -252,7 +252,7 @@ enum Activity {
 // Describes a reduction in daily travel behavior due to COVID lockdowns.
 message Lockdown {
     // The YYYY-MM-DD date of the first entry in the daily list.
-    string start_date = 1;
+    required string start_date = 1;
     // A coefficient to be applied to all not at home activities (unknown; work; school; shop; services; leisure; escort; transport; not_home). Update at home activity so that it still sums to 1.
     repeated float per_day = 2;
 }

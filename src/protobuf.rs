@@ -33,11 +33,11 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
                 Some(id) => id.0.try_into()?,
                 None => u64::MAX,
             },
-            identifiers: Some(person.identifiers.clone()),
-            demographics: Some(person.demographics.clone()),
-            employment: Some(person.employment.clone()),
-            health: Some(person.health.clone()),
-            time_use: Some(person.time_use.clone()),
+            identifiers: person.identifiers.clone(),
+            demographics: person.demographics.clone(),
+            employment: person.employment.clone(),
+            health: person.health.clone(),
+            time_use: person.time_use.clone(),
             activity_durations: person
                 .duration_per_activity
                 .iter()
@@ -56,7 +56,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
                 .map(|venue| pb::Venue {
                     id: venue.id.0.try_into().unwrap(),
                     activity: convert_activity(activity).into(),
-                    location: Some(convert_point(&venue.location)),
+                    location: convert_point(&venue.location),
                     // TODO Check 0 isn't valid
                     urn: venue.urn.unwrap_or(0).try_into().unwrap(),
                 })
