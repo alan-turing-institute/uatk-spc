@@ -109,16 +109,16 @@ message Employment {
 }
 
 enum Sex {
-    FEMALE = 0;
     MALE = 1;
+    FEMALE = 2;
 }
 
 enum Origin {
-    WHITE = 0;
-    BLACK = 1;
-    ASIAN = 2;
-    MIXED = 3;
-    OTHER = 4;
+    WHITE = 1;
+    BLACK = 2;
+    ASIAN = 3;
+    MIXED = 4;
+    OTHER = 5;
 }
 
 // National Statistics socio-economic classification
