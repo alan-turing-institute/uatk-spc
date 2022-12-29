@@ -45,7 +45,7 @@ wget https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz
 # Uncompress
 gunzip rutland.pb.gz
 # Convert the .pb to JSON
-python3 python/protobuf_to_csv.py data/output/rutland.pb
+python3 python/protobuf_to_csv.py --input_path data/output/rutland.pb
 # View the output
 less people.csv
 ```
