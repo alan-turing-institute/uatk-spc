@@ -127,6 +127,7 @@ async fn download_file(url: &str, path: &str) -> Result<()> {
     let pb = ProgressBar::new(total_size);
     pb.set_style(ProgressStyle::default_bar()
         .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({bytes_per_sec}, {eta})")
+        .unwrap()
         .progress_chars("#-"));
 
     let mut file = File::create(path)?;
@@ -173,6 +174,7 @@ pub fn progress_count(len: usize) -> ProgressBar {
     pb.set_style(
         ProgressStyle::default_bar()
             .template("[{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} ({eta})")
+            .unwrap()
             .progress_chars("#-"),
     );
     pb
@@ -185,6 +187,7 @@ pub fn progress_count_with_msg(len: usize) -> ProgressBar {
     pb.set_style(
         ProgressStyle::default_bar()
             .template("{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {human_pos}/{human_len} ({eta})")
+            .unwrap()
             .progress_chars("#-"),
     );
     pb
@@ -198,6 +201,7 @@ pub fn progress_file_with_msg(file: &File) -> Result<ProgressBar> {
             .template(
                 "{msg}\n[{elapsed_precise}] [{wide_bar:.cyan/blue}] {bytes}/{total_bytes} ({eta})",
             )
+            .unwrap()
             .progress_chars("#-"),
     );
     Ok(pb)

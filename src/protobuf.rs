@@ -3,7 +3,7 @@ use std::io::{BufWriter, Write};
 use anyhow::Result;
 use fs_err::File;
 use geo::coords_iter::CoordsIter;
-use geo::{Coordinate, Point};
+use geo::{Coord, Point};
 use prost::Message;
 
 use crate::{pb, Activity, InfoPerMSOA, Population};
@@ -92,7 +92,7 @@ fn convert_point(pt: &Point<f32>) -> pb::Point {
     }
 }
 
-fn convert_coordinate(pt: Coordinate<f32>) -> pb::Point {
+fn convert_coordinate(pt: Coord<f32>) -> pb::Point {
     pb::Point {
         longitude: pt.x,
         latitude: pt.y,

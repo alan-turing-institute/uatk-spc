@@ -5,7 +5,7 @@ use anyhow::Result;
 use enum_map::EnumMap;
 use geo::map_coords::MapCoords;
 use geo::prelude::{BoundingRect, Centroid, Contains};
-use geo::{MultiPolygon, Point};
+use geo::{Coord, MultiPolygon, Point};
 use proj::{Proj, Transform};
 use rstar::{RTree, AABB};
 
@@ -71,8 +71,10 @@ fn load_msoa_shapes(msoas: &BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA
                 let mut geo_polygon: MultiPolygon<f64> = shape.try_into()?;
                 geo_polygon.transform(&reproject)?;
                 // f64 -> f32
-                let shape: MultiPolygon<f32> =
-                    geo_polygon.map_coords(|&(x, y)| (x as f32, y as f32));
+                let shape: MultiPolygon<f32> = geo_polygon.map_coords(|Coord { x, y }| Coord {
+                    x: x as f32,
+                    y: y as f32,
+                });
                 results.insert(
                     msoa,
                     InfoPerMSOA {

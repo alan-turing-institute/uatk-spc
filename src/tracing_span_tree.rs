@@ -83,7 +83,7 @@ impl<S> Layer<S> for SpanTree
 where
     S: Subscriber + for<'span> LookupSpan<'span> + fmt::Debug,
 {
-    fn new_span(&self, attrs: &Attributes, id: &Id, ctx: Context<S>) {
+    fn on_new_span(&self, attrs: &Attributes, id: &Id, ctx: Context<S>) {
         let span = ctx.span(id).unwrap();
 
         let data = Data::new(attrs);
