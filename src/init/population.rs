@@ -132,21 +132,21 @@ struct TuPerson {
     origin: usize,
     nssec5: usize,
     #[serde(deserialize_with = "parse_u64_or_na")]
-    sic1d07: u64,
+    sic1d07: Option<u64>,
     #[serde(deserialize_with = "parse_u64_or_na")]
-    sic2d07: u64,
+    sic2d07: Option<u64>,
     #[serde(deserialize_with = "parse_u64_or_na")]
-    soc2010: u64,
+    soc2010: Option<u64>,
     pwkstat: String,
     #[serde(rename = "incomeH", deserialize_with = "parse_f32_or_na")]
-    salary_hourly: f32,
+    salary_hourly: Option<f32>,
     #[serde(rename = "incomeY", deserialize_with = "parse_f32_or_na")]
-    salary_yearly: f32,
+    salary_yearly: Option<f32>,
 
     #[serde(rename = "BMIvg6")]
     bmi: String,
-    #[serde(rename = "bmiNew", deserialize_with = "parse_f32_or_na_neg1")]
-    bmi_new: f32,
+    #[serde(rename = "bmiNew", deserialize_with = "parse_f32_or_na")]
+    bmi_new: Option<f32>,
     cvd: u8,
     diabetes: u8,
     bloodpressure: u8,
@@ -165,21 +165,15 @@ struct TuPerson {
     phometot: f64,
 }
 
-/// Parses either an unsigned integer or the string "NA". "NA" maps to 0, and this verifies that 0
-/// isn't an actual value that gets used.
-fn parse_u64_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<u64, D::Error> {
+/// Parses either an unsigned integer or the string "NA".
+fn parse_u64_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<Option<u64>, D::Error> {
     // We have to parse it as a string first, or we lose the chance to check that it's "NA" later
     let raw = <String>::deserialize(d)?;
-    if let Ok(x) = raw.parse::<u64>() {
-        if x == 0 {
-            return Err(serde::de::Error::custom(format!(
-                "The value 0 appears in the data, so we can't safely map NA to it"
-            )));
-        }
-        return Ok(x);
-    }
     if raw == "NA" {
-        return Ok(0);
+        return Ok(None);
+    }
+    if let Ok(x) = raw.parse::<u64>() {
+        return Ok(Some(x));
     }
     Err(serde::de::Error::custom(format!(
         "Not a u64 or \"NA\": {}",
@@ -187,38 +181,15 @@ fn parse_u64_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<u64, D::Error> {
     )))
 }
 
-/// Parses either a float or the string "NA". "NA" maps to 0. It's fine if 0 also appears as a
-/// value.
-fn parse_f32_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<f32, D::Error> {
+/// Parses either a float or the string "NA".
+fn parse_f32_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<Option<f32>, D::Error> {
     // We have to parse it as a string first, or we lose the chance to check that it's "NA" later
     let raw = <String>::deserialize(d)?;
-    if let Ok(x) = raw.parse::<f32>() {
-        return Ok(x);
-    }
     if raw == "NA" {
-        return Ok(0.0);
+        return Ok(None);
     }
-    Err(serde::de::Error::custom(format!(
-        "Not a f32 or \"NA\": {}",
-        raw
-    )))
-}
-
-/// Parses either a float or the string "NA". "NA" maps to -1, and -1 isn't allowed to appear as
-/// input.
-fn parse_f32_or_na_neg1<'de, D: Deserializer<'de>>(d: D) -> Result<f32, D::Error> {
-    // We have to parse it as a string first, or we lose the chance to check that it's "NA" later
-    let raw = <String>::deserialize(d)?;
     if let Ok(x) = raw.parse::<f32>() {
-        if x == -1.0 {
-            return Err(serde::de::Error::custom(format!(
-                "The value -1 appears in the data, so we can't safely map NA to it"
-            )));
-        }
-        return Ok(x);
-    }
-    if raw == "NA" {
-        return Ok(-1.0);
+        return Ok(Some(x));
     }
     Err(serde::de::Error::custom(format!(
         "Not a f32 or \"NA\": {}",
