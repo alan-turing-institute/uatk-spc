@@ -8,7 +8,7 @@ existing output](outputs.qmd) if your study area matches what we provide.
 
 ## Dependencies
 
-- **Rust**: The latest version of Rust (1.60):
+- **Rust**: The latest stable version of Rust:
   [https://www.rust-lang.org/tools/install](https://www.rust-lang.org/tools/install)
 
 - A build environment for [proj](https://proj.org), to transform coordinates.
