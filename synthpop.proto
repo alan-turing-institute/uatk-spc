@@ -50,9 +50,8 @@ message Person {
     required uint64 id = 1;
     // This is the index into Population::households
     required uint64 household = 2;
-    // This indexes into venues_per_activity[Activity::WORK]. This is optional;
-    // somebody who doesn't work will have 2^64 - 1 here.
-    required uint64 workplace = 3;
+    // This indexes into venues_per_activity[Activity::WORK]
+    optional uint64 workplace = 3;
 
     required Identifiers identifiers = 4;
     required Demographics demographics = 5;
@@ -89,23 +88,22 @@ message Demographics {
 message Employment {
     // The Standard Industrial Classification of Economic Activities 2007, 1st
     // layer (number corresponding to the letter in alphabetical order) for
-    // where this person works. 0 means not applicable. See
+    // where this person works. See
     // https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities.
     //
     // For example, 1 means "Agriculture, forestry, & fishing." 3 means "Manufacturing."
-    required uint64 sic1d07 = 1;
+    optional uint64 sic1d07 = 1;
     // Standard Industrial Classification of Economic Activities 2007, 2nd
-    // layer. 0 means not applicable.
-    required uint64 sic2d07 = 2;
+    // layer.
+    optional uint64 sic2d07 = 2;
     // Previous version of the Standard Occupational Classification
     // (https://www.ons.gov.uk/methodology/classificationsandstandards/standardoccupationalclassificationsoc/soc2010).
-    // 0 means not applicable.
-    required uint64 soc2010 = 3;
+    optional uint64 soc2010 = 3;
     required PwkStat pwkstat = 4;
     // Yearly salary in GBP. Note this may be 0 when salary_hourly is nonzero, when TimeUse is 0 for work.
-    required float salary_yearly = 5;
+    optional float salary_yearly = 5;
     // Hourly salary in GBP.
-    required float salary_hourly = 6;
+    optional float salary_hourly = 6;
 }
 
 enum Sex {
@@ -168,9 +166,7 @@ message Health {
     required BMI bmi = 1;
     // See
     // https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#bmi-data.
-    // Some values are missing, indicated by -1 (proto3 cannot encode optional
-    // fields).
-    required float bmi_new = 5;
+    optional float bmi_new = 5;
     required bool has_cardiovascular_disease = 2;
     required bool has_diabetes = 3;
     required bool has_high_blood_pressure = 4;
@@ -237,8 +233,8 @@ message Venue {
 
     required Point location = 3;
     // This only exists for PrimarySchool and SecondarySchool. It's a
-    // https://en.wikipedia.org/wiki/Unique_Reference_Number. 0 means none.
-    required uint64 urn = 4;
+    // https://en.wikipedia.org/wiki/Unique_Reference_Number.
+    optional uint64 urn = 4;
 }
 
 enum Activity {
@@ -253,6 +249,8 @@ enum Activity {
 message Lockdown {
     // The YYYY-MM-DD date of the first entry in the daily list.
     required string start_date = 1;
-    // A coefficient to be applied to all not at home activities (unknown; work; school; shop; services; leisure; escort; transport; not_home). Update at home activity so that it still sums to 1.
+    // A coefficient to be applied to all not at home activities (unknown;
+    // work; school; shop; services; leisure; escort; transport; not_home).
+    // Update at home activity so that it still sums to 1.
     repeated float per_day = 2;
 }

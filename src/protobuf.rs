@@ -29,10 +29,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
         output.people.push(pb::Person {
             id: person.id.0.try_into()?,
             household: person.household.0.try_into()?,
-            workplace: match person.workplace {
-                Some(id) => id.0.try_into()?,
-                None => u64::MAX,
-            },
+            workplace: person.workplace.map(|x| x.0 as u64),
             identifiers: person.identifiers.clone(),
             demographics: person.demographics.clone(),
             employment: person.employment.clone(),
@@ -57,8 +54,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
                     id: venue.id.0.try_into().unwrap(),
                     activity: convert_activity(activity).into(),
                     location: convert_point(&venue.location),
-                    // TODO Check 0 isn't valid
-                    urn: venue.urn.unwrap_or(0).try_into().unwrap(),
+                    urn: venue.urn.map(|x| x as u64),
                 })
                 .collect(),
         };

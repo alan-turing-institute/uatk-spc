@@ -97,9 +97,6 @@ impl Businesses {
                 // The CSV has string IDs, but they're not used anywhere else. Immediately create a
                 // venue and use integer IDs, which're much faster to copy around.
                 let id = VenueID(result.venues.len());
-                if rec.sic1d07 == 0 {
-                    bail!("A business unexpectedly uses SIC 0: {:?}", rec);
-                }
                 result
                     .venues_per_sic
                     .entry(rec.sic1d07)
@@ -157,7 +154,7 @@ impl JobMarket {
             // Find workers with a matching SIC
             let mut workers: Vec<PersonID> = Vec::new();
             for id in &all_workers {
-                if population.people[*id].employment.sic1d07 == *sic {
+                if population.people[*id].employment.sic1d07 == Some(*sic) {
                     workers.push(*id);
                 }
             }
