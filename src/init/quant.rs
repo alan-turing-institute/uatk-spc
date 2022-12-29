@@ -169,7 +169,7 @@ struct ZoneRow {
     east: f32,
     north: f32,
     zonei: usize,
-    urn: Option<usize>,
+    urn: Option<u64>,
 }
 
 // Make things sum to 1

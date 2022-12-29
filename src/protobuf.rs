@@ -16,7 +16,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
         output.households.push(pb::Household {
             id: household.id.0.try_into()?,
             msoa11cd: household.msoa.0.clone(),
-            orig_hid: household.orig_hid.try_into()?,
+            orig_hid: household.orig_hid,
             members: household
                 .members
                 .iter()
@@ -54,7 +54,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
                     id: venue.id.0.try_into().unwrap(),
                     activity: convert_activity(activity).into(),
                     location: convert_point(&venue.location),
-                    urn: venue.urn.map(|x| x as u64),
+                    urn: venue.urn,
                 })
                 .collect(),
         };
@@ -66,7 +66,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
             msoa.0.clone(),
             pb::InfoPerMsoa {
                 shape: info.shape.coords_iter().map(convert_coordinate).collect(),
-                population: info.population.try_into()?,
+                population: info.population,
                 buildings: info.buildings.iter().map(convert_point).collect(),
                 flows_per_activity: convert_flows(info),
             },

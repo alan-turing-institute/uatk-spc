@@ -21,7 +21,7 @@ pub fn read_individual_time_use_and_health_data(
     //
     // If there are multiple time use files, we assume this grouping won't have any overlaps --
     // MSOAs shouldn't be the same between different files.
-    let mut people_per_household: BTreeMap<(MSOA, isize), Vec<TuPerson>> = BTreeMap::new();
+    let mut people_per_household: BTreeMap<(MSOA, i64), Vec<TuPerson>> = BTreeMap::new();
     let mut no_household = 0;
 
     // TODO Two-level progress bar. MultiProgress seems to demand two threads and calling join() :(
@@ -118,8 +118,8 @@ pub fn read_individual_time_use_and_health_data(
 struct TuPerson {
     #[serde(rename = "MSOA11CD")]
     msoa: MSOA,
-    #[serde(deserialize_with = "parse_isize")]
-    hid: isize,
+    #[serde(deserialize_with = "parse_i64")]
+    hid: i64,
     pid: i64,
     pid_tus: i64,
     pid_hse: i64,
@@ -198,12 +198,12 @@ fn parse_f32_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<Option<f32>, D::Er
 }
 
 /// Parses a signed integer, handling scientific notation
-fn parse_isize<'de, D: Deserializer<'de>>(d: D) -> Result<isize, D::Error> {
+fn parse_i64<'de, D: Deserializer<'de>>(d: D) -> Result<i64, D::Error> {
     // pop_northamptonshire.csv expresses HID in scientific notation: 2.00563e+11
     // Parse to f64, then cast
     let float = <f64>::deserialize(d)?;
     // TODO Is there a safety check we should do? Make sure it's already rounded?
-    Ok(float as isize)
+    Ok(float as i64)
 }
 
 impl TuPerson {
