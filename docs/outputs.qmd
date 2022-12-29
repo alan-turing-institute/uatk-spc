@@ -89,3 +89,6 @@ update.
   - added `pwkstat`, `salary_hourly`, `salary_yearly`, and `idp`
   - reorganized `Identifiers` and `Employment` attributes
   - non-breaking change added 02/08/2022: added `bmi_new` field
+- v1.2, released 29/12/2022, schema
+  - switched to proto2 and made some fields optional
+  - adjusted some numeric enum values to match ONS

@@ -129,33 +129,22 @@ sure to check for your language.
 
 ## Protocol buffers
 
-SPC uses protocol buffers for output. This has some advantages explained the
-"explicit data schema" section above, but the particular choice of protocol
-buffer has some limitations.
+SPC uses protocol buffers v2 for output. This has some advantages explained the
+"explicit data schema" section above.
 
-First, proto3 doesn't support [required
+Note that we chose proto2 instead of proto3, because proto3 doesn't support [required
 fields](https://github.com/protocolbuffers/protobuf/issues/2497). This is done
 to allow schemas to evolve better over time, but this isn't a feature SPC makes
 use of. There's no need to have new code work with old data, or vice versa --
 if the schema is updated, downstream code should adapt accordingly and use the
-updated input files. The lack of required fields leads to imprecise code -- a
-person's health structure is always filled out, but in Rust, we wind up with
-`Option<Health>`. Differentiating 0 from missing data also becomes impossible
--- `urn` is optional, but in protobuf, we're forced to map the missing case to
-0 and document this.
+updated input files.
 
-Second, protocol buffers don't easily support type-safe wrappers around numeric
-IDs, so downstream code has to be careful not to mix up household, venue, and
-person IDs.
-
-Third, protocol buffers support limited key types for maps. Enumerations can't
-be used, so we use the numeric value for the activity enum.
-
-We'll evaluate flatbuffers and other alternative encodings.
-
-Note that in any case, SPC internally doesn't use the auto-generated code until
-the very end of the pipeline. It's always possible to be more precise with
-native Rust types, and convert to the less strict types last.
+Note also that protocol buffers don't easily support type-safe wrappers around
+numeric IDs, so downstream code has to be careful not to mix up household,
+venue, and person IDs. For this reason, SPC internally doesn't use the
+auto-generated protobuf code until the very end of the pipeline. It's always
+possible to be more precise with native Rust types, and convert to the less
+strict types later.
 
 ## An example of the power of static type checking
 
