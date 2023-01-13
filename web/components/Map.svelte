@@ -3,17 +3,17 @@
   import { Map, NavigationControl, ScaleControl } from "maplibre-gl";
   import "maplibre-gl/dist/maplibre-gl.css";
 
+  // Before creating the map, check if there's a hash, because one will get set below
+  let setCamera = !window.location.hash;
+
   let map;
   let mapContainer;
   let loaded = false;
 
   // TODO Supposed to use a phantom type, not a string, as the key
-  setContext("map", { getMap: () => map });
+  setContext("map", { getMap: () => map, setCamera });
 
   onMount(() => {
-    // Before creating the map, check if there's a hash, because one will get set below
-    let setCamera = !window.location.hash;
-
     map = new Map({
       container: mapContainer,
       style:
@@ -22,13 +22,6 @@
     });
     map.addControl(new ScaleControl());
     map.addControl(new NavigationControl(), "bottom-right");
-
-    if (setCamera) {
-      map.jumpTo({
-        center: [-0.47, 52.879],
-        zoom: 6,
-      });
-    }
 
     map.on("load", () => {
       loaded = true;
