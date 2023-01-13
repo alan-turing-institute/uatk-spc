@@ -20,6 +20,7 @@
   "dependencies": {
     "@bufbuild/protobuf": "^1.0.0",
     "@bufbuild/protoc-gen-es": "^1.0.0",
+    "@turf/bbox": "^6.5.0",
     "maplibre-gl": "^2.4.0",
     "svelte": "^3.54.0"
   }
