@@ -8,7 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "fmt": "prettier --write *.html *.js *.svelte components/*",
-    "lint": "npx eslint . --ignore-pattern=vite.config.js"
+    "lint": "npx eslint . --ignore-pattern=vite.config.js",
+    "generate-pb": "buf generate proto/"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.0",
@@ -17,6 +18,8 @@
     "vite": "^4.0.0"
   },
   "dependencies": {
+    "@bufbuild/protobuf": "^1.0.0",
+    "@bufbuild/protoc-gen-es": "^1.0.0",
     "maplibre-gl": "^2.4.0",
     "svelte": "^3.54.0"
   }
