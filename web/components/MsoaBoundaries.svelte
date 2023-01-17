@@ -5,41 +5,26 @@
   const { getMap, setCamera } = getContext("map");
   let map = getMap();
 
-  export let pop;
+  export let msoas;
   export let hoveredMsoa;
-
-  function boundaryGeojson() {
-    let features = [];
-    for (let [id, info] of Object.entries(pop.infoPerMsoa)) {
-      features.push({
-        type: "Feature",
-        properties: { id },
-        geometry: {
-          coordinates: [info.shape.map((pt) => [pt.longitude, pt.latitude])],
-          type: "Polygon",
-        },
-      });
-    }
-    return {
-      type: "FeatureCollection",
-      features,
-    };
-  }
 
   let source = "msoas";
   let layer = "msoas-polygons";
   onMount(() => {
-    let data = boundaryGeojson();
+    let gj = {
+      type: "FeatureCollection",
+      features: Object.values(msoas),
+    };
 
     if (setCamera) {
-      map.fitBounds(bbox(data), {
+      map.fitBounds(bbox(gj), {
         padding: 20,
         animate: false,
       });
     }
 
     // TODO If we pass the MSOA ID as feature.id, it gets dropped?
-    map.addSource(source, { type: "geojson", data, generateId: true });
+    map.addSource(source, { type: "geojson", data: gj, generateId: true });
 
     map.addLayer({
       id: "msoas-lines",
