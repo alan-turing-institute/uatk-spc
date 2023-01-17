@@ -8,6 +8,7 @@
   import { Population } from "./pb/synthpop_pb.js";
 
   let pop;
+  let hoveredMsoa;
 
   onMount(async () => {
     let resp = await fetch("rutland.pb");
@@ -21,11 +22,11 @@
   <Layout>
     <div slot="left">
       <h1>SPC</h1>
-      <DumpProto {pop} />
+      <DumpProto {pop} {hoveredMsoa} />
     </div>
     <div slot="main">
       <Map>
-        <MsoaBoundaries {pop} />
+        <MsoaBoundaries {pop} bind:hoveredMsoa />
       </Map>
     </div>
   </Layout>
