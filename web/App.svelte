@@ -1,7 +1,7 @@
 <script>
   import Map from "./components/Map.svelte";
   import Layout from "./components/Layout.svelte";
-  import DumpProto from "./components/DumpProto.svelte";
+  import Sidebar from "./components/Sidebar.svelte";
   import MsoaBoundaries from "./components/MsoaBoundaries.svelte";
 
   import { onMount } from "svelte";
@@ -22,7 +22,7 @@
   <Layout>
     <div slot="left">
       <h1>SPC</h1>
-      <DumpProto {pop} {hoveredMsoa} />
+      <Sidebar {pop} {hoveredMsoa} />
     </div>
     <div slot="main">
       <Map>
