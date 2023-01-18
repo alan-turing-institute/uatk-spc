@@ -13,7 +13,7 @@ jobs:
     - name: Install quarto
       uses: quarto-dev/quarto-actions/setup@v2
       with:
-        tinytex: true
+        tinytex: false
 
     - name: Render site
       run: |
