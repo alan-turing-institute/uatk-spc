@@ -17,6 +17,7 @@ jobs:
 
     - name: Render site
       run: |
+        quarto install tinytex
         cd docs
         # tinyex gets installed here, but who knows how the shell gets up
         PATH=$PATH:~/bin quarto render --to all
