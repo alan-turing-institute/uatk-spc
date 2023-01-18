@@ -1,6 +1,7 @@
 <script>
   import { getContext, onMount, onDestroy } from "svelte";
   import bbox from "@turf/bbox";
+  import chroma from "chroma-js";
 
   const { getMap, setCamera } = getContext("map");
   let map = getMap();
@@ -36,6 +37,7 @@
     // TODO If we pass the MSOA ID as feature.id, it gets dropped?
     map.addSource(source, { type: "geojson", data: gj, generateId: true });
 
+    // TODO Just fill-outline-color
     map.addLayer({
       id: "msoas-lines",
       source,
@@ -67,36 +69,37 @@
     if (map.getLayer(layer)) {
       map.removeLayer(layer);
     }
+
+    // Get the numeric data we're displaying
+    let data = Object.values(msoas).reduce((agg, msoa) => {
+      agg.push(msoa.properties[colorBy]);
+      return agg;
+    }, []);
+    // chroma equidistant scale
+    let limits = chroma.limits(data, "e", 4);
+    let colorScale = chroma
+      .scale(["rgba(222,235,247,1)", "rgba(49,130,189,1)"])
+      .mode("lch")
+      .colors(5);
+
+    let fillColor = [
+      "case",
+      ["!=", ["to-number", ["get", colorBy]], 0],
+      ["step", ["get", colorBy]],
+      "rgba(0, 0, 0, 0)",
+    ];
+    for (let i = 1; i < limits.length; i++) {
+      fillColor[2].push(colorScale[i - 1]);
+      fillColor[2].push(limits[i]);
+    }
+    fillColor[2].push(colorScale[limits.length - 1]);
+
     map.addLayer({
       id: layer,
       source,
       type: "fill",
       paint: {
-        "fill-color": [
-          "interpolate",
-          ["linear"],
-          ["get", colorBy],
-          1000,
-          "#67001f",
-          2000,
-          "#b2182b",
-          3000,
-          "#d6604d",
-          4000,
-          "#f4a582",
-          5000,
-          "#fddbc7",
-          6000,
-          "#d1e5f0",
-          7000,
-          "#92c5de",
-          8000,
-          "#4393c3",
-          9000,
-          "#2166ac",
-          10000,
-          "#053061",
-        ],
+        "fill-color": fillColor,
         "fill-opacity": [
           "case",
           ["boolean", ["feature-state", "hover"], false],
