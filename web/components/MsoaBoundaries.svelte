@@ -10,6 +10,8 @@
   export let hoveredMsoa;
 
   let colorBy = "households";
+  let limits = [];
+  let colorScale = [];
 
   let source = "msoas";
   let layer = "msoas-polygons";
@@ -76,8 +78,8 @@
       return agg;
     }, []);
     // chroma equidistant scale
-    let limits = chroma.limits(data, "e", 4);
-    let colorScale = chroma
+    limits = chroma.limits(data, "e", 4);
+    colorScale = chroma
       .scale(["rgba(222,235,247,1)", "rgba(49,130,189,1)"])
       .mode("lch")
       .colors(5);
@@ -122,17 +124,29 @@
   });
 </script>
 
-<div>
+<div class="legend">
   <select bind:value={colorBy} on:change={setLayer}>
     <option value="households">Number of households</option>
     <option value="people">Number of people</option>
     <option value="avg_age">Average age (years)</option>
     <option value="avg_household_size">Average household size</option>
   </select>
+  <ul>
+    {#each colorScale as color, i}
+      <li>
+        <div class="square" style="background-color: {color}" />
+        {#if i < colorScale.length - 1}
+          {limits[i]} &mdash; {limits[i + 1]}
+        {:else}
+          &gt; {limits[i]}
+        {/if}
+      </li>
+    {/each}
+  </ul>
 </div>
 
 <style>
-  div {
+  .legend {
     z-index: 1;
     position: absolute;
     bottom: 250px;
@@ -144,5 +158,18 @@
   select {
     font-size: 16px;
     padding: 4px 8px;
+  }
+
+  ul {
+    list-style-type: none;
+  }
+
+  li {
+    display: flex;
+  }
+
+  .square {
+    width: 50px;
+    height: 50px;
   }
 </style>
