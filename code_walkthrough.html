@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.2.280">
+<meta name="generator" content="quarto-1.2.313">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -283,12 +283,9 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="protocol-buffers" class="level2" data-number="10.2">
 <h2 data-number="10.2" class="anchored" data-anchor-id="protocol-buffers"><span class="header-section-number">10.2</span> Protocol buffers</h2>
-<p>SPC uses protocol buffers for output. This has some advantages explained the “explicit data schema” section above, but the particular choice of protocol buffer has some limitations.</p>
-<p>First, proto3 doesn’t support <a href="https://github.com/protocolbuffers/protobuf/issues/2497">required fields</a>. This is done to allow schemas to evolve better over time, but this isn’t a feature SPC makes use of. There’s no need to have new code work with old data, or vice versa – if the schema is updated, downstream code should adapt accordingly and use the updated input files. The lack of required fields leads to imprecise code – a person’s health structure is always filled out, but in Rust, we wind up with <code>Option&lt;Health&gt;</code>. Differentiating 0 from missing data also becomes impossible – <code>urn</code> is optional, but in protobuf, we’re forced to map the missing case to 0 and document this.</p>
-<p>Second, protocol buffers don’t easily support type-safe wrappers around numeric IDs, so downstream code has to be careful not to mix up household, venue, and person IDs.</p>
-<p>Third, protocol buffers support limited key types for maps. Enumerations can’t be used, so we use the numeric value for the activity enum.</p>
-<p>We’ll evaluate flatbuffers and other alternative encodings.</p>
-<p>Note that in any case, SPC internally doesn’t use the auto-generated code until the very end of the pipeline. It’s always possible to be more precise with native Rust types, and convert to the less strict types last.</p>
+<p>SPC uses protocol buffers v2 for output. This has some advantages explained the “explicit data schema” section above.</p>
+<p>Note that we chose proto2 instead of proto3, because proto3 doesn’t support <a href="https://github.com/protocolbuffers/protobuf/issues/2497">required fields</a>. This is done to allow schemas to evolve better over time, but this isn’t a feature SPC makes use of. There’s no need to have new code work with old data, or vice versa – if the schema is updated, downstream code should adapt accordingly and use the updated input files.</p>
+<p>Note also that protocol buffers don’t easily support type-safe wrappers around numeric IDs, so downstream code has to be careful not to mix up household, venue, and person IDs. For this reason, SPC internally doesn’t use the auto-generated protobuf code until the very end of the pipeline. It’s always possible to be more precise with native Rust types, and convert to the less strict types later.</p>
 </section>
 <section id="an-example-of-the-power-of-static-type-checking" class="level2" data-number="10.3">
 <h2 data-number="10.3" class="anchored" data-anchor-id="an-example-of-the-power-of-static-type-checking"><span class="header-section-number">10.3</span> An example of the power of static type checking</h2>
