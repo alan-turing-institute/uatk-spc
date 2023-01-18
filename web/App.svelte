@@ -12,13 +12,33 @@
   let msoas;
   let hoveredMsoa;
 
-  onMount(async () => {
-    let resp = await fetch("rutland.pb");
-    let buffer = await resp.arrayBuffer();
-    let bytes = new Uint8Array(buffer);
-    pop = Population.fromBinary(bytes);
-    msoas = msoaStats(pop);
-  });
+  // Switch to false to auto-load a local rutland.pb file, useful for quicker development
+  let githubDeployment = true;
+
+  if (!githubDeployment) {
+    onMount(async () => {
+      let resp = await fetch("rutland.pb");
+      loadArrayBuffer(await resp.arrayBuffer());
+    });
+  }
+
+  function loadArrayBuffer(buffer) {
+    try {
+      let bytes = new Uint8Array(buffer);
+      pop = Population.fromBinary(bytes);
+      msoas = msoaStats(pop);
+    } catch (err) {
+      window.alert(`Couldn't load SPC proto file: ${err}`);
+    }
+  }
+
+  function loadFile(e) {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      loadArrayBuffer(e.target.result);
+    };
+    reader.readAsArrayBuffer(e.target.files[0]);
+  }
 </script>
 
 {#if pop}
@@ -33,6 +53,9 @@
       </Map>
     </div>
   </Layout>
+{:else if githubDeployment}
+  <label for="input">Load an SPC .pb file</label>
+  <input name="input" type="file" on:change={loadFile} />
 {:else}
   <p>Loading</p>
 {/if}
