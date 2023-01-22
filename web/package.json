@@ -9,7 +9,7 @@
     "preview": "vite preview",
     "fmt": "npx prettier --write *.html *.js *.svelte components/*",
     "lint": "npx eslint . --ignore-pattern=vite.config.js",
-    "generate-pb": "buf generate proto/"
+    "generate-pb": "npx pbjs -t static-module -w es6 -o pb/synthpop_pb.js ../synthpop.proto"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.0.0",
@@ -17,11 +17,10 @@
     "eslint-plugin-svelte": "^2.14.1",
     "prettier": "^2.8.2",
     "prettier-plugin-svelte": "^2.9.0",
+    "protobufjs-cli": "^1.0.2",
     "vite": "^4.0.0"
   },
   "dependencies": {
-    "@bufbuild/protobuf": "^1.0.0",
-    "@bufbuild/protoc-gen-es": "^1.0.0",
     "@turf/bbox": "^6.5.0",
     "@turf/centroid": "^6.5.0",
     "chroma-js": "^2.4.2",

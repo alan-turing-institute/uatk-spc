@@ -6,14 +6,14 @@
   import Flows from "./components/Flows.svelte";
 
   import { onMount } from "svelte";
-  import { Population, Activity } from "./pb/synthpop_pb.js";
+  import { synthpop } from "./pb/synthpop_pb.js";
   import { msoaStats } from "./data.js";
 
   let pop;
   let msoas;
   let hoveredMsoa;
 
-  // Switch to false to auto-load a local rutland.pb file, useful for quicker development
+  // Switch to false to auto-load a local file, useful for quicker development
   let githubDeployment = true;
 
   if (!githubDeployment) {
@@ -26,7 +26,7 @@
   function loadArrayBuffer(buffer) {
     try {
       let bytes = new Uint8Array(buffer);
-      pop = Population.fromBinary(bytes);
+      pop = synthpop.Population.decode(bytes);
       msoas = msoaStats(pop);
     } catch (err) {
       window.alert(`Couldn't load SPC proto file: ${err}`);

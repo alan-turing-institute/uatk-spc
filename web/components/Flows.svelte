@@ -1,6 +1,6 @@
 <script>
   import { getContext, onMount, onDestroy } from "svelte";
-  import { Activity } from "../pb/synthpop_pb.js";
+  import { synthpop } from "../pb/synthpop_pb.js";
   import { emptyGeojson, getFlows } from "../data.js";
 
   const { getMap } = getContext("map");
@@ -117,9 +117,9 @@
   <select bind:value={show}>
     <option value="all">All</option>
     <option value="none">None</option>
-    <option value={Activity.RETAIL}>Retail</option>
-    <option value={Activity.PRIMARY_SCHOOL}>Primary school</option>
-    <option value={Activity.SECONDARY_SCHOOL}>Secondary school</option>
+    <option value={synthpop.Activity.RETAIL}>Retail</option>
+    <option value={synthpop.Activity.PRIMARY_SCHOOL}>Primary school</option>
+    <option value={synthpop.Activity.SECONDARY_SCHOOL}>Secondary school</option>
   </select>
 </div>
 
