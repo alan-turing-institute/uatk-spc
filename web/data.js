@@ -1,3 +1,5 @@
+import centroid from "@turf/centroid";
+
 // Returns a mapping from MSOA ID to the GJ Feature
 export function msoaStats(pop) {
   let households_per_msoa = {};
@@ -42,4 +44,44 @@ export function msoaStats(pop) {
     };
   }
   return msoas;
+}
+
+export function getFlows(pop, msoas, msoa, activity) {
+  let gj = emptyGeojson();
+  if (activity == "none") {
+    return gj;
+  }
+
+  // TODO Cache some of this, maybe even automatically
+  let from = centroid(msoas[msoa]).geometry.coordinates;
+
+  for (let flows of pop.infoPerMsoa[msoa].flowsPerActivity) {
+    if (activity == "all" || activity == flows.activity) {
+      for (let flow of flows.flows) {
+        let rawTo =
+          pop.venuesPerActivity[flows.activity].venues[flow.venueId].location;
+        let to = [rawTo.longitude, rawTo.latitude];
+
+        gj.features.push({
+          type: "Feature",
+          properties: {
+            weight: flow.weight,
+          },
+          geometry: {
+            coordinates: [from, to],
+            type: "LineString",
+          },
+        });
+      }
+    }
+  }
+
+  return gj;
+}
+
+export function emptyGeojson() {
+  return {
+    type: "FeatureCollection",
+    features: [],
+  };
 }

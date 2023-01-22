@@ -3,9 +3,10 @@
   import Layout from "./components/Layout.svelte";
   import Sidebar from "./components/Sidebar.svelte";
   import MsoaBoundaries from "./components/MsoaBoundaries.svelte";
+  import Flows from "./components/Flows.svelte";
 
   import { onMount } from "svelte";
-  import { Population } from "./pb/synthpop_pb.js";
+  import { Population, Activity } from "./pb/synthpop_pb.js";
   import { msoaStats } from "./data.js";
 
   let pop;
@@ -50,6 +51,7 @@
     <div slot="main">
       <Map>
         <MsoaBoundaries {msoas} bind:hoveredMsoa />
+        <Flows {pop} {msoas} {hoveredMsoa} />
       </Map>
     </div>
   </Layout>
