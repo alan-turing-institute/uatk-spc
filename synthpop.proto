@@ -20,10 +20,31 @@ message Household {
     required uint64 id = 1;
     // 2011 MSOA code
     required string msoa11cd = 2;
-    /// An ID from the original data, kept around for debugging
-    required int64 orig_hid = 3;
     // These IDs index into `Population::people`
-    repeated uint64 members = 4;
+    repeated uint64 members = 3;
+    required HouseholdDetails details = 4;
+}
+
+message HouseholdDetails {
+    /// An ID from the original data, kept around for debugging
+    required int64 orig_hid = 1;
+
+    // TODO Enums for many of these
+    // National Statistics Socio-economic classification of the reference
+    // person of the household (LC4605, census 2011)
+    optional uint64 nssec8 = 2;
+    // Type of accommodation (based on LC4402EW, census 2011)
+    optional uint64 accomodation_type = 3;
+    // Type of communal establishment (based on QS420, census 2011)
+    optional uint64 communal_type = 4;
+    // Number of rooms in the accommodation capped at 6 (LC4404EW, census 2011)
+    optional uint64 num_rooms = 5;
+    // Presence of central heating (based on LC4402EW, census 2011)
+    required bool central_heat = 6;
+    // Tenure (based on LC4402EW, census 2011)
+    optional uint64 tenure = 7;
+    // Number of cars capped at 3 (LC4202EW, census 2011)k
+    optional uint64 num_cars = 8;
 }
 
 message VenueList {

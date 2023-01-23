@@ -96,9 +96,8 @@ pub struct InfoPerMSOA {
 pub struct Household {
     pub id: VenueID,
     pub msoa: MSOA,
-    /// An ID from the original data, kept around for debugging
-    pub orig_hid: i64,
     pub members: Vec<PersonID>,
+    pub details: pb::HouseholdDetails,
 }
 
 pub struct Person {
