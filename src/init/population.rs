@@ -21,8 +21,8 @@ pub fn read_individual_time_use_and_health_data(
     //
     // If there are multiple time use files, we assume this grouping won't have any overlaps --
     // MSOAs shouldn't be the same between different files.
-    let mut people_per_household: BTreeMap<(MSOA, i64), Vec<TuPerson>> = BTreeMap::new();
-    let mut household_details: BTreeMap<(MSOA, i64), pb::HouseholdDetails> = BTreeMap::new();
+    let mut people_per_household: BTreeMap<(MSOA, String), Vec<TuPerson>> = BTreeMap::new();
+    let mut household_details: BTreeMap<(MSOA, String), pb::HouseholdDetails> = BTreeMap::new();
     let mut no_household = 0;
 
     // TODO Two-level progress bar. MultiProgress seems to demand two threads and calling join() :(
@@ -43,10 +43,10 @@ pub fn read_individual_time_use_and_health_data(
             let rec: TuPerson = rec?;
 
             // Skip people that weren't matched to a household
-            if rec.hid == -1 {
+            /*if rec.hid == -1 {
                 no_household += 1;
                 continue;
-            }
+            }*/
 
             // Only keep people in the input set of MSOAs
             if !population.msoas.contains(&rec.msoa) {
@@ -65,12 +65,12 @@ pub fn read_individual_time_use_and_health_data(
             }
 
             // Assume the household details are equivalent for every row in the input
-            if !household_details.contains_key(&(rec.msoa.clone(), rec.hid)) {
+            if !household_details.contains_key(&(rec.msoa.clone(), rec.hid.clone())) {
                 household_details.insert(
-                    (rec.msoa.clone(), rec.hid),
+                    (rec.msoa.clone(), rec.hid.clone()),
                     pb::HouseholdDetails {
-                        orig_hid: rec.hid,
-                        nssec8: parse_optional_neg1(rec.nssec8)?,
+                        orig_hid: rec.hid.clone(),
+                        nssec8: parse_optional_neg1(rec.hh_nssec8)?,
                         accomodation_type: parse_optional_neg1(rec.accomodation_type)?,
                         communal_type: parse_optional_neg1(rec.communal_type)?,
                         num_rooms: parse_optional_neg1(rec.num_rooms)?,
@@ -86,7 +86,7 @@ pub fn read_individual_time_use_and_health_data(
             }
 
             people_per_household
-                .entry((rec.msoa.clone(), rec.hid))
+                .entry((rec.msoa.clone(), rec.hid.clone()))
                 .or_insert_with(Vec::new)
                 .push(rec);
         }
@@ -152,19 +152,19 @@ pub fn read_individual_time_use_and_health_data(
 struct TuPerson {
     #[serde(rename = "MSOA11CD")]
     msoa: MSOA,
-    #[serde(deserialize_with = "parse_i64")]
-    hid: i64,
-    pid: i64,
+    hid: String,
+    pid: String,
+    #[serde(rename = "id_TUS_p")]
     pid_tus: i64,
+    #[serde(rename = "id_HS")]
     pid_hse: i64,
-    idp: String,
     lat: f32,
     lng: f32,
 
     sex: usize,
     age: u32,
-    origin: usize,
-    nssec5: usize,
+    ethnicity: usize,
+    nssec8: i64,
     #[serde(deserialize_with = "parse_u64_or_na")]
     sic1d07: Option<u64>,
     #[serde(deserialize_with = "parse_u64_or_na")]
@@ -199,7 +199,7 @@ struct TuPerson {
     phometot: f64,
 
     #[serde(rename = "HOUSE_nssec8")]
-    nssec8: i64,
+    hh_nssec8: i64,
     #[serde(rename = "HOUSE_type")]
     accomodation_type: i64,
     #[serde(rename = "HOUSE_typeCommunal")]
@@ -246,15 +246,6 @@ fn parse_f32_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<Option<f32>, D::Er
     )))
 }
 
-/// Parses a signed integer, handling scientific notation
-fn parse_i64<'de, D: Deserializer<'de>>(d: D) -> Result<i64, D::Error> {
-    // pop_northamptonshire.csv expresses HID in scientific notation: 2.00563e+11
-    // Parse to f64, then cast
-    let float = <f64>::deserialize(d)?;
-    // TODO Is there a safety check we should do? Make sure it's already rounded?
-    Ok(float as i64)
-}
-
 impl TuPerson {
     fn create(self, household: VenueID, id: PersonID) -> Result<Person> {
         let mut duration_per_activity: EnumMap<Activity, f64> = EnumMap::default();
@@ -283,10 +274,9 @@ impl TuPerson {
             location: Point::new(self.lng, self.lat),
 
             identifiers: pb::Identifiers {
-                pid_census: self.pid,
+                orig_pid: self.pid,
                 pid_tus: self.pid_tus,
                 pid_hse: self.pid_hse,
-                idp: self.idp,
             },
             demographics: pb::Demographics {
                 sex: match self.sex {
@@ -296,16 +286,17 @@ impl TuPerson {
                 }
                 .into(),
                 age_years: self.age,
-                origin: match self.origin {
-                    x if x == 1 => pb::Origin::White,
-                    x if x == 2 => pb::Origin::Black,
-                    x if x == 3 => pb::Origin::Asian,
-                    x if x == 4 => pb::Origin::Mixed,
-                    x if x == 5 => pb::Origin::Other,
-                    x => bail!("Unknown origin {}", x),
+                ethnicity: match self.ethnicity{
+                    x if x == 1 => pb::Ethnicity::White,
+                    x if x == 2 => pb::Ethnicity::Black,
+                    x if x == 3 => pb::Ethnicity::Asian,
+                    x if x == 4 => pb::Ethnicity::Mixed,
+                    x if x == 5 => pb::Ethnicity::Other,
+                    x => bail!("Unknown ethnicity {}", x),
                 }
                 .into(),
-                socioeconomic_classification: match self.nssec5 {
+                socioeconomic_classification: self.nssec8,
+                /*socioeconomic_classification: match self.nssec5 {
                     x if x == 0 => pb::Nssec5::Unemployed,
                     x if x == 1 => pb::Nssec5::Higher,
                     x if x == 2 => pb::Nssec5::Intermediate,
@@ -314,7 +305,7 @@ impl TuPerson {
                     x if x == 5 => pb::Nssec5::Routine,
                     x => bail!("Unknown nssec5 {}", x),
                 }
-                .into(),
+                .into(),*/
             },
             employment: pb::Employment {
                 sic1d07: self.sic1d07,
