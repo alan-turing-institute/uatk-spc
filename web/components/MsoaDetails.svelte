@@ -1,4 +1,6 @@
 <script>
+  import Plotly from "plotly.js-dist";
+
   export let pop;
   export let clickedMsoa;
 
@@ -15,11 +17,16 @@
       }
     }
   }
+
+  // TODO This doesn't use latest ages, you have to click on and off an MSOA.
+  function plotlyAction(div) {
+    Plotly.newPlot(div, [{ x: ages, type: "histogram" }]);
+  }
 </script>
 
 {#if clickedMsoa}
   <h2>{clickedMsoa}</h2>
-  <p>{JSON.stringify(ages)}></p>
+  <div use:plotlyAction />
 {:else}
   <p>Click an MSOA for more details</p>
 {/if}
