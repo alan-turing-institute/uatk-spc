@@ -12,30 +12,14 @@
 
   let show = "all";
 
+  // TODO Another possible pattern -- store the Source / Layer themselves, not the names, here
   let source = "flows";
   let layerStatic = "flows-static";
   let layerDynamic = "flows-dynamic";
 
-  // hoveredMsoa and show trigger change
-  $: {
-    // TODO Do this in onMount?
-    if (!map.getSource(source)) {
-      map.addSource(source, { type: "geojson", data: emptyGeojson() });
-    }
-
-    if (map.getLayer(layerStatic)) {
-      map.removeLayer(layerStatic);
-    }
-    if (map.getLayer(layerDynamic)) {
-      map.removeLayer(layerDynamic);
-    }
-
-    if (hoveredMsoa) {
-      map.getSource(source).setData(getFlows(pop, msoas, hoveredMsoa, show));
-    } else {
-      map.getSource(source).setData(emptyGeojson());
-    }
-
+  // Set up the source and two layers once, with no data
+  onMount(() => {
+    map.addSource(source, { type: "geojson", data: emptyGeojson() });
     map.addLayer({
       id: layerStatic,
       source,
@@ -46,8 +30,19 @@
         "line-opacity": 0.4,
       },
     });
-
     addAntPathLayer();
+  });
+
+  // Swap out data when hoveredMsoa or show change
+  $: {
+    // TODO Hack, how do we also not do this until onMount is done?
+    if (map.getSource(source)) {
+      if (hoveredMsoa) {
+        map.getSource(source).setData(getFlows(pop, msoas, hoveredMsoa, show));
+      } else {
+        map.getSource(source).setData(emptyGeojson());
+      }
+    }
   }
 
   function addAntPathLayer() {
