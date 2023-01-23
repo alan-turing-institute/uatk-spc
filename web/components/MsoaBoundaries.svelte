@@ -8,6 +8,7 @@
 
   export let msoas;
   export let hoveredMsoa;
+  export let clickedMsoa;
 
   let colorBy = "households";
   let limits = [];
@@ -47,6 +48,13 @@
       paint: {
         "line-color": "black",
         "line-width": 3,
+        "line-width": [
+          "case",
+          // TODO This feels backwards, but before the feature state is defined at all, it's unclear
+          ["boolean", ["feature-state", "focused"], false],
+          10,
+          3,
+        ],
       },
     });
 
@@ -64,6 +72,24 @@
       unhover();
       hoveredMsoa = null;
       hoverId = null;
+    });
+
+    // TODO These two IDs are getting really annoying
+    let clickedId = null;
+    map.on("click", (e) => {
+      if (clickedId != null) {
+        map.setFeatureState({ source, id: clickedId }, { focused: false });
+      }
+
+      let features = map.queryRenderedFeatures(e.point, { layers: [layer] });
+      if (features.length == 1) {
+        clickedMsoa = features[0].properties.id;
+        clickedId = features[0].id;
+        map.setFeatureState({ source, id: clickedId }, { focused: true });
+      } else {
+        clickedMsoa = null;
+        clickedId = null;
+      }
     });
   });
 
