@@ -17,32 +17,33 @@ message Population {
 
 message Household {
     // This is the index into Population::households
-    required uint64 id = 1;
+    required string id = 1;
     // 2011 MSOA code
     required string msoa11cd = 2;
+    // 2011 OA code
+    required string oa11cd = 3;
     // These IDs index into `Population::people`
-    repeated uint64 members = 3;
-    required HouseholdDetails details = 4;
+    repeated uint64 members = 4;
+    required HouseholdDetails details = 5;
 }
 
 message HouseholdDetails {
-    /// An opaque ID from the original data, kept around for debugging
-    required string orig_hid = 1;
+    /// Unique household ID
+    required string hid = 1;
 
-    // TODO Enums for many of these
     // National Statistics Socio-economic classification of the reference
     // person of the household (LC4605, census 2011)
-    optional uint64 nssec8 = 2;
+    optional Nssec8 nssec8 = 2;
     // Type of accommodation (based on LC4402EW, census 2011)
-    optional uint64 accomodation_type = 3;
+    optional AccType accomodation_type = 3;
     // Type of communal establishment (based on QS420, census 2011)
-    optional uint64 communal_type = 4;
+    optional ComType communal_type = 4;
     // Number of rooms in the accommodation capped at 6 (LC4404EW, census 2011)
     optional uint64 num_rooms = 5;
     // Presence of central heating (based on LC4402EW, census 2011)
     required bool central_heat = 6;
     // Tenure (based on LC4402EW, census 2011)
-    optional uint64 tenure = 7;
+    optional Tenure tenure = 7;
     // Number of cars capped at 3 (LC4202EW, census 2011)k
     optional uint64 num_cars = 8;
 }
@@ -78,8 +79,8 @@ message Person {
     required Demographics demographics = 5;
     required Employment employment = 6;
     required Health health = 7;
-    required TimeUse time_use = 8;
-    repeated ActivityDuration activity_durations = 9;
+    //required TimeUse time_use = 9;
+    repeated ActivityDuration activity_durations = 8;
 }
 
 // What fraction of a day somebody spends doing an activity.
@@ -89,20 +90,21 @@ message ActivityDuration {
 }
 
 message Identifiers {
-    /// An opaque ID from the original data, kept around for debugging
+    /// Unique person ID
     required string orig_pid= 1;
-    // identifier linking to the Time Use Survey 2015
-    required int64 pid_tus = 2;
-    // identifier linking to the Health Survey for England 2017
-    required int64 pid_hse = 3;
+    // household identifier linking to the UK Time Use Survey 2015
+    required int64 id_tus_hh = 2;
+    // person identifier linking to the UK Time Use Survey 2015
+    required int64 id_tus_p = 3;
+    // identifier linking to the Health Surveys of Great Britain (one per country)
+    required int64 pid_hs = 4;
 }
 
 message Demographics {
     required Sex sex = 1;
     required uint32 age_years = 2;
     required Ethnicity ethnicity = 3;
-    // TODO Update the enums
-    required int64 socioeconomic_classification = 4;
+    optional Nssec8 nssec8 = 4;
 }
 
 message Employment {
@@ -112,7 +114,7 @@ message Employment {
     // https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities.
     //
     // For example, 1 means "Agriculture, forestry, & fishing." 3 means "Manufacturing."
-    optional uint64 sic1d07 = 1;
+    optional string sic1d07 = 1;
     // Standard Industrial Classification of Economic Activities 2007, 2nd
     // layer.
     optional uint64 sic2d07 = 2;
@@ -139,20 +141,77 @@ enum Ethnicity {
     OTHER = 5;
 }
 
+enum AccType {
+    DETACHED = 1;
+    SEMIDETACHED = 2;
+    TERRACED = 3;
+    FLAT = 4;
+}
+
+enum ComType {
+	COMMUNAL = 0;
+    MEDICAL = 1;
+    MEDICALNHS = 2;
+    MEDICALNHSHOSPITAL = 3;
+    MEDICALNHSMENTAL = 4;
+    MEDICALNHSOTHER = 5;
+    MEDICALLA = 6;
+    MEDICALLACHILDREN = 7;
+    MEDICALLACAREHOMENURSING = 8;
+    MEDICALLACAREHOMENONURSING = 9;
+    MEDICALLAOTHER = 10;
+    MEDICALSOCIAL = 11;
+    MEDICALSOCIALHOSTEL = 12;
+    MEDICALSOCIALSHELTER = 13;
+    MEDICALOTHER = 14;
+    MEDICALOTHERCAREHOMENURSING = 15;
+    MEDICALOTHERCAREHOMENONURSING = 16;
+    MEDICALOTHERCHILDREN = 17;
+    MEDICALOTHERMENTAL = 18;
+    MEDICALOTHERHOSPITAL = 19;
+    MEDICALOTHEROTHER = 20;
+    OTHER = 21;
+    DEFENSE = 22;
+    PRISON = 23;
+    PROBATION = 24;
+    DETENTION = 25;
+    EDUCATION = 26;
+    HOTEL = 27;
+    HOSTEL = 28;
+    HOLIDAY = 29;
+    TRAVEL = 30;
+    RELIGIOUS = 31;
+    STAFF = 32;
+    OTHEROTHER = 33;
+    NOTSTATED = 34;
+}
+
+enum Tenure {
+    OWNEDFULLY = 1;
+    OWNEDMORTGAGE = 2;
+    RENTEDFREE = 3;
+    RENTEDSOCIAL = 4;
+    RENTEDPRIVATE = 5;  
+}
+    
 // National Statistics socio-economic classification
-enum NSSEC5 {
-    // Never worked and long-term unemployed
-    UNEMPLOYED = 0;
+enum Nssec8 {
     // Higher managerial, administrative and professional occupations
     HIGHER = 1;
+    // Lower managerial, administrative and professional occupations
+    LOWER = 2;
     // Intermediate occupations
-    INTERMEDIATE = 2;
+    INTERMEDIATE = 3;
     // Small employers and own account workers
-    SMALL = 3;
+    SMALL = 4;
     // Lower supervisory and technical occupations
-    LOWER = 4;
-    // Semi-routine and routine occupations
-    ROUTINE = 5;
+    SUPER = 5;
+    // Semi-routine occupations
+    SEMIROUTINE = 6;
+    // Routine occupations
+    ROUTINE = 7;
+    // Never worked and long-term unemployed
+    NEVER = 8;
 }
 
 // Professional working status, from the time-use survey
@@ -182,32 +241,14 @@ enum PwkStat {
 }
 
 message Health {
-    // Sourced from the Health Survey for England 2019
-    required BMI bmi = 1;
-    // See
-    // https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#bmi-data.
-    optional float bmi_new = 5;
+    // Derived from the Health Survey for England 2019
+    optional float bmi = 1;
+    // For England, cardiovascular medication taken in the last 7 days; for Scotland, had cardiovascular condition excluding diabetes / blood pressure; for Wales, any heart condition excluding high boold pressure
     required bool has_cardiovascular_disease = 2;
+    // For Scotland and England, has doctor diagnosed diabetes; for Wales, diabetes currently treated
     required bool has_diabetes = 3;
+    // For Scotland and England, Doctor diagnosed high blood pressure; for Wales, high blood pressure currently treated
     required bool has_high_blood_pressure = 4;
-}
-
-// Body Mass Index
-enum BMI {
-    // Likely to be missing data
-    NOT_APPLICABLE = 0;
-    // Underweight: less than 18.5
-    UNDERWEIGHT = 1;
-    // Normal: 18.5 to less than 25
-    NORMAL = 2;
-    // Overweight: 25 to less than 30
-    OVERWEIGHT = 3;
-    // Obese I: 30 to less than 35
-    OBESE_1 = 4;
-    // Obese II: 35 to less than 40
-    OBESE_2 = 5;
-    // Obese III: 40 or more
-    OBESE_3 = 6;
 }
 
 // The proportion of a day spent doing different daily activities.
