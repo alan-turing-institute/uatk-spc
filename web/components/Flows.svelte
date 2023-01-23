@@ -42,7 +42,7 @@
       type: "line",
       paint: {
         "line-color": "red",
-        "line-width": 6,
+        "line-width": ["*", 20, ["get", "weight"]],
         "line-opacity": 0.4,
       },
     });
@@ -58,7 +58,7 @@
       type: "line",
       paint: {
         "line-color": "red",
-        "line-width": 6,
+        "line-width": ["*", 20, ["get", "weight"]],
         "line-dasharray": [0, 4, 3],
       },
     });
