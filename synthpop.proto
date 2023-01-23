@@ -26,8 +26,8 @@ message Household {
 }
 
 message HouseholdDetails {
-    /// An ID from the original data, kept around for debugging
-    required int64 orig_hid = 1;
+    /// An opaque ID from the original data, kept around for debugging
+    required string orig_hid = 1;
 
     // TODO Enums for many of these
     // National Statistics Socio-economic classification of the reference
@@ -89,21 +89,20 @@ message ActivityDuration {
 }
 
 message Identifiers {
-    // identifier linking to the 2011 Census
-    required int64 pid_census = 1;
+    /// An opaque ID from the original data, kept around for debugging
+    required string orig_pid= 1;
     // identifier linking to the Time Use Survey 2015
     required int64 pid_tus = 2;
     // identifier linking to the Health Survey for England 2017
     required int64 pid_hse = 3;
-    // a globally unique ID across all counties
-    required string idp = 4;
 }
 
 message Demographics {
     required Sex sex = 1;
     required uint32 age_years = 2;
-    required Origin origin = 3;
-    required NSSEC5 socioeconomic_classification = 4;
+    required Ethnicity ethnicity = 3;
+    // TODO Update the enums
+    required int64 socioeconomic_classification = 4;
 }
 
 message Employment {
@@ -132,7 +131,7 @@ enum Sex {
     FEMALE = 2;
 }
 
-enum Origin {
+enum Ethnicity {
     WHITE = 1;
     BLACK = 2;
     ASIAN = 3;
