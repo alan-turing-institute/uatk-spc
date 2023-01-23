@@ -13,10 +13,8 @@
   let msoas;
   let hoveredMsoa;
 
-  // Switch to false to auto-load a local file, useful for quicker development
-  let githubDeployment = true;
-
-  if (!githubDeployment) {
+  // When using 'npm run dev', auto-load a file for quicker development
+  if (import.meta.env.DEV) {
     onMount(async () => {
       let resp = await fetch("rutland.pb");
       loadArrayBuffer(await resp.arrayBuffer());
@@ -55,7 +53,7 @@
       </Map>
     </div>
   </Layout>
-{:else if githubDeployment}
+{:else if import.meta.env.PROD}
   <label for="input">Load an SPC .pb file</label>
   <input name="input" type="file" on:change={loadFile} />
 {:else}
