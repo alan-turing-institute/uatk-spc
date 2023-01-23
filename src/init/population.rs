@@ -22,10 +22,12 @@ pub fn read_individual_time_use_and_health_data(
     // If there are multiple time use files, we assume this grouping won't have any overlaps --
     // MSOAs shouldn't be the same between different files.
     let mut people_per_household: BTreeMap<(MSOA, i64), Vec<TuPerson>> = BTreeMap::new();
+    let mut household_details: BTreeMap<(MSOA, i64), pb::HouseholdDetails> = BTreeMap::new();
     let mut no_household = 0;
 
     // TODO Two-level progress bar. MultiProgress seems to demand two threads and calling join() :(
-    for path in population_files {
+    //for path in population_files {
+    for path in vec!["/home/dabreegster/Downloads/new_spc_data/E09000002.csv"] {
         let _s = info_span!("Reading", ?path).entered();
         let file = File::open(path)?;
         let pb = progress_file_with_msg(&file)?;
@@ -51,6 +53,38 @@ pub fn read_individual_time_use_and_health_data(
                 continue;
             }
 
+            // TODO Probably individual enum matching
+            fn parse_optional_neg1(x: i64) -> Result<Option<u64>> {
+                if x == -1 {
+                    Ok(None)
+                } else if x >= 0 {
+                    Ok(Some(x as u64))
+                } else {
+                    bail!("Unexpected negative input {x}");
+                }
+            }
+
+            // Assume the household details are equivalent for every row in the input
+            if !household_details.contains_key(&(rec.msoa.clone(), rec.hid)) {
+                household_details.insert(
+                    (rec.msoa.clone(), rec.hid),
+                    pb::HouseholdDetails {
+                        orig_hid: rec.hid,
+                        nssec8: parse_optional_neg1(rec.nssec8)?,
+                        accomodation_type: parse_optional_neg1(rec.accomodation_type)?,
+                        communal_type: parse_optional_neg1(rec.communal_type)?,
+                        num_rooms: parse_optional_neg1(rec.num_rooms)?,
+                        central_heat: match rec.central_heat {
+                            0 => false,
+                            1 => true,
+                            x => bail!("Unexpected central_heat {x}"),
+                        },
+                        tenure: parse_optional_neg1(rec.tenure)?,
+                        num_cars: parse_optional_neg1(rec.num_cars)?,
+                    },
+                );
+            }
+
             people_per_household
                 .entry((rec.msoa.clone(), rec.hid))
                 .or_insert_with(Vec::new)
@@ -74,9 +108,9 @@ pub fn read_individual_time_use_and_health_data(
         let household_id = VenueID(population.households.len());
         let mut household = Household {
             id: household_id,
-            msoa,
-            orig_hid,
+            msoa: msoa.clone(),
             members: Vec::new(),
+            details: household_details.remove(&(msoa, orig_hid)).unwrap(),
         };
         for raw_person in raw_people {
             let person_id = PersonID(population.people.len());
@@ -163,6 +197,21 @@ struct TuPerson {
     phome: f64,
     pworkhome: f64,
     phometot: f64,
+
+    #[serde(rename = "HOUSE_nssec8")]
+    nssec8: i64,
+    #[serde(rename = "HOUSE_type")]
+    accomodation_type: i64,
+    #[serde(rename = "HOUSE_typeCommunal")]
+    communal_type: i64,
+    #[serde(rename = "HOUSE_NRooms")]
+    num_rooms: i64,
+    #[serde(rename = "HOUSE_centralHeat")]
+    central_heat: i64,
+    #[serde(rename = "HOUSE_tenure")]
+    tenure: i64,
+    #[serde(rename = "HOUSE_NCars")]
+    num_cars: i64,
 }
 
 /// Parses either an unsigned integer or the string "NA".

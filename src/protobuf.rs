@@ -16,12 +16,12 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
         output.households.push(pb::Household {
             id: household.id.0.try_into()?,
             msoa11cd: household.msoa.0.clone(),
-            orig_hid: household.orig_hid,
             members: household
                 .members
                 .iter()
                 .map(|id| id.0.try_into().unwrap())
                 .collect(),
+            details: household.details.clone(),
         });
     }
 
