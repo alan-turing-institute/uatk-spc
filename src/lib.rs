@@ -116,6 +116,7 @@ pub struct Person {
     pub demographics: pb::Demographics,
     pub employment: pb::Employment,
     pub health: pb::Health,
+    pub events: pb::Events,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Enum)]
