@@ -112,10 +112,6 @@ pub struct Person {
     pub demographics: pb::Demographics,
     pub employment: pb::Employment,
     pub health: pb::Health,
-    pub time_use: pb::TimeUse,
-
-    /// These sum to 1, representing a fraction of a day
-    pub duration_per_activity: EnumMap<Activity, f64>,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Enum)]

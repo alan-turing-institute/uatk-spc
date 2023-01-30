@@ -1,7 +1,6 @@
 use std::collections::{BTreeMap, BTreeSet};
 
 use anyhow::Result;
-use enum_map::EnumMap;
 use fs_err::File;
 use geo::Point;
 use serde::{Deserialize, Deserializer};
@@ -70,9 +69,13 @@ pub fn read_individual_time_use_and_health_data(
                     (rec.msoa.clone(), rec.hid.clone()),
                     pb::HouseholdDetails {
                         orig_hid: rec.hid.clone(),
-                        nssec8: parse_optional_neg1(rec.hh_nssec8)?,
-                        accomodation_type: parse_optional_neg1(rec.accomodation_type)?,
-                        communal_type: parse_optional_neg1(rec.communal_type)?,
+                        // TODO If the numeric values don't match, just gives up. Should we check
+                        // for -1 explicitly?
+                        nssec8: pb::Nssec8::from_i32(rec.hh_nssec8).map(|x| x.into()),
+                        accommodation_type: pb::AccommodationType::from_i32(rec.accommodation_type)
+                            .map(|x| x.into()),
+                        communal_type: pb::CommunalType::from_i32(rec.communal_type)
+                            .map(|x| x.into()),
                         num_rooms: parse_optional_neg1(rec.num_rooms)?,
                         central_heat: match rec.central_heat {
                             0 => false,
@@ -177,33 +180,18 @@ struct TuPerson {
     #[serde(rename = "incomeY", deserialize_with = "parse_f32_or_na")]
     salary_yearly: Option<f32>,
 
-    #[serde(rename = "BMIvg6")]
-    bmi: String,
-    #[serde(rename = "bmiNew", deserialize_with = "parse_f32_or_na")]
-    bmi_new: Option<f32>,
+    #[serde(deserialize_with = "parse_f32_or_na")]
+    bmi: Option<f32>,
     cvd: u8,
     diabetes: u8,
     bloodpressure: u8,
 
-    punknown: f64,
-    pwork: f64,
-    pschool: f64,
-    pshop: f64,
-    pservices: f64,
-    pleisure: f64,
-    pescort: f64,
-    ptransport: f64,
-    pnothome: f64,
-    phome: f64,
-    pworkhome: f64,
-    phometot: f64,
-
     #[serde(rename = "HOUSE_nssec8")]
-    hh_nssec8: i64,
+    hh_nssec8: i32,
     #[serde(rename = "HOUSE_type")]
-    accomodation_type: i64,
+    accommodation_type: i32,
     #[serde(rename = "HOUSE_typeCommunal")]
-    communal_type: i64,
+    communal_type: i32,
     #[serde(rename = "HOUSE_NRooms")]
     num_rooms: i64,
     #[serde(rename = "HOUSE_centralHeat")]
@@ -248,25 +236,6 @@ fn parse_f32_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<Option<f32>, D::Er
 
 impl TuPerson {
     fn create(self, household: VenueID, id: PersonID) -> Result<Person> {
-        let mut duration_per_activity: EnumMap<Activity, f64> = EnumMap::default();
-        duration_per_activity[Activity::Retail] = self.pshop;
-        duration_per_activity[Activity::Home] = self.phome;
-        duration_per_activity[Activity::Work] = self.pwork;
-
-        // Use pschool and age to calculate primary/secondary school
-        if self.age < 11 {
-            duration_per_activity[Activity::PrimarySchool] = self.pschool;
-            duration_per_activity[Activity::SecondarySchool] = 0.0;
-        } else if self.age < 19 {
-            duration_per_activity[Activity::PrimarySchool] = 0.0;
-            duration_per_activity[Activity::SecondarySchool] = self.pschool;
-        } else {
-            // TODO Seems like we need a University activity
-            duration_per_activity[Activity::PrimarySchool] = 0.0;
-            duration_per_activity[Activity::SecondarySchool] = 0.0;
-        }
-        pad_durations(&mut duration_per_activity)?;
-
         Ok(Person {
             id,
             household,
@@ -286,7 +255,7 @@ impl TuPerson {
                 }
                 .into(),
                 age_years: self.age,
-                ethnicity: match self.ethnicity{
+                ethnicity: match self.ethnicity {
                     x if x == 1 => pb::Ethnicity::White,
                     x if x == 2 => pb::Ethnicity::Black,
                     x if x == 3 => pb::Ethnicity::Asian,
@@ -330,53 +299,13 @@ impl TuPerson {
                 salary_yearly: self.salary_yearly,
             },
             health: pb::Health {
-                bmi: match self.bmi.as_str() {
-                    "Not applicable" => pb::Bmi::NotApplicable,
-                    "Underweight: less than 18.5" => pb::Bmi::Underweight,
-                    "Normal: 18.5 to less than 25" => pb::Bmi::Normal,
-                    "Overweight: 25 to less than 30" => pb::Bmi::Overweight,
-                    "Obese I: 30 to less than 35" => pb::Bmi::Obese1,
-                    "Obese II: 35 to less than 40" => pb::Bmi::Obese2,
-                    "Obese III: 40 or more" => pb::Bmi::Obese3,
-                    x => bail!("Unknown BMIvg6 value {}", x),
-                }
-                .into(),
-                bmi_new: self.bmi_new,
+                bmi: self.bmi,
                 has_cardiovascular_disease: self.cvd > 0,
                 has_diabetes: self.diabetes > 0,
                 has_high_blood_pressure: self.bloodpressure > 0,
             },
-            time_use: pb::TimeUse {
-                unknown: self.punknown,
-                work: self.pwork,
-                school: self.pschool,
-                shop: self.pshop,
-                services: self.pservices,
-                leisure: self.pleisure,
-                escort: self.pescort,
-                transport: self.ptransport,
-                not_home: self.pnothome,
-                home: self.phome,
-                work_home: self.pworkhome,
-                home_total: self.phometot,
-            },
-
-            duration_per_activity,
         })
     }
-}
-
-// If the durations don't sum to 1, pad Home
-fn pad_durations(durations: &mut EnumMap<Activity, f64>) -> Result<()> {
-    let total: f64 = durations.values().sum();
-    // TODO Check the rounding in the Python version
-    let epsilon = 0.00001;
-    if total > 1.0 + epsilon {
-        bail!("Someone's durations sum to {}", total);
-    } else if total < 1.0 {
-        durations[Activity::Home] = 1.0 - total;
-    }
-    Ok(())
 }
 
 #[instrument(skip(threshold, population))]

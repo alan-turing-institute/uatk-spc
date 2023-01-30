@@ -34,15 +34,6 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
             demographics: person.demographics.clone(),
             employment: person.employment.clone(),
             health: person.health.clone(),
-            time_use: person.time_use.clone(),
-            activity_durations: person
-                .duration_per_activity
-                .iter()
-                .map(|(activity, duration)| pb::ActivityDuration {
-                    activity: convert_activity(activity).into(),
-                    duration: *duration,
-                })
-                .collect(),
         });
     }
 
