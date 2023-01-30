@@ -68,11 +68,12 @@ struct Row {
     lat: f32,
     // The number of workers
     size: usize,
-    sic1d07: u64,
+    #[serde(rename = "sic1d07")]
+    sic1d2007: u32,
 }
 
 struct Businesses {
-    venues_per_sic: HashMap<u64, Vec<VenueID>>,
+    venues_per_sic: HashMap<u32, Vec<VenueID>>,
     available_jobs: HashMap<VenueID, usize>,
     venues: TiVec<VenueID, Venue>,
 }
@@ -100,7 +101,7 @@ impl Businesses {
                 let id = VenueID(result.venues.len());
                 result
                     .venues_per_sic
-                    .entry(rec.sic1d07)
+                    .entry(rec.sic1d2007)
                     .or_insert_with(Vec::new)
                     .push(id);
                 result.venues.push(Venue {
@@ -123,7 +124,7 @@ impl Businesses {
 }
 
 struct JobMarket {
-    sic: Option<u64>,
+    sic: Option<u32>,
     // workers and jobs have equal length
     workers: Vec<PersonID>,
     jobs: Vec<VenueID>,
@@ -155,7 +156,9 @@ impl JobMarket {
             // Find workers with a matching SIC
             let mut workers: Vec<PersonID> = Vec::new();
             for id in &all_workers {
-                if population.people[*id].employment.sic1d07 == Some(*sic) {
+                if numeric_sic1d2007(population.people[*id].employment.sic1d2007.as_ref())
+                    == Some(*sic)
+                {
                     workers.push(*id);
                 }
             }
@@ -262,5 +265,23 @@ fn trim_jobs_or_workers(jobs: &mut Vec<VenueID>, workers: &mut Vec<PersonID>, rn
     if jobs.len() > workers.len() {
         jobs.shuffle(rng);
         jobs.truncate(workers.len());
+    }
+}
+
+/// Turn "A" into 1, "B" into 2, etc
+fn numeric_sic1d2007(input: Option<&String>) -> Option<u32> {
+    let x = input?.chars().next().unwrap();
+    Some(1 + x as u32 - 'A' as u32)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_sic1d2007() {
+        assert_eq!(numeric_sic1d2007(None), None);
+        assert_eq!(numeric_sic1d2007(Some(&"A".to_string())), Some(1));
+        assert_eq!(numeric_sic1d2007(Some(&"F".to_string())), Some(6));
     }
 }
