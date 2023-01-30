@@ -58,6 +58,12 @@
     </div>
   </Layout>
 {:else if import.meta.env.PROD}
+  <p>
+    Download and gunzip a file from <a
+      href="https://alan-turing-institute.github.io/uatk-spc/outputs.html"
+      >here</a
+    >.
+  </p>
   <label for="input">Load an SPC .pb file</label>
   <input name="input" type="file" on:change={loadFile} />
 {:else}
