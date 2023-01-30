@@ -151,10 +151,8 @@ struct TuPerson {
     ethnicity: usize,
     nssec8: i32,
     sic1d2007: String,
-    #[serde(deserialize_with = "parse_u64_or_na")]
-    sic2d2007: Option<u64>,
-    #[serde(deserialize_with = "parse_u64_or_na")]
-    soc2010: Option<u64>,
+    sic2d2007: i64,
+    soc2010: i64,
     pwkstat: String,
     #[serde(rename = "incomeH", deserialize_with = "parse_f32_or_na")]
     salary_hourly: Option<f32>,
@@ -181,22 +179,6 @@ struct TuPerson {
     tenure: i32,
     #[serde(rename = "HOUSE_NCars")]
     num_cars: i64,
-}
-
-/// Parses either an unsigned integer or the string "NA".
-fn parse_u64_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<Option<u64>, D::Error> {
-    // We have to parse it as a string first, or we lose the chance to check that it's "NA" later
-    let raw = <String>::deserialize(d)?;
-    if raw == "NA" {
-        return Ok(None);
-    }
-    if let Ok(x) = raw.parse::<u64>() {
-        return Ok(Some(x));
-    }
-    Err(serde::de::Error::custom(format!(
-        "Not a u64 or \"NA\": {}",
-        raw
-    )))
 }
 
 /// Parses either a float or the string "NA".
@@ -267,8 +249,8 @@ impl TuPerson {
                     }
                     Some(self.sic1d2007)
                 },
-                sic2d2007: self.sic2d2007,
-                soc2010: self.soc2010,
+                sic2d2007: parse_optional_neg1(self.sic2d2007)?,
+                soc2010: parse_optional_neg1(self.soc2010)?,
                 pwkstat: match self.pwkstat.as_str() {
                     "0. N/A (age<16)" => pb::PwkStat::Na,
                     "1. Employee FT" => pb::PwkStat::EmployeeFt,
