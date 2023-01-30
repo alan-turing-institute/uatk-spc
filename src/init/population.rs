@@ -148,7 +148,7 @@ struct TuPerson {
 
     sex: usize,
     age: u32,
-    ethnicity: usize,
+    ethnicity: i32,
     nssec8: i32,
     sic1d2007: String,
     sic2d2007: i64,
@@ -229,24 +229,17 @@ impl TuPerson {
                 }
                 .into(),
                 age_years: self.age,
-                ethnicity: match self.ethnicity {
-                    x if x == 1 => pb::Ethnicity::White,
-                    x if x == 2 => pb::Ethnicity::Black,
-                    x if x == 3 => pb::Ethnicity::Asian,
-                    x if x == 4 => pb::Ethnicity::Mixed,
-                    x if x == 5 => pb::Ethnicity::Other,
-                    x => bail!("Unknown ethnicity {}", x),
-                }
-                .into(),
+                ethnicity: pb::Ethnicity::from_i32(self.ethnicity)
+                    .expect("Unknown ethnicity")
+                    .into(),
                 nssec8: pb::Nssec8::from_i32(self.nssec8).map(|x| x.into()),
             },
             employment: pb::Employment {
                 sic1d2007: if self.sic1d2007 == "-1" {
                     None
+                } else if self.sic1d2007.len() != 1 {
+                    bail!("Unknown sic1d2007 value {}", self.sic1d2007);
                 } else {
-                    if self.sic1d2007.len() != 1 {
-                        bail!("Unknown sic1d2007 value {}", self.sic1d2007);
-                    }
                     Some(self.sic1d2007)
                 },
                 sic2d2007: parse_optional_neg1(self.sic2d2007)?,
