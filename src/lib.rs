@@ -108,8 +108,8 @@ pub struct Person {
     pub id: PersonID,
     pub household: VenueID,
     pub workplace: Option<VenueID>,
-    /// This is the centroid of the household's MSOA. It's redundant to store it per person, but
-    /// very convenient.
+    /// This is the centroid of the household's OA. It's redundant to store it per person, but very
+    /// convenient.
     pub location: Point<f32>,
 
     pub identifiers: pb::Identifiers,
