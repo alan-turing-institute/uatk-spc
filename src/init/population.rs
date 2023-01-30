@@ -150,10 +150,9 @@ struct TuPerson {
     age: u32,
     ethnicity: usize,
     nssec8: i32,
+    sic1d2007: String,
     #[serde(deserialize_with = "parse_u64_or_na")]
-    sic1d07: Option<u64>,
-    #[serde(deserialize_with = "parse_u64_or_na")]
-    sic2d07: Option<u64>,
+    sic2d2007: Option<u64>,
     #[serde(deserialize_with = "parse_u64_or_na")]
     soc2010: Option<u64>,
     pwkstat: String,
@@ -260,8 +259,15 @@ impl TuPerson {
                 nssec8: pb::Nssec8::from_i32(self.nssec8).map(|x| x.into()),
             },
             employment: pb::Employment {
-                sic1d07: self.sic1d07,
-                sic2d07: self.sic2d07,
+                sic1d2007: if self.sic1d2007 == "-1" {
+                    None
+                } else {
+                    if self.sic1d2007.len() != 1 {
+                        bail!("Unknown sic1d2007 value {}", self.sic1d2007);
+                    }
+                    Some(self.sic1d2007)
+                },
+                sic2d2007: self.sic2d2007,
                 soc2010: self.soc2010,
                 pwkstat: match self.pwkstat.as_str() {
                     "0. N/A (age<16)" => pb::PwkStat::Na,

@@ -72,7 +72,7 @@ struct Args {
     /// input.
     #[clap(long)]
     rng_seed: Option<u64>,
-    /// The minimum proportion of the population that must be preserved when using the sic1d07
+    /// The minimum proportion of the population that must be preserved when using the sic1d2007
     /// classification
     #[clap(long, default_value_t = 0.0)]
     sic_threshold: f64,
