@@ -57,14 +57,17 @@ pub struct Input {
     pub sic_threshold: f64,
 }
 
-/// Represents a region of the UK.
+/// A region of the UK with around 7800 people.
 ///
 /// See https://en.wikipedia.org/wiki/ONS_coding_system. This is usually called `MSOA11CD`.
-// TODO Given one of these, how do we look it up?
-// - http://statistics.data.gov.uk/id/statistical-geography/E02002191
-// - https://mapit.mysociety.org/area/36070.html (they have a paid API)
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
 pub struct MSOA(pub String);
+
+/// A region of the UK with around X people.
+///
+/// See https://en.wikipedia.org/wiki/ONS_coding_system. This is usually called `OA11CD`.
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
+pub struct OA(pub String);
 
 /// This represents a 2020 county boundary, which contains several MSOAs. It's used in Google
 /// mobility data. It's not the same county as defined by ONS.
@@ -96,6 +99,7 @@ pub struct InfoPerMSOA {
 pub struct Household {
     pub id: VenueID,
     pub msoa: MSOA,
+    pub oa: OA,
     pub members: Vec<PersonID>,
     pub details: pb::HouseholdDetails,
 }

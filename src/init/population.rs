@@ -7,7 +7,7 @@ use serde::{Deserialize, Deserializer};
 
 use super::quant::{get_flows, load_venues, Threshold};
 use crate::utilities::{memory_usage, print_count, progress_count, progress_file_with_msg};
-use crate::{pb, Activity, Household, Person, PersonID, Population, VenueID, MSOA};
+use crate::{pb, Activity, Household, Person, PersonID, Population, VenueID, MSOA, OA};
 
 pub fn read_individual_time_use_and_health_data(
     population: &mut Population,
@@ -15,14 +15,13 @@ pub fn read_individual_time_use_and_health_data(
 ) -> Result<()> {
     let _s = info_span!("read_individual_time_use_and_health_data").entered();
 
-    // First read the raw CSV files and just group the raw rows by household (MSOA and hid)
-    // This isn't all that memory-intensive; the Population ultimately has to hold everyone anyway.
+    // First read the raw CSV files and just group the raw rows by household ID. This isn't all
+    // that memory-intensive; the Population ultimately has to hold everyone anyway.
     //
     // If there are multiple time use files, we assume this grouping won't have any overlaps --
-    // MSOAs shouldn't be the same between different files.
-    let mut people_per_household: BTreeMap<(MSOA, String), Vec<TuPerson>> = BTreeMap::new();
-    let mut household_details: BTreeMap<(MSOA, String), pb::HouseholdDetails> = BTreeMap::new();
-    let mut no_household = 0;
+    // household IDs should be globally unique.
+    let mut people_per_household: BTreeMap<String, Vec<TuPerson>> = BTreeMap::new();
+    let mut household_details: BTreeMap<String, pb::HouseholdDetails> = BTreeMap::new();
 
     // TODO Two-level progress bar. MultiProgress seems to demand two threads and calling join() :(
     //for path in population_files {
@@ -41,34 +40,17 @@ pub fn read_individual_time_use_and_health_data(
 
             let rec: TuPerson = rec?;
 
-            // Skip people that weren't matched to a household
-            /*if rec.hid == -1 {
-                no_household += 1;
-                continue;
-            }*/
-
             // Only keep people in the input set of MSOAs
             if !population.msoas.contains(&rec.msoa) {
                 continue;
             }
 
-            // TODO Probably individual enum matching
-            fn parse_optional_neg1(x: i64) -> Result<Option<u64>> {
-                if x == -1 {
-                    Ok(None)
-                } else if x >= 0 {
-                    Ok(Some(x as u64))
-                } else {
-                    bail!("Unexpected negative input {x}");
-                }
-            }
-
             // Assume the household details are equivalent for every row in the input
-            if !household_details.contains_key(&(rec.msoa.clone(), rec.hid.clone())) {
+            if !household_details.contains_key(&rec.hid) {
                 household_details.insert(
-                    (rec.msoa.clone(), rec.hid.clone()),
+                    rec.hid.clone(),
                     pb::HouseholdDetails {
-                        orig_hid: rec.hid.clone(),
+                        hid: rec.hid.clone(),
                         // TODO If the numeric values don't match, just gives up. Should we check
                         // for -1 explicitly?
                         nssec8: pb::Nssec8::from_i32(rec.hh_nssec8).map(|x| x.into()),
@@ -82,38 +64,33 @@ pub fn read_individual_time_use_and_health_data(
                             1 => true,
                             x => bail!("Unexpected central_heat {x}"),
                         },
-                        tenure: parse_optional_neg1(rec.tenure)?,
+                        tenure: pb::Tenure::from_i32(rec.tenure).map(|x| x.into()),
                         num_cars: parse_optional_neg1(rec.num_cars)?,
                     },
                 );
             }
 
             people_per_household
-                .entry((rec.msoa.clone(), rec.hid.clone()))
+                .entry(rec.hid.clone())
                 .or_insert_with(Vec::new)
                 .push(rec);
         }
-    }
-
-    if no_household > 0 {
-        warn!(
-            "{} people skipped, no household originally",
-            print_count(no_household)
-        );
     }
 
     // Now create the people and households
     let _s = info_span!("Creating households").entered();
     info!("Creating households ({})", memory_usage());
     let pb = progress_count(people_per_household.len());
-    for ((msoa, orig_hid), raw_people) in people_per_household {
+    for (hid, raw_people) in people_per_household {
         pb.inc(1);
         let household_id = VenueID(population.households.len());
         let mut household = Household {
             id: household_id,
-            msoa: msoa.clone(),
+            // TODO Assume everyone in the same household belongs to the same MSOA and OA. Check this?
+            msoa: raw_people[0].msoa.clone(),
+            oa: raw_people[0].oa.clone(),
             members: Vec::new(),
-            details: household_details.remove(&(msoa, orig_hid)).unwrap(),
+            details: household_details.remove(&hid).unwrap(),
         };
         for raw_person in raw_people {
             let person_id = PersonID(population.people.len());
@@ -155,10 +132,15 @@ pub fn read_individual_time_use_and_health_data(
 struct TuPerson {
     #[serde(rename = "MSOA11CD")]
     msoa: MSOA,
+    #[serde(rename = "OA11CD")]
+    oa: OA,
     hid: String,
     pid: String,
+
+    #[serde(rename = "id_TUS_hh")]
+    id_tus_hh: i64,
     #[serde(rename = "id_TUS_p")]
-    pid_tus: i64,
+    id_tus_p: i64,
     #[serde(rename = "id_HS")]
     pid_hse: i64,
     lat: f32,
@@ -167,7 +149,7 @@ struct TuPerson {
     sex: usize,
     age: u32,
     ethnicity: usize,
-    nssec8: i64,
+    nssec8: i32,
     #[serde(deserialize_with = "parse_u64_or_na")]
     sic1d07: Option<u64>,
     #[serde(deserialize_with = "parse_u64_or_na")]
@@ -197,7 +179,7 @@ struct TuPerson {
     #[serde(rename = "HOUSE_centralHeat")]
     central_heat: i64,
     #[serde(rename = "HOUSE_tenure")]
-    tenure: i64,
+    tenure: i32,
     #[serde(rename = "HOUSE_NCars")]
     num_cars: i64,
 }
@@ -234,6 +216,16 @@ fn parse_f32_or_na<'de, D: Deserializer<'de>>(d: D) -> Result<Option<f32>, D::Er
     )))
 }
 
+fn parse_optional_neg1(x: i64) -> Result<Option<u64>> {
+    if x == -1 {
+        Ok(None)
+    } else if x >= 0 {
+        Ok(Some(x as u64))
+    } else {
+        bail!("Unexpected negative input {x}");
+    }
+}
+
 impl TuPerson {
     fn create(self, household: VenueID, id: PersonID) -> Result<Person> {
         Ok(Person {
@@ -244,8 +236,9 @@ impl TuPerson {
 
             identifiers: pb::Identifiers {
                 orig_pid: self.pid,
-                pid_tus: self.pid_tus,
-                pid_hse: self.pid_hse,
+                id_tus_hh: self.id_tus_hh,
+                id_tus_p: self.id_tus_p,
+                pid_hs: self.pid_hse,
             },
             demographics: pb::Demographics {
                 sex: match self.sex {
@@ -264,17 +257,7 @@ impl TuPerson {
                     x => bail!("Unknown ethnicity {}", x),
                 }
                 .into(),
-                socioeconomic_classification: self.nssec8,
-                /*socioeconomic_classification: match self.nssec5 {
-                    x if x == 0 => pb::Nssec5::Unemployed,
-                    x if x == 1 => pb::Nssec5::Higher,
-                    x if x == 2 => pb::Nssec5::Intermediate,
-                    x if x == 3 => pb::Nssec5::Small,
-                    x if x == 4 => pb::Nssec5::Lower,
-                    x if x == 5 => pb::Nssec5::Routine,
-                    x => bail!("Unknown nssec5 {}", x),
-                }
-                .into(),*/
+                nssec8: pb::Nssec8::from_i32(self.nssec8).map(|x| x.into()),
             },
             employment: pb::Employment {
                 sic1d07: self.sic1d07,

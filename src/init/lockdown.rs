@@ -64,12 +64,14 @@ pub fn calculate_lockdown_per_day(
     }
 
     // Find the mean decrease of time spent outside of home, over the entire population
-    let mean_pr_home_tot = population
-        .people
-        .iter()
-        .map(|person| person.time_use.home_total as f32)
-        .sum::<f32>()
-        / total_population as f32;
+    /*let mean_pr_home_tot = population
+    .people
+    .iter()
+    .map(|person| person.time_use.home_total as f32)
+    .sum::<f32>()
+    / total_population as f32;*/
+    // TODO What do we change here?
+    let mean_pr_home_tot = 0.42;
 
     let mut per_day = Vec::new();
     for change in total_change_per_day {
