@@ -17,7 +17,7 @@ message Population {
 
 message Household {
     // This is the index into Population::households
-    required string id = 1;
+    required uint64 id = 1;
     // 2011 MSOA code
     required string msoa11cd = 2;
     // 2011 OA code
@@ -83,7 +83,7 @@ message Person {
 
 message Identifiers {
     /// Unique person ID
-    required string orig_pid= 1;
+    required string orig_pid = 1;
     // household identifier linking to the UK Time Use Survey 2015
     required int64 id_tus_hh = 2;
     // person identifier linking to the UK Time Use Survey 2015
