@@ -4,7 +4,7 @@
   import Sidebar from "./components/Sidebar.svelte";
   import MsoaBoundaries from "./components/MsoaBoundaries.svelte";
   import Flows from "./components/Flows.svelte";
-  import MsoaDetails from "./components/MsoaDetails.svelte";
+  import Plots from "./components/Plots.svelte";
 
   import { onMount } from "svelte";
   import { synthpop } from "./pb/synthpop_pb.js";
@@ -13,7 +13,7 @@
   let pop;
   let msoas;
   let hoveredMsoa;
-  let clickedMsoa;
+  let clickedMsoa = null;
 
   // When using 'npm run dev', auto-load a file for quicker development
   if (import.meta.env.DEV) {
@@ -48,7 +48,7 @@
       <h1>SPC</h1>
       <Sidebar {msoas} {hoveredMsoa} />
       <hr />
-      <MsoaDetails {pop} {clickedMsoa} />
+      <Plots {pop} {clickedMsoa} />
     </div>
     <div slot="main">
       <Map>

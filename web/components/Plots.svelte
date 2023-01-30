@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from "svelte";
   import Plotly from "plotly.js-dist";
 
   export let pop;
@@ -16,13 +17,14 @@
       }
     }
 
-    if (clickedMsoa) {
+    // If the DOM's not ready, no point
+    if (div1) {
       let ages = [];
       let salary_yearly = [];
       let salary_hourly = [];
       let bmi_new = [];
       for (let hh of pop.households) {
-        if (hh.msoa11cd == clickedMsoa) {
+        if (clickedMsoa == null || hh.msoa11cd == clickedMsoa) {
           for (let id of hh.members) {
             let p = pop.people[id];
             ages.push(p.demographics.ageYears);
@@ -34,16 +36,16 @@
       }
 
       Plotly.newPlot(div1, [{ x: ages, type: "histogram" }], {
-        title: `Ages in ${clickedMsoa}`,
+        title: "Ages",
       });
       Plotly.newPlot(div2, [{ x: salary_yearly, type: "histogram" }], {
-        title: `Yearly salary in ${clickedMsoa}`,
+        title: "Yearly salary",
       });
       Plotly.newPlot(div3, [{ x: salary_hourly, type: "histogram" }], {
-        title: `Hourly salary in ${clickedMsoa}`,
+        title: "Hourly salary",
       });
       Plotly.newPlot(div4, [{ x: bmi_new, type: "histogram" }], {
-        title: `BMI in ${clickedMsoa}`,
+        title: "BMI",
       });
     }
   }
@@ -52,7 +54,7 @@
 {#if clickedMsoa}
   <h2>{clickedMsoa}</h2>
 {:else}
-  <p>Click an MSOA for more details</p>
+  <p>Click an MSOA to filter</p>
 {/if}
 <div bind:this={div1} />
 <div bind:this={div2} />
