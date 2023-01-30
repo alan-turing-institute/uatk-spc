@@ -5,49 +5,42 @@
   export let pop;
   export let clickedMsoa;
 
-  // Note this is always present in the template. If we hide it under the
-  // clickedMsoa condition, it doesn't get created before the reactive block
-  // below runs.
-  let div1, div2, div3, div4;
+  let ages = [];
+  let salary_yearly = [];
+  let salary_hourly = [];
+  let bmi_new = [];
 
   $: {
-    for (let div of [div1, div2, div3, div4]) {
-      if (div) {
-        Plotly.purge(div);
-      }
-    }
+    ages = [];
+    salary_yearly = [];
+    salary_hourly = [];
+    bmi_new = [];
 
-    // If the DOM's not ready, no point
-    if (div1) {
-      let ages = [];
-      let salary_yearly = [];
-      let salary_hourly = [];
-      let bmi_new = [];
-      for (let hh of pop.households) {
-        if (clickedMsoa == null || hh.msoa11cd == clickedMsoa) {
-          for (let id of hh.members) {
-            let p = pop.people[id];
-            ages.push(p.demographics.ageYears);
-            salary_yearly.push(p.employment.salaryYearly);
-            salary_hourly.push(p.employment.salaryHourly);
-            bmi_new.push(p.health.bmiNew);
-          }
+    for (let hh of pop.households) {
+      if (clickedMsoa == null || hh.msoa11cd == clickedMsoa) {
+        for (let id of hh.members) {
+          let p = pop.people[id];
+          ages.push(p.demographics.ageYears);
+          salary_yearly.push(p.employment.salaryYearly);
+          salary_hourly.push(p.employment.salaryHourly);
+          bmi_new.push(p.health.bmiNew);
         }
       }
-
-      Plotly.newPlot(div1, [{ x: ages, type: "histogram" }], {
-        title: "Ages",
-      });
-      Plotly.newPlot(div2, [{ x: salary_yearly, type: "histogram" }], {
-        title: "Yearly salary",
-      });
-      Plotly.newPlot(div3, [{ x: salary_hourly, type: "histogram" }], {
-        title: "Hourly salary",
-      });
-      Plotly.newPlot(div4, [{ x: bmi_new, type: "histogram" }], {
-        title: "BMI",
-      });
     }
+  }
+
+  function plotly(node, { dataset, title }) {
+    Plotly.purge(node);
+    Plotly.newPlot(node, [{ x: dataset, type: "histogram" }], { title });
+
+    return {
+      update({ dataset: newData }) {
+        Plotly.react(node, [{ x: newData, type: "histogram" }], { title });
+      },
+      destroy() {
+        Plotly.purge(node);
+      },
+    };
   }
 </script>
 
@@ -56,7 +49,7 @@
 {:else}
   <p>Click an MSOA to filter</p>
 {/if}
-<div bind:this={div1} />
-<div bind:this={div2} />
-<div bind:this={div3} />
-<div bind:this={div4} />
+<div use:plotly={{ title: "Age", dataset: ages }} />
+<div use:plotly={{ title: "Yearly Salary", dataset: salary_yearly }} />
+<div use:plotly={{ title: "Hourly Salary", dataset: salary_hourly }} />
+<div use:plotly={{ title: "BMI", dataset: bmi_new }} />
