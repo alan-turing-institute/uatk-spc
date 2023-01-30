@@ -79,6 +79,7 @@ message Person {
     required Demographics demographics = 5;
     required Employment employment = 6;
     required Health health = 7;
+    required Events events = 8;
 }
 
 message Identifiers {
@@ -239,6 +240,23 @@ message Health {
     required bool has_diabetes = 3;
     // For Scotland and England, Doctor diagnosed high blood pressure; for Wales, high blood pressure currently treated
     required bool has_high_blood_pressure = 4;
+}
+
+message Events {
+  // Relative propbability weight to attend a sport fixture
+  required float sport = 1;
+  // Relative propbability weight to attend a Rugby fixture
+  required float rugby = 2;
+  // Relative propbability weight to attend a concert primarily targetting young males
+  required float concert_m = 3;
+  // Relative propbability weight to attend a concert primarily targetting young females
+  required float concert_f = 4;
+  // Relative propbability weight to attend a concert primarily targetting middle-aged males
+  required float concert_ms = 5;
+  // Relative propbability weight to attend a concert primarily targetting middle-aged females
+  required float concert_fs = 6;
+  // Relative propbability weight to visit a museum
+  required float museum = 7;
 }
 
 // Per activity, a list of venues where anybody living in a certain MSOA is

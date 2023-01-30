@@ -35,6 +35,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
             demographics: person.demographics.clone(),
             employment: person.employment.clone(),
             health: person.health.clone(),
+            events: person.events.clone(),
         });
     }
 

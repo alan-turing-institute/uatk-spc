@@ -179,6 +179,21 @@ struct TuPerson {
     tenure: i32,
     #[serde(rename = "HOUSE_NCars")]
     num_cars: i64,
+
+    #[serde(rename = "ESport")]
+    e_sport: f32,
+    #[serde(rename = "ERugby")]
+    e_rugby: f32,
+    #[serde(rename = "EConcertM")]
+    e_concert_m: f32,
+    #[serde(rename = "EConcertF")]
+    e_concert_f: f32,
+    #[serde(rename = "EConcertMS")]
+    e_concert_ms: f32,
+    #[serde(rename = "EConcertFS")]
+    e_concert_fs: f32,
+    #[serde(rename = "EMuseum")]
+    e_museum: f32,
 }
 
 /// Parses either a float or the string "NA".
@@ -267,6 +282,15 @@ impl TuPerson {
                 has_cardiovascular_disease: self.cvd > 0,
                 has_diabetes: self.diabetes > 0,
                 has_high_blood_pressure: self.bloodpressure > 0,
+            },
+            events: pb::Events {
+                sport: self.e_sport,
+                rugby: self.e_rugby,
+                concert_m: self.e_concert_m,
+                concert_f: self.e_concert_f,
+                concert_ms: self.e_concert_ms,
+                concert_fs: self.e_concert_fs,
+                museum: self.e_museum,
             },
         })
     }
