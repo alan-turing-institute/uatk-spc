@@ -156,6 +156,9 @@
     <option value="people">Number of people</option>
     <option value="avg_age">Average age (years)</option>
     <option value="avg_household_size">Average household size</option>
+    <option value="avg_salary_yearly">Average yearly salary</option>
+    <option value="avg_salary_hourly">Average hourly salary</option>
+    <option value="avg_bmi_new">Average BMI</option>
   </select>
   <ul>
     {#each colorScale as color, i}

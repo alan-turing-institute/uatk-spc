@@ -2,28 +2,46 @@ import centroid from "@turf/centroid";
 
 // Returns a mapping from MSOA ID to the GJ Feature
 export function msoaStats(pop) {
+  // Counts
   let households_per_msoa = {};
   let people_per_msoa = {};
+
+  // Averages of numeric data
   let avg_age = {};
+  let avg_salary_yearly = {};
+  let avg_salary_hourly = {};
+  let avg_bmi_new = {};
+
   for (let id of Object.keys(pop.infoPerMsoa)) {
     households_per_msoa[id] = 0;
     people_per_msoa[id] = 0;
     avg_age[id] = 0.0;
+    avg_salary_yearly[id] = 0.0;
+    avg_salary_hourly[id] = 0.0;
+    avg_bmi_new[id] = 0.0;
   }
   for (let hh of pop.households) {
     households_per_msoa[hh.msoa11cd]++;
     people_per_msoa[hh.msoa11cd] += hh.members.length;
-    // Sum age per MSOA
+    // Sum per MSOA
     for (let id of hh.members) {
-      avg_age[hh.msoa11cd] += pop.people[id].demographics.ageYears;
+      let person = pop.people[id];
+      avg_age[hh.msoa11cd] += person.demographics.ageYears;
+      avg_salary_yearly[hh.msoa11cd] += person.employment.salaryYearly;
+      avg_salary_hourly[hh.msoa11cd] += person.employment.salaryHourly;
+      avg_bmi_new[hh.msoa11cd] += person.health.bmiNew;
     }
   }
 
   let avg_household_size = {};
   for (let id of Object.keys(pop.infoPerMsoa)) {
+    let n = people_per_msoa[id];
     // TODO Cast?
-    avg_household_size[id] = people_per_msoa[id] / households_per_msoa[id];
-    avg_age[id] /= people_per_msoa[id];
+    avg_household_size[id] = n / households_per_msoa[id];
+    avg_age[id] /= n;
+    avg_salary_yearly[id] /= n;
+    avg_salary_hourly[id] /= n;
+    avg_bmi_new[id] /= n;
   }
 
   let msoas = {};
@@ -36,6 +54,9 @@ export function msoaStats(pop) {
         people: people_per_msoa[id],
         avg_age: avg_age[id],
         avg_household_size: avg_household_size[id],
+        avg_salary_yearly: avg_salary_yearly[id],
+        avg_salary_hourly: avg_salary_hourly[id],
+        avg_bmi_new: avg_bmi_new[id],
       },
       geometry: {
         coordinates: [info.shape.map((pt) => [pt.longitude, pt.latitude])],

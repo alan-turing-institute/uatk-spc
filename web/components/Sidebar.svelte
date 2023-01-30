@@ -39,3 +39,5 @@
 <p>{people.toLocaleString("en-us")} people</p>
 <p>Average age (years): {avg_age.toFixed(0)}</p>
 <p>Average household size: {avg_household_size.toFixed(1)}</p>
+
+<p>TODO: Salaries and BMI</p>
