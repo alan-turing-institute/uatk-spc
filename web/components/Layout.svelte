@@ -13,6 +13,8 @@
 
   .left {
     width: 25%;
+    height: 100vh;
+    overflow: scroll;
   }
   .main {
     /* TODO 75% wraps?! */
