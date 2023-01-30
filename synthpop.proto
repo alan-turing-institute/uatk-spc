@@ -35,9 +35,9 @@ message HouseholdDetails {
     // person of the household (LC4605, census 2011)
     optional Nssec8 nssec8 = 2;
     // Type of accommodation (based on LC4402EW, census 2011)
-    optional AccType accomodation_type = 3;
+    optional AccommodationType accommodation_type = 3;
     // Type of communal establishment (based on QS420, census 2011)
-    optional ComType communal_type = 4;
+    optional CommunalType communal_type = 4;
     // Number of rooms in the accommodation capped at 6 (LC4404EW, census 2011)
     optional uint64 num_rooms = 5;
     // Presence of central heating (based on LC4402EW, census 2011)
@@ -79,14 +79,6 @@ message Person {
     required Demographics demographics = 5;
     required Employment employment = 6;
     required Health health = 7;
-    //required TimeUse time_use = 9;
-    repeated ActivityDuration activity_durations = 8;
-}
-
-// What fraction of a day somebody spends doing an activity.
-message ActivityDuration {
-    required Activity activity = 1;
-    required double duration = 2;
 }
 
 message Identifiers {
@@ -141,14 +133,14 @@ enum Ethnicity {
     OTHER = 5;
 }
 
-enum AccType {
+enum AccommodationType {
     DETACHED = 1;
     SEMI_DETACHED = 2;
     TERRACED = 3;
     FLAT = 4;
 }
 
-enum ComType {
+enum CommunalType {
     COMMUNAL = 0;
     MEDICAL = 1;
     MEDICAL_NHS = 2;
@@ -191,9 +183,9 @@ enum Tenure {
     OWNED_MORTGAGE = 2;
     RENTED_FREE = 3;
     RENTED_SOCIAL = 4;
-    RENTED_PRIVATE = 5;  
+    RENTED_PRIVATE = 5;
 }
-    
+
 // National Statistics socio-economic classification
 enum Nssec8 {
     // Higher managerial, administrative and professional occupations
@@ -249,25 +241,6 @@ message Health {
     required bool has_diabetes = 3;
     // For Scotland and England, Doctor diagnosed high blood pressure; for Wales, high blood pressure currently treated
     required bool has_high_blood_pressure = 4;
-}
-
-// The proportion of a day spent doing different daily activities.
-// unknown + work + school + shop + services + leisure + escort + transport = not_home
-// home + work_home = home_total
-// not_home + home_total = 1
-message TimeUse {
-    required double unknown = 1;
-    required double work = 2;
-    required double school = 3;
-    required double shop = 4;
-    required double services = 5;
-    required double leisure = 6;
-    required double escort = 7;
-    required double transport = 8;
-    required double not_home = 9;
-    required double home = 10;
-    required double work_home = 11;
-    required double home_total = 12;
 }
 
 // Per activity, a list of venues where anybody living in a certain MSOA is

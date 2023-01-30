@@ -28,7 +28,8 @@ pub fn create_commuting_flows(
     // away, where the only activity occuring is work.
     let mut msoas = BTreeSet::new();
     for person in &population.people {
-        if person.duration_per_activity[Activity::Work] > 0.0 {
+        // TODO Use PwkStat?
+        if true {
             all_workers.push(person.id);
             msoas.insert(population.households[person.household].msoa.clone());
         }
