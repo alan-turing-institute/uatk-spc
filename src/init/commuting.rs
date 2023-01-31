@@ -12,6 +12,7 @@ use rayon::prelude::*;
 use serde::Deserialize;
 use typed_index_collections::TiVec;
 
+use crate::pb::PwkStat;
 use crate::utilities::{print_count, progress_count};
 use crate::{Activity, PersonID, Population, Venue, VenueID, MSOA};
 
@@ -28,8 +29,10 @@ pub fn create_commuting_flows(
     // away, where the only activity occuring is work.
     let mut msoas = BTreeSet::new();
     for person in &population.people {
-        // TODO Use PwkStat?
-        if true {
+        if matches!(
+            PwkStat::from_i32(person.employment.pwkstat).unwrap(),
+            PwkStat::EmployeeFt | PwkStat::EmployeePt | PwkStat::EmployeeUnspec
+        ) {
             all_workers.push(person.id);
             msoas.insert(population.households[person.household].msoa.clone());
         }
