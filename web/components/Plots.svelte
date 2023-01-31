@@ -9,6 +9,8 @@
   export let pop;
   export let clickedMsoa;
 
+  let theme = "Demographics";
+
   let numericData = {};
   let categoricalData = {};
 
@@ -86,14 +88,25 @@
   <p>Click an MSOA to filter</p>
 {/if}
 
+Theme:
+<select bind:value={theme}>
+  <option value="Demographics">Demographics</option>
+  <option value="Employment">Employment</option>
+  <option value="Health">Health</option>
+</select>
+
 {#each Object.entries(numericData) as [key, dataset]}
-  <div
-    use:histogram={{ title: PER_PERSON_NUMERIC_PROPS[key].label, dataset }}
-  />
+  {#if PER_PERSON_NUMERIC_PROPS[key].theme == theme}
+    <div
+      use:histogram={{ title: PER_PERSON_NUMERIC_PROPS[key].label, dataset }}
+    />
+  {/if}
 {/each}
 
 {#each Object.entries(categoricalData) as [key, dataset]}
-  <div
-    use:barChart={{ title: PER_PERSON_CATEGORICAL_PROPS[key].label, dataset }}
-  />
+  {#if PER_PERSON_CATEGORICAL_PROPS[key].theme == theme}
+    <div
+      use:barChart={{ title: PER_PERSON_CATEGORICAL_PROPS[key].label, dataset }}
+    />
+  {/if}
 {/each}

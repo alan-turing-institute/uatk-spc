@@ -6,21 +6,25 @@ export const PER_PERSON_NUMERIC_PROPS = {
     get: (p) => p.demographics.ageYears,
     label: "age (years)",
     fmt: (x) => x.toFixed(0),
+    theme: "Demographics",
   },
   salary_yearly: {
     get: (p) => p.employment.salaryYearly,
     label: "yearly salary",
     fmt: (x) => x.toFixed(1),
+    theme: "Employment",
   },
   salary_hourly: {
     get: (p) => p.employment.salaryHourly,
     label: "hourly salary",
     fmt: (x) => x.toFixed(1),
+    theme: "Employment",
   },
   bmi: {
     get: (p) => p.health.bmiNew,
     label: "BMI",
     fmt: (x) => x.toFixed(1),
+    theme: "Health",
   },
 };
 
@@ -37,21 +41,25 @@ export const PER_PERSON_CATEGORICAL_PROPS = {
     get: (p) => p.demographics.sex,
     label: "sex",
     lookup: enumToString(synthpop.Sex),
+    theme: "Demographics",
   },
   origin: {
     get: (p) => p.demographics.origin,
     label: "origin",
     lookup: enumToString(synthpop.Origin),
+    theme: "Demographics",
   },
   socioeconomic_classification: {
     get: (p) => p.demographics.socioeconomicClassification,
     label: "socioeconomic classification",
     lookup: enumToString(synthpop.NSSEC5),
+    theme: "Employment",
   },
   pwkstat: {
     get: (p) => p.employment.pwkstat,
     label: "Professional working status",
     lookup: enumToString(synthpop.PwkStat),
+    theme: "Employment",
   },
 };
 
