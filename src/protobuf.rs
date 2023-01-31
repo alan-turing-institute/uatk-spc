@@ -36,6 +36,8 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
             employment: person.employment.clone(),
             health: person.health.clone(),
             events: person.events.clone(),
+            weekday_diaries: person.weekday_diaries.iter().map(|x| x.0.clone()).collect(),
+            weekend_diaries: person.weekend_diaries.iter().map(|x| x.0.clone()).collect(),
         });
     }
 

@@ -1,4 +1,5 @@
 mod commuting;
+mod diaries;
 mod lockdown;
 mod msoas;
 mod population;
@@ -34,6 +35,7 @@ impl Population {
             venues_per_activity: EnumMap::default(),
             info_per_msoa: BTreeMap::new(),
             lockdown: crate::pb::Lockdown::default(),
+            time_use_diaries: BTreeMap::new(),
         };
 
         population.info_per_msoa =
@@ -64,11 +66,12 @@ impl Population {
             &mut population,
         )?;
 
-        // TODO The Python implementation has lots of commented stuff, then some rounding
-
         population.lockdown =
             lockdown::calculate_lockdown_per_day(raw_results.msoas_per_county, &population)?;
         population.remove_unused_venues();
+
+        population.time_use_diaries = diaries::load_time_use_diaries()?;
+
         Ok((population, commuting_duration))
     }
 
