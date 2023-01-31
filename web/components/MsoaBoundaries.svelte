@@ -161,7 +161,6 @@
   <select bind:value={colorBy} on:change={setLayer}>
     <option value="households">Number of households</option>
     <option value="people">Number of people</option>
-    <option value="avg_household_size">Average household size</option>
     {#each Object.entries(PER_PERSON_NUMERIC_PROPS) as [key, prop]}
       <option value={key}>{prop.label}</option>
     {/each}

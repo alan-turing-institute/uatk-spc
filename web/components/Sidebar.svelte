@@ -14,7 +14,6 @@
       props = {
         households: 0,
         people: 0,
-        avg_household_size: 0.0,
       };
       for (let key of Object.keys(PER_PERSON_NUMERIC_PROPS)) {
         props[key] = 0.0;
@@ -43,7 +42,6 @@
 {/if}
 <p>{props.households.toLocaleString("en-us")} households</p>
 <p>{props.people.toLocaleString("en-us")} people</p>
-<p>Average household size: {props.avg_household_size.toFixed(1)}</p>
 
 {#each Object.entries(PER_PERSON_NUMERIC_PROPS) as [key, prop]}
   <p>Average {prop.label}: {prop.fmt(props[key])}</p>

@@ -121,11 +121,7 @@ export function msoaStats(pop) {
     }
   }
 
-  let avg_household_size = {};
   for (let id of Object.keys(pop.infoPerMsoa)) {
-    // TODO Cast?
-    avg_household_size[id] = n / households_per_msoa[id];
-
     for (let [key, avg] of Object.entries(averages)) {
       avg[id] /= n[key][id];
     }
@@ -137,7 +133,6 @@ export function msoaStats(pop) {
       id,
       households: households_per_msoa[id],
       people: people_per_msoa[id],
-      avg_household_size: avg_household_size[id],
     };
     for (let [key, avg] of Object.entries(averages)) {
       properties[key] = avg[id];
