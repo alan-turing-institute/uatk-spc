@@ -2,30 +2,33 @@
   export let msoas;
   export let hoveredMsoa;
 
-  let households;
-  let people;
-  let avg_age;
-  let avg_household_size;
+  // All the things in the per-MSOA GeoJSON feature
+  let props;
   $: {
     if (hoveredMsoa) {
-      households = msoas[hoveredMsoa].properties.households;
-      people = msoas[hoveredMsoa].properties.people;
-      avg_age = msoas[hoveredMsoa].properties.avg_age;
-      avg_household_size = msoas[hoveredMsoa].properties.avg_household_size;
+      props = msoas[hoveredMsoa].properties;
     } else {
-      // TODO reduce
-      households = 0;
-      people = 0;
-      avg_age = 0.0;
-      avg_household_size = 0.0;
+      // Calculate totals over all MSOAs, using the per-MSOA properties
+      props = {
+        households: 0,
+        people: 0,
+        avg_age: 0.0,
+        avg_household_size: 0.0,
+        avg_salary_yearly: 0.0,
+        avg_salary_hourly: 0.0,
+        avg_bmi_new: 0.0,
+      };
+      // Sum
       for (let msoa of Object.values(msoas)) {
-        households += msoa.properties.households;
-        people += msoa.properties.people;
-        avg_age += msoa.properties.avg_age;
-        avg_household_size += msoa.properties.avg_household_size;
+        for (let key of Object.keys(props)) {
+          props[key] += msoa.properties[key];
+        }
       }
-      avg_age /= Object.keys(msoas).length;
-      avg_household_size /= Object.keys(msoas).length;
+      for (let key of Object.keys(props)) {
+        if (key.startsWith("avg_")) {
+          props[key] /= Object.keys(msoas).length;
+        }
+      }
     }
   }
 </script>
@@ -35,9 +38,10 @@
 {:else}
   <h2>{Object.keys(msoas).length} MSOAs</h2>
 {/if}
-<p>{households.toLocaleString("en-us")} households</p>
-<p>{people.toLocaleString("en-us")} people</p>
-<p>Average age (years): {avg_age.toFixed(0)}</p>
-<p>Average household size: {avg_household_size.toFixed(1)}</p>
-
-<p>TODO: Salaries and BMI</p>
+<p>{props.households.toLocaleString("en-us")} households</p>
+<p>{props.people.toLocaleString("en-us")} people</p>
+<p>Average age (years): {props.avg_age.toFixed(0)}</p>
+<p>Average household size: {props.avg_household_size.toFixed(1)}</p>
+<p>Average yearly salary: {props.avg_salary_yearly.toFixed(1)}</p>
+<p>Average hourly salary: {props.avg_salary_hourly.toFixed(1)}</p>
+<p>Average BMI: {props.avg_bmi_new.toFixed(1)}</p>
