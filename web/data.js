@@ -1,4 +1,5 @@
 import centroid from "@turf/centroid";
+import { synthpop } from "./pb/synthpop_pb.js";
 
 export const PER_PERSON_NUMERIC_PROPS = {
   age: {
@@ -20,6 +21,37 @@ export const PER_PERSON_NUMERIC_PROPS = {
     get: (p) => p.health.bmiNew,
     label: "BMI",
     fmt: (x) => x.toFixed(1),
+  },
+};
+
+function enumToString(enumObj) {
+  let mapping = {};
+  for (let [string, num] of Object.entries(enumObj)) {
+    mapping[num] = string;
+  }
+  return mapping;
+}
+
+export const PER_PERSON_CATEGORICAL_PROPS = {
+  sex: {
+    get: (p) => p.demographics.sex,
+    label: "sex",
+    lookup: enumToString(synthpop.Sex),
+  },
+  origin: {
+    get: (p) => p.demographics.origin,
+    label: "origin",
+    lookup: enumToString(synthpop.Origin),
+  },
+  socioeconomic_classification: {
+    get: (p) => p.demographics.socioeconomicClassification,
+    label: "socioeconomic classification",
+    lookup: enumToString(synthpop.NSSEC5),
+  },
+  pwkstat: {
+    get: (p) => p.employment.pwkstat,
+    label: "Professional working status",
+    lookup: enumToString(synthpop.PwkStat),
   },
 };
 
