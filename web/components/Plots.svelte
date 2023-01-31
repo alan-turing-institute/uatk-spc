@@ -28,7 +28,10 @@
         for (let id of hh.members) {
           let person = pop.people[id];
           for (let [key, list] of Object.entries(numericData)) {
-            numericData[key].push(PER_PERSON_NUMERIC_PROPS[key].get(person));
+            let value = PER_PERSON_NUMERIC_PROPS[key].get(person);
+            if (value != null) {
+              numericData[key].push(value);
+            }
           }
           for (let [key, list] of Object.entries(categoricalData)) {
             let prop = PER_PERSON_CATEGORICAL_PROPS[key];

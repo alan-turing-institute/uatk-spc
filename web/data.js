@@ -9,20 +9,36 @@ export const PER_PERSON_NUMERIC_PROPS = {
     theme: "Demographics",
   },
   salary_yearly: {
-    get: (p) => p.employment.salaryYearly,
-    label: "yearly salary",
+    // TODO Reinventing Option types and what the codegen should do :(
+    get: (p) => {
+      if (p.employment.hasOwnProperty("salaryYearly")) {
+        return p.employment.salaryYearly;
+      }
+      return null;
+    },
+    label: "yearly salary for working population",
     fmt: (x) => x.toFixed(1),
     theme: "Employment",
   },
   salary_hourly: {
-    get: (p) => p.employment.salaryHourly,
-    label: "hourly salary",
+    get: (p) => {
+      if (p.employment.hasOwnProperty("salaryHourly")) {
+        return p.employment.salaryHourly;
+      }
+      return null;
+    },
+    label: "hourly salary for working population",
     fmt: (x) => x.toFixed(1),
     theme: "Employment",
   },
   bmi: {
-    get: (p) => p.health.bmiNew,
-    label: "BMI",
+    get: (p) => {
+      if (p.health.hasOwnProperty("bmiNew")) {
+        return p.health.bmiNew;
+      }
+      return null;
+    },
+    label: "BMI for adult population",
     fmt: (x) => x.toFixed(1),
     theme: "Health",
   },
@@ -71,8 +87,11 @@ export function msoaStats(pop) {
 
   // Averages of numeric data. Map<key, Map<MSOA, float>>
   let averages = {};
+  let n = {};
+  // TODO Look for something that can build up in-place
   for (let key of Object.keys(PER_PERSON_NUMERIC_PROPS)) {
     averages[key] = {};
+    n[key] = {};
   }
 
   // Initialize sum for all MSOAs
@@ -81,6 +100,7 @@ export function msoaStats(pop) {
     people_per_msoa[id] = 0;
     for (let key of Object.keys(PER_PERSON_NUMERIC_PROPS)) {
       averages[key][id] = 0.0;
+      n[key][id] = 0;
     }
   }
 
@@ -92,19 +112,22 @@ export function msoaStats(pop) {
     for (let id of hh.members) {
       let person = pop.people[id];
       for (let [key, prop] of Object.entries(PER_PERSON_NUMERIC_PROPS)) {
-        averages[key][hh.msoa11cd] += prop.get(person);
+        let value = prop.get(person);
+        if (value != null) {
+          averages[key][hh.msoa11cd] += value;
+          n[key][hh.msoa11cd]++;
+        }
       }
     }
   }
 
   let avg_household_size = {};
   for (let id of Object.keys(pop.infoPerMsoa)) {
-    let n = people_per_msoa[id];
     // TODO Cast?
     avg_household_size[id] = n / households_per_msoa[id];
 
     for (let [key, avg] of Object.entries(averages)) {
-      avg[id] /= n;
+      avg[id] /= n[key][id];
     }
   }
 
