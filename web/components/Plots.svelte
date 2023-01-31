@@ -1,29 +1,25 @@
 <script>
   import { onMount } from "svelte";
   import Plotly from "plotly.js-dist";
+  import { PER_PERSON_NUMERIC_PROPS } from "../data.js";
 
   export let pop;
   export let clickedMsoa;
 
-  let ages = [];
-  let salary_yearly = [];
-  let salary_hourly = [];
-  let bmi_new = [];
+  let data = {};
 
   $: {
-    ages = [];
-    salary_yearly = [];
-    salary_hourly = [];
-    bmi_new = [];
+    for (let key of Object.keys(PER_PERSON_NUMERIC_PROPS)) {
+      data[key] = [];
+    }
 
     for (let hh of pop.households) {
       if (clickedMsoa == null || hh.msoa11cd == clickedMsoa) {
         for (let id of hh.members) {
-          let p = pop.people[id];
-          ages.push(p.demographics.ageYears);
-          salary_yearly.push(p.employment.salaryYearly);
-          salary_hourly.push(p.employment.salaryHourly);
-          bmi_new.push(p.health.bmiNew);
+          let person = pop.people[id];
+          for (let [key, list] of Object.entries(data)) {
+            data[key].push(PER_PERSON_NUMERIC_PROPS[key].get(person));
+          }
         }
       }
     }
@@ -49,7 +45,7 @@
 {:else}
   <p>Click an MSOA to filter</p>
 {/if}
-<div use:plotly={{ title: "Age", dataset: ages }} />
-<div use:plotly={{ title: "Yearly Salary", dataset: salary_yearly }} />
-<div use:plotly={{ title: "Hourly Salary", dataset: salary_hourly }} />
-<div use:plotly={{ title: "BMI", dataset: bmi_new }} />
+
+{#each Object.entries(data) as [key, dataset]}
+  <div use:plotly={{ title: PER_PERSON_NUMERIC_PROPS[key].label, dataset }} />
+{/each}

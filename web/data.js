@@ -1,35 +1,59 @@
 import centroid from "@turf/centroid";
 
+export const PER_PERSON_NUMERIC_PROPS = {
+  age: {
+    get: (p) => p.demographics.ageYears,
+    label: "age (years)",
+    fmt: (x) => x.toFixed(0),
+  },
+  salary_yearly: {
+    get: (p) => p.employment.salaryYearly,
+    label: "yearly salary",
+    fmt: (x) => x.toFixed(1),
+  },
+  salary_hourly: {
+    get: (p) => p.employment.salaryHourly,
+    label: "hourly salary",
+    fmt: (x) => x.toFixed(1),
+  },
+  bmi: {
+    get: (p) => p.health.bmiNew,
+    label: "BMI",
+    fmt: (x) => x.toFixed(1),
+  },
+};
+
 // Returns a mapping from MSOA ID to the GJ Feature
 export function msoaStats(pop) {
   // Counts
   let households_per_msoa = {};
   let people_per_msoa = {};
 
-  // Averages of numeric data
-  let avg_age = {};
-  let avg_salary_yearly = {};
-  let avg_salary_hourly = {};
-  let avg_bmi_new = {};
+  // Averages of numeric data. Map<key, Map<MSOA, float>>
+  let averages = {};
+  for (let key of Object.keys(PER_PERSON_NUMERIC_PROPS)) {
+    averages[key] = {};
+  }
 
+  // Initialize sum for all MSOAs
   for (let id of Object.keys(pop.infoPerMsoa)) {
     households_per_msoa[id] = 0;
     people_per_msoa[id] = 0;
-    avg_age[id] = 0.0;
-    avg_salary_yearly[id] = 0.0;
-    avg_salary_hourly[id] = 0.0;
-    avg_bmi_new[id] = 0.0;
+    for (let key of Object.keys(PER_PERSON_NUMERIC_PROPS)) {
+      averages[key][id] = 0.0;
+    }
   }
+
   for (let hh of pop.households) {
     households_per_msoa[hh.msoa11cd]++;
     people_per_msoa[hh.msoa11cd] += hh.members.length;
+
     // Sum per MSOA
     for (let id of hh.members) {
       let person = pop.people[id];
-      avg_age[hh.msoa11cd] += person.demographics.ageYears;
-      avg_salary_yearly[hh.msoa11cd] += person.employment.salaryYearly;
-      avg_salary_hourly[hh.msoa11cd] += person.employment.salaryHourly;
-      avg_bmi_new[hh.msoa11cd] += person.health.bmiNew;
+      for (let [key, prop] of Object.entries(PER_PERSON_NUMERIC_PROPS)) {
+        averages[key][hh.msoa11cd] += prop.get(person);
+      }
     }
   }
 
@@ -38,26 +62,27 @@ export function msoaStats(pop) {
     let n = people_per_msoa[id];
     // TODO Cast?
     avg_household_size[id] = n / households_per_msoa[id];
-    avg_age[id] /= n;
-    avg_salary_yearly[id] /= n;
-    avg_salary_hourly[id] /= n;
-    avg_bmi_new[id] /= n;
+
+    for (let [key, avg] of Object.entries(averages)) {
+      avg[id] /= n;
+    }
   }
 
   let msoas = {};
   for (let [id, info] of Object.entries(pop.infoPerMsoa)) {
+    let properties = {
+      id,
+      households: households_per_msoa[id],
+      people: people_per_msoa[id],
+      avg_household_size: avg_household_size[id],
+    };
+    for (let [key, avg] of Object.entries(averages)) {
+      properties[key] = avg[id];
+    }
+
     msoas[id] = {
       type: "Feature",
-      properties: {
-        id,
-        households: households_per_msoa[id],
-        people: people_per_msoa[id],
-        avg_age: avg_age[id],
-        avg_household_size: avg_household_size[id],
-        avg_salary_yearly: avg_salary_yearly[id],
-        avg_salary_hourly: avg_salary_hourly[id],
-        avg_bmi_new: avg_bmi_new[id],
-      },
+      properties,
       geometry: {
         coordinates: [info.shape.map((pt) => [pt.longitude, pt.latitude])],
         type: "Polygon",

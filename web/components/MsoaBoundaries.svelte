@@ -1,5 +1,6 @@
 <script>
   import { getContext, onMount, onDestroy } from "svelte";
+  import { PER_PERSON_NUMERIC_PROPS } from "../data.js";
   import bbox from "@turf/bbox";
   import chroma from "chroma-js";
 
@@ -154,11 +155,10 @@
   <select bind:value={colorBy} on:change={setLayer}>
     <option value="households">Number of households</option>
     <option value="people">Number of people</option>
-    <option value="avg_age">Average age (years)</option>
     <option value="avg_household_size">Average household size</option>
-    <option value="avg_salary_yearly">Average yearly salary</option>
-    <option value="avg_salary_hourly">Average hourly salary</option>
-    <option value="avg_bmi_new">Average BMI</option>
+    {#each Object.entries(PER_PERSON_NUMERIC_PROPS) as [key, prop]}
+      <option value={key}>{prop.label}</option>
+    {/each}
   </select>
   <ul>
     {#each colorScale as color, i}
