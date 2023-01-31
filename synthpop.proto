@@ -13,6 +13,9 @@ message Population {
     map<string, InfoPerMSOA> info_per_msoa = 4;
 
     required Lockdown lockdown = 5;
+
+    // Keyed by serial_pnum_weekday, derived from TUS 15
+    map<string, TimeUseDiary> time_use_diaries = 6;
 }
 
 message Household {
@@ -80,6 +83,11 @@ message Person {
     required Employment employment = 6;
     required Health health = 7;
     required Events events = 8;
+
+    // A person's time use isn't the same every day.
+    // These're keys in the Population-wide time_use_diaries mapping
+    repeated string weekday_diaries = 9;
+    repeated string weekend_diaries = 10;
 }
 
 message Identifiers {
@@ -303,4 +311,88 @@ message Lockdown {
     // work; school; shop; services; leisure; escort; transport; not_home).
     // Update at home activity so that it still sums to 1.
     repeated float per_day = 2;
+}
+
+message TimeUseDiary {
+    // Unique identifier of a diary entry (derived from TUS 15, serial_pnum_weekday)
+    required string uid = 1;
+    // Working day or weekend day (derived from uktus15_dv_time_vars)
+    required bool weekday = 2;
+    // TODO Enum
+    // Type of day (KindOfDay in uktus15_dv_time_vars)
+    // 1	A workday
+    // 2	A school or college day
+    // 3	A day off due to the weekend/holiday or work schedule
+    // 4	A sick leave day
+    // 5	A vacation/annual leave day
+    // 6	On leave for other reasons
+    // 7	None of the above
+    // -9	No answer/refused
+    // -7	Interview not achieved
+    // -2	Schedule not applicable
+    required int32 day_type = 3;
+    // Month of the year as a numeric (dmonth in uktus15_dv_time_vars)
+    required uint32 month = 4;
+
+    // Time at home
+
+    // Proportion of the day spent working at home (derived from dml1_1 in
+    // uktus15_dv_time_vars and uktus15_diary_ep_long)
+    required float pworkhome = 5;
+    // Proportion of the day spent doing other activities at home (derived from
+    // the sum of dml1_0, dml1_3, dml1_7 and dml1_8 in uktus15_dv_time_vars)
+    required float phomeother = 6;
+
+    // Time away from home
+
+    // Proportion of the day spent working away from home (derived from dml1_1
+    // in uktus15_dv_time_vars and uktus15_diary_ep_long)
+    required float pwork = 7;
+    // Proportion of the day spent at school (derived from dml2_21 in
+    // uktus15_dv_time_vars)
+    required float pschool = 8;
+    // Proportion of the day spent shopping (derived from dml3_361 in
+    // uktus15_dv_time_vars)
+    required float pshop = 9;
+    // Proportion of the day spent at commercial or personal services (derived
+    // from the sum of dml3_362 and dml3_363 in uktus15_dv_time_vars)
+    required float pservices = 10;
+    // Proportion of the day spent doing outdoors leisure activities (derived
+    // from the sum of dml1_4, dml1_5 and dml1_6 in uktus15_dv_time_vars)
+    required float pleisure = 11;
+    // Proportion of the day spent escorting someone else (derived from
+    // dml3_923 in uktus15_dv_time_vars)
+    required float pescort = 12;
+    // Proportion of the day spent travelling (derived from dml1_9a in
+    // uktus15_dv_time_vars)
+    required float ptransport = 13;
+
+    // Totals
+
+    // Total proportion of the day spent doing activities at home (formula =
+    // pworkhome + phomeother)
+    required float phome_total = 14;
+    // Total proportion of the day spent oudoors (formula = pwork + pschool +
+    // pshop + pservices + pleisure + pescort + ptransport)
+    required float pnothome_total = 15;
+    // Total reamining proportion of the day spent (formula = 1 - (phomeTOT +
+    // pnothomeTOT)); if negative, removed form phomeother
+    required float punknown_total = 16;
+
+    // Transport
+
+    // Proportion of travel done walking (derived from uktus15_diary_ep_long)
+    required float pmwalk = 17;
+    // Proportion of travel done cycling (derived from uktus15_diary_ep_long)
+    required float pmcycle = 18;
+    // Proportion of travel through a private mean of transportation (includes
+    // walking and cycling) (derived from uktus15_diary_ep_long)
+    required float pmprivate = 19;
+    // Proportion of travel done through a public mean of transportation
+    // (derived from uktus15_diary_ep_long)
+    required float pmpublic = 20;
+    // Proportion of travel done through an unknown mean - note that pm unknown
+    // + pmpublic + pmprivate sum to 1 or 0 if no travel is made (derived from
+    // uktus15_diary_ep_long)
+    required float pmunknown = 21;
 }

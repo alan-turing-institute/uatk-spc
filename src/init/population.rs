@@ -275,6 +275,8 @@ impl TuPerson {
                 concert_fs: self.e_concert_fs,
                 museum: self.e_museum,
             },
+            weekday_diaries: Vec::new(),
+            weekend_diaries: Vec::new(),
         })
     }
 }
