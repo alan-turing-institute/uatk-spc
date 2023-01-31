@@ -137,6 +137,12 @@
         ],
       },
     });
+
+    // Format the numeric limits
+    let prop = PER_PERSON_NUMERIC_PROPS[colorBy];
+    if (prop) {
+      limits = limits.map((x) => prop.fmt(x));
+    }
   }
 
   onDestroy(() => {
