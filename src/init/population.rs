@@ -146,14 +146,14 @@ struct TuPerson {
     lat: f32,
     lng: f32,
 
-    sex: usize,
+    sex: i32,
     age: u32,
     ethnicity: i32,
     nssec8: i32,
     sic1d2007: String,
     sic2d2007: i64,
     soc2010: i64,
-    pwkstat: String,
+    pwkstat: i32,
     #[serde(rename = "incomeH", deserialize_with = "parse_f32_or_na")]
     salary_hourly: Option<f32>,
     #[serde(rename = "incomeY", deserialize_with = "parse_f32_or_na")]
@@ -237,12 +237,7 @@ impl TuPerson {
                 pid_hs: self.pid_hse,
             },
             demographics: pb::Demographics {
-                sex: match self.sex {
-                    x if x == 0 => pb::Sex::Female,
-                    x if x == 1 => pb::Sex::Male,
-                    x => bail!("Unknown sex {}", x),
-                }
-                .into(),
+                sex: pb::Sex::from_i32(self.sex).expect("Unknown sex").into(),
                 age_years: self.age,
                 ethnicity: pb::Ethnicity::from_i32(self.ethnicity)
                     .expect("Unknown ethnicity")
@@ -259,21 +254,9 @@ impl TuPerson {
                 },
                 sic2d2007: parse_optional_neg1(self.sic2d2007)?,
                 soc2010: parse_optional_neg1(self.soc2010)?,
-                pwkstat: match self.pwkstat.as_str() {
-                    "0. N/A (age<16)" => pb::PwkStat::Na,
-                    "1. Employee FT" => pb::PwkStat::EmployeeFt,
-                    "2. Employee PT" => pb::PwkStat::EmployeePt,
-                    "3. Employee unspec." => pb::PwkStat::EmployeeUnspec,
-                    "4. Self-Employed" => pb::PwkStat::SelfEmployed,
-                    "5. Unemployed" => pb::PwkStat::PwkUnemployed,
-                    "6. Retired" => pb::PwkStat::Retired,
-                    "7. Homemaker/Mat.Leave" => pb::PwkStat::Homemaker,
-                    "8. Student FT" => pb::PwkStat::StudentFt,
-                    "9. Long-term Sick/Dis" => pb::PwkStat::LongTermSick,
-                    "10. Other" => pb::PwkStat::PwkOther,
-                    x => bail!("Unknown pwkstat value {}", x),
-                }
-                .into(),
+                pwkstat: pb::PwkStat::from_i32(self.pwkstat)
+                    .expect("Unknown pwkstat")
+                    .into(),
                 salary_hourly: self.salary_hourly,
                 salary_yearly: self.salary_yearly,
             },
