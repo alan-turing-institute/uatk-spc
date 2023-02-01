@@ -70,7 +70,8 @@ impl Population {
             lockdown::calculate_lockdown_per_day(raw_results.msoas_per_county, &population)?;
         population.remove_unused_venues();
 
-        population.time_use_diaries = diaries::load_time_use_diaries()?;
+        diaries::load_time_use_diaries(&mut population)?;
+        diaries::load_diaries_per_person(&mut population)?;
 
         Ok((population, commuting_duration))
     }
