@@ -41,7 +41,7 @@
           ["get", "activity"],
           "School",
           "cyan",
-          "Work",
+          "WORK",
           "red",
           "Shopping",
           "green",
@@ -86,7 +86,27 @@
           },
         });
 
-        // TODO Flows to other places
+        // Go to work?
+        console.log(`${JSON.stringify(diary)}`);
+        if (person.hasOwnProperty("workplace") && diary.pwork > 0.0) {
+          let work = pointToGeojson(
+            pop.venuesPerActivity[synthpop.Activity.WORK][person.workplace]
+              .location
+          );
+          gj.features.push({
+            type: "Feature",
+            properties: {
+              activity: "WORK",
+              pct: diary.pwork,
+            },
+            geometry: {
+              coordinates: [home, work],
+              type: "LineString",
+            },
+          });
+        }
+
+        // TODO Retail, primary school, secondary school
       }
 
       map.getSource(source).setData(gj);
@@ -106,13 +126,15 @@
   function homeLocation(person) {
     let msoa = pop.infoPerMsoa[pop.households[person.household].msoa11cd];
     if (msoa.buildings.length > 0) {
-      let pt = msoa.buildings[person.id % msoa.buildings.length];
-      return [pt.longitude, pt.latitude];
+      return pointToGeojson(msoa.buildings[person.id % msoa.buildings.length]);
     } else {
       // TODO Fallback to MSOA centroid
-      let pt = msoa.shape[0];
-      return [pt.longitude, pt.latitude];
+      return pointToGeojson(msoa.shape[0]);
     }
+  }
+
+  function pointToGeojson(pt) {
+    return [pt.longitude, pt.latitude];
   }
 
   function addDays(date, offset) {
