@@ -1,6 +1,6 @@
 <script>
   import { getContext, onMount, onDestroy } from "svelte";
-  import { geometricReservoirSample } from "pandemonium";
+  import { geometricReservoirSample, createWeightedChoice } from "pandemonium";
   import { synthpop } from "../pb/synthpop_pb.js";
   import { emptyGeojson } from "../data.js";
 
@@ -24,6 +24,7 @@
     map.addLayer({
       id: homeLayer,
       source,
+      // TODO Filter for points in the source, not just venue endpoints
       type: "circle",
       paint: {
         "circle-color": "blue",
@@ -43,11 +44,11 @@
           "cyan",
           "WORK",
           "red",
-          "Shopping",
+          "RETAIL",
           "green",
           "black",
         ],
-        "line-width": ["*", 10, ["get", "pct"]],
+        "line-width": ["*", 20, ["get", "pct"]],
       },
     });
   });
@@ -87,7 +88,6 @@
         });
 
         // Go to work?
-        console.log(`${JSON.stringify(diary)}`);
         if (person.hasOwnProperty("workplace") && diary.pwork > 0.0) {
           let work = pointToGeojson(
             pop.venuesPerActivity[synthpop.Activity.WORK][person.workplace]
@@ -106,7 +106,36 @@
           });
         }
 
-        // TODO Retail, primary school, secondary school
+        let flows_per_activity =
+          pop.infoPerMsoa[pop.households[person.household].msoa11cd]
+            .flowsPerActivity;
+        if (diary.pshop > 0.0) {
+          // Pick a venue
+          let flows = flows_per_activity.find(
+            (f) => f.activity == synthpop.Activity.RETAIL
+          ).flows;
+          let flow = createWeightedChoice({
+            getWeight: (item, index) => {
+              return item.weight;
+            },
+          })(flows);
+          let shop = pointToGeojson(
+            pop.venuesPerActivity[synthpop.Activity.RETAIL].venues[flow.venueId]
+              .location
+          );
+          gj.features.push({
+            type: "Feature",
+            properties: {
+              activity: "RETAIL",
+              pct: diary.pshop,
+            },
+            geometry: {
+              coordinates: [home, shop],
+              type: "LineString",
+            },
+          });
+        }
+        // TODO Primary school, secondary school (refactor of course)
       }
 
       map.getSource(source).setData(gj);
