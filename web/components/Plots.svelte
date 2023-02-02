@@ -62,7 +62,6 @@
   }
 
   function barChart(node, { dataset, title }) {
-    console.log(`display ${JSON.stringify(dataset)}`);
     Plotly.purge(node);
     Plotly.newPlot(
       node,

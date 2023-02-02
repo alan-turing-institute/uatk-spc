@@ -27,6 +27,7 @@ export const synthpop = $root.synthpop = (() => {
          * @property {Object.<string,synthpop.IVenueList>|null} [venuesPerActivity] Population venuesPerActivity
          * @property {Object.<string,synthpop.IInfoPerMSOA>|null} [infoPerMsoa] Population infoPerMsoa
          * @property {synthpop.ILockdown} lockdown Population lockdown
+         * @property {Object.<string,synthpop.ITimeUseDiary>|null} [timeUseDiaries] Population timeUseDiaries
          */
 
         /**
@@ -42,6 +43,7 @@ export const synthpop = $root.synthpop = (() => {
             this.people = [];
             this.venuesPerActivity = {};
             this.infoPerMsoa = {};
+            this.timeUseDiaries = {};
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -89,6 +91,14 @@ export const synthpop = $root.synthpop = (() => {
         Population.prototype.lockdown = null;
 
         /**
+         * Population timeUseDiaries.
+         * @member {Object.<string,synthpop.ITimeUseDiary>} timeUseDiaries
+         * @memberof synthpop.Population
+         * @instance
+         */
+        Population.prototype.timeUseDiaries = $util.emptyObject;
+
+        /**
          * Creates a new Population instance using the specified properties.
          * @function create
          * @memberof synthpop.Population
@@ -129,6 +139,11 @@ export const synthpop = $root.synthpop = (() => {
                     $root.synthpop.InfoPerMSOA.encode(message.infoPerMsoa[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim().ldelim();
                 }
             $root.synthpop.Lockdown.encode(message.lockdown, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
+            if (message.timeUseDiaries != null && Object.hasOwnProperty.call(message, "timeUseDiaries"))
+                for (let keys = Object.keys(message.timeUseDiaries), i = 0; i < keys.length; ++i) {
+                    writer.uint32(/* id 6, wireType 2 =*/50).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]);
+                    $root.synthpop.TimeUseDiary.encode(message.timeUseDiaries[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim().ldelim();
+                }
             return writer;
         };
 
@@ -225,6 +240,29 @@ export const synthpop = $root.synthpop = (() => {
                         message.lockdown = $root.synthpop.Lockdown.decode(reader, reader.uint32());
                         break;
                     }
+                case 6: {
+                        if (message.timeUseDiaries === $util.emptyObject)
+                            message.timeUseDiaries = {};
+                        let end2 = reader.uint32() + reader.pos;
+                        key = "";
+                        value = null;
+                        while (reader.pos < end2) {
+                            let tag2 = reader.uint32();
+                            switch (tag2 >>> 3) {
+                            case 1:
+                                key = reader.string();
+                                break;
+                            case 2:
+                                value = $root.synthpop.TimeUseDiary.decode(reader, reader.uint32());
+                                break;
+                            default:
+                                reader.skipType(tag2 & 7);
+                                break;
+                            }
+                        }
+                        message.timeUseDiaries[key] = value;
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -309,6 +347,16 @@ export const synthpop = $root.synthpop = (() => {
                 if (error)
                     return "lockdown." + error;
             }
+            if (message.timeUseDiaries != null && message.hasOwnProperty("timeUseDiaries")) {
+                if (!$util.isObject(message.timeUseDiaries))
+                    return "timeUseDiaries: object expected";
+                let key = Object.keys(message.timeUseDiaries);
+                for (let i = 0; i < key.length; ++i) {
+                    let error = $root.synthpop.TimeUseDiary.verify(message.timeUseDiaries[key[i]]);
+                    if (error)
+                        return "timeUseDiaries." + error;
+                }
+            }
             return null;
         };
 
@@ -369,6 +417,16 @@ export const synthpop = $root.synthpop = (() => {
                     throw TypeError(".synthpop.Population.lockdown: object expected");
                 message.lockdown = $root.synthpop.Lockdown.fromObject(object.lockdown);
             }
+            if (object.timeUseDiaries) {
+                if (typeof object.timeUseDiaries !== "object")
+                    throw TypeError(".synthpop.Population.timeUseDiaries: object expected");
+                message.timeUseDiaries = {};
+                for (let keys = Object.keys(object.timeUseDiaries), i = 0; i < keys.length; ++i) {
+                    if (typeof object.timeUseDiaries[keys[i]] !== "object")
+                        throw TypeError(".synthpop.Population.timeUseDiaries: object expected");
+                    message.timeUseDiaries[keys[i]] = $root.synthpop.TimeUseDiary.fromObject(object.timeUseDiaries[keys[i]]);
+                }
+            }
             return message;
         };
 
@@ -392,6 +450,7 @@ export const synthpop = $root.synthpop = (() => {
             if (options.objects || options.defaults) {
                 object.venuesPerActivity = {};
                 object.infoPerMsoa = {};
+                object.timeUseDiaries = {};
             }
             if (options.defaults)
                 object.lockdown = null;
@@ -418,6 +477,11 @@ export const synthpop = $root.synthpop = (() => {
             }
             if (message.lockdown != null && message.hasOwnProperty("lockdown"))
                 object.lockdown = $root.synthpop.Lockdown.toObject(message.lockdown, options);
+            if (message.timeUseDiaries && (keys2 = Object.keys(message.timeUseDiaries)).length) {
+                object.timeUseDiaries = {};
+                for (let j = 0; j < keys2.length; ++j)
+                    object.timeUseDiaries[keys2[j]] = $root.synthpop.TimeUseDiary.toObject(message.timeUseDiaries[keys2[j]], options);
+            }
             return object;
         };
 
@@ -458,8 +522,9 @@ export const synthpop = $root.synthpop = (() => {
          * @interface IHousehold
          * @property {number|Long} id Household id
          * @property {string} msoa11cd Household msoa11cd
-         * @property {number|Long} origHid An ID from the original data, kept around for debugging
+         * @property {string} oa11cd Household oa11cd
          * @property {Array.<number|Long>|null} [members] Household members
+         * @property {synthpop.IHouseholdDetails} details Household details
          */
 
         /**
@@ -495,12 +560,12 @@ export const synthpop = $root.synthpop = (() => {
         Household.prototype.msoa11cd = "";
 
         /**
-         * An ID from the original data, kept around for debugging
-         * @member {number|Long} origHid
+         * Household oa11cd.
+         * @member {string} oa11cd
          * @memberof synthpop.Household
          * @instance
          */
-        Household.prototype.origHid = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+        Household.prototype.oa11cd = "";
 
         /**
          * Household members.
@@ -509,6 +574,14 @@ export const synthpop = $root.synthpop = (() => {
          * @instance
          */
         Household.prototype.members = $util.emptyArray;
+
+        /**
+         * Household details.
+         * @member {synthpop.IHouseholdDetails} details
+         * @memberof synthpop.Household
+         * @instance
+         */
+        Household.prototype.details = null;
 
         /**
          * Creates a new Household instance using the specified properties.
@@ -536,10 +609,11 @@ export const synthpop = $root.synthpop = (() => {
                 writer = $Writer.create();
             writer.uint32(/* id 1, wireType 0 =*/8).uint64(message.id);
             writer.uint32(/* id 2, wireType 2 =*/18).string(message.msoa11cd);
-            writer.uint32(/* id 3, wireType 0 =*/24).int64(message.origHid);
+            writer.uint32(/* id 3, wireType 2 =*/26).string(message.oa11cd);
             if (message.members != null && message.members.length)
                 for (let i = 0; i < message.members.length; ++i)
                     writer.uint32(/* id 4, wireType 0 =*/32).uint64(message.members[i]);
+            $root.synthpop.HouseholdDetails.encode(message.details, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
             return writer;
         };
 
@@ -583,7 +657,7 @@ export const synthpop = $root.synthpop = (() => {
                         break;
                     }
                 case 3: {
-                        message.origHid = reader.int64();
+                        message.oa11cd = reader.string();
                         break;
                     }
                 case 4: {
@@ -597,6 +671,10 @@ export const synthpop = $root.synthpop = (() => {
                             message.members.push(reader.uint64());
                         break;
                     }
+                case 5: {
+                        message.details = $root.synthpop.HouseholdDetails.decode(reader, reader.uint32());
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -606,8 +684,10 @@ export const synthpop = $root.synthpop = (() => {
                 throw $util.ProtocolError("missing required 'id'", { instance: message });
             if (!message.hasOwnProperty("msoa11cd"))
                 throw $util.ProtocolError("missing required 'msoa11cd'", { instance: message });
-            if (!message.hasOwnProperty("origHid"))
-                throw $util.ProtocolError("missing required 'origHid'", { instance: message });
+            if (!message.hasOwnProperty("oa11cd"))
+                throw $util.ProtocolError("missing required 'oa11cd'", { instance: message });
+            if (!message.hasOwnProperty("details"))
+                throw $util.ProtocolError("missing required 'details'", { instance: message });
             return message;
         };
 
@@ -642,14 +722,19 @@ export const synthpop = $root.synthpop = (() => {
                 return "id: integer|Long expected";
             if (!$util.isString(message.msoa11cd))
                 return "msoa11cd: string expected";
-            if (!$util.isInteger(message.origHid) && !(message.origHid && $util.isInteger(message.origHid.low) && $util.isInteger(message.origHid.high)))
-                return "origHid: integer|Long expected";
+            if (!$util.isString(message.oa11cd))
+                return "oa11cd: string expected";
             if (message.members != null && message.hasOwnProperty("members")) {
                 if (!Array.isArray(message.members))
                     return "members: array expected";
                 for (let i = 0; i < message.members.length; ++i)
                     if (!$util.isInteger(message.members[i]) && !(message.members[i] && $util.isInteger(message.members[i].low) && $util.isInteger(message.members[i].high)))
                         return "members: integer|Long[] expected";
+            }
+            {
+                let error = $root.synthpop.HouseholdDetails.verify(message.details);
+                if (error)
+                    return "details." + error;
             }
             return null;
         };
@@ -677,15 +762,8 @@ export const synthpop = $root.synthpop = (() => {
                     message.id = new $util.LongBits(object.id.low >>> 0, object.id.high >>> 0).toNumber(true);
             if (object.msoa11cd != null)
                 message.msoa11cd = String(object.msoa11cd);
-            if (object.origHid != null)
-                if ($util.Long)
-                    (message.origHid = $util.Long.fromValue(object.origHid)).unsigned = false;
-                else if (typeof object.origHid === "string")
-                    message.origHid = parseInt(object.origHid, 10);
-                else if (typeof object.origHid === "number")
-                    message.origHid = object.origHid;
-                else if (typeof object.origHid === "object")
-                    message.origHid = new $util.LongBits(object.origHid.low >>> 0, object.origHid.high >>> 0).toNumber();
+            if (object.oa11cd != null)
+                message.oa11cd = String(object.oa11cd);
             if (object.members) {
                 if (!Array.isArray(object.members))
                     throw TypeError(".synthpop.Household.members: array expected");
@@ -699,6 +777,11 @@ export const synthpop = $root.synthpop = (() => {
                         message.members[i] = object.members[i];
                     else if (typeof object.members[i] === "object")
                         message.members[i] = new $util.LongBits(object.members[i].low >>> 0, object.members[i].high >>> 0).toNumber(true);
+            }
+            if (object.details != null) {
+                if (typeof object.details !== "object")
+                    throw TypeError(".synthpop.Household.details: object expected");
+                message.details = $root.synthpop.HouseholdDetails.fromObject(object.details);
             }
             return message;
         };
@@ -725,11 +808,8 @@ export const synthpop = $root.synthpop = (() => {
                 } else
                     object.id = options.longs === String ? "0" : 0;
                 object.msoa11cd = "";
-                if ($util.Long) {
-                    let long = new $util.Long(0, 0, false);
-                    object.origHid = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                } else
-                    object.origHid = options.longs === String ? "0" : 0;
+                object.oa11cd = "";
+                object.details = null;
             }
             if (message.id != null && message.hasOwnProperty("id"))
                 if (typeof message.id === "number")
@@ -738,11 +818,8 @@ export const synthpop = $root.synthpop = (() => {
                     object.id = options.longs === String ? $util.Long.prototype.toString.call(message.id) : options.longs === Number ? new $util.LongBits(message.id.low >>> 0, message.id.high >>> 0).toNumber(true) : message.id;
             if (message.msoa11cd != null && message.hasOwnProperty("msoa11cd"))
                 object.msoa11cd = message.msoa11cd;
-            if (message.origHid != null && message.hasOwnProperty("origHid"))
-                if (typeof message.origHid === "number")
-                    object.origHid = options.longs === String ? String(message.origHid) : message.origHid;
-                else
-                    object.origHid = options.longs === String ? $util.Long.prototype.toString.call(message.origHid) : options.longs === Number ? new $util.LongBits(message.origHid.low >>> 0, message.origHid.high >>> 0).toNumber() : message.origHid;
+            if (message.oa11cd != null && message.hasOwnProperty("oa11cd"))
+                object.oa11cd = message.oa11cd;
             if (message.members && message.members.length) {
                 object.members = [];
                 for (let j = 0; j < message.members.length; ++j)
@@ -751,6 +828,8 @@ export const synthpop = $root.synthpop = (() => {
                     else
                         object.members[j] = options.longs === String ? $util.Long.prototype.toString.call(message.members[j]) : options.longs === Number ? new $util.LongBits(message.members[j].low >>> 0, message.members[j].high >>> 0).toNumber(true) : message.members[j];
             }
+            if (message.details != null && message.hasOwnProperty("details"))
+                object.details = $root.synthpop.HouseholdDetails.toObject(message.details, options);
             return object;
         };
 
@@ -781,6 +860,695 @@ export const synthpop = $root.synthpop = (() => {
         };
 
         return Household;
+    })();
+
+    synthpop.HouseholdDetails = (function() {
+
+        /**
+         * Properties of an HouseholdDetails.
+         * @memberof synthpop
+         * @interface IHouseholdDetails
+         * @property {string} hid Unique household ID
+         * @property {synthpop.Nssec8|null} [nssec8] HouseholdDetails nssec8
+         * @property {synthpop.AccommodationType|null} [accommodationType] HouseholdDetails accommodationType
+         * @property {synthpop.CommunalType|null} [communalType] HouseholdDetails communalType
+         * @property {number|Long|null} [numRooms] HouseholdDetails numRooms
+         * @property {boolean} centralHeat HouseholdDetails centralHeat
+         * @property {synthpop.Tenure|null} [tenure] HouseholdDetails tenure
+         * @property {number|Long|null} [numCars] HouseholdDetails numCars
+         */
+
+        /**
+         * Constructs a new HouseholdDetails.
+         * @memberof synthpop
+         * @classdesc Represents an HouseholdDetails.
+         * @implements IHouseholdDetails
+         * @constructor
+         * @param {synthpop.IHouseholdDetails=} [properties] Properties to set
+         */
+        function HouseholdDetails(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * Unique household ID
+         * @member {string} hid
+         * @memberof synthpop.HouseholdDetails
+         * @instance
+         */
+        HouseholdDetails.prototype.hid = "";
+
+        /**
+         * HouseholdDetails nssec8.
+         * @member {synthpop.Nssec8} nssec8
+         * @memberof synthpop.HouseholdDetails
+         * @instance
+         */
+        HouseholdDetails.prototype.nssec8 = 1;
+
+        /**
+         * HouseholdDetails accommodationType.
+         * @member {synthpop.AccommodationType} accommodationType
+         * @memberof synthpop.HouseholdDetails
+         * @instance
+         */
+        HouseholdDetails.prototype.accommodationType = 1;
+
+        /**
+         * HouseholdDetails communalType.
+         * @member {synthpop.CommunalType} communalType
+         * @memberof synthpop.HouseholdDetails
+         * @instance
+         */
+        HouseholdDetails.prototype.communalType = 0;
+
+        /**
+         * HouseholdDetails numRooms.
+         * @member {number|Long} numRooms
+         * @memberof synthpop.HouseholdDetails
+         * @instance
+         */
+        HouseholdDetails.prototype.numRooms = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+
+        /**
+         * HouseholdDetails centralHeat.
+         * @member {boolean} centralHeat
+         * @memberof synthpop.HouseholdDetails
+         * @instance
+         */
+        HouseholdDetails.prototype.centralHeat = false;
+
+        /**
+         * HouseholdDetails tenure.
+         * @member {synthpop.Tenure} tenure
+         * @memberof synthpop.HouseholdDetails
+         * @instance
+         */
+        HouseholdDetails.prototype.tenure = 1;
+
+        /**
+         * HouseholdDetails numCars.
+         * @member {number|Long} numCars
+         * @memberof synthpop.HouseholdDetails
+         * @instance
+         */
+        HouseholdDetails.prototype.numCars = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+
+        /**
+         * Creates a new HouseholdDetails instance using the specified properties.
+         * @function create
+         * @memberof synthpop.HouseholdDetails
+         * @static
+         * @param {synthpop.IHouseholdDetails=} [properties] Properties to set
+         * @returns {synthpop.HouseholdDetails} HouseholdDetails instance
+         */
+        HouseholdDetails.create = function create(properties) {
+            return new HouseholdDetails(properties);
+        };
+
+        /**
+         * Encodes the specified HouseholdDetails message. Does not implicitly {@link synthpop.HouseholdDetails.verify|verify} messages.
+         * @function encode
+         * @memberof synthpop.HouseholdDetails
+         * @static
+         * @param {synthpop.IHouseholdDetails} message HouseholdDetails message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        HouseholdDetails.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            writer.uint32(/* id 1, wireType 2 =*/10).string(message.hid);
+            if (message.nssec8 != null && Object.hasOwnProperty.call(message, "nssec8"))
+                writer.uint32(/* id 2, wireType 0 =*/16).int32(message.nssec8);
+            if (message.accommodationType != null && Object.hasOwnProperty.call(message, "accommodationType"))
+                writer.uint32(/* id 3, wireType 0 =*/24).int32(message.accommodationType);
+            if (message.communalType != null && Object.hasOwnProperty.call(message, "communalType"))
+                writer.uint32(/* id 4, wireType 0 =*/32).int32(message.communalType);
+            if (message.numRooms != null && Object.hasOwnProperty.call(message, "numRooms"))
+                writer.uint32(/* id 5, wireType 0 =*/40).uint64(message.numRooms);
+            writer.uint32(/* id 6, wireType 0 =*/48).bool(message.centralHeat);
+            if (message.tenure != null && Object.hasOwnProperty.call(message, "tenure"))
+                writer.uint32(/* id 7, wireType 0 =*/56).int32(message.tenure);
+            if (message.numCars != null && Object.hasOwnProperty.call(message, "numCars"))
+                writer.uint32(/* id 8, wireType 0 =*/64).uint64(message.numCars);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified HouseholdDetails message, length delimited. Does not implicitly {@link synthpop.HouseholdDetails.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof synthpop.HouseholdDetails
+         * @static
+         * @param {synthpop.IHouseholdDetails} message HouseholdDetails message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        HouseholdDetails.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes an HouseholdDetails message from the specified reader or buffer.
+         * @function decode
+         * @memberof synthpop.HouseholdDetails
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {synthpop.HouseholdDetails} HouseholdDetails
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        HouseholdDetails.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.synthpop.HouseholdDetails();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.hid = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.nssec8 = reader.int32();
+                        break;
+                    }
+                case 3: {
+                        message.accommodationType = reader.int32();
+                        break;
+                    }
+                case 4: {
+                        message.communalType = reader.int32();
+                        break;
+                    }
+                case 5: {
+                        message.numRooms = reader.uint64();
+                        break;
+                    }
+                case 6: {
+                        message.centralHeat = reader.bool();
+                        break;
+                    }
+                case 7: {
+                        message.tenure = reader.int32();
+                        break;
+                    }
+                case 8: {
+                        message.numCars = reader.uint64();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            if (!message.hasOwnProperty("hid"))
+                throw $util.ProtocolError("missing required 'hid'", { instance: message });
+            if (!message.hasOwnProperty("centralHeat"))
+                throw $util.ProtocolError("missing required 'centralHeat'", { instance: message });
+            return message;
+        };
+
+        /**
+         * Decodes an HouseholdDetails message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof synthpop.HouseholdDetails
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {synthpop.HouseholdDetails} HouseholdDetails
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        HouseholdDetails.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies an HouseholdDetails message.
+         * @function verify
+         * @memberof synthpop.HouseholdDetails
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        HouseholdDetails.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (!$util.isString(message.hid))
+                return "hid: string expected";
+            if (message.nssec8 != null && message.hasOwnProperty("nssec8"))
+                switch (message.nssec8) {
+                default:
+                    return "nssec8: enum value expected";
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                    break;
+                }
+            if (message.accommodationType != null && message.hasOwnProperty("accommodationType"))
+                switch (message.accommodationType) {
+                default:
+                    return "accommodationType: enum value expected";
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    break;
+                }
+            if (message.communalType != null && message.hasOwnProperty("communalType"))
+                switch (message.communalType) {
+                default:
+                    return "communalType: enum value expected";
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                case 12:
+                case 13:
+                case 14:
+                case 15:
+                case 16:
+                case 17:
+                case 18:
+                case 19:
+                case 20:
+                case 21:
+                case 22:
+                case 23:
+                case 24:
+                case 25:
+                case 26:
+                case 27:
+                case 28:
+                case 29:
+                case 30:
+                case 31:
+                case 32:
+                case 33:
+                case 34:
+                    break;
+                }
+            if (message.numRooms != null && message.hasOwnProperty("numRooms"))
+                if (!$util.isInteger(message.numRooms) && !(message.numRooms && $util.isInteger(message.numRooms.low) && $util.isInteger(message.numRooms.high)))
+                    return "numRooms: integer|Long expected";
+            if (typeof message.centralHeat !== "boolean")
+                return "centralHeat: boolean expected";
+            if (message.tenure != null && message.hasOwnProperty("tenure"))
+                switch (message.tenure) {
+                default:
+                    return "tenure: enum value expected";
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    break;
+                }
+            if (message.numCars != null && message.hasOwnProperty("numCars"))
+                if (!$util.isInteger(message.numCars) && !(message.numCars && $util.isInteger(message.numCars.low) && $util.isInteger(message.numCars.high)))
+                    return "numCars: integer|Long expected";
+            return null;
+        };
+
+        /**
+         * Creates an HouseholdDetails message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof synthpop.HouseholdDetails
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {synthpop.HouseholdDetails} HouseholdDetails
+         */
+        HouseholdDetails.fromObject = function fromObject(object) {
+            if (object instanceof $root.synthpop.HouseholdDetails)
+                return object;
+            let message = new $root.synthpop.HouseholdDetails();
+            if (object.hid != null)
+                message.hid = String(object.hid);
+            switch (object.nssec8) {
+            default:
+                if (typeof object.nssec8 === "number") {
+                    message.nssec8 = object.nssec8;
+                    break;
+                }
+                break;
+            case "HIGHER":
+            case 1:
+                message.nssec8 = 1;
+                break;
+            case "LOWER":
+            case 2:
+                message.nssec8 = 2;
+                break;
+            case "INTERMEDIATE":
+            case 3:
+                message.nssec8 = 3;
+                break;
+            case "SMALL":
+            case 4:
+                message.nssec8 = 4;
+                break;
+            case "SUPER":
+            case 5:
+                message.nssec8 = 5;
+                break;
+            case "SEMIROUTINE":
+            case 6:
+                message.nssec8 = 6;
+                break;
+            case "ROUTINE":
+            case 7:
+                message.nssec8 = 7;
+                break;
+            case "NEVER":
+            case 8:
+                message.nssec8 = 8;
+                break;
+            }
+            switch (object.accommodationType) {
+            default:
+                if (typeof object.accommodationType === "number") {
+                    message.accommodationType = object.accommodationType;
+                    break;
+                }
+                break;
+            case "DETACHED":
+            case 1:
+                message.accommodationType = 1;
+                break;
+            case "SEMI_DETACHED":
+            case 2:
+                message.accommodationType = 2;
+                break;
+            case "TERRACED":
+            case 3:
+                message.accommodationType = 3;
+                break;
+            case "FLAT":
+            case 4:
+                message.accommodationType = 4;
+                break;
+            }
+            switch (object.communalType) {
+            default:
+                if (typeof object.communalType === "number") {
+                    message.communalType = object.communalType;
+                    break;
+                }
+                break;
+            case "COMMUNAL":
+            case 0:
+                message.communalType = 0;
+                break;
+            case "MEDICAL":
+            case 1:
+                message.communalType = 1;
+                break;
+            case "MEDICAL_NHS":
+            case 2:
+                message.communalType = 2;
+                break;
+            case "MEDICAL_NHS_HOSPITAL":
+            case 3:
+                message.communalType = 3;
+                break;
+            case "MEDICAL_NHS_MENTAL":
+            case 4:
+                message.communalType = 4;
+                break;
+            case "MEDICAL_NHS_OTHER":
+            case 5:
+                message.communalType = 5;
+                break;
+            case "MEDICAL_LA":
+            case 6:
+                message.communalType = 6;
+                break;
+            case "MEDICAL_LA_CHILDREN":
+            case 7:
+                message.communalType = 7;
+                break;
+            case "MEDICAL_LA_CARE_HOME_NURSING":
+            case 8:
+                message.communalType = 8;
+                break;
+            case "MEDICAL_LA_CARE_HOME_NO_NURSING":
+            case 9:
+                message.communalType = 9;
+                break;
+            case "MEDICAL_LA_OTHER":
+            case 10:
+                message.communalType = 10;
+                break;
+            case "MEDICAL_SOCIAL":
+            case 11:
+                message.communalType = 11;
+                break;
+            case "MEDICAL_SOCIAL_HOSTEL":
+            case 12:
+                message.communalType = 12;
+                break;
+            case "MEDICAL_SOCIAL_SHELTER":
+            case 13:
+                message.communalType = 13;
+                break;
+            case "MEDICAL_OTHER":
+            case 14:
+                message.communalType = 14;
+                break;
+            case "MEDICAL_OTHER_CARE_HOME_NURSING":
+            case 15:
+                message.communalType = 15;
+                break;
+            case "MEDICAL_OTHER_CARE_HOME_NO_NURSING":
+            case 16:
+                message.communalType = 16;
+                break;
+            case "MEDICAL_OTHER_CHILDREN":
+            case 17:
+                message.communalType = 17;
+                break;
+            case "MEDICAL_OTHER_MENTAL":
+            case 18:
+                message.communalType = 18;
+                break;
+            case "MEDICAL_OTHER_HOSPITAL":
+            case 19:
+                message.communalType = 19;
+                break;
+            case "MEDICAL_OTHER_OTHER":
+            case 20:
+                message.communalType = 20;
+                break;
+            case "COM_OTHER":
+            case 21:
+                message.communalType = 21;
+                break;
+            case "DEFENSE":
+            case 22:
+                message.communalType = 22;
+                break;
+            case "PRISON":
+            case 23:
+                message.communalType = 23;
+                break;
+            case "PROBATION":
+            case 24:
+                message.communalType = 24;
+                break;
+            case "DETENTION":
+            case 25:
+                message.communalType = 25;
+                break;
+            case "EDUCATION":
+            case 26:
+                message.communalType = 26;
+                break;
+            case "HOTEL":
+            case 27:
+                message.communalType = 27;
+                break;
+            case "HOSTEL":
+            case 28:
+                message.communalType = 28;
+                break;
+            case "HOLIDAY":
+            case 29:
+                message.communalType = 29;
+                break;
+            case "TRAVEL":
+            case 30:
+                message.communalType = 30;
+                break;
+            case "RELIGIOUS":
+            case 31:
+                message.communalType = 31;
+                break;
+            case "STAFF":
+            case 32:
+                message.communalType = 32;
+                break;
+            case "OTHER_OTHER":
+            case 33:
+                message.communalType = 33;
+                break;
+            case "NOT_STATED":
+            case 34:
+                message.communalType = 34;
+                break;
+            }
+            if (object.numRooms != null)
+                if ($util.Long)
+                    (message.numRooms = $util.Long.fromValue(object.numRooms)).unsigned = true;
+                else if (typeof object.numRooms === "string")
+                    message.numRooms = parseInt(object.numRooms, 10);
+                else if (typeof object.numRooms === "number")
+                    message.numRooms = object.numRooms;
+                else if (typeof object.numRooms === "object")
+                    message.numRooms = new $util.LongBits(object.numRooms.low >>> 0, object.numRooms.high >>> 0).toNumber(true);
+            if (object.centralHeat != null)
+                message.centralHeat = Boolean(object.centralHeat);
+            switch (object.tenure) {
+            default:
+                if (typeof object.tenure === "number") {
+                    message.tenure = object.tenure;
+                    break;
+                }
+                break;
+            case "OWNED_FULLY":
+            case 1:
+                message.tenure = 1;
+                break;
+            case "OWNED_MORTGAGE":
+            case 2:
+                message.tenure = 2;
+                break;
+            case "RENTED_FREE":
+            case 3:
+                message.tenure = 3;
+                break;
+            case "RENTED_SOCIAL":
+            case 4:
+                message.tenure = 4;
+                break;
+            case "RENTED_PRIVATE":
+            case 5:
+                message.tenure = 5;
+                break;
+            }
+            if (object.numCars != null)
+                if ($util.Long)
+                    (message.numCars = $util.Long.fromValue(object.numCars)).unsigned = true;
+                else if (typeof object.numCars === "string")
+                    message.numCars = parseInt(object.numCars, 10);
+                else if (typeof object.numCars === "number")
+                    message.numCars = object.numCars;
+                else if (typeof object.numCars === "object")
+                    message.numCars = new $util.LongBits(object.numCars.low >>> 0, object.numCars.high >>> 0).toNumber(true);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from an HouseholdDetails message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof synthpop.HouseholdDetails
+         * @static
+         * @param {synthpop.HouseholdDetails} message HouseholdDetails
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        HouseholdDetails.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.hid = "";
+                object.nssec8 = options.enums === String ? "HIGHER" : 1;
+                object.accommodationType = options.enums === String ? "DETACHED" : 1;
+                object.communalType = options.enums === String ? "COMMUNAL" : 0;
+                if ($util.Long) {
+                    let long = new $util.Long(0, 0, true);
+                    object.numRooms = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                } else
+                    object.numRooms = options.longs === String ? "0" : 0;
+                object.centralHeat = false;
+                object.tenure = options.enums === String ? "OWNED_FULLY" : 1;
+                if ($util.Long) {
+                    let long = new $util.Long(0, 0, true);
+                    object.numCars = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                } else
+                    object.numCars = options.longs === String ? "0" : 0;
+            }
+            if (message.hid != null && message.hasOwnProperty("hid"))
+                object.hid = message.hid;
+            if (message.nssec8 != null && message.hasOwnProperty("nssec8"))
+                object.nssec8 = options.enums === String ? $root.synthpop.Nssec8[message.nssec8] === undefined ? message.nssec8 : $root.synthpop.Nssec8[message.nssec8] : message.nssec8;
+            if (message.accommodationType != null && message.hasOwnProperty("accommodationType"))
+                object.accommodationType = options.enums === String ? $root.synthpop.AccommodationType[message.accommodationType] === undefined ? message.accommodationType : $root.synthpop.AccommodationType[message.accommodationType] : message.accommodationType;
+            if (message.communalType != null && message.hasOwnProperty("communalType"))
+                object.communalType = options.enums === String ? $root.synthpop.CommunalType[message.communalType] === undefined ? message.communalType : $root.synthpop.CommunalType[message.communalType] : message.communalType;
+            if (message.numRooms != null && message.hasOwnProperty("numRooms"))
+                if (typeof message.numRooms === "number")
+                    object.numRooms = options.longs === String ? String(message.numRooms) : message.numRooms;
+                else
+                    object.numRooms = options.longs === String ? $util.Long.prototype.toString.call(message.numRooms) : options.longs === Number ? new $util.LongBits(message.numRooms.low >>> 0, message.numRooms.high >>> 0).toNumber(true) : message.numRooms;
+            if (message.centralHeat != null && message.hasOwnProperty("centralHeat"))
+                object.centralHeat = message.centralHeat;
+            if (message.tenure != null && message.hasOwnProperty("tenure"))
+                object.tenure = options.enums === String ? $root.synthpop.Tenure[message.tenure] === undefined ? message.tenure : $root.synthpop.Tenure[message.tenure] : message.tenure;
+            if (message.numCars != null && message.hasOwnProperty("numCars"))
+                if (typeof message.numCars === "number")
+                    object.numCars = options.longs === String ? String(message.numCars) : message.numCars;
+                else
+                    object.numCars = options.longs === String ? $util.Long.prototype.toString.call(message.numCars) : options.longs === Number ? new $util.LongBits(message.numCars.low >>> 0, message.numCars.high >>> 0).toNumber(true) : message.numCars;
+            return object;
+        };
+
+        /**
+         * Converts this HouseholdDetails to JSON.
+         * @function toJSON
+         * @memberof synthpop.HouseholdDetails
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        HouseholdDetails.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for HouseholdDetails
+         * @function getTypeUrl
+         * @memberof synthpop.HouseholdDetails
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        HouseholdDetails.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/synthpop.HouseholdDetails";
+        };
+
+        return HouseholdDetails;
     })();
 
     synthpop.VenueList = (function() {
@@ -1598,8 +2366,9 @@ export const synthpop = $root.synthpop = (() => {
          * @property {synthpop.IDemographics} demographics Person demographics
          * @property {synthpop.IEmployment} employment Person employment
          * @property {synthpop.IHealth} health Person health
-         * @property {synthpop.ITimeUse} timeUse Person timeUse
-         * @property {Array.<synthpop.IActivityDuration>|null} [activityDurations] Person activityDurations
+         * @property {synthpop.IEvents} events Person events
+         * @property {Array.<string>|null} [weekdayDiaries] Person weekdayDiaries
+         * @property {Array.<string>|null} [weekendDiaries] Person weekendDiaries
          */
 
         /**
@@ -1611,7 +2380,8 @@ export const synthpop = $root.synthpop = (() => {
          * @param {synthpop.IPerson=} [properties] Properties to set
          */
         function Person(properties) {
-            this.activityDurations = [];
+            this.weekdayDiaries = [];
+            this.weekendDiaries = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -1675,20 +2445,28 @@ export const synthpop = $root.synthpop = (() => {
         Person.prototype.health = null;
 
         /**
-         * Person timeUse.
-         * @member {synthpop.ITimeUse} timeUse
+         * Person events.
+         * @member {synthpop.IEvents} events
          * @memberof synthpop.Person
          * @instance
          */
-        Person.prototype.timeUse = null;
+        Person.prototype.events = null;
 
         /**
-         * Person activityDurations.
-         * @member {Array.<synthpop.IActivityDuration>} activityDurations
+         * Person weekdayDiaries.
+         * @member {Array.<string>} weekdayDiaries
          * @memberof synthpop.Person
          * @instance
          */
-        Person.prototype.activityDurations = $util.emptyArray;
+        Person.prototype.weekdayDiaries = $util.emptyArray;
+
+        /**
+         * Person weekendDiaries.
+         * @member {Array.<string>} weekendDiaries
+         * @memberof synthpop.Person
+         * @instance
+         */
+        Person.prototype.weekendDiaries = $util.emptyArray;
 
         /**
          * Creates a new Person instance using the specified properties.
@@ -1722,10 +2500,13 @@ export const synthpop = $root.synthpop = (() => {
             $root.synthpop.Demographics.encode(message.demographics, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
             $root.synthpop.Employment.encode(message.employment, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
             $root.synthpop.Health.encode(message.health, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
-            $root.synthpop.TimeUse.encode(message.timeUse, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
-            if (message.activityDurations != null && message.activityDurations.length)
-                for (let i = 0; i < message.activityDurations.length; ++i)
-                    $root.synthpop.ActivityDuration.encode(message.activityDurations[i], writer.uint32(/* id 9, wireType 2 =*/74).fork()).ldelim();
+            $root.synthpop.Events.encode(message.events, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
+            if (message.weekdayDiaries != null && message.weekdayDiaries.length)
+                for (let i = 0; i < message.weekdayDiaries.length; ++i)
+                    writer.uint32(/* id 9, wireType 2 =*/74).string(message.weekdayDiaries[i]);
+            if (message.weekendDiaries != null && message.weekendDiaries.length)
+                for (let i = 0; i < message.weekendDiaries.length; ++i)
+                    writer.uint32(/* id 10, wireType 2 =*/82).string(message.weekendDiaries[i]);
             return writer;
         };
 
@@ -1789,13 +2570,19 @@ export const synthpop = $root.synthpop = (() => {
                         break;
                     }
                 case 8: {
-                        message.timeUse = $root.synthpop.TimeUse.decode(reader, reader.uint32());
+                        message.events = $root.synthpop.Events.decode(reader, reader.uint32());
                         break;
                     }
                 case 9: {
-                        if (!(message.activityDurations && message.activityDurations.length))
-                            message.activityDurations = [];
-                        message.activityDurations.push($root.synthpop.ActivityDuration.decode(reader, reader.uint32()));
+                        if (!(message.weekdayDiaries && message.weekdayDiaries.length))
+                            message.weekdayDiaries = [];
+                        message.weekdayDiaries.push(reader.string());
+                        break;
+                    }
+                case 10: {
+                        if (!(message.weekendDiaries && message.weekendDiaries.length))
+                            message.weekendDiaries = [];
+                        message.weekendDiaries.push(reader.string());
                         break;
                     }
                 default:
@@ -1815,8 +2602,8 @@ export const synthpop = $root.synthpop = (() => {
                 throw $util.ProtocolError("missing required 'employment'", { instance: message });
             if (!message.hasOwnProperty("health"))
                 throw $util.ProtocolError("missing required 'health'", { instance: message });
-            if (!message.hasOwnProperty("timeUse"))
-                throw $util.ProtocolError("missing required 'timeUse'", { instance: message });
+            if (!message.hasOwnProperty("events"))
+                throw $util.ProtocolError("missing required 'events'", { instance: message });
             return message;
         };
 
@@ -1875,18 +2662,23 @@ export const synthpop = $root.synthpop = (() => {
                     return "health." + error;
             }
             {
-                let error = $root.synthpop.TimeUse.verify(message.timeUse);
+                let error = $root.synthpop.Events.verify(message.events);
                 if (error)
-                    return "timeUse." + error;
+                    return "events." + error;
             }
-            if (message.activityDurations != null && message.hasOwnProperty("activityDurations")) {
-                if (!Array.isArray(message.activityDurations))
-                    return "activityDurations: array expected";
-                for (let i = 0; i < message.activityDurations.length; ++i) {
-                    let error = $root.synthpop.ActivityDuration.verify(message.activityDurations[i]);
-                    if (error)
-                        return "activityDurations." + error;
-                }
+            if (message.weekdayDiaries != null && message.hasOwnProperty("weekdayDiaries")) {
+                if (!Array.isArray(message.weekdayDiaries))
+                    return "weekdayDiaries: array expected";
+                for (let i = 0; i < message.weekdayDiaries.length; ++i)
+                    if (!$util.isString(message.weekdayDiaries[i]))
+                        return "weekdayDiaries: string[] expected";
+            }
+            if (message.weekendDiaries != null && message.hasOwnProperty("weekendDiaries")) {
+                if (!Array.isArray(message.weekendDiaries))
+                    return "weekendDiaries: array expected";
+                for (let i = 0; i < message.weekendDiaries.length; ++i)
+                    if (!$util.isString(message.weekendDiaries[i]))
+                        return "weekendDiaries: string[] expected";
             }
             return null;
         };
@@ -1950,20 +2742,24 @@ export const synthpop = $root.synthpop = (() => {
                     throw TypeError(".synthpop.Person.health: object expected");
                 message.health = $root.synthpop.Health.fromObject(object.health);
             }
-            if (object.timeUse != null) {
-                if (typeof object.timeUse !== "object")
-                    throw TypeError(".synthpop.Person.timeUse: object expected");
-                message.timeUse = $root.synthpop.TimeUse.fromObject(object.timeUse);
+            if (object.events != null) {
+                if (typeof object.events !== "object")
+                    throw TypeError(".synthpop.Person.events: object expected");
+                message.events = $root.synthpop.Events.fromObject(object.events);
             }
-            if (object.activityDurations) {
-                if (!Array.isArray(object.activityDurations))
-                    throw TypeError(".synthpop.Person.activityDurations: array expected");
-                message.activityDurations = [];
-                for (let i = 0; i < object.activityDurations.length; ++i) {
-                    if (typeof object.activityDurations[i] !== "object")
-                        throw TypeError(".synthpop.Person.activityDurations: object expected");
-                    message.activityDurations[i] = $root.synthpop.ActivityDuration.fromObject(object.activityDurations[i]);
-                }
+            if (object.weekdayDiaries) {
+                if (!Array.isArray(object.weekdayDiaries))
+                    throw TypeError(".synthpop.Person.weekdayDiaries: array expected");
+                message.weekdayDiaries = [];
+                for (let i = 0; i < object.weekdayDiaries.length; ++i)
+                    message.weekdayDiaries[i] = String(object.weekdayDiaries[i]);
+            }
+            if (object.weekendDiaries) {
+                if (!Array.isArray(object.weekendDiaries))
+                    throw TypeError(".synthpop.Person.weekendDiaries: array expected");
+                message.weekendDiaries = [];
+                for (let i = 0; i < object.weekendDiaries.length; ++i)
+                    message.weekendDiaries[i] = String(object.weekendDiaries[i]);
             }
             return message;
         };
@@ -1981,8 +2777,10 @@ export const synthpop = $root.synthpop = (() => {
             if (!options)
                 options = {};
             let object = {};
-            if (options.arrays || options.defaults)
-                object.activityDurations = [];
+            if (options.arrays || options.defaults) {
+                object.weekdayDiaries = [];
+                object.weekendDiaries = [];
+            }
             if (options.defaults) {
                 if ($util.Long) {
                     let long = new $util.Long(0, 0, true);
@@ -2003,7 +2801,7 @@ export const synthpop = $root.synthpop = (() => {
                 object.demographics = null;
                 object.employment = null;
                 object.health = null;
-                object.timeUse = null;
+                object.events = null;
             }
             if (message.id != null && message.hasOwnProperty("id"))
                 if (typeof message.id === "number")
@@ -2028,12 +2826,17 @@ export const synthpop = $root.synthpop = (() => {
                 object.employment = $root.synthpop.Employment.toObject(message.employment, options);
             if (message.health != null && message.hasOwnProperty("health"))
                 object.health = $root.synthpop.Health.toObject(message.health, options);
-            if (message.timeUse != null && message.hasOwnProperty("timeUse"))
-                object.timeUse = $root.synthpop.TimeUse.toObject(message.timeUse, options);
-            if (message.activityDurations && message.activityDurations.length) {
-                object.activityDurations = [];
-                for (let j = 0; j < message.activityDurations.length; ++j)
-                    object.activityDurations[j] = $root.synthpop.ActivityDuration.toObject(message.activityDurations[j], options);
+            if (message.events != null && message.hasOwnProperty("events"))
+                object.events = $root.synthpop.Events.toObject(message.events, options);
+            if (message.weekdayDiaries && message.weekdayDiaries.length) {
+                object.weekdayDiaries = [];
+                for (let j = 0; j < message.weekdayDiaries.length; ++j)
+                    object.weekdayDiaries[j] = message.weekdayDiaries[j];
+            }
+            if (message.weekendDiaries && message.weekendDiaries.length) {
+                object.weekendDiaries = [];
+                for (let j = 0; j < message.weekendDiaries.length; ++j)
+                    object.weekendDiaries[j] = message.weekendDiaries[j];
             }
             return object;
         };
@@ -2067,277 +2870,16 @@ export const synthpop = $root.synthpop = (() => {
         return Person;
     })();
 
-    synthpop.ActivityDuration = (function() {
-
-        /**
-         * Properties of an ActivityDuration.
-         * @memberof synthpop
-         * @interface IActivityDuration
-         * @property {synthpop.Activity} activity ActivityDuration activity
-         * @property {number} duration ActivityDuration duration
-         */
-
-        /**
-         * Constructs a new ActivityDuration.
-         * @memberof synthpop
-         * @classdesc Represents an ActivityDuration.
-         * @implements IActivityDuration
-         * @constructor
-         * @param {synthpop.IActivityDuration=} [properties] Properties to set
-         */
-        function ActivityDuration(properties) {
-            if (properties)
-                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                    if (properties[keys[i]] != null)
-                        this[keys[i]] = properties[keys[i]];
-        }
-
-        /**
-         * ActivityDuration activity.
-         * @member {synthpop.Activity} activity
-         * @memberof synthpop.ActivityDuration
-         * @instance
-         */
-        ActivityDuration.prototype.activity = 0;
-
-        /**
-         * ActivityDuration duration.
-         * @member {number} duration
-         * @memberof synthpop.ActivityDuration
-         * @instance
-         */
-        ActivityDuration.prototype.duration = 0;
-
-        /**
-         * Creates a new ActivityDuration instance using the specified properties.
-         * @function create
-         * @memberof synthpop.ActivityDuration
-         * @static
-         * @param {synthpop.IActivityDuration=} [properties] Properties to set
-         * @returns {synthpop.ActivityDuration} ActivityDuration instance
-         */
-        ActivityDuration.create = function create(properties) {
-            return new ActivityDuration(properties);
-        };
-
-        /**
-         * Encodes the specified ActivityDuration message. Does not implicitly {@link synthpop.ActivityDuration.verify|verify} messages.
-         * @function encode
-         * @memberof synthpop.ActivityDuration
-         * @static
-         * @param {synthpop.IActivityDuration} message ActivityDuration message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        ActivityDuration.encode = function encode(message, writer) {
-            if (!writer)
-                writer = $Writer.create();
-            writer.uint32(/* id 1, wireType 0 =*/8).int32(message.activity);
-            writer.uint32(/* id 2, wireType 1 =*/17).double(message.duration);
-            return writer;
-        };
-
-        /**
-         * Encodes the specified ActivityDuration message, length delimited. Does not implicitly {@link synthpop.ActivityDuration.verify|verify} messages.
-         * @function encodeDelimited
-         * @memberof synthpop.ActivityDuration
-         * @static
-         * @param {synthpop.IActivityDuration} message ActivityDuration message or plain object to encode
-         * @param {$protobuf.Writer} [writer] Writer to encode to
-         * @returns {$protobuf.Writer} Writer
-         */
-        ActivityDuration.encodeDelimited = function encodeDelimited(message, writer) {
-            return this.encode(message, writer).ldelim();
-        };
-
-        /**
-         * Decodes an ActivityDuration message from the specified reader or buffer.
-         * @function decode
-         * @memberof synthpop.ActivityDuration
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @param {number} [length] Message length if known beforehand
-         * @returns {synthpop.ActivityDuration} ActivityDuration
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        ActivityDuration.decode = function decode(reader, length) {
-            if (!(reader instanceof $Reader))
-                reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.synthpop.ActivityDuration();
-            while (reader.pos < end) {
-                let tag = reader.uint32();
-                switch (tag >>> 3) {
-                case 1: {
-                        message.activity = reader.int32();
-                        break;
-                    }
-                case 2: {
-                        message.duration = reader.double();
-                        break;
-                    }
-                default:
-                    reader.skipType(tag & 7);
-                    break;
-                }
-            }
-            if (!message.hasOwnProperty("activity"))
-                throw $util.ProtocolError("missing required 'activity'", { instance: message });
-            if (!message.hasOwnProperty("duration"))
-                throw $util.ProtocolError("missing required 'duration'", { instance: message });
-            return message;
-        };
-
-        /**
-         * Decodes an ActivityDuration message from the specified reader or buffer, length delimited.
-         * @function decodeDelimited
-         * @memberof synthpop.ActivityDuration
-         * @static
-         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {synthpop.ActivityDuration} ActivityDuration
-         * @throws {Error} If the payload is not a reader or valid buffer
-         * @throws {$protobuf.util.ProtocolError} If required fields are missing
-         */
-        ActivityDuration.decodeDelimited = function decodeDelimited(reader) {
-            if (!(reader instanceof $Reader))
-                reader = new $Reader(reader);
-            return this.decode(reader, reader.uint32());
-        };
-
-        /**
-         * Verifies an ActivityDuration message.
-         * @function verify
-         * @memberof synthpop.ActivityDuration
-         * @static
-         * @param {Object.<string,*>} message Plain object to verify
-         * @returns {string|null} `null` if valid, otherwise the reason why it is not
-         */
-        ActivityDuration.verify = function verify(message) {
-            if (typeof message !== "object" || message === null)
-                return "object expected";
-            switch (message.activity) {
-            default:
-                return "activity: enum value expected";
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                break;
-            }
-            if (typeof message.duration !== "number")
-                return "duration: number expected";
-            return null;
-        };
-
-        /**
-         * Creates an ActivityDuration message from a plain object. Also converts values to their respective internal types.
-         * @function fromObject
-         * @memberof synthpop.ActivityDuration
-         * @static
-         * @param {Object.<string,*>} object Plain object
-         * @returns {synthpop.ActivityDuration} ActivityDuration
-         */
-        ActivityDuration.fromObject = function fromObject(object) {
-            if (object instanceof $root.synthpop.ActivityDuration)
-                return object;
-            let message = new $root.synthpop.ActivityDuration();
-            switch (object.activity) {
-            default:
-                if (typeof object.activity === "number") {
-                    message.activity = object.activity;
-                    break;
-                }
-                break;
-            case "RETAIL":
-            case 0:
-                message.activity = 0;
-                break;
-            case "PRIMARY_SCHOOL":
-            case 1:
-                message.activity = 1;
-                break;
-            case "SECONDARY_SCHOOL":
-            case 2:
-                message.activity = 2;
-                break;
-            case "HOME":
-            case 3:
-                message.activity = 3;
-                break;
-            case "WORK":
-            case 4:
-                message.activity = 4;
-                break;
-            }
-            if (object.duration != null)
-                message.duration = Number(object.duration);
-            return message;
-        };
-
-        /**
-         * Creates a plain object from an ActivityDuration message. Also converts values to other types if specified.
-         * @function toObject
-         * @memberof synthpop.ActivityDuration
-         * @static
-         * @param {synthpop.ActivityDuration} message ActivityDuration
-         * @param {$protobuf.IConversionOptions} [options] Conversion options
-         * @returns {Object.<string,*>} Plain object
-         */
-        ActivityDuration.toObject = function toObject(message, options) {
-            if (!options)
-                options = {};
-            let object = {};
-            if (options.defaults) {
-                object.activity = options.enums === String ? "RETAIL" : 0;
-                object.duration = 0;
-            }
-            if (message.activity != null && message.hasOwnProperty("activity"))
-                object.activity = options.enums === String ? $root.synthpop.Activity[message.activity] === undefined ? message.activity : $root.synthpop.Activity[message.activity] : message.activity;
-            if (message.duration != null && message.hasOwnProperty("duration"))
-                object.duration = options.json && !isFinite(message.duration) ? String(message.duration) : message.duration;
-            return object;
-        };
-
-        /**
-         * Converts this ActivityDuration to JSON.
-         * @function toJSON
-         * @memberof synthpop.ActivityDuration
-         * @instance
-         * @returns {Object.<string,*>} JSON object
-         */
-        ActivityDuration.prototype.toJSON = function toJSON() {
-            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-        };
-
-        /**
-         * Gets the default type url for ActivityDuration
-         * @function getTypeUrl
-         * @memberof synthpop.ActivityDuration
-         * @static
-         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
-         * @returns {string} The default type url
-         */
-        ActivityDuration.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
-            if (typeUrlPrefix === undefined) {
-                typeUrlPrefix = "type.googleapis.com";
-            }
-            return typeUrlPrefix + "/synthpop.ActivityDuration";
-        };
-
-        return ActivityDuration;
-    })();
-
     synthpop.Identifiers = (function() {
 
         /**
          * Properties of an Identifiers.
          * @memberof synthpop
          * @interface IIdentifiers
-         * @property {number|Long} pidCensus Identifiers pidCensus
-         * @property {number|Long} pidTus Identifiers pidTus
-         * @property {number|Long} pidHse Identifiers pidHse
-         * @property {string} idp Identifiers idp
+         * @property {string} origPid Unique person ID
+         * @property {number|Long} idTusHh Identifiers idTusHh
+         * @property {number|Long} idTusP Identifiers idTusP
+         * @property {number|Long} pidHs Identifiers pidHs
          */
 
         /**
@@ -2356,36 +2898,36 @@ export const synthpop = $root.synthpop = (() => {
         }
 
         /**
-         * Identifiers pidCensus.
-         * @member {number|Long} pidCensus
+         * Unique person ID
+         * @member {string} origPid
          * @memberof synthpop.Identifiers
          * @instance
          */
-        Identifiers.prototype.pidCensus = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+        Identifiers.prototype.origPid = "";
 
         /**
-         * Identifiers pidTus.
-         * @member {number|Long} pidTus
+         * Identifiers idTusHh.
+         * @member {number|Long} idTusHh
          * @memberof synthpop.Identifiers
          * @instance
          */
-        Identifiers.prototype.pidTus = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+        Identifiers.prototype.idTusHh = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
         /**
-         * Identifiers pidHse.
-         * @member {number|Long} pidHse
+         * Identifiers idTusP.
+         * @member {number|Long} idTusP
          * @memberof synthpop.Identifiers
          * @instance
          */
-        Identifiers.prototype.pidHse = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+        Identifiers.prototype.idTusP = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
         /**
-         * Identifiers idp.
-         * @member {string} idp
+         * Identifiers pidHs.
+         * @member {number|Long} pidHs
          * @memberof synthpop.Identifiers
          * @instance
          */
-        Identifiers.prototype.idp = "";
+        Identifiers.prototype.pidHs = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
         /**
          * Creates a new Identifiers instance using the specified properties.
@@ -2411,10 +2953,10 @@ export const synthpop = $root.synthpop = (() => {
         Identifiers.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            writer.uint32(/* id 1, wireType 0 =*/8).int64(message.pidCensus);
-            writer.uint32(/* id 2, wireType 0 =*/16).int64(message.pidTus);
-            writer.uint32(/* id 3, wireType 0 =*/24).int64(message.pidHse);
-            writer.uint32(/* id 4, wireType 2 =*/34).string(message.idp);
+            writer.uint32(/* id 1, wireType 2 =*/10).string(message.origPid);
+            writer.uint32(/* id 2, wireType 0 =*/16).int64(message.idTusHh);
+            writer.uint32(/* id 3, wireType 0 =*/24).int64(message.idTusP);
+            writer.uint32(/* id 4, wireType 0 =*/32).int64(message.pidHs);
             return writer;
         };
 
@@ -2450,19 +2992,19 @@ export const synthpop = $root.synthpop = (() => {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
-                        message.pidCensus = reader.int64();
+                        message.origPid = reader.string();
                         break;
                     }
                 case 2: {
-                        message.pidTus = reader.int64();
+                        message.idTusHh = reader.int64();
                         break;
                     }
                 case 3: {
-                        message.pidHse = reader.int64();
+                        message.idTusP = reader.int64();
                         break;
                     }
                 case 4: {
-                        message.idp = reader.string();
+                        message.pidHs = reader.int64();
                         break;
                     }
                 default:
@@ -2470,14 +3012,14 @@ export const synthpop = $root.synthpop = (() => {
                     break;
                 }
             }
-            if (!message.hasOwnProperty("pidCensus"))
-                throw $util.ProtocolError("missing required 'pidCensus'", { instance: message });
-            if (!message.hasOwnProperty("pidTus"))
-                throw $util.ProtocolError("missing required 'pidTus'", { instance: message });
-            if (!message.hasOwnProperty("pidHse"))
-                throw $util.ProtocolError("missing required 'pidHse'", { instance: message });
-            if (!message.hasOwnProperty("idp"))
-                throw $util.ProtocolError("missing required 'idp'", { instance: message });
+            if (!message.hasOwnProperty("origPid"))
+                throw $util.ProtocolError("missing required 'origPid'", { instance: message });
+            if (!message.hasOwnProperty("idTusHh"))
+                throw $util.ProtocolError("missing required 'idTusHh'", { instance: message });
+            if (!message.hasOwnProperty("idTusP"))
+                throw $util.ProtocolError("missing required 'idTusP'", { instance: message });
+            if (!message.hasOwnProperty("pidHs"))
+                throw $util.ProtocolError("missing required 'pidHs'", { instance: message });
             return message;
         };
 
@@ -2508,14 +3050,14 @@ export const synthpop = $root.synthpop = (() => {
         Identifiers.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            if (!$util.isInteger(message.pidCensus) && !(message.pidCensus && $util.isInteger(message.pidCensus.low) && $util.isInteger(message.pidCensus.high)))
-                return "pidCensus: integer|Long expected";
-            if (!$util.isInteger(message.pidTus) && !(message.pidTus && $util.isInteger(message.pidTus.low) && $util.isInteger(message.pidTus.high)))
-                return "pidTus: integer|Long expected";
-            if (!$util.isInteger(message.pidHse) && !(message.pidHse && $util.isInteger(message.pidHse.low) && $util.isInteger(message.pidHse.high)))
-                return "pidHse: integer|Long expected";
-            if (!$util.isString(message.idp))
-                return "idp: string expected";
+            if (!$util.isString(message.origPid))
+                return "origPid: string expected";
+            if (!$util.isInteger(message.idTusHh) && !(message.idTusHh && $util.isInteger(message.idTusHh.low) && $util.isInteger(message.idTusHh.high)))
+                return "idTusHh: integer|Long expected";
+            if (!$util.isInteger(message.idTusP) && !(message.idTusP && $util.isInteger(message.idTusP.low) && $util.isInteger(message.idTusP.high)))
+                return "idTusP: integer|Long expected";
+            if (!$util.isInteger(message.pidHs) && !(message.pidHs && $util.isInteger(message.pidHs.low) && $util.isInteger(message.pidHs.high)))
+                return "pidHs: integer|Long expected";
             return null;
         };
 
@@ -2531,35 +3073,35 @@ export const synthpop = $root.synthpop = (() => {
             if (object instanceof $root.synthpop.Identifiers)
                 return object;
             let message = new $root.synthpop.Identifiers();
-            if (object.pidCensus != null)
+            if (object.origPid != null)
+                message.origPid = String(object.origPid);
+            if (object.idTusHh != null)
                 if ($util.Long)
-                    (message.pidCensus = $util.Long.fromValue(object.pidCensus)).unsigned = false;
-                else if (typeof object.pidCensus === "string")
-                    message.pidCensus = parseInt(object.pidCensus, 10);
-                else if (typeof object.pidCensus === "number")
-                    message.pidCensus = object.pidCensus;
-                else if (typeof object.pidCensus === "object")
-                    message.pidCensus = new $util.LongBits(object.pidCensus.low >>> 0, object.pidCensus.high >>> 0).toNumber();
-            if (object.pidTus != null)
+                    (message.idTusHh = $util.Long.fromValue(object.idTusHh)).unsigned = false;
+                else if (typeof object.idTusHh === "string")
+                    message.idTusHh = parseInt(object.idTusHh, 10);
+                else if (typeof object.idTusHh === "number")
+                    message.idTusHh = object.idTusHh;
+                else if (typeof object.idTusHh === "object")
+                    message.idTusHh = new $util.LongBits(object.idTusHh.low >>> 0, object.idTusHh.high >>> 0).toNumber();
+            if (object.idTusP != null)
                 if ($util.Long)
-                    (message.pidTus = $util.Long.fromValue(object.pidTus)).unsigned = false;
-                else if (typeof object.pidTus === "string")
-                    message.pidTus = parseInt(object.pidTus, 10);
-                else if (typeof object.pidTus === "number")
-                    message.pidTus = object.pidTus;
-                else if (typeof object.pidTus === "object")
-                    message.pidTus = new $util.LongBits(object.pidTus.low >>> 0, object.pidTus.high >>> 0).toNumber();
-            if (object.pidHse != null)
+                    (message.idTusP = $util.Long.fromValue(object.idTusP)).unsigned = false;
+                else if (typeof object.idTusP === "string")
+                    message.idTusP = parseInt(object.idTusP, 10);
+                else if (typeof object.idTusP === "number")
+                    message.idTusP = object.idTusP;
+                else if (typeof object.idTusP === "object")
+                    message.idTusP = new $util.LongBits(object.idTusP.low >>> 0, object.idTusP.high >>> 0).toNumber();
+            if (object.pidHs != null)
                 if ($util.Long)
-                    (message.pidHse = $util.Long.fromValue(object.pidHse)).unsigned = false;
-                else if (typeof object.pidHse === "string")
-                    message.pidHse = parseInt(object.pidHse, 10);
-                else if (typeof object.pidHse === "number")
-                    message.pidHse = object.pidHse;
-                else if (typeof object.pidHse === "object")
-                    message.pidHse = new $util.LongBits(object.pidHse.low >>> 0, object.pidHse.high >>> 0).toNumber();
-            if (object.idp != null)
-                message.idp = String(object.idp);
+                    (message.pidHs = $util.Long.fromValue(object.pidHs)).unsigned = false;
+                else if (typeof object.pidHs === "string")
+                    message.pidHs = parseInt(object.pidHs, 10);
+                else if (typeof object.pidHs === "number")
+                    message.pidHs = object.pidHs;
+                else if (typeof object.pidHs === "object")
+                    message.pidHs = new $util.LongBits(object.pidHs.low >>> 0, object.pidHs.high >>> 0).toNumber();
             return message;
         };
 
@@ -2577,40 +3119,40 @@ export const synthpop = $root.synthpop = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
+                object.origPid = "";
                 if ($util.Long) {
                     let long = new $util.Long(0, 0, false);
-                    object.pidCensus = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    object.idTusHh = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                 } else
-                    object.pidCensus = options.longs === String ? "0" : 0;
+                    object.idTusHh = options.longs === String ? "0" : 0;
                 if ($util.Long) {
                     let long = new $util.Long(0, 0, false);
-                    object.pidTus = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    object.idTusP = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                 } else
-                    object.pidTus = options.longs === String ? "0" : 0;
+                    object.idTusP = options.longs === String ? "0" : 0;
                 if ($util.Long) {
                     let long = new $util.Long(0, 0, false);
-                    object.pidHse = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    object.pidHs = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                 } else
-                    object.pidHse = options.longs === String ? "0" : 0;
-                object.idp = "";
+                    object.pidHs = options.longs === String ? "0" : 0;
             }
-            if (message.pidCensus != null && message.hasOwnProperty("pidCensus"))
-                if (typeof message.pidCensus === "number")
-                    object.pidCensus = options.longs === String ? String(message.pidCensus) : message.pidCensus;
+            if (message.origPid != null && message.hasOwnProperty("origPid"))
+                object.origPid = message.origPid;
+            if (message.idTusHh != null && message.hasOwnProperty("idTusHh"))
+                if (typeof message.idTusHh === "number")
+                    object.idTusHh = options.longs === String ? String(message.idTusHh) : message.idTusHh;
                 else
-                    object.pidCensus = options.longs === String ? $util.Long.prototype.toString.call(message.pidCensus) : options.longs === Number ? new $util.LongBits(message.pidCensus.low >>> 0, message.pidCensus.high >>> 0).toNumber() : message.pidCensus;
-            if (message.pidTus != null && message.hasOwnProperty("pidTus"))
-                if (typeof message.pidTus === "number")
-                    object.pidTus = options.longs === String ? String(message.pidTus) : message.pidTus;
+                    object.idTusHh = options.longs === String ? $util.Long.prototype.toString.call(message.idTusHh) : options.longs === Number ? new $util.LongBits(message.idTusHh.low >>> 0, message.idTusHh.high >>> 0).toNumber() : message.idTusHh;
+            if (message.idTusP != null && message.hasOwnProperty("idTusP"))
+                if (typeof message.idTusP === "number")
+                    object.idTusP = options.longs === String ? String(message.idTusP) : message.idTusP;
                 else
-                    object.pidTus = options.longs === String ? $util.Long.prototype.toString.call(message.pidTus) : options.longs === Number ? new $util.LongBits(message.pidTus.low >>> 0, message.pidTus.high >>> 0).toNumber() : message.pidTus;
-            if (message.pidHse != null && message.hasOwnProperty("pidHse"))
-                if (typeof message.pidHse === "number")
-                    object.pidHse = options.longs === String ? String(message.pidHse) : message.pidHse;
+                    object.idTusP = options.longs === String ? $util.Long.prototype.toString.call(message.idTusP) : options.longs === Number ? new $util.LongBits(message.idTusP.low >>> 0, message.idTusP.high >>> 0).toNumber() : message.idTusP;
+            if (message.pidHs != null && message.hasOwnProperty("pidHs"))
+                if (typeof message.pidHs === "number")
+                    object.pidHs = options.longs === String ? String(message.pidHs) : message.pidHs;
                 else
-                    object.pidHse = options.longs === String ? $util.Long.prototype.toString.call(message.pidHse) : options.longs === Number ? new $util.LongBits(message.pidHse.low >>> 0, message.pidHse.high >>> 0).toNumber() : message.pidHse;
-            if (message.idp != null && message.hasOwnProperty("idp"))
-                object.idp = message.idp;
+                    object.pidHs = options.longs === String ? $util.Long.prototype.toString.call(message.pidHs) : options.longs === Number ? new $util.LongBits(message.pidHs.low >>> 0, message.pidHs.high >>> 0).toNumber() : message.pidHs;
             return object;
         };
 
@@ -2651,8 +3193,8 @@ export const synthpop = $root.synthpop = (() => {
          * @interface IDemographics
          * @property {synthpop.Sex} sex Demographics sex
          * @property {number} ageYears Demographics ageYears
-         * @property {synthpop.Origin} origin Demographics origin
-         * @property {synthpop.NSSEC5} socioeconomicClassification Demographics socioeconomicClassification
+         * @property {synthpop.Ethnicity} ethnicity Demographics ethnicity
+         * @property {synthpop.Nssec8|null} [nssec8] Demographics nssec8
          */
 
         /**
@@ -2687,20 +3229,20 @@ export const synthpop = $root.synthpop = (() => {
         Demographics.prototype.ageYears = 0;
 
         /**
-         * Demographics origin.
-         * @member {synthpop.Origin} origin
+         * Demographics ethnicity.
+         * @member {synthpop.Ethnicity} ethnicity
          * @memberof synthpop.Demographics
          * @instance
          */
-        Demographics.prototype.origin = 1;
+        Demographics.prototype.ethnicity = 1;
 
         /**
-         * Demographics socioeconomicClassification.
-         * @member {synthpop.NSSEC5} socioeconomicClassification
+         * Demographics nssec8.
+         * @member {synthpop.Nssec8} nssec8
          * @memberof synthpop.Demographics
          * @instance
          */
-        Demographics.prototype.socioeconomicClassification = 0;
+        Demographics.prototype.nssec8 = 1;
 
         /**
          * Creates a new Demographics instance using the specified properties.
@@ -2728,8 +3270,9 @@ export const synthpop = $root.synthpop = (() => {
                 writer = $Writer.create();
             writer.uint32(/* id 1, wireType 0 =*/8).int32(message.sex);
             writer.uint32(/* id 2, wireType 0 =*/16).uint32(message.ageYears);
-            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.origin);
-            writer.uint32(/* id 4, wireType 0 =*/32).int32(message.socioeconomicClassification);
+            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.ethnicity);
+            if (message.nssec8 != null && Object.hasOwnProperty.call(message, "nssec8"))
+                writer.uint32(/* id 4, wireType 0 =*/32).int32(message.nssec8);
             return writer;
         };
 
@@ -2773,11 +3316,11 @@ export const synthpop = $root.synthpop = (() => {
                         break;
                     }
                 case 3: {
-                        message.origin = reader.int32();
+                        message.ethnicity = reader.int32();
                         break;
                     }
                 case 4: {
-                        message.socioeconomicClassification = reader.int32();
+                        message.nssec8 = reader.int32();
                         break;
                     }
                 default:
@@ -2789,10 +3332,8 @@ export const synthpop = $root.synthpop = (() => {
                 throw $util.ProtocolError("missing required 'sex'", { instance: message });
             if (!message.hasOwnProperty("ageYears"))
                 throw $util.ProtocolError("missing required 'ageYears'", { instance: message });
-            if (!message.hasOwnProperty("origin"))
-                throw $util.ProtocolError("missing required 'origin'", { instance: message });
-            if (!message.hasOwnProperty("socioeconomicClassification"))
-                throw $util.ProtocolError("missing required 'socioeconomicClassification'", { instance: message });
+            if (!message.hasOwnProperty("ethnicity"))
+                throw $util.ProtocolError("missing required 'ethnicity'", { instance: message });
             return message;
         };
 
@@ -2832,9 +3373,9 @@ export const synthpop = $root.synthpop = (() => {
             }
             if (!$util.isInteger(message.ageYears))
                 return "ageYears: integer expected";
-            switch (message.origin) {
+            switch (message.ethnicity) {
             default:
-                return "origin: enum value expected";
+                return "ethnicity: enum value expected";
             case 1:
             case 2:
             case 3:
@@ -2842,17 +3383,20 @@ export const synthpop = $root.synthpop = (() => {
             case 5:
                 break;
             }
-            switch (message.socioeconomicClassification) {
-            default:
-                return "socioeconomicClassification: enum value expected";
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-                break;
-            }
+            if (message.nssec8 != null && message.hasOwnProperty("nssec8"))
+                switch (message.nssec8) {
+                default:
+                    return "nssec8: enum value expected";
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                    break;
+                }
             return null;
         };
 
@@ -2886,64 +3430,72 @@ export const synthpop = $root.synthpop = (() => {
             }
             if (object.ageYears != null)
                 message.ageYears = object.ageYears >>> 0;
-            switch (object.origin) {
+            switch (object.ethnicity) {
             default:
-                if (typeof object.origin === "number") {
-                    message.origin = object.origin;
+                if (typeof object.ethnicity === "number") {
+                    message.ethnicity = object.ethnicity;
                     break;
                 }
                 break;
             case "WHITE":
             case 1:
-                message.origin = 1;
+                message.ethnicity = 1;
                 break;
             case "BLACK":
             case 2:
-                message.origin = 2;
+                message.ethnicity = 2;
                 break;
             case "ASIAN":
             case 3:
-                message.origin = 3;
+                message.ethnicity = 3;
                 break;
             case "MIXED":
             case 4:
-                message.origin = 4;
+                message.ethnicity = 4;
                 break;
             case "OTHER":
             case 5:
-                message.origin = 5;
+                message.ethnicity = 5;
                 break;
             }
-            switch (object.socioeconomicClassification) {
+            switch (object.nssec8) {
             default:
-                if (typeof object.socioeconomicClassification === "number") {
-                    message.socioeconomicClassification = object.socioeconomicClassification;
+                if (typeof object.nssec8 === "number") {
+                    message.nssec8 = object.nssec8;
                     break;
                 }
                 break;
-            case "UNEMPLOYED":
-            case 0:
-                message.socioeconomicClassification = 0;
-                break;
             case "HIGHER":
             case 1:
-                message.socioeconomicClassification = 1;
-                break;
-            case "INTERMEDIATE":
-            case 2:
-                message.socioeconomicClassification = 2;
-                break;
-            case "SMALL":
-            case 3:
-                message.socioeconomicClassification = 3;
+                message.nssec8 = 1;
                 break;
             case "LOWER":
+            case 2:
+                message.nssec8 = 2;
+                break;
+            case "INTERMEDIATE":
+            case 3:
+                message.nssec8 = 3;
+                break;
+            case "SMALL":
             case 4:
-                message.socioeconomicClassification = 4;
+                message.nssec8 = 4;
+                break;
+            case "SUPER":
+            case 5:
+                message.nssec8 = 5;
+                break;
+            case "SEMIROUTINE":
+            case 6:
+                message.nssec8 = 6;
                 break;
             case "ROUTINE":
-            case 5:
-                message.socioeconomicClassification = 5;
+            case 7:
+                message.nssec8 = 7;
+                break;
+            case "NEVER":
+            case 8:
+                message.nssec8 = 8;
                 break;
             }
             return message;
@@ -2965,17 +3517,17 @@ export const synthpop = $root.synthpop = (() => {
             if (options.defaults) {
                 object.sex = options.enums === String ? "MALE" : 1;
                 object.ageYears = 0;
-                object.origin = options.enums === String ? "WHITE" : 1;
-                object.socioeconomicClassification = options.enums === String ? "UNEMPLOYED" : 0;
+                object.ethnicity = options.enums === String ? "WHITE" : 1;
+                object.nssec8 = options.enums === String ? "HIGHER" : 1;
             }
             if (message.sex != null && message.hasOwnProperty("sex"))
                 object.sex = options.enums === String ? $root.synthpop.Sex[message.sex] === undefined ? message.sex : $root.synthpop.Sex[message.sex] : message.sex;
             if (message.ageYears != null && message.hasOwnProperty("ageYears"))
                 object.ageYears = message.ageYears;
-            if (message.origin != null && message.hasOwnProperty("origin"))
-                object.origin = options.enums === String ? $root.synthpop.Origin[message.origin] === undefined ? message.origin : $root.synthpop.Origin[message.origin] : message.origin;
-            if (message.socioeconomicClassification != null && message.hasOwnProperty("socioeconomicClassification"))
-                object.socioeconomicClassification = options.enums === String ? $root.synthpop.NSSEC5[message.socioeconomicClassification] === undefined ? message.socioeconomicClassification : $root.synthpop.NSSEC5[message.socioeconomicClassification] : message.socioeconomicClassification;
+            if (message.ethnicity != null && message.hasOwnProperty("ethnicity"))
+                object.ethnicity = options.enums === String ? $root.synthpop.Ethnicity[message.ethnicity] === undefined ? message.ethnicity : $root.synthpop.Ethnicity[message.ethnicity] : message.ethnicity;
+            if (message.nssec8 != null && message.hasOwnProperty("nssec8"))
+                object.nssec8 = options.enums === String ? $root.synthpop.Nssec8[message.nssec8] === undefined ? message.nssec8 : $root.synthpop.Nssec8[message.nssec8] : message.nssec8;
             return object;
         };
 
@@ -3014,8 +3566,8 @@ export const synthpop = $root.synthpop = (() => {
          * Properties of an Employment.
          * @memberof synthpop
          * @interface IEmployment
-         * @property {number|Long|null} [sic1d07] Employment sic1d07
-         * @property {number|Long|null} [sic2d07] Employment sic2d07
+         * @property {string|null} [sic1d2007] Employment sic1d2007
+         * @property {number|Long|null} [sic2d2007] Employment sic2d2007
          * @property {number|Long|null} [soc2010] Employment soc2010
          * @property {synthpop.PwkStat} pwkstat Employment pwkstat
          * @property {number|null} [salaryYearly] Employment salaryYearly
@@ -3038,20 +3590,20 @@ export const synthpop = $root.synthpop = (() => {
         }
 
         /**
-         * Employment sic1d07.
-         * @member {number|Long} sic1d07
+         * Employment sic1d2007.
+         * @member {string} sic1d2007
          * @memberof synthpop.Employment
          * @instance
          */
-        Employment.prototype.sic1d07 = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+        Employment.prototype.sic1d2007 = "";
 
         /**
-         * Employment sic2d07.
-         * @member {number|Long} sic2d07
+         * Employment sic2d2007.
+         * @member {number|Long} sic2d2007
          * @memberof synthpop.Employment
          * @instance
          */
-        Employment.prototype.sic2d07 = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+        Employment.prototype.sic2d2007 = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
 
         /**
          * Employment soc2010.
@@ -3109,10 +3661,10 @@ export const synthpop = $root.synthpop = (() => {
         Employment.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            if (message.sic1d07 != null && Object.hasOwnProperty.call(message, "sic1d07"))
-                writer.uint32(/* id 1, wireType 0 =*/8).uint64(message.sic1d07);
-            if (message.sic2d07 != null && Object.hasOwnProperty.call(message, "sic2d07"))
-                writer.uint32(/* id 2, wireType 0 =*/16).uint64(message.sic2d07);
+            if (message.sic1d2007 != null && Object.hasOwnProperty.call(message, "sic1d2007"))
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.sic1d2007);
+            if (message.sic2d2007 != null && Object.hasOwnProperty.call(message, "sic2d2007"))
+                writer.uint32(/* id 2, wireType 0 =*/16).uint64(message.sic2d2007);
             if (message.soc2010 != null && Object.hasOwnProperty.call(message, "soc2010"))
                 writer.uint32(/* id 3, wireType 0 =*/24).uint64(message.soc2010);
             writer.uint32(/* id 4, wireType 0 =*/32).int32(message.pwkstat);
@@ -3155,11 +3707,11 @@ export const synthpop = $root.synthpop = (() => {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
-                        message.sic1d07 = reader.uint64();
+                        message.sic1d2007 = reader.string();
                         break;
                     }
                 case 2: {
-                        message.sic2d07 = reader.uint64();
+                        message.sic2d2007 = reader.uint64();
                         break;
                     }
                 case 3: {
@@ -3215,12 +3767,12 @@ export const synthpop = $root.synthpop = (() => {
         Employment.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            if (message.sic1d07 != null && message.hasOwnProperty("sic1d07"))
-                if (!$util.isInteger(message.sic1d07) && !(message.sic1d07 && $util.isInteger(message.sic1d07.low) && $util.isInteger(message.sic1d07.high)))
-                    return "sic1d07: integer|Long expected";
-            if (message.sic2d07 != null && message.hasOwnProperty("sic2d07"))
-                if (!$util.isInteger(message.sic2d07) && !(message.sic2d07 && $util.isInteger(message.sic2d07.low) && $util.isInteger(message.sic2d07.high)))
-                    return "sic2d07: integer|Long expected";
+            if (message.sic1d2007 != null && message.hasOwnProperty("sic1d2007"))
+                if (!$util.isString(message.sic1d2007))
+                    return "sic1d2007: string expected";
+            if (message.sic2d2007 != null && message.hasOwnProperty("sic2d2007"))
+                if (!$util.isInteger(message.sic2d2007) && !(message.sic2d2007 && $util.isInteger(message.sic2d2007.low) && $util.isInteger(message.sic2d2007.high)))
+                    return "sic2d2007: integer|Long expected";
             if (message.soc2010 != null && message.hasOwnProperty("soc2010"))
                 if (!$util.isInteger(message.soc2010) && !(message.soc2010 && $util.isInteger(message.soc2010.low) && $util.isInteger(message.soc2010.high)))
                     return "soc2010: integer|Long expected";
@@ -3261,24 +3813,17 @@ export const synthpop = $root.synthpop = (() => {
             if (object instanceof $root.synthpop.Employment)
                 return object;
             let message = new $root.synthpop.Employment();
-            if (object.sic1d07 != null)
+            if (object.sic1d2007 != null)
+                message.sic1d2007 = String(object.sic1d2007);
+            if (object.sic2d2007 != null)
                 if ($util.Long)
-                    (message.sic1d07 = $util.Long.fromValue(object.sic1d07)).unsigned = true;
-                else if (typeof object.sic1d07 === "string")
-                    message.sic1d07 = parseInt(object.sic1d07, 10);
-                else if (typeof object.sic1d07 === "number")
-                    message.sic1d07 = object.sic1d07;
-                else if (typeof object.sic1d07 === "object")
-                    message.sic1d07 = new $util.LongBits(object.sic1d07.low >>> 0, object.sic1d07.high >>> 0).toNumber(true);
-            if (object.sic2d07 != null)
-                if ($util.Long)
-                    (message.sic2d07 = $util.Long.fromValue(object.sic2d07)).unsigned = true;
-                else if (typeof object.sic2d07 === "string")
-                    message.sic2d07 = parseInt(object.sic2d07, 10);
-                else if (typeof object.sic2d07 === "number")
-                    message.sic2d07 = object.sic2d07;
-                else if (typeof object.sic2d07 === "object")
-                    message.sic2d07 = new $util.LongBits(object.sic2d07.low >>> 0, object.sic2d07.high >>> 0).toNumber(true);
+                    (message.sic2d2007 = $util.Long.fromValue(object.sic2d2007)).unsigned = true;
+                else if (typeof object.sic2d2007 === "string")
+                    message.sic2d2007 = parseInt(object.sic2d2007, 10);
+                else if (typeof object.sic2d2007 === "number")
+                    message.sic2d2007 = object.sic2d2007;
+                else if (typeof object.sic2d2007 === "object")
+                    message.sic2d2007 = new $util.LongBits(object.sic2d2007.low >>> 0, object.sic2d2007.high >>> 0).toNumber(true);
             if (object.soc2010 != null)
                 if ($util.Long)
                     (message.soc2010 = $util.Long.fromValue(object.soc2010)).unsigned = true;
@@ -3361,16 +3906,12 @@ export const synthpop = $root.synthpop = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
+                object.sic1d2007 = "";
                 if ($util.Long) {
                     let long = new $util.Long(0, 0, true);
-                    object.sic1d07 = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    object.sic2d2007 = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
                 } else
-                    object.sic1d07 = options.longs === String ? "0" : 0;
-                if ($util.Long) {
-                    let long = new $util.Long(0, 0, true);
-                    object.sic2d07 = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                } else
-                    object.sic2d07 = options.longs === String ? "0" : 0;
+                    object.sic2d2007 = options.longs === String ? "0" : 0;
                 if ($util.Long) {
                     let long = new $util.Long(0, 0, true);
                     object.soc2010 = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
@@ -3380,16 +3921,13 @@ export const synthpop = $root.synthpop = (() => {
                 object.salaryYearly = 0;
                 object.salaryHourly = 0;
             }
-            if (message.sic1d07 != null && message.hasOwnProperty("sic1d07"))
-                if (typeof message.sic1d07 === "number")
-                    object.sic1d07 = options.longs === String ? String(message.sic1d07) : message.sic1d07;
+            if (message.sic1d2007 != null && message.hasOwnProperty("sic1d2007"))
+                object.sic1d2007 = message.sic1d2007;
+            if (message.sic2d2007 != null && message.hasOwnProperty("sic2d2007"))
+                if (typeof message.sic2d2007 === "number")
+                    object.sic2d2007 = options.longs === String ? String(message.sic2d2007) : message.sic2d2007;
                 else
-                    object.sic1d07 = options.longs === String ? $util.Long.prototype.toString.call(message.sic1d07) : options.longs === Number ? new $util.LongBits(message.sic1d07.low >>> 0, message.sic1d07.high >>> 0).toNumber(true) : message.sic1d07;
-            if (message.sic2d07 != null && message.hasOwnProperty("sic2d07"))
-                if (typeof message.sic2d07 === "number")
-                    object.sic2d07 = options.longs === String ? String(message.sic2d07) : message.sic2d07;
-                else
-                    object.sic2d07 = options.longs === String ? $util.Long.prototype.toString.call(message.sic2d07) : options.longs === Number ? new $util.LongBits(message.sic2d07.low >>> 0, message.sic2d07.high >>> 0).toNumber(true) : message.sic2d07;
+                    object.sic2d2007 = options.longs === String ? $util.Long.prototype.toString.call(message.sic2d2007) : options.longs === Number ? new $util.LongBits(message.sic2d2007.low >>> 0, message.sic2d2007.high >>> 0).toNumber(true) : message.sic2d2007;
             if (message.soc2010 != null && message.hasOwnProperty("soc2010"))
                 if (typeof message.soc2010 === "number")
                     object.soc2010 = options.longs === String ? String(message.soc2010) : message.soc2010;
@@ -3448,8 +3986,8 @@ export const synthpop = $root.synthpop = (() => {
     })();
 
     /**
-     * Origin enum.
-     * @name synthpop.Origin
+     * Ethnicity enum.
+     * @name synthpop.Ethnicity
      * @enum {number}
      * @property {number} WHITE=1 WHITE value
      * @property {number} BLACK=2 BLACK value
@@ -3457,7 +3995,7 @@ export const synthpop = $root.synthpop = (() => {
      * @property {number} MIXED=4 MIXED value
      * @property {number} OTHER=5 OTHER value
      */
-    synthpop.Origin = (function() {
+    synthpop.Ethnicity = (function() {
         const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[1] = "WHITE"] = 1;
         values[valuesById[2] = "BLACK"] = 2;
@@ -3468,24 +4006,146 @@ export const synthpop = $root.synthpop = (() => {
     })();
 
     /**
-     * NSSEC5 enum.
-     * @name synthpop.NSSEC5
+     * AccommodationType enum.
+     * @name synthpop.AccommodationType
      * @enum {number}
-     * @property {number} UNEMPLOYED=0 UNEMPLOYED value
-     * @property {number} HIGHER=1 HIGHER value
-     * @property {number} INTERMEDIATE=2 INTERMEDIATE value
-     * @property {number} SMALL=3 SMALL value
-     * @property {number} LOWER=4 LOWER value
-     * @property {number} ROUTINE=5 ROUTINE value
+     * @property {number} DETACHED=1 DETACHED value
+     * @property {number} SEMI_DETACHED=2 SEMI_DETACHED value
+     * @property {number} TERRACED=3 TERRACED value
+     * @property {number} FLAT=4 FLAT value
      */
-    synthpop.NSSEC5 = (function() {
+    synthpop.AccommodationType = (function() {
         const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = "UNEMPLOYED"] = 0;
+        values[valuesById[1] = "DETACHED"] = 1;
+        values[valuesById[2] = "SEMI_DETACHED"] = 2;
+        values[valuesById[3] = "TERRACED"] = 3;
+        values[valuesById[4] = "FLAT"] = 4;
+        return values;
+    })();
+
+    /**
+     * CommunalType enum.
+     * @name synthpop.CommunalType
+     * @enum {number}
+     * @property {number} COMMUNAL=0 COMMUNAL value
+     * @property {number} MEDICAL=1 MEDICAL value
+     * @property {number} MEDICAL_NHS=2 MEDICAL_NHS value
+     * @property {number} MEDICAL_NHS_HOSPITAL=3 MEDICAL_NHS_HOSPITAL value
+     * @property {number} MEDICAL_NHS_MENTAL=4 MEDICAL_NHS_MENTAL value
+     * @property {number} MEDICAL_NHS_OTHER=5 MEDICAL_NHS_OTHER value
+     * @property {number} MEDICAL_LA=6 MEDICAL_LA value
+     * @property {number} MEDICAL_LA_CHILDREN=7 MEDICAL_LA_CHILDREN value
+     * @property {number} MEDICAL_LA_CARE_HOME_NURSING=8 MEDICAL_LA_CARE_HOME_NURSING value
+     * @property {number} MEDICAL_LA_CARE_HOME_NO_NURSING=9 MEDICAL_LA_CARE_HOME_NO_NURSING value
+     * @property {number} MEDICAL_LA_OTHER=10 MEDICAL_LA_OTHER value
+     * @property {number} MEDICAL_SOCIAL=11 MEDICAL_SOCIAL value
+     * @property {number} MEDICAL_SOCIAL_HOSTEL=12 MEDICAL_SOCIAL_HOSTEL value
+     * @property {number} MEDICAL_SOCIAL_SHELTER=13 MEDICAL_SOCIAL_SHELTER value
+     * @property {number} MEDICAL_OTHER=14 MEDICAL_OTHER value
+     * @property {number} MEDICAL_OTHER_CARE_HOME_NURSING=15 MEDICAL_OTHER_CARE_HOME_NURSING value
+     * @property {number} MEDICAL_OTHER_CARE_HOME_NO_NURSING=16 MEDICAL_OTHER_CARE_HOME_NO_NURSING value
+     * @property {number} MEDICAL_OTHER_CHILDREN=17 MEDICAL_OTHER_CHILDREN value
+     * @property {number} MEDICAL_OTHER_MENTAL=18 MEDICAL_OTHER_MENTAL value
+     * @property {number} MEDICAL_OTHER_HOSPITAL=19 MEDICAL_OTHER_HOSPITAL value
+     * @property {number} MEDICAL_OTHER_OTHER=20 MEDICAL_OTHER_OTHER value
+     * @property {number} COM_OTHER=21 COM_OTHER value
+     * @property {number} DEFENSE=22 DEFENSE value
+     * @property {number} PRISON=23 PRISON value
+     * @property {number} PROBATION=24 PROBATION value
+     * @property {number} DETENTION=25 DETENTION value
+     * @property {number} EDUCATION=26 EDUCATION value
+     * @property {number} HOTEL=27 HOTEL value
+     * @property {number} HOSTEL=28 HOSTEL value
+     * @property {number} HOLIDAY=29 HOLIDAY value
+     * @property {number} TRAVEL=30 TRAVEL value
+     * @property {number} RELIGIOUS=31 RELIGIOUS value
+     * @property {number} STAFF=32 STAFF value
+     * @property {number} OTHER_OTHER=33 OTHER_OTHER value
+     * @property {number} NOT_STATED=34 NOT_STATED value
+     */
+    synthpop.CommunalType = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[0] = "COMMUNAL"] = 0;
+        values[valuesById[1] = "MEDICAL"] = 1;
+        values[valuesById[2] = "MEDICAL_NHS"] = 2;
+        values[valuesById[3] = "MEDICAL_NHS_HOSPITAL"] = 3;
+        values[valuesById[4] = "MEDICAL_NHS_MENTAL"] = 4;
+        values[valuesById[5] = "MEDICAL_NHS_OTHER"] = 5;
+        values[valuesById[6] = "MEDICAL_LA"] = 6;
+        values[valuesById[7] = "MEDICAL_LA_CHILDREN"] = 7;
+        values[valuesById[8] = "MEDICAL_LA_CARE_HOME_NURSING"] = 8;
+        values[valuesById[9] = "MEDICAL_LA_CARE_HOME_NO_NURSING"] = 9;
+        values[valuesById[10] = "MEDICAL_LA_OTHER"] = 10;
+        values[valuesById[11] = "MEDICAL_SOCIAL"] = 11;
+        values[valuesById[12] = "MEDICAL_SOCIAL_HOSTEL"] = 12;
+        values[valuesById[13] = "MEDICAL_SOCIAL_SHELTER"] = 13;
+        values[valuesById[14] = "MEDICAL_OTHER"] = 14;
+        values[valuesById[15] = "MEDICAL_OTHER_CARE_HOME_NURSING"] = 15;
+        values[valuesById[16] = "MEDICAL_OTHER_CARE_HOME_NO_NURSING"] = 16;
+        values[valuesById[17] = "MEDICAL_OTHER_CHILDREN"] = 17;
+        values[valuesById[18] = "MEDICAL_OTHER_MENTAL"] = 18;
+        values[valuesById[19] = "MEDICAL_OTHER_HOSPITAL"] = 19;
+        values[valuesById[20] = "MEDICAL_OTHER_OTHER"] = 20;
+        values[valuesById[21] = "COM_OTHER"] = 21;
+        values[valuesById[22] = "DEFENSE"] = 22;
+        values[valuesById[23] = "PRISON"] = 23;
+        values[valuesById[24] = "PROBATION"] = 24;
+        values[valuesById[25] = "DETENTION"] = 25;
+        values[valuesById[26] = "EDUCATION"] = 26;
+        values[valuesById[27] = "HOTEL"] = 27;
+        values[valuesById[28] = "HOSTEL"] = 28;
+        values[valuesById[29] = "HOLIDAY"] = 29;
+        values[valuesById[30] = "TRAVEL"] = 30;
+        values[valuesById[31] = "RELIGIOUS"] = 31;
+        values[valuesById[32] = "STAFF"] = 32;
+        values[valuesById[33] = "OTHER_OTHER"] = 33;
+        values[valuesById[34] = "NOT_STATED"] = 34;
+        return values;
+    })();
+
+    /**
+     * Tenure enum.
+     * @name synthpop.Tenure
+     * @enum {number}
+     * @property {number} OWNED_FULLY=1 OWNED_FULLY value
+     * @property {number} OWNED_MORTGAGE=2 OWNED_MORTGAGE value
+     * @property {number} RENTED_FREE=3 RENTED_FREE value
+     * @property {number} RENTED_SOCIAL=4 RENTED_SOCIAL value
+     * @property {number} RENTED_PRIVATE=5 RENTED_PRIVATE value
+     */
+    synthpop.Tenure = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[1] = "OWNED_FULLY"] = 1;
+        values[valuesById[2] = "OWNED_MORTGAGE"] = 2;
+        values[valuesById[3] = "RENTED_FREE"] = 3;
+        values[valuesById[4] = "RENTED_SOCIAL"] = 4;
+        values[valuesById[5] = "RENTED_PRIVATE"] = 5;
+        return values;
+    })();
+
+    /**
+     * Nssec8 enum.
+     * @name synthpop.Nssec8
+     * @enum {number}
+     * @property {number} HIGHER=1 HIGHER value
+     * @property {number} LOWER=2 LOWER value
+     * @property {number} INTERMEDIATE=3 INTERMEDIATE value
+     * @property {number} SMALL=4 SMALL value
+     * @property {number} SUPER=5 SUPER value
+     * @property {number} SEMIROUTINE=6 SEMIROUTINE value
+     * @property {number} ROUTINE=7 ROUTINE value
+     * @property {number} NEVER=8 NEVER value
+     */
+    synthpop.Nssec8 = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
         values[valuesById[1] = "HIGHER"] = 1;
-        values[valuesById[2] = "INTERMEDIATE"] = 2;
-        values[valuesById[3] = "SMALL"] = 3;
-        values[valuesById[4] = "LOWER"] = 4;
-        values[valuesById[5] = "ROUTINE"] = 5;
+        values[valuesById[2] = "LOWER"] = 2;
+        values[valuesById[3] = "INTERMEDIATE"] = 3;
+        values[valuesById[4] = "SMALL"] = 4;
+        values[valuesById[5] = "SUPER"] = 5;
+        values[valuesById[6] = "SEMIROUTINE"] = 6;
+        values[valuesById[7] = "ROUTINE"] = 7;
+        values[valuesById[8] = "NEVER"] = 8;
         return values;
     })();
 
@@ -3527,8 +4187,7 @@ export const synthpop = $root.synthpop = (() => {
          * Properties of a Health.
          * @memberof synthpop
          * @interface IHealth
-         * @property {synthpop.BMI} bmi Health bmi
-         * @property {number|null} [bmiNew] Health bmiNew
+         * @property {number|null} [bmi] Health bmi
          * @property {boolean} hasCardiovascularDisease Health hasCardiovascularDisease
          * @property {boolean} hasDiabetes Health hasDiabetes
          * @property {boolean} hasHighBloodPressure Health hasHighBloodPressure
@@ -3551,19 +4210,11 @@ export const synthpop = $root.synthpop = (() => {
 
         /**
          * Health bmi.
-         * @member {synthpop.BMI} bmi
+         * @member {number} bmi
          * @memberof synthpop.Health
          * @instance
          */
         Health.prototype.bmi = 0;
-
-        /**
-         * Health bmiNew.
-         * @member {number} bmiNew
-         * @memberof synthpop.Health
-         * @instance
-         */
-        Health.prototype.bmiNew = 0;
 
         /**
          * Health hasCardiovascularDisease.
@@ -3613,12 +4264,11 @@ export const synthpop = $root.synthpop = (() => {
         Health.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            writer.uint32(/* id 1, wireType 0 =*/8).int32(message.bmi);
+            if (message.bmi != null && Object.hasOwnProperty.call(message, "bmi"))
+                writer.uint32(/* id 1, wireType 5 =*/13).float(message.bmi);
             writer.uint32(/* id 2, wireType 0 =*/16).bool(message.hasCardiovascularDisease);
             writer.uint32(/* id 3, wireType 0 =*/24).bool(message.hasDiabetes);
             writer.uint32(/* id 4, wireType 0 =*/32).bool(message.hasHighBloodPressure);
-            if (message.bmiNew != null && Object.hasOwnProperty.call(message, "bmiNew"))
-                writer.uint32(/* id 5, wireType 5 =*/45).float(message.bmiNew);
             return writer;
         };
 
@@ -3654,11 +4304,7 @@ export const synthpop = $root.synthpop = (() => {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
-                        message.bmi = reader.int32();
-                        break;
-                    }
-                case 5: {
-                        message.bmiNew = reader.float();
+                        message.bmi = reader.float();
                         break;
                     }
                 case 2: {
@@ -3678,8 +4324,6 @@ export const synthpop = $root.synthpop = (() => {
                     break;
                 }
             }
-            if (!message.hasOwnProperty("bmi"))
-                throw $util.ProtocolError("missing required 'bmi'", { instance: message });
             if (!message.hasOwnProperty("hasCardiovascularDisease"))
                 throw $util.ProtocolError("missing required 'hasCardiovascularDisease'", { instance: message });
             if (!message.hasOwnProperty("hasDiabetes"))
@@ -3716,21 +4360,9 @@ export const synthpop = $root.synthpop = (() => {
         Health.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            switch (message.bmi) {
-            default:
-                return "bmi: enum value expected";
-            case 0:
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-            case 5:
-            case 6:
-                break;
-            }
-            if (message.bmiNew != null && message.hasOwnProperty("bmiNew"))
-                if (typeof message.bmiNew !== "number")
-                    return "bmiNew: number expected";
+            if (message.bmi != null && message.hasOwnProperty("bmi"))
+                if (typeof message.bmi !== "number")
+                    return "bmi: number expected";
             if (typeof message.hasCardiovascularDisease !== "boolean")
                 return "hasCardiovascularDisease: boolean expected";
             if (typeof message.hasDiabetes !== "boolean")
@@ -3752,44 +4384,8 @@ export const synthpop = $root.synthpop = (() => {
             if (object instanceof $root.synthpop.Health)
                 return object;
             let message = new $root.synthpop.Health();
-            switch (object.bmi) {
-            default:
-                if (typeof object.bmi === "number") {
-                    message.bmi = object.bmi;
-                    break;
-                }
-                break;
-            case "NOT_APPLICABLE":
-            case 0:
-                message.bmi = 0;
-                break;
-            case "UNDERWEIGHT":
-            case 1:
-                message.bmi = 1;
-                break;
-            case "NORMAL":
-            case 2:
-                message.bmi = 2;
-                break;
-            case "OVERWEIGHT":
-            case 3:
-                message.bmi = 3;
-                break;
-            case "OBESE_1":
-            case 4:
-                message.bmi = 4;
-                break;
-            case "OBESE_2":
-            case 5:
-                message.bmi = 5;
-                break;
-            case "OBESE_3":
-            case 6:
-                message.bmi = 6;
-                break;
-            }
-            if (object.bmiNew != null)
-                message.bmiNew = Number(object.bmiNew);
+            if (object.bmi != null)
+                message.bmi = Number(object.bmi);
             if (object.hasCardiovascularDisease != null)
                 message.hasCardiovascularDisease = Boolean(object.hasCardiovascularDisease);
             if (object.hasDiabetes != null)
@@ -3813,22 +4409,19 @@ export const synthpop = $root.synthpop = (() => {
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.bmi = options.enums === String ? "NOT_APPLICABLE" : 0;
+                object.bmi = 0;
                 object.hasCardiovascularDisease = false;
                 object.hasDiabetes = false;
                 object.hasHighBloodPressure = false;
-                object.bmiNew = 0;
             }
             if (message.bmi != null && message.hasOwnProperty("bmi"))
-                object.bmi = options.enums === String ? $root.synthpop.BMI[message.bmi] === undefined ? message.bmi : $root.synthpop.BMI[message.bmi] : message.bmi;
+                object.bmi = options.json && !isFinite(message.bmi) ? String(message.bmi) : message.bmi;
             if (message.hasCardiovascularDisease != null && message.hasOwnProperty("hasCardiovascularDisease"))
                 object.hasCardiovascularDisease = message.hasCardiovascularDisease;
             if (message.hasDiabetes != null && message.hasOwnProperty("hasDiabetes"))
                 object.hasDiabetes = message.hasDiabetes;
             if (message.hasHighBloodPressure != null && message.hasOwnProperty("hasHighBloodPressure"))
                 object.hasHighBloodPressure = message.hasHighBloodPressure;
-            if (message.bmiNew != null && message.hasOwnProperty("bmiNew"))
-                object.bmiNew = options.json && !isFinite(message.bmiNew) ? String(message.bmiNew) : message.bmiNew;
             return object;
         };
 
@@ -3861,59 +4454,30 @@ export const synthpop = $root.synthpop = (() => {
         return Health;
     })();
 
-    /**
-     * BMI enum.
-     * @name synthpop.BMI
-     * @enum {number}
-     * @property {number} NOT_APPLICABLE=0 NOT_APPLICABLE value
-     * @property {number} UNDERWEIGHT=1 UNDERWEIGHT value
-     * @property {number} NORMAL=2 NORMAL value
-     * @property {number} OVERWEIGHT=3 OVERWEIGHT value
-     * @property {number} OBESE_1=4 OBESE_1 value
-     * @property {number} OBESE_2=5 OBESE_2 value
-     * @property {number} OBESE_3=6 OBESE_3 value
-     */
-    synthpop.BMI = (function() {
-        const valuesById = {}, values = Object.create(valuesById);
-        values[valuesById[0] = "NOT_APPLICABLE"] = 0;
-        values[valuesById[1] = "UNDERWEIGHT"] = 1;
-        values[valuesById[2] = "NORMAL"] = 2;
-        values[valuesById[3] = "OVERWEIGHT"] = 3;
-        values[valuesById[4] = "OBESE_1"] = 4;
-        values[valuesById[5] = "OBESE_2"] = 5;
-        values[valuesById[6] = "OBESE_3"] = 6;
-        return values;
-    })();
-
-    synthpop.TimeUse = (function() {
+    synthpop.Events = (function() {
 
         /**
-         * Properties of a TimeUse.
+         * Properties of an Events.
          * @memberof synthpop
-         * @interface ITimeUse
-         * @property {number} unknown TimeUse unknown
-         * @property {number} work TimeUse work
-         * @property {number} school TimeUse school
-         * @property {number} shop TimeUse shop
-         * @property {number} services TimeUse services
-         * @property {number} leisure TimeUse leisure
-         * @property {number} escort TimeUse escort
-         * @property {number} transport TimeUse transport
-         * @property {number} notHome TimeUse notHome
-         * @property {number} home TimeUse home
-         * @property {number} workHome TimeUse workHome
-         * @property {number} homeTotal TimeUse homeTotal
+         * @interface IEvents
+         * @property {number} sport Events sport
+         * @property {number} rugby Events rugby
+         * @property {number} concertM Events concertM
+         * @property {number} concertF Events concertF
+         * @property {number} concertMs Events concertMs
+         * @property {number} concertFs Events concertFs
+         * @property {number} museum Events museum
          */
 
         /**
-         * Constructs a new TimeUse.
+         * Constructs a new Events.
          * @memberof synthpop
-         * @classdesc Represents a TimeUse.
-         * @implements ITimeUse
+         * @classdesc Represents an Events.
+         * @implements IEvents
          * @constructor
-         * @param {synthpop.ITimeUse=} [properties] Properties to set
+         * @param {synthpop.IEvents=} [properties] Properties to set
          */
-        function TimeUse(properties) {
+        function Events(properties) {
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -3921,217 +4485,152 @@ export const synthpop = $root.synthpop = (() => {
         }
 
         /**
-         * TimeUse unknown.
-         * @member {number} unknown
-         * @memberof synthpop.TimeUse
+         * Events sport.
+         * @member {number} sport
+         * @memberof synthpop.Events
          * @instance
          */
-        TimeUse.prototype.unknown = 0;
+        Events.prototype.sport = 0;
 
         /**
-         * TimeUse work.
-         * @member {number} work
-         * @memberof synthpop.TimeUse
+         * Events rugby.
+         * @member {number} rugby
+         * @memberof synthpop.Events
          * @instance
          */
-        TimeUse.prototype.work = 0;
+        Events.prototype.rugby = 0;
 
         /**
-         * TimeUse school.
-         * @member {number} school
-         * @memberof synthpop.TimeUse
+         * Events concertM.
+         * @member {number} concertM
+         * @memberof synthpop.Events
          * @instance
          */
-        TimeUse.prototype.school = 0;
+        Events.prototype.concertM = 0;
 
         /**
-         * TimeUse shop.
-         * @member {number} shop
-         * @memberof synthpop.TimeUse
+         * Events concertF.
+         * @member {number} concertF
+         * @memberof synthpop.Events
          * @instance
          */
-        TimeUse.prototype.shop = 0;
+        Events.prototype.concertF = 0;
 
         /**
-         * TimeUse services.
-         * @member {number} services
-         * @memberof synthpop.TimeUse
+         * Events concertMs.
+         * @member {number} concertMs
+         * @memberof synthpop.Events
          * @instance
          */
-        TimeUse.prototype.services = 0;
+        Events.prototype.concertMs = 0;
 
         /**
-         * TimeUse leisure.
-         * @member {number} leisure
-         * @memberof synthpop.TimeUse
+         * Events concertFs.
+         * @member {number} concertFs
+         * @memberof synthpop.Events
          * @instance
          */
-        TimeUse.prototype.leisure = 0;
+        Events.prototype.concertFs = 0;
 
         /**
-         * TimeUse escort.
-         * @member {number} escort
-         * @memberof synthpop.TimeUse
+         * Events museum.
+         * @member {number} museum
+         * @memberof synthpop.Events
          * @instance
          */
-        TimeUse.prototype.escort = 0;
+        Events.prototype.museum = 0;
 
         /**
-         * TimeUse transport.
-         * @member {number} transport
-         * @memberof synthpop.TimeUse
-         * @instance
-         */
-        TimeUse.prototype.transport = 0;
-
-        /**
-         * TimeUse notHome.
-         * @member {number} notHome
-         * @memberof synthpop.TimeUse
-         * @instance
-         */
-        TimeUse.prototype.notHome = 0;
-
-        /**
-         * TimeUse home.
-         * @member {number} home
-         * @memberof synthpop.TimeUse
-         * @instance
-         */
-        TimeUse.prototype.home = 0;
-
-        /**
-         * TimeUse workHome.
-         * @member {number} workHome
-         * @memberof synthpop.TimeUse
-         * @instance
-         */
-        TimeUse.prototype.workHome = 0;
-
-        /**
-         * TimeUse homeTotal.
-         * @member {number} homeTotal
-         * @memberof synthpop.TimeUse
-         * @instance
-         */
-        TimeUse.prototype.homeTotal = 0;
-
-        /**
-         * Creates a new TimeUse instance using the specified properties.
+         * Creates a new Events instance using the specified properties.
          * @function create
-         * @memberof synthpop.TimeUse
+         * @memberof synthpop.Events
          * @static
-         * @param {synthpop.ITimeUse=} [properties] Properties to set
-         * @returns {synthpop.TimeUse} TimeUse instance
+         * @param {synthpop.IEvents=} [properties] Properties to set
+         * @returns {synthpop.Events} Events instance
          */
-        TimeUse.create = function create(properties) {
-            return new TimeUse(properties);
+        Events.create = function create(properties) {
+            return new Events(properties);
         };
 
         /**
-         * Encodes the specified TimeUse message. Does not implicitly {@link synthpop.TimeUse.verify|verify} messages.
+         * Encodes the specified Events message. Does not implicitly {@link synthpop.Events.verify|verify} messages.
          * @function encode
-         * @memberof synthpop.TimeUse
+         * @memberof synthpop.Events
          * @static
-         * @param {synthpop.ITimeUse} message TimeUse message or plain object to encode
+         * @param {synthpop.IEvents} message Events message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        TimeUse.encode = function encode(message, writer) {
+        Events.encode = function encode(message, writer) {
             if (!writer)
                 writer = $Writer.create();
-            writer.uint32(/* id 1, wireType 1 =*/9).double(message.unknown);
-            writer.uint32(/* id 2, wireType 1 =*/17).double(message.work);
-            writer.uint32(/* id 3, wireType 1 =*/25).double(message.school);
-            writer.uint32(/* id 4, wireType 1 =*/33).double(message.shop);
-            writer.uint32(/* id 5, wireType 1 =*/41).double(message.services);
-            writer.uint32(/* id 6, wireType 1 =*/49).double(message.leisure);
-            writer.uint32(/* id 7, wireType 1 =*/57).double(message.escort);
-            writer.uint32(/* id 8, wireType 1 =*/65).double(message.transport);
-            writer.uint32(/* id 9, wireType 1 =*/73).double(message.notHome);
-            writer.uint32(/* id 10, wireType 1 =*/81).double(message.home);
-            writer.uint32(/* id 11, wireType 1 =*/89).double(message.workHome);
-            writer.uint32(/* id 12, wireType 1 =*/97).double(message.homeTotal);
+            writer.uint32(/* id 1, wireType 5 =*/13).float(message.sport);
+            writer.uint32(/* id 2, wireType 5 =*/21).float(message.rugby);
+            writer.uint32(/* id 3, wireType 5 =*/29).float(message.concertM);
+            writer.uint32(/* id 4, wireType 5 =*/37).float(message.concertF);
+            writer.uint32(/* id 5, wireType 5 =*/45).float(message.concertMs);
+            writer.uint32(/* id 6, wireType 5 =*/53).float(message.concertFs);
+            writer.uint32(/* id 7, wireType 5 =*/61).float(message.museum);
             return writer;
         };
 
         /**
-         * Encodes the specified TimeUse message, length delimited. Does not implicitly {@link synthpop.TimeUse.verify|verify} messages.
+         * Encodes the specified Events message, length delimited. Does not implicitly {@link synthpop.Events.verify|verify} messages.
          * @function encodeDelimited
-         * @memberof synthpop.TimeUse
+         * @memberof synthpop.Events
          * @static
-         * @param {synthpop.ITimeUse} message TimeUse message or plain object to encode
+         * @param {synthpop.IEvents} message Events message or plain object to encode
          * @param {$protobuf.Writer} [writer] Writer to encode to
          * @returns {$protobuf.Writer} Writer
          */
-        TimeUse.encodeDelimited = function encodeDelimited(message, writer) {
+        Events.encodeDelimited = function encodeDelimited(message, writer) {
             return this.encode(message, writer).ldelim();
         };
 
         /**
-         * Decodes a TimeUse message from the specified reader or buffer.
+         * Decodes an Events message from the specified reader or buffer.
          * @function decode
-         * @memberof synthpop.TimeUse
+         * @memberof synthpop.Events
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
          * @param {number} [length] Message length if known beforehand
-         * @returns {synthpop.TimeUse} TimeUse
+         * @returns {synthpop.Events} Events
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        TimeUse.decode = function decode(reader, length) {
+        Events.decode = function decode(reader, length) {
             if (!(reader instanceof $Reader))
                 reader = $Reader.create(reader);
-            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.synthpop.TimeUse();
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.synthpop.Events();
             while (reader.pos < end) {
                 let tag = reader.uint32();
                 switch (tag >>> 3) {
                 case 1: {
-                        message.unknown = reader.double();
+                        message.sport = reader.float();
                         break;
                     }
                 case 2: {
-                        message.work = reader.double();
+                        message.rugby = reader.float();
                         break;
                     }
                 case 3: {
-                        message.school = reader.double();
+                        message.concertM = reader.float();
                         break;
                     }
                 case 4: {
-                        message.shop = reader.double();
+                        message.concertF = reader.float();
                         break;
                     }
                 case 5: {
-                        message.services = reader.double();
+                        message.concertMs = reader.float();
                         break;
                     }
                 case 6: {
-                        message.leisure = reader.double();
+                        message.concertFs = reader.float();
                         break;
                     }
                 case 7: {
-                        message.escort = reader.double();
-                        break;
-                    }
-                case 8: {
-                        message.transport = reader.double();
-                        break;
-                    }
-                case 9: {
-                        message.notHome = reader.double();
-                        break;
-                    }
-                case 10: {
-                        message.home = reader.double();
-                        break;
-                    }
-                case 11: {
-                        message.workHome = reader.double();
-                        break;
-                    }
-                case 12: {
-                        message.homeTotal = reader.double();
+                        message.museum = reader.float();
                         break;
                     }
                 default:
@@ -4139,207 +4638,162 @@ export const synthpop = $root.synthpop = (() => {
                     break;
                 }
             }
-            if (!message.hasOwnProperty("unknown"))
-                throw $util.ProtocolError("missing required 'unknown'", { instance: message });
-            if (!message.hasOwnProperty("work"))
-                throw $util.ProtocolError("missing required 'work'", { instance: message });
-            if (!message.hasOwnProperty("school"))
-                throw $util.ProtocolError("missing required 'school'", { instance: message });
-            if (!message.hasOwnProperty("shop"))
-                throw $util.ProtocolError("missing required 'shop'", { instance: message });
-            if (!message.hasOwnProperty("services"))
-                throw $util.ProtocolError("missing required 'services'", { instance: message });
-            if (!message.hasOwnProperty("leisure"))
-                throw $util.ProtocolError("missing required 'leisure'", { instance: message });
-            if (!message.hasOwnProperty("escort"))
-                throw $util.ProtocolError("missing required 'escort'", { instance: message });
-            if (!message.hasOwnProperty("transport"))
-                throw $util.ProtocolError("missing required 'transport'", { instance: message });
-            if (!message.hasOwnProperty("notHome"))
-                throw $util.ProtocolError("missing required 'notHome'", { instance: message });
-            if (!message.hasOwnProperty("home"))
-                throw $util.ProtocolError("missing required 'home'", { instance: message });
-            if (!message.hasOwnProperty("workHome"))
-                throw $util.ProtocolError("missing required 'workHome'", { instance: message });
-            if (!message.hasOwnProperty("homeTotal"))
-                throw $util.ProtocolError("missing required 'homeTotal'", { instance: message });
+            if (!message.hasOwnProperty("sport"))
+                throw $util.ProtocolError("missing required 'sport'", { instance: message });
+            if (!message.hasOwnProperty("rugby"))
+                throw $util.ProtocolError("missing required 'rugby'", { instance: message });
+            if (!message.hasOwnProperty("concertM"))
+                throw $util.ProtocolError("missing required 'concertM'", { instance: message });
+            if (!message.hasOwnProperty("concertF"))
+                throw $util.ProtocolError("missing required 'concertF'", { instance: message });
+            if (!message.hasOwnProperty("concertMs"))
+                throw $util.ProtocolError("missing required 'concertMs'", { instance: message });
+            if (!message.hasOwnProperty("concertFs"))
+                throw $util.ProtocolError("missing required 'concertFs'", { instance: message });
+            if (!message.hasOwnProperty("museum"))
+                throw $util.ProtocolError("missing required 'museum'", { instance: message });
             return message;
         };
 
         /**
-         * Decodes a TimeUse message from the specified reader or buffer, length delimited.
+         * Decodes an Events message from the specified reader or buffer, length delimited.
          * @function decodeDelimited
-         * @memberof synthpop.TimeUse
+         * @memberof synthpop.Events
          * @static
          * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-         * @returns {synthpop.TimeUse} TimeUse
+         * @returns {synthpop.Events} Events
          * @throws {Error} If the payload is not a reader or valid buffer
          * @throws {$protobuf.util.ProtocolError} If required fields are missing
          */
-        TimeUse.decodeDelimited = function decodeDelimited(reader) {
+        Events.decodeDelimited = function decodeDelimited(reader) {
             if (!(reader instanceof $Reader))
                 reader = new $Reader(reader);
             return this.decode(reader, reader.uint32());
         };
 
         /**
-         * Verifies a TimeUse message.
+         * Verifies an Events message.
          * @function verify
-         * @memberof synthpop.TimeUse
+         * @memberof synthpop.Events
          * @static
          * @param {Object.<string,*>} message Plain object to verify
          * @returns {string|null} `null` if valid, otherwise the reason why it is not
          */
-        TimeUse.verify = function verify(message) {
+        Events.verify = function verify(message) {
             if (typeof message !== "object" || message === null)
                 return "object expected";
-            if (typeof message.unknown !== "number")
-                return "unknown: number expected";
-            if (typeof message.work !== "number")
-                return "work: number expected";
-            if (typeof message.school !== "number")
-                return "school: number expected";
-            if (typeof message.shop !== "number")
-                return "shop: number expected";
-            if (typeof message.services !== "number")
-                return "services: number expected";
-            if (typeof message.leisure !== "number")
-                return "leisure: number expected";
-            if (typeof message.escort !== "number")
-                return "escort: number expected";
-            if (typeof message.transport !== "number")
-                return "transport: number expected";
-            if (typeof message.notHome !== "number")
-                return "notHome: number expected";
-            if (typeof message.home !== "number")
-                return "home: number expected";
-            if (typeof message.workHome !== "number")
-                return "workHome: number expected";
-            if (typeof message.homeTotal !== "number")
-                return "homeTotal: number expected";
+            if (typeof message.sport !== "number")
+                return "sport: number expected";
+            if (typeof message.rugby !== "number")
+                return "rugby: number expected";
+            if (typeof message.concertM !== "number")
+                return "concertM: number expected";
+            if (typeof message.concertF !== "number")
+                return "concertF: number expected";
+            if (typeof message.concertMs !== "number")
+                return "concertMs: number expected";
+            if (typeof message.concertFs !== "number")
+                return "concertFs: number expected";
+            if (typeof message.museum !== "number")
+                return "museum: number expected";
             return null;
         };
 
         /**
-         * Creates a TimeUse message from a plain object. Also converts values to their respective internal types.
+         * Creates an Events message from a plain object. Also converts values to their respective internal types.
          * @function fromObject
-         * @memberof synthpop.TimeUse
+         * @memberof synthpop.Events
          * @static
          * @param {Object.<string,*>} object Plain object
-         * @returns {synthpop.TimeUse} TimeUse
+         * @returns {synthpop.Events} Events
          */
-        TimeUse.fromObject = function fromObject(object) {
-            if (object instanceof $root.synthpop.TimeUse)
+        Events.fromObject = function fromObject(object) {
+            if (object instanceof $root.synthpop.Events)
                 return object;
-            let message = new $root.synthpop.TimeUse();
-            if (object.unknown != null)
-                message.unknown = Number(object.unknown);
-            if (object.work != null)
-                message.work = Number(object.work);
-            if (object.school != null)
-                message.school = Number(object.school);
-            if (object.shop != null)
-                message.shop = Number(object.shop);
-            if (object.services != null)
-                message.services = Number(object.services);
-            if (object.leisure != null)
-                message.leisure = Number(object.leisure);
-            if (object.escort != null)
-                message.escort = Number(object.escort);
-            if (object.transport != null)
-                message.transport = Number(object.transport);
-            if (object.notHome != null)
-                message.notHome = Number(object.notHome);
-            if (object.home != null)
-                message.home = Number(object.home);
-            if (object.workHome != null)
-                message.workHome = Number(object.workHome);
-            if (object.homeTotal != null)
-                message.homeTotal = Number(object.homeTotal);
+            let message = new $root.synthpop.Events();
+            if (object.sport != null)
+                message.sport = Number(object.sport);
+            if (object.rugby != null)
+                message.rugby = Number(object.rugby);
+            if (object.concertM != null)
+                message.concertM = Number(object.concertM);
+            if (object.concertF != null)
+                message.concertF = Number(object.concertF);
+            if (object.concertMs != null)
+                message.concertMs = Number(object.concertMs);
+            if (object.concertFs != null)
+                message.concertFs = Number(object.concertFs);
+            if (object.museum != null)
+                message.museum = Number(object.museum);
             return message;
         };
 
         /**
-         * Creates a plain object from a TimeUse message. Also converts values to other types if specified.
+         * Creates a plain object from an Events message. Also converts values to other types if specified.
          * @function toObject
-         * @memberof synthpop.TimeUse
+         * @memberof synthpop.Events
          * @static
-         * @param {synthpop.TimeUse} message TimeUse
+         * @param {synthpop.Events} message Events
          * @param {$protobuf.IConversionOptions} [options] Conversion options
          * @returns {Object.<string,*>} Plain object
          */
-        TimeUse.toObject = function toObject(message, options) {
+        Events.toObject = function toObject(message, options) {
             if (!options)
                 options = {};
             let object = {};
             if (options.defaults) {
-                object.unknown = 0;
-                object.work = 0;
-                object.school = 0;
-                object.shop = 0;
-                object.services = 0;
-                object.leisure = 0;
-                object.escort = 0;
-                object.transport = 0;
-                object.notHome = 0;
-                object.home = 0;
-                object.workHome = 0;
-                object.homeTotal = 0;
+                object.sport = 0;
+                object.rugby = 0;
+                object.concertM = 0;
+                object.concertF = 0;
+                object.concertMs = 0;
+                object.concertFs = 0;
+                object.museum = 0;
             }
-            if (message.unknown != null && message.hasOwnProperty("unknown"))
-                object.unknown = options.json && !isFinite(message.unknown) ? String(message.unknown) : message.unknown;
-            if (message.work != null && message.hasOwnProperty("work"))
-                object.work = options.json && !isFinite(message.work) ? String(message.work) : message.work;
-            if (message.school != null && message.hasOwnProperty("school"))
-                object.school = options.json && !isFinite(message.school) ? String(message.school) : message.school;
-            if (message.shop != null && message.hasOwnProperty("shop"))
-                object.shop = options.json && !isFinite(message.shop) ? String(message.shop) : message.shop;
-            if (message.services != null && message.hasOwnProperty("services"))
-                object.services = options.json && !isFinite(message.services) ? String(message.services) : message.services;
-            if (message.leisure != null && message.hasOwnProperty("leisure"))
-                object.leisure = options.json && !isFinite(message.leisure) ? String(message.leisure) : message.leisure;
-            if (message.escort != null && message.hasOwnProperty("escort"))
-                object.escort = options.json && !isFinite(message.escort) ? String(message.escort) : message.escort;
-            if (message.transport != null && message.hasOwnProperty("transport"))
-                object.transport = options.json && !isFinite(message.transport) ? String(message.transport) : message.transport;
-            if (message.notHome != null && message.hasOwnProperty("notHome"))
-                object.notHome = options.json && !isFinite(message.notHome) ? String(message.notHome) : message.notHome;
-            if (message.home != null && message.hasOwnProperty("home"))
-                object.home = options.json && !isFinite(message.home) ? String(message.home) : message.home;
-            if (message.workHome != null && message.hasOwnProperty("workHome"))
-                object.workHome = options.json && !isFinite(message.workHome) ? String(message.workHome) : message.workHome;
-            if (message.homeTotal != null && message.hasOwnProperty("homeTotal"))
-                object.homeTotal = options.json && !isFinite(message.homeTotal) ? String(message.homeTotal) : message.homeTotal;
+            if (message.sport != null && message.hasOwnProperty("sport"))
+                object.sport = options.json && !isFinite(message.sport) ? String(message.sport) : message.sport;
+            if (message.rugby != null && message.hasOwnProperty("rugby"))
+                object.rugby = options.json && !isFinite(message.rugby) ? String(message.rugby) : message.rugby;
+            if (message.concertM != null && message.hasOwnProperty("concertM"))
+                object.concertM = options.json && !isFinite(message.concertM) ? String(message.concertM) : message.concertM;
+            if (message.concertF != null && message.hasOwnProperty("concertF"))
+                object.concertF = options.json && !isFinite(message.concertF) ? String(message.concertF) : message.concertF;
+            if (message.concertMs != null && message.hasOwnProperty("concertMs"))
+                object.concertMs = options.json && !isFinite(message.concertMs) ? String(message.concertMs) : message.concertMs;
+            if (message.concertFs != null && message.hasOwnProperty("concertFs"))
+                object.concertFs = options.json && !isFinite(message.concertFs) ? String(message.concertFs) : message.concertFs;
+            if (message.museum != null && message.hasOwnProperty("museum"))
+                object.museum = options.json && !isFinite(message.museum) ? String(message.museum) : message.museum;
             return object;
         };
 
         /**
-         * Converts this TimeUse to JSON.
+         * Converts this Events to JSON.
          * @function toJSON
-         * @memberof synthpop.TimeUse
+         * @memberof synthpop.Events
          * @instance
          * @returns {Object.<string,*>} JSON object
          */
-        TimeUse.prototype.toJSON = function toJSON() {
+        Events.prototype.toJSON = function toJSON() {
             return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
         };
 
         /**
-         * Gets the default type url for TimeUse
+         * Gets the default type url for Events
          * @function getTypeUrl
-         * @memberof synthpop.TimeUse
+         * @memberof synthpop.Events
          * @static
          * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
          * @returns {string} The default type url
          */
-        TimeUse.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        Events.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
             if (typeUrlPrefix === undefined) {
                 typeUrlPrefix = "type.googleapis.com";
             }
-            return typeUrlPrefix + "/synthpop.TimeUse";
+            return typeUrlPrefix + "/synthpop.Events";
         };
 
-        return TimeUse;
+        return Events;
     })();
 
     synthpop.Flows = (function() {
@@ -5472,6 +5926,670 @@ export const synthpop = $root.synthpop = (() => {
         };
 
         return Lockdown;
+    })();
+
+    synthpop.TimeUseDiary = (function() {
+
+        /**
+         * Properties of a TimeUseDiary.
+         * @memberof synthpop
+         * @interface ITimeUseDiary
+         * @property {string} uid TimeUseDiary uid
+         * @property {boolean} weekday TimeUseDiary weekday
+         * @property {number} dayType TimeUseDiary dayType
+         * @property {number} month TimeUseDiary month
+         * @property {number} pworkhome TimeUseDiary pworkhome
+         * @property {number} phomeother TimeUseDiary phomeother
+         * @property {number} pwork TimeUseDiary pwork
+         * @property {number} pschool TimeUseDiary pschool
+         * @property {number} pshop TimeUseDiary pshop
+         * @property {number} pservices TimeUseDiary pservices
+         * @property {number} pleisure TimeUseDiary pleisure
+         * @property {number} pescort TimeUseDiary pescort
+         * @property {number} ptransport TimeUseDiary ptransport
+         * @property {number} phomeTotal TimeUseDiary phomeTotal
+         * @property {number} pnothomeTotal TimeUseDiary pnothomeTotal
+         * @property {number} punknownTotal TimeUseDiary punknownTotal
+         * @property {number} pmwalk TimeUseDiary pmwalk
+         * @property {number} pmcycle TimeUseDiary pmcycle
+         * @property {number} pmprivate TimeUseDiary pmprivate
+         * @property {number} pmpublic TimeUseDiary pmpublic
+         * @property {number} pmunknown TimeUseDiary pmunknown
+         */
+
+        /**
+         * Constructs a new TimeUseDiary.
+         * @memberof synthpop
+         * @classdesc Represents a TimeUseDiary.
+         * @implements ITimeUseDiary
+         * @constructor
+         * @param {synthpop.ITimeUseDiary=} [properties] Properties to set
+         */
+        function TimeUseDiary(properties) {
+            if (properties)
+                for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                    if (properties[keys[i]] != null)
+                        this[keys[i]] = properties[keys[i]];
+        }
+
+        /**
+         * TimeUseDiary uid.
+         * @member {string} uid
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.uid = "";
+
+        /**
+         * TimeUseDiary weekday.
+         * @member {boolean} weekday
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.weekday = false;
+
+        /**
+         * TimeUseDiary dayType.
+         * @member {number} dayType
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.dayType = 0;
+
+        /**
+         * TimeUseDiary month.
+         * @member {number} month
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.month = 0;
+
+        /**
+         * TimeUseDiary pworkhome.
+         * @member {number} pworkhome
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.pworkhome = 0;
+
+        /**
+         * TimeUseDiary phomeother.
+         * @member {number} phomeother
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.phomeother = 0;
+
+        /**
+         * TimeUseDiary pwork.
+         * @member {number} pwork
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.pwork = 0;
+
+        /**
+         * TimeUseDiary pschool.
+         * @member {number} pschool
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.pschool = 0;
+
+        /**
+         * TimeUseDiary pshop.
+         * @member {number} pshop
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.pshop = 0;
+
+        /**
+         * TimeUseDiary pservices.
+         * @member {number} pservices
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.pservices = 0;
+
+        /**
+         * TimeUseDiary pleisure.
+         * @member {number} pleisure
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.pleisure = 0;
+
+        /**
+         * TimeUseDiary pescort.
+         * @member {number} pescort
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.pescort = 0;
+
+        /**
+         * TimeUseDiary ptransport.
+         * @member {number} ptransport
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.ptransport = 0;
+
+        /**
+         * TimeUseDiary phomeTotal.
+         * @member {number} phomeTotal
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.phomeTotal = 0;
+
+        /**
+         * TimeUseDiary pnothomeTotal.
+         * @member {number} pnothomeTotal
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.pnothomeTotal = 0;
+
+        /**
+         * TimeUseDiary punknownTotal.
+         * @member {number} punknownTotal
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.punknownTotal = 0;
+
+        /**
+         * TimeUseDiary pmwalk.
+         * @member {number} pmwalk
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.pmwalk = 0;
+
+        /**
+         * TimeUseDiary pmcycle.
+         * @member {number} pmcycle
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.pmcycle = 0;
+
+        /**
+         * TimeUseDiary pmprivate.
+         * @member {number} pmprivate
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.pmprivate = 0;
+
+        /**
+         * TimeUseDiary pmpublic.
+         * @member {number} pmpublic
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.pmpublic = 0;
+
+        /**
+         * TimeUseDiary pmunknown.
+         * @member {number} pmunknown
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.pmunknown = 0;
+
+        /**
+         * Creates a new TimeUseDiary instance using the specified properties.
+         * @function create
+         * @memberof synthpop.TimeUseDiary
+         * @static
+         * @param {synthpop.ITimeUseDiary=} [properties] Properties to set
+         * @returns {synthpop.TimeUseDiary} TimeUseDiary instance
+         */
+        TimeUseDiary.create = function create(properties) {
+            return new TimeUseDiary(properties);
+        };
+
+        /**
+         * Encodes the specified TimeUseDiary message. Does not implicitly {@link synthpop.TimeUseDiary.verify|verify} messages.
+         * @function encode
+         * @memberof synthpop.TimeUseDiary
+         * @static
+         * @param {synthpop.ITimeUseDiary} message TimeUseDiary message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        TimeUseDiary.encode = function encode(message, writer) {
+            if (!writer)
+                writer = $Writer.create();
+            writer.uint32(/* id 1, wireType 2 =*/10).string(message.uid);
+            writer.uint32(/* id 2, wireType 0 =*/16).bool(message.weekday);
+            writer.uint32(/* id 3, wireType 0 =*/24).int32(message.dayType);
+            writer.uint32(/* id 4, wireType 0 =*/32).uint32(message.month);
+            writer.uint32(/* id 5, wireType 5 =*/45).float(message.pworkhome);
+            writer.uint32(/* id 6, wireType 5 =*/53).float(message.phomeother);
+            writer.uint32(/* id 7, wireType 5 =*/61).float(message.pwork);
+            writer.uint32(/* id 8, wireType 5 =*/69).float(message.pschool);
+            writer.uint32(/* id 9, wireType 5 =*/77).float(message.pshop);
+            writer.uint32(/* id 10, wireType 5 =*/85).float(message.pservices);
+            writer.uint32(/* id 11, wireType 5 =*/93).float(message.pleisure);
+            writer.uint32(/* id 12, wireType 5 =*/101).float(message.pescort);
+            writer.uint32(/* id 13, wireType 5 =*/109).float(message.ptransport);
+            writer.uint32(/* id 14, wireType 5 =*/117).float(message.phomeTotal);
+            writer.uint32(/* id 15, wireType 5 =*/125).float(message.pnothomeTotal);
+            writer.uint32(/* id 16, wireType 5 =*/133).float(message.punknownTotal);
+            writer.uint32(/* id 17, wireType 5 =*/141).float(message.pmwalk);
+            writer.uint32(/* id 18, wireType 5 =*/149).float(message.pmcycle);
+            writer.uint32(/* id 19, wireType 5 =*/157).float(message.pmprivate);
+            writer.uint32(/* id 20, wireType 5 =*/165).float(message.pmpublic);
+            writer.uint32(/* id 21, wireType 5 =*/173).float(message.pmunknown);
+            return writer;
+        };
+
+        /**
+         * Encodes the specified TimeUseDiary message, length delimited. Does not implicitly {@link synthpop.TimeUseDiary.verify|verify} messages.
+         * @function encodeDelimited
+         * @memberof synthpop.TimeUseDiary
+         * @static
+         * @param {synthpop.ITimeUseDiary} message TimeUseDiary message or plain object to encode
+         * @param {$protobuf.Writer} [writer] Writer to encode to
+         * @returns {$protobuf.Writer} Writer
+         */
+        TimeUseDiary.encodeDelimited = function encodeDelimited(message, writer) {
+            return this.encode(message, writer).ldelim();
+        };
+
+        /**
+         * Decodes a TimeUseDiary message from the specified reader or buffer.
+         * @function decode
+         * @memberof synthpop.TimeUseDiary
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @param {number} [length] Message length if known beforehand
+         * @returns {synthpop.TimeUseDiary} TimeUseDiary
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        TimeUseDiary.decode = function decode(reader, length) {
+            if (!(reader instanceof $Reader))
+                reader = $Reader.create(reader);
+            let end = length === undefined ? reader.len : reader.pos + length, message = new $root.synthpop.TimeUseDiary();
+            while (reader.pos < end) {
+                let tag = reader.uint32();
+                switch (tag >>> 3) {
+                case 1: {
+                        message.uid = reader.string();
+                        break;
+                    }
+                case 2: {
+                        message.weekday = reader.bool();
+                        break;
+                    }
+                case 3: {
+                        message.dayType = reader.int32();
+                        break;
+                    }
+                case 4: {
+                        message.month = reader.uint32();
+                        break;
+                    }
+                case 5: {
+                        message.pworkhome = reader.float();
+                        break;
+                    }
+                case 6: {
+                        message.phomeother = reader.float();
+                        break;
+                    }
+                case 7: {
+                        message.pwork = reader.float();
+                        break;
+                    }
+                case 8: {
+                        message.pschool = reader.float();
+                        break;
+                    }
+                case 9: {
+                        message.pshop = reader.float();
+                        break;
+                    }
+                case 10: {
+                        message.pservices = reader.float();
+                        break;
+                    }
+                case 11: {
+                        message.pleisure = reader.float();
+                        break;
+                    }
+                case 12: {
+                        message.pescort = reader.float();
+                        break;
+                    }
+                case 13: {
+                        message.ptransport = reader.float();
+                        break;
+                    }
+                case 14: {
+                        message.phomeTotal = reader.float();
+                        break;
+                    }
+                case 15: {
+                        message.pnothomeTotal = reader.float();
+                        break;
+                    }
+                case 16: {
+                        message.punknownTotal = reader.float();
+                        break;
+                    }
+                case 17: {
+                        message.pmwalk = reader.float();
+                        break;
+                    }
+                case 18: {
+                        message.pmcycle = reader.float();
+                        break;
+                    }
+                case 19: {
+                        message.pmprivate = reader.float();
+                        break;
+                    }
+                case 20: {
+                        message.pmpublic = reader.float();
+                        break;
+                    }
+                case 21: {
+                        message.pmunknown = reader.float();
+                        break;
+                    }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+                }
+            }
+            if (!message.hasOwnProperty("uid"))
+                throw $util.ProtocolError("missing required 'uid'", { instance: message });
+            if (!message.hasOwnProperty("weekday"))
+                throw $util.ProtocolError("missing required 'weekday'", { instance: message });
+            if (!message.hasOwnProperty("dayType"))
+                throw $util.ProtocolError("missing required 'dayType'", { instance: message });
+            if (!message.hasOwnProperty("month"))
+                throw $util.ProtocolError("missing required 'month'", { instance: message });
+            if (!message.hasOwnProperty("pworkhome"))
+                throw $util.ProtocolError("missing required 'pworkhome'", { instance: message });
+            if (!message.hasOwnProperty("phomeother"))
+                throw $util.ProtocolError("missing required 'phomeother'", { instance: message });
+            if (!message.hasOwnProperty("pwork"))
+                throw $util.ProtocolError("missing required 'pwork'", { instance: message });
+            if (!message.hasOwnProperty("pschool"))
+                throw $util.ProtocolError("missing required 'pschool'", { instance: message });
+            if (!message.hasOwnProperty("pshop"))
+                throw $util.ProtocolError("missing required 'pshop'", { instance: message });
+            if (!message.hasOwnProperty("pservices"))
+                throw $util.ProtocolError("missing required 'pservices'", { instance: message });
+            if (!message.hasOwnProperty("pleisure"))
+                throw $util.ProtocolError("missing required 'pleisure'", { instance: message });
+            if (!message.hasOwnProperty("pescort"))
+                throw $util.ProtocolError("missing required 'pescort'", { instance: message });
+            if (!message.hasOwnProperty("ptransport"))
+                throw $util.ProtocolError("missing required 'ptransport'", { instance: message });
+            if (!message.hasOwnProperty("phomeTotal"))
+                throw $util.ProtocolError("missing required 'phomeTotal'", { instance: message });
+            if (!message.hasOwnProperty("pnothomeTotal"))
+                throw $util.ProtocolError("missing required 'pnothomeTotal'", { instance: message });
+            if (!message.hasOwnProperty("punknownTotal"))
+                throw $util.ProtocolError("missing required 'punknownTotal'", { instance: message });
+            if (!message.hasOwnProperty("pmwalk"))
+                throw $util.ProtocolError("missing required 'pmwalk'", { instance: message });
+            if (!message.hasOwnProperty("pmcycle"))
+                throw $util.ProtocolError("missing required 'pmcycle'", { instance: message });
+            if (!message.hasOwnProperty("pmprivate"))
+                throw $util.ProtocolError("missing required 'pmprivate'", { instance: message });
+            if (!message.hasOwnProperty("pmpublic"))
+                throw $util.ProtocolError("missing required 'pmpublic'", { instance: message });
+            if (!message.hasOwnProperty("pmunknown"))
+                throw $util.ProtocolError("missing required 'pmunknown'", { instance: message });
+            return message;
+        };
+
+        /**
+         * Decodes a TimeUseDiary message from the specified reader or buffer, length delimited.
+         * @function decodeDelimited
+         * @memberof synthpop.TimeUseDiary
+         * @static
+         * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+         * @returns {synthpop.TimeUseDiary} TimeUseDiary
+         * @throws {Error} If the payload is not a reader or valid buffer
+         * @throws {$protobuf.util.ProtocolError} If required fields are missing
+         */
+        TimeUseDiary.decodeDelimited = function decodeDelimited(reader) {
+            if (!(reader instanceof $Reader))
+                reader = new $Reader(reader);
+            return this.decode(reader, reader.uint32());
+        };
+
+        /**
+         * Verifies a TimeUseDiary message.
+         * @function verify
+         * @memberof synthpop.TimeUseDiary
+         * @static
+         * @param {Object.<string,*>} message Plain object to verify
+         * @returns {string|null} `null` if valid, otherwise the reason why it is not
+         */
+        TimeUseDiary.verify = function verify(message) {
+            if (typeof message !== "object" || message === null)
+                return "object expected";
+            if (!$util.isString(message.uid))
+                return "uid: string expected";
+            if (typeof message.weekday !== "boolean")
+                return "weekday: boolean expected";
+            if (!$util.isInteger(message.dayType))
+                return "dayType: integer expected";
+            if (!$util.isInteger(message.month))
+                return "month: integer expected";
+            if (typeof message.pworkhome !== "number")
+                return "pworkhome: number expected";
+            if (typeof message.phomeother !== "number")
+                return "phomeother: number expected";
+            if (typeof message.pwork !== "number")
+                return "pwork: number expected";
+            if (typeof message.pschool !== "number")
+                return "pschool: number expected";
+            if (typeof message.pshop !== "number")
+                return "pshop: number expected";
+            if (typeof message.pservices !== "number")
+                return "pservices: number expected";
+            if (typeof message.pleisure !== "number")
+                return "pleisure: number expected";
+            if (typeof message.pescort !== "number")
+                return "pescort: number expected";
+            if (typeof message.ptransport !== "number")
+                return "ptransport: number expected";
+            if (typeof message.phomeTotal !== "number")
+                return "phomeTotal: number expected";
+            if (typeof message.pnothomeTotal !== "number")
+                return "pnothomeTotal: number expected";
+            if (typeof message.punknownTotal !== "number")
+                return "punknownTotal: number expected";
+            if (typeof message.pmwalk !== "number")
+                return "pmwalk: number expected";
+            if (typeof message.pmcycle !== "number")
+                return "pmcycle: number expected";
+            if (typeof message.pmprivate !== "number")
+                return "pmprivate: number expected";
+            if (typeof message.pmpublic !== "number")
+                return "pmpublic: number expected";
+            if (typeof message.pmunknown !== "number")
+                return "pmunknown: number expected";
+            return null;
+        };
+
+        /**
+         * Creates a TimeUseDiary message from a plain object. Also converts values to their respective internal types.
+         * @function fromObject
+         * @memberof synthpop.TimeUseDiary
+         * @static
+         * @param {Object.<string,*>} object Plain object
+         * @returns {synthpop.TimeUseDiary} TimeUseDiary
+         */
+        TimeUseDiary.fromObject = function fromObject(object) {
+            if (object instanceof $root.synthpop.TimeUseDiary)
+                return object;
+            let message = new $root.synthpop.TimeUseDiary();
+            if (object.uid != null)
+                message.uid = String(object.uid);
+            if (object.weekday != null)
+                message.weekday = Boolean(object.weekday);
+            if (object.dayType != null)
+                message.dayType = object.dayType | 0;
+            if (object.month != null)
+                message.month = object.month >>> 0;
+            if (object.pworkhome != null)
+                message.pworkhome = Number(object.pworkhome);
+            if (object.phomeother != null)
+                message.phomeother = Number(object.phomeother);
+            if (object.pwork != null)
+                message.pwork = Number(object.pwork);
+            if (object.pschool != null)
+                message.pschool = Number(object.pschool);
+            if (object.pshop != null)
+                message.pshop = Number(object.pshop);
+            if (object.pservices != null)
+                message.pservices = Number(object.pservices);
+            if (object.pleisure != null)
+                message.pleisure = Number(object.pleisure);
+            if (object.pescort != null)
+                message.pescort = Number(object.pescort);
+            if (object.ptransport != null)
+                message.ptransport = Number(object.ptransport);
+            if (object.phomeTotal != null)
+                message.phomeTotal = Number(object.phomeTotal);
+            if (object.pnothomeTotal != null)
+                message.pnothomeTotal = Number(object.pnothomeTotal);
+            if (object.punknownTotal != null)
+                message.punknownTotal = Number(object.punknownTotal);
+            if (object.pmwalk != null)
+                message.pmwalk = Number(object.pmwalk);
+            if (object.pmcycle != null)
+                message.pmcycle = Number(object.pmcycle);
+            if (object.pmprivate != null)
+                message.pmprivate = Number(object.pmprivate);
+            if (object.pmpublic != null)
+                message.pmpublic = Number(object.pmpublic);
+            if (object.pmunknown != null)
+                message.pmunknown = Number(object.pmunknown);
+            return message;
+        };
+
+        /**
+         * Creates a plain object from a TimeUseDiary message. Also converts values to other types if specified.
+         * @function toObject
+         * @memberof synthpop.TimeUseDiary
+         * @static
+         * @param {synthpop.TimeUseDiary} message TimeUseDiary
+         * @param {$protobuf.IConversionOptions} [options] Conversion options
+         * @returns {Object.<string,*>} Plain object
+         */
+        TimeUseDiary.toObject = function toObject(message, options) {
+            if (!options)
+                options = {};
+            let object = {};
+            if (options.defaults) {
+                object.uid = "";
+                object.weekday = false;
+                object.dayType = 0;
+                object.month = 0;
+                object.pworkhome = 0;
+                object.phomeother = 0;
+                object.pwork = 0;
+                object.pschool = 0;
+                object.pshop = 0;
+                object.pservices = 0;
+                object.pleisure = 0;
+                object.pescort = 0;
+                object.ptransport = 0;
+                object.phomeTotal = 0;
+                object.pnothomeTotal = 0;
+                object.punknownTotal = 0;
+                object.pmwalk = 0;
+                object.pmcycle = 0;
+                object.pmprivate = 0;
+                object.pmpublic = 0;
+                object.pmunknown = 0;
+            }
+            if (message.uid != null && message.hasOwnProperty("uid"))
+                object.uid = message.uid;
+            if (message.weekday != null && message.hasOwnProperty("weekday"))
+                object.weekday = message.weekday;
+            if (message.dayType != null && message.hasOwnProperty("dayType"))
+                object.dayType = message.dayType;
+            if (message.month != null && message.hasOwnProperty("month"))
+                object.month = message.month;
+            if (message.pworkhome != null && message.hasOwnProperty("pworkhome"))
+                object.pworkhome = options.json && !isFinite(message.pworkhome) ? String(message.pworkhome) : message.pworkhome;
+            if (message.phomeother != null && message.hasOwnProperty("phomeother"))
+                object.phomeother = options.json && !isFinite(message.phomeother) ? String(message.phomeother) : message.phomeother;
+            if (message.pwork != null && message.hasOwnProperty("pwork"))
+                object.pwork = options.json && !isFinite(message.pwork) ? String(message.pwork) : message.pwork;
+            if (message.pschool != null && message.hasOwnProperty("pschool"))
+                object.pschool = options.json && !isFinite(message.pschool) ? String(message.pschool) : message.pschool;
+            if (message.pshop != null && message.hasOwnProperty("pshop"))
+                object.pshop = options.json && !isFinite(message.pshop) ? String(message.pshop) : message.pshop;
+            if (message.pservices != null && message.hasOwnProperty("pservices"))
+                object.pservices = options.json && !isFinite(message.pservices) ? String(message.pservices) : message.pservices;
+            if (message.pleisure != null && message.hasOwnProperty("pleisure"))
+                object.pleisure = options.json && !isFinite(message.pleisure) ? String(message.pleisure) : message.pleisure;
+            if (message.pescort != null && message.hasOwnProperty("pescort"))
+                object.pescort = options.json && !isFinite(message.pescort) ? String(message.pescort) : message.pescort;
+            if (message.ptransport != null && message.hasOwnProperty("ptransport"))
+                object.ptransport = options.json && !isFinite(message.ptransport) ? String(message.ptransport) : message.ptransport;
+            if (message.phomeTotal != null && message.hasOwnProperty("phomeTotal"))
+                object.phomeTotal = options.json && !isFinite(message.phomeTotal) ? String(message.phomeTotal) : message.phomeTotal;
+            if (message.pnothomeTotal != null && message.hasOwnProperty("pnothomeTotal"))
+                object.pnothomeTotal = options.json && !isFinite(message.pnothomeTotal) ? String(message.pnothomeTotal) : message.pnothomeTotal;
+            if (message.punknownTotal != null && message.hasOwnProperty("punknownTotal"))
+                object.punknownTotal = options.json && !isFinite(message.punknownTotal) ? String(message.punknownTotal) : message.punknownTotal;
+            if (message.pmwalk != null && message.hasOwnProperty("pmwalk"))
+                object.pmwalk = options.json && !isFinite(message.pmwalk) ? String(message.pmwalk) : message.pmwalk;
+            if (message.pmcycle != null && message.hasOwnProperty("pmcycle"))
+                object.pmcycle = options.json && !isFinite(message.pmcycle) ? String(message.pmcycle) : message.pmcycle;
+            if (message.pmprivate != null && message.hasOwnProperty("pmprivate"))
+                object.pmprivate = options.json && !isFinite(message.pmprivate) ? String(message.pmprivate) : message.pmprivate;
+            if (message.pmpublic != null && message.hasOwnProperty("pmpublic"))
+                object.pmpublic = options.json && !isFinite(message.pmpublic) ? String(message.pmpublic) : message.pmpublic;
+            if (message.pmunknown != null && message.hasOwnProperty("pmunknown"))
+                object.pmunknown = options.json && !isFinite(message.pmunknown) ? String(message.pmunknown) : message.pmunknown;
+            return object;
+        };
+
+        /**
+         * Converts this TimeUseDiary to JSON.
+         * @function toJSON
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         * @returns {Object.<string,*>} JSON object
+         */
+        TimeUseDiary.prototype.toJSON = function toJSON() {
+            return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+        };
+
+        /**
+         * Gets the default type url for TimeUseDiary
+         * @function getTypeUrl
+         * @memberof synthpop.TimeUseDiary
+         * @static
+         * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+         * @returns {string} The default type url
+         */
+        TimeUseDiary.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+            if (typeUrlPrefix === undefined) {
+                typeUrlPrefix = "type.googleapis.com";
+            }
+            return typeUrlPrefix + "/synthpop.TimeUseDiary";
+        };
+
+        return TimeUseDiary;
     })();
 
     return synthpop;
