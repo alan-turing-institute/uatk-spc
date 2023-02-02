@@ -64,6 +64,8 @@ struct Args {
     msoa_input: String,
     #[clap(long)]
     no_commuting: bool,
+    #[clap(long)]
+    filter_empty_msoas: bool,
     /// Write a `stats.json` file at the end for automated benchmarking
     #[clap(long)]
     output_stats: bool,
@@ -82,6 +84,7 @@ impl Args {
     async fn to_input(self) -> Result<(Input, String)> {
         let mut input = Input {
             enable_commuting: !self.no_commuting,
+            filter_empty_msoas: self.filter_empty_msoas,
             msoas: BTreeSet::new(),
             sic_threshold: self.sic_threshold,
         };

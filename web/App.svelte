@@ -25,9 +25,13 @@
 
   function loadArrayBuffer(buffer) {
     try {
+      console.time("Load protobuf");
       let bytes = new Uint8Array(buffer);
       pop = synthpop.Population.decode(bytes);
+      console.timeEnd("Load protobuf");
+      console.time("Calculate msoaStats");
       msoas = msoaStats(pop);
+      console.timeEnd("Calculate msoaStats");
     } catch (err) {
       window.alert(`Couldn't load SPC proto file: ${err}`);
     }

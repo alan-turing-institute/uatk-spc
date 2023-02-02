@@ -52,6 +52,7 @@ pub struct Population {
 
 pub struct Input {
     pub enable_commuting: bool,
+    pub filter_empty_msoas: bool,
     /// Only people living in MSOAs filled out here will be part of the population
     pub msoas: BTreeSet<MSOA>,
     /// The minimum proportion of the population that must be preserved when using the sic1d2007
