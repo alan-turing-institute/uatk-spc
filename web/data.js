@@ -33,8 +33,8 @@ export const PER_PERSON_NUMERIC_PROPS = {
   },
   bmi: {
     get: (p) => {
-      if (p.health.hasOwnProperty("bmiNew")) {
-        return p.health.bmiNew;
+      if (p.health.hasOwnProperty("bmi")) {
+        return p.health.bmi;
       }
       return null;
     },
@@ -59,16 +59,17 @@ export const PER_PERSON_CATEGORICAL_PROPS = {
     lookup: enumToString(synthpop.Sex),
     theme: "Demographics",
   },
-  origin: {
-    get: (p) => p.demographics.origin,
-    label: "origin",
-    lookup: enumToString(synthpop.Origin),
+  ethnicity: {
+    get: (p) => p.demographics.ethnicity,
+    label: "ethnicity",
+    lookup: enumToString(synthpop.Ethnicity),
     theme: "Demographics",
   },
+  // TODO This one becomes optional
   socioeconomic_classification: {
-    get: (p) => p.demographics.socioeconomicClassification,
+    get: (p) => p.demographics.nssec8,
     label: "socioeconomic classification",
-    lookup: enumToString(synthpop.NSSEC5),
+    lookup: enumToString(synthpop.Nssec8),
     theme: "Employment",
   },
   pwkstat: {
