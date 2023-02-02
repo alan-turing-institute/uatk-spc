@@ -1,5 +1,6 @@
 <script>
   import { getContext, onMount, onDestroy } from "svelte";
+  import { geometricReservoirSample } from "pandemonium";
   import { synthpop } from "../pb/synthpop_pb.js";
   import { emptyGeojson } from "../data.js";
 
@@ -51,15 +52,16 @@
     });
   });
 
-  // Swap out data when day or sample_size change
+  // Resample people when sample_size changes
+  $: people = geometricReservoirSample(sample_size, pop.people);
+
+  // Swap out GJ data when day or people change
   $: {
     // TODO Hack, how do we also not do this until onMount is done?
     if (map.getSource(source)) {
       let is_weekday = today.getDay() != 0 && today.getDay() != 6;
 
       let gj = emptyGeojson();
-      // Svelte note: if we don't pass this in explicitly, the compiler doesn't figure out it matters
-      let people = choosePeople(sample_size);
 
       for (let person of people) {
         // Pick a diary for them (arbitrarily)
@@ -100,19 +102,6 @@
     }
     map.removeSource(source);
   });
-
-  // TODO Choose randomly, but make sure the random seed is fixed
-  // Returns synthpop_pb.Person
-  function choosePeople(n) {
-    let people = [];
-    for (let person of pop.people) {
-      people.push(person);
-      if (people.length == n) {
-        break;
-      }
-    }
-    return people;
-  }
 
   function homeLocation(person) {
     let msoa = pop.infoPerMsoa[pop.households[person.household].msoa11cd];
