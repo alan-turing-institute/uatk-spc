@@ -5,6 +5,7 @@
   import MsoaBoundaries from "./components/MsoaBoundaries.svelte";
   import Flows from "./components/Flows.svelte";
   import Plots from "./components/Plots.svelte";
+  import Diaries from "./components/Diaries.svelte";
 
   import { onMount } from "svelte";
   import { synthpop } from "./pb/synthpop_pb.js";
@@ -32,6 +33,9 @@
       console.time("Calculate msoaStats");
       msoas = msoaStats(pop);
       console.timeEnd("Calculate msoaStats");
+
+      // Debugging
+      window.pop = pop;
     } catch (err) {
       window.alert(`Couldn't load SPC proto file: ${err}`);
     }
@@ -58,6 +62,7 @@
       <Map>
         <MsoaBoundaries {msoas} bind:hoveredMsoa bind:clickedMsoa />
         <Flows {pop} {msoas} {hoveredMsoa} />
+        <Diaries {pop} />
       </Map>
     </div>
   </Layout>

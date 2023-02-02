@@ -36,6 +36,7 @@ async fn main() -> Result<()> {
 
     info!("By the end, {}", memory_usage());
 
+    info!("Saving output file");
     let pb_file_size = indicatif::HumanBytes({
         // Create the output dir if needed
         fs_err::create_dir_all("data/output")?;
