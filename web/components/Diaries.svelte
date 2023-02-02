@@ -24,7 +24,8 @@
     map.addLayer({
       id: homeLayer,
       source,
-      // TODO Filter for points in the source, not just venue endpoints
+      // Don't show endpoints of a LineString
+      filter: ["has", "phome_total"],
       type: "circle",
       paint: {
         "circle-color": "blue",
@@ -48,7 +49,7 @@
           "green",
           "black",
         ],
-        "line-width": ["*", 20, ["get", "pct"]],
+        "line-width": ["*", 50, ["get", "pct"]],
       },
     });
   });
