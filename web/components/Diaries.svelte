@@ -1,6 +1,7 @@
 <script>
   import { getContext, onMount, onDestroy } from "svelte";
   import { geometricReservoirSample, createWeightedChoice } from "pandemonium";
+  import Plotly from "plotly.js-dist";
   import { synthpop } from "../pb/synthpop_pb.js";
   import { emptyGeojson } from "../data.js";
 
@@ -57,6 +58,15 @@
   // Resample people when sample_size changes
   $: people = geometricReservoirSample(sample_size, pop.people);
 
+  let avg_phome = 0.4;
+  let avg_pwork = 0.3;
+  let avg_pshop = 0.3;
+  let averages = {
+    values: [],
+    labels: ["Home", "Work", "Shop"],
+    type: "pie",
+  };
+
   // Swap out GJ data when day or people change
   $: {
     // TODO Hack, how do we also not do this until onMount is done?
@@ -64,6 +74,10 @@
       let is_weekday = today.getDay() != 0 && today.getDay() != 6;
 
       let gj = emptyGeojson();
+
+      let sum_phome = 0.0;
+      let sum_pwork = 0.0;
+      let sum_pshop = 0.0;
 
       for (let person of people) {
         // Pick a diary for them (arbitrarily)
@@ -74,6 +88,10 @@
         if (!diary) {
           continue;
         }
+
+        sum_phome += diary.phomeTotal;
+        sum_pwork += diary.pwork;
+        sum_pshop += diary.pshop;
 
         // Make a circle representing how long they spend at home
         let home = homeLocation(person);
@@ -139,6 +157,11 @@
         // TODO Primary school, secondary school (refactor of course)
       }
 
+      avg_phome = sum_phome / sample_size;
+      avg_pwork = sum_pwork / sample_size;
+      avg_pshop = sum_pshop / sample_size;
+      averages.values = [avg_phome, avg_pwork, avg_pshop];
+
       map.getSource(source).setData(gj);
     }
   }
@@ -172,6 +195,20 @@
     copy.setDate(copy.getDate() + offset);
     return copy;
   }
+
+  function pieChart(node, { data }) {
+    Plotly.purge(node);
+    Plotly.newPlot(node, [data], { height: 300, width: 400 });
+
+    return {
+      update({ data: newData }) {
+        Plotly.newPlot(node, [newData], { height: 300, width: 400 });
+      },
+      destroy() {
+        Plotly.purge(node);
+      },
+    };
+  }
 </script>
 
 <div class="legend">
@@ -184,6 +221,9 @@
   <br />
   Day: <input type="number" bind:value={date_offset} min="0" max="100" />
   {today.toDateString()}
+  <br />
+  <p>Avg home {avg_phome}, work {avg_pwork}, shop {avg_pshop}</p>
+  <div use:pieChart={{ data: averages }} />
 </div>
 
 <style>
