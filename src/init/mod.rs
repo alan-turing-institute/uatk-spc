@@ -73,6 +73,21 @@ impl Population {
         diaries::load_time_use_diaries(&mut population)?;
         diaries::load_diaries_per_person(&mut population)?;
 
+        if input.filter_empty_msoas {
+            let mut msoas_seen = BTreeSet::new();
+            for hh in &population.households {
+                msoas_seen.insert(hh.msoa.clone());
+            }
+            let n = population.info_per_msoa.len();
+            population
+                .info_per_msoa
+                .retain(|msoa, _| msoas_seen.contains(msoa));
+            let change = n - population.info_per_msoa.len();
+            if change != 0 {
+                warn!("Filtered out {change} empty MSOAs");
+            }
+        }
+
         Ok((population, commuting_duration))
     }
 
