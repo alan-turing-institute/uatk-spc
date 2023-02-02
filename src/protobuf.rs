@@ -68,6 +68,10 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
         );
     }
 
+    for (id, diary) in &input.time_use_diaries {
+        output.time_use_diaries.insert(id.0.clone(), diary.clone());
+    }
+
     let mut buf = Vec::new();
     buf.reserve(output.encoded_len());
     output.encode(&mut buf)?;
