@@ -183,7 +183,7 @@
   .legend {
     z-index: 1;
     position: absolute;
-    bottom: 250px;
+    top: 70px;
     right: 10px;
     background: white;
     padding: 10px;
