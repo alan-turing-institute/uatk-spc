@@ -19,6 +19,11 @@
   let homeLayer = "people-home";
   let flowsLayer = "people-flows";
 
+  const homeColor = "#1F77B4";
+  const schoolColor = "#FF7F0E";
+  const workColor = "#D62728";
+  const retailColor = "#2CA02C";
+
   // Set up the source and two layers once, with no data
   onMount(() => {
     map.addSource(source, { type: "geojson", data: emptyGeojson() });
@@ -29,7 +34,7 @@
       filter: ["has", "phome_total"],
       type: "circle",
       paint: {
-        "circle-color": "blue",
+        "circle-color": homeColor,
         "circle-radius": ["*", 20, ["get", "phome_total"]],
         "circle-opacity": 0.5,
       },
@@ -43,11 +48,11 @@
           "match",
           ["get", "activity"],
           "SCHOOL",
-          "cyan",
+          schoolColor,
           "WORK",
-          "red",
+          workColor,
           "RETAIL",
-          "green",
+          retailColor,
           "black",
         ],
         "line-width": ["*", 50, ["get", "pct"]],
@@ -62,6 +67,7 @@
   let averages = {
     values: [0.25, 0.25, 0.25, 0.25],
     labels: ["Home", "Work", "Shop", "School"],
+    marker: { colors: [homeColor, workColor, retailColor, schoolColor] },
     type: "pie",
   };
 
@@ -225,12 +231,13 @@
   }
 
   function pieChart(node, { data }) {
+    const layout = { margin: { l: 0, r: 0, b: 0, t: 0, pad: 0 } };
     Plotly.purge(node);
-    Plotly.newPlot(node, [data], { height: 300, width: 400 });
+    Plotly.newPlot(node, [data], layout);
 
     return {
       update({ data: newData }) {
-        Plotly.newPlot(node, [newData], { height: 300, width: 400 });
+        Plotly.newPlot(node, [newData], layout);
       },
       destroy() {
         Plotly.purge(node);
@@ -240,12 +247,8 @@
 </script>
 
 <div class="legend">
-  Number of people: <input
-    type="range"
-    bind:value={sample_size}
-    min="1"
-    max="100"
-  />
+  Number of people: {sample_size}
+  <input type="range" bind:value={sample_size} min="1" max="100" />
   <br />
   Day: <input type="number" bind:value={date_offset} min="0" max="100" />
   {today.toDateString()}
