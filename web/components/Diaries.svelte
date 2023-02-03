@@ -109,8 +109,9 @@
         // Go to work?
         if (person.hasOwnProperty("workplace") && diary.pwork > 0.0) {
           let work = pointToGeojson(
-            pop.venuesPerActivity[synthpop.Activity.WORK][person.workplace]
-              .location
+            pop.venuesPerActivity[synthpop.Activity.WORK].venues[
+              person.workplace
+            ].location
           );
           gj.features.push({
             type: "Feature",

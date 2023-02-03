@@ -42,8 +42,7 @@ pub fn load_time_use_diaries(population: &mut Population) -> Result<()> {
                 pnothome_total: rec["pnothomeTOT"].parse()?,
                 punknown_total: rec["punknownTOT"].parse()?,
                 pmwalk: rec["pmwalk"].parse()?,
-                // Typo
-                pmcycle: rec["pmcylce"].parse()?,
+                pmcycle: rec["pmcycle"].parse()?,
                 pmpublic: rec["pmpublic"].parse()?,
                 pmprivate: rec["pmprivate"].parse()?,
                 pmunknown: rec["pmunknown"].parse()?,
@@ -79,9 +78,25 @@ pub fn load_diaries_per_person(population: &mut Population) -> Result<()> {
     }
 
     for person in &mut population.people {
-        let (weekday, weekend) = map.remove(&person.identifiers.orig_pid).unwrap();
-        person.weekday_diaries = weekday;
-        person.weekend_diaries = weekend;
+        if let Some((weekday, weekend)) = map.remove(&person.identifiers.orig_pid) {
+            person.weekday_diaries = weekday;
+            person.weekend_diaries = weekend;
+
+            for diary in person
+                .weekday_diaries
+                .iter()
+                .chain(person.weekend_diaries.iter())
+            {
+                if !population.time_use_diaries.contains_key(diary) {
+                    warn!(
+                        "Person {} has missing diary {:?}",
+                        person.identifiers.orig_pid, diary
+                    );
+                }
+            }
+        } else {
+            warn!("Person {} has no diaries defined", person.identifiers.orig_pid);
+        }
     }
 
     Ok(())
