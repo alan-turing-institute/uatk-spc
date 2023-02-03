@@ -231,7 +231,11 @@
   }
 
   function pieChart(node, { data }) {
-    const layout = { margin: { l: 0, r: 0, b: 0, t: 0, pad: 0 } };
+    const layout = {
+      width: 300,
+      height: 300,
+      margin: { l: 0, r: 0, b: 0, t: 0, pad: 0 },
+    };
     Plotly.purge(node);
     Plotly.newPlot(node, [data], layout);
 
@@ -260,8 +264,8 @@
   .legend {
     z-index: 1;
     position: absolute;
-    bottom: 50px;
-    left: 10px;
+    top: 400px;
+    right: 10px;
     background: white;
     padding: 10px;
   }

@@ -122,7 +122,7 @@
   .legend {
     z-index: 1;
     position: absolute;
-    top: 50px;
+    top: 10px;
     right: 10px;
     background: white;
     padding: 10px;
