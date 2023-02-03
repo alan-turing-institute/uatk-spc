@@ -42,7 +42,7 @@
         "line-color": [
           "match",
           ["get", "activity"],
-          "School",
+          "SCHOOL",
           "cyan",
           "WORK",
           "red",
@@ -57,13 +57,11 @@
 
   // Resample people when sample_size changes
   $: people = geometricReservoirSample(sample_size, pop.people);
+  $: schoolsPerPerson = people.map(pickSchool);
 
-  let avg_phome = 0.4;
-  let avg_pwork = 0.3;
-  let avg_pshop = 0.3;
   let averages = {
-    values: [],
-    labels: ["Home", "Work", "Shop"],
+    values: [0.25, 0.25, 0.25, 0.25],
+    labels: ["Home", "Work", "Shop", "School"],
     type: "pie",
   };
 
@@ -75,11 +73,10 @@
 
       let gj = emptyGeojson();
 
-      let sum_phome = 0.0;
-      let sum_pwork = 0.0;
-      let sum_pshop = 0.0;
+      // In the order matching averages
+      let sums = [0.0, 0.0, 0.0, 0.0];
 
-      for (let person of people) {
+      for (let [index, person] of people.entries()) {
         // Pick a diary for them (arbitrarily)
         let list = is_weekday ? person.weekdayDiaries : person.weekendDiaries;
         let diary_id = list[date_offset % list.length];
@@ -89,9 +86,10 @@
           continue;
         }
 
-        sum_phome += diary.phomeTotal;
-        sum_pwork += diary.pwork;
-        sum_pshop += diary.pshop;
+        sums[0] += diary.phomeTotal;
+        sums[1] += diary.pwork;
+        sums[2] += diary.pshop;
+        sums[3] += diary.pschool;
 
         // Make a circle representing how long they spend at home
         let home = homeLocation(person);
@@ -126,23 +124,10 @@
           });
         }
 
-        let flows_per_activity =
-          pop.infoPerMsoa[pop.households[person.household].msoa11cd]
-            .flowsPerActivity;
+        // Shop?
         if (diary.pshop > 0.0) {
-          // Pick a venue
-          let flows = flows_per_activity.find(
-            (f) => f.activity == synthpop.Activity.RETAIL
-          ).flows;
-          let flow = createWeightedChoice({
-            getWeight: (item, index) => {
-              return item.weight;
-            },
-          })(flows);
-          let shop = pointToGeojson(
-            pop.venuesPerActivity[synthpop.Activity.RETAIL].venues[flow.venueId]
-              .location
-          );
+          // Pick a different venue every day
+          let pt = pickVenueForActivity(person, synthpop.Activity.RETAIL);
           gj.features.push({
             type: "Feature",
             properties: {
@@ -150,18 +135,32 @@
               pct: diary.pshop,
             },
             geometry: {
-              coordinates: [home, shop],
+              coordinates: [home, pt],
               type: "LineString",
             },
           });
         }
-        // TODO Primary school, secondary school (refactor of course)
+
+        // Go to school?
+        if (diary.pschool > 0.0) {
+          let pt = schoolsPerPerson[index];
+          if (pt != null) {
+            gj.features.push({
+              type: "Feature",
+              properties: {
+                activity: "SCHOOL",
+                pct: diary.pschool,
+              },
+              geometry: {
+                coordinates: [home, pt],
+                type: "LineString",
+              },
+            });
+          }
+        }
       }
 
-      avg_phome = sum_phome / sample_size;
-      avg_pwork = sum_pwork / sample_size;
-      avg_pshop = sum_pshop / sample_size;
-      averages.values = [avg_phome, avg_pwork, avg_pshop];
+      averages.values = sums.map((x) => x / sample_size);
 
       map.getSource(source).setData(gj);
     }
@@ -185,6 +184,34 @@
       // TODO Fallback to MSOA centroid
       return pointToGeojson(msoa.shape[0]);
     }
+  }
+
+  // Returns the venue location
+  function pickVenueForActivity(person, activity) {
+    let flows_per_activity =
+      pop.infoPerMsoa[pop.households[person.household].msoa11cd]
+        .flowsPerActivity;
+    let flows = flows_per_activity.find((f) => f.activity == activity).flows;
+    let flow = createWeightedChoice({
+      getWeight: (item, index) => {
+        return item.weight;
+      },
+    })(flows);
+    return pointToGeojson(
+      pop.venuesPerActivity[activity].venues[flow.venueId].location
+    );
+  }
+
+  function pickSchool(person) {
+    if (person.employment.pwkstat != synthpop.PwkStat.STUDENT_FT) {
+      // TODO This seems rare
+      //return null;
+    }
+    let activity =
+      person.demographics.ageYears >= 11
+        ? synthpop.Activity.SECONDARY_SCHOOL
+        : synthpop.Activity.PRIMARY_SCHOOL;
+    return pickVenueForActivity(person, activity);
   }
 
   function pointToGeojson(pt) {
@@ -223,7 +250,6 @@
   Day: <input type="number" bind:value={date_offset} min="0" max="100" />
   {today.toDateString()}
   <br />
-  <p>Avg home {avg_phome}, work {avg_pwork}, shop {avg_pshop}</p>
   <div use:pieChart={{ data: averages }} />
 </div>
 
