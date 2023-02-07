@@ -1,10 +1,7 @@
 <script>
-  import { getContext, onMount, onDestroy } from "svelte";
   import { synthpop } from "../pb/synthpop_pb.js";
   import { emptyGeojson } from "../data.js";
-
-  const { getMap } = getContext("map");
-  let map = getMap();
+  import Layer from "./Layer.svelte";
 
   // Input
   export let pop;
@@ -16,68 +13,68 @@
   let showHome = true;
   let showWork = true;
 
-  let source = "venues";
-  // TODO Probably a bunch of layers
-  let layer = "venues-layer";
-
-  onMount(() => {
+  function venues(activity) {
     let gj = emptyGeojson();
-    for (let list of Object.values(pop.venuesPerActivity)) {
-      // Undefined for HOME and WORK
-      if (list) {
-        for (let venue of list.venues) {
-          gj.features.push({
-            type: "Feature",
-            properties: {
-              type: venue.activity,
-            },
-            geometry: {
-              coordinates: pointToGeojson(venue.location),
-              type: "Point",
-            },
-          });
-        }
-      }
+    for (let venue of pop.venuesPerActivity[activity].venues) {
+      gj.features.push({
+        type: "Feature",
+        geometry: {
+          coordinates: pointToGeojson(venue.location),
+          type: "Point",
+        },
+      });
     }
+    return gj;
+  }
 
-    map.addSource(source, {
-      type: "geojson",
-      data: gj,
-    });
-    map.addLayer({
-      id: layer,
-      source,
+  function circle(color) {
+    return {
       type: "circle",
       paint: {
-        "circle-color": "red",
+        "circle-color": color,
         "circle-radius": 5,
         "circle-opacity": 0.5,
       },
-    });
-  });
+    };
+  }
 
   function pointToGeojson(pt) {
     return [pt.longitude, pt.latitude];
   }
-
-  onDestroy(() => {
-    if (map.getLayer(layer)) {
-      map.removeLayer(layer);
-    }
-    map.removeSource(source);
-  });
 </script>
 
 <div class="legend">
   <h3>Venues:</h3>
-  <input type="checkbox" bind:checked={showRetail} /> Retail<br />
-  <input type="checkbox" bind:checked={showPrimarySchool} /> Primary school<br
-  />
-  <input type="checkbox" bind:checked={showSecondarySchool} /> Secondary school:<br
-  />
-  <input type="checkbox" bind:checked={showHome} /> Home<br />
-  <input type="checkbox" bind:checked={showWork} /> Work<br />
+  <input type="checkbox" bind:checked={showRetail} />
+  <label style="color: red">Retail</label><br />
+  <input type="checkbox" bind:checked={showPrimarySchool} />
+  <label style="color: green">Primary school</label><br />
+  <input type="checkbox" bind:checked={showSecondarySchool} />
+  <label style="color: brown">Secondary school</label><br />
+  <input type="checkbox" bind:checked={showHome} />
+  <label style="color: purple">Home</label><br />
+  <input type="checkbox" bind:checked={showWork} />
+  <label style="color: orange">Work</label><br />
 </div>
+
+<Layer
+  source="retail"
+  gj={venues(synthpop.Activity.RETAIL)}
+  layerStyle={circle("red")}
+  show={showRetail}
+/>
+<Layer
+  source="primary-school"
+  gj={venues(synthpop.Activity.PRIMARY_SCHOOL)}
+  layerStyle={circle("green")}
+  show={showPrimarySchool}
+/>
+<Layer
+  source="secondary-school"
+  gj={venues(synthpop.Activity.SECONDARY_SCHOOL)}
+  layerStyle={circle("brown")}
+  show={showSecondarySchool}
+/>
 
 <style>
   .legend {
