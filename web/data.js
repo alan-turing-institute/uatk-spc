@@ -52,6 +52,12 @@ function enumToString(enumObj) {
   return mapping;
 }
 
+function numberEnumMap(max) {
+  return Object.fromEntries(
+    [...Array(max).keys()].map((i) => [i, i.toString()])
+  );
+}
+
 export const PER_PERSON_CATEGORICAL_PROPS = {
   sex: {
     get: (p) => p.demographics.sex,
@@ -100,15 +106,34 @@ export const PER_HOUSEHOLD_CATEGORICAL_PROPS = {
     lookup: enumToString(synthpop.CommunalType),
     theme: "Household",
   },
-  // TODO num_rooms is effectively an enum
+  num_rooms: {
+    get: (hh) => hh.numRooms,
+    label: "Number of rooms (capped at 6)",
+    lookup: numberEnumMap(6),
+    theme: "Household",
+  },
   // TODO central_heat is effectively an enum
+  central_heat: {
+    get: (hh) => hh.centralHeat,
+    label: "Central heating",
+    lookup: {
+      false: "no",
+      true: "yes",
+    },
+    theme: "Household",
+  },
   tenure: {
     get: (hh) => hh.tenure,
     label: "Tenure",
     lookup: enumToString(synthpop.Tenure),
     theme: "Household",
   },
-  // TODO num_cars is effectively an enum
+  num_cars: {
+    get: (hh) => hh.numCars,
+    label: "Number of cars (capped at 3)",
+    lookup: numberEnumMap(6),
+    theme: "Household",
+  },
 };
 
 // Returns a mapping from MSOA ID to the GJ Feature
