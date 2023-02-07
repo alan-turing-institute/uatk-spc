@@ -99,6 +99,12 @@
       map.removeLayer(layer);
     }
 
+    if (colorBy == "none") {
+      limits = [];
+      colorScale = [];
+      return;
+    }
+
     // Get the numeric data we're displaying
     let data = Object.values(msoas).reduce((agg, msoa) => {
       agg.push(msoa.properties[colorBy]);
@@ -159,6 +165,7 @@
 
 <div class="legend">
   <select bind:value={colorBy} on:change={setLayer}>
+    <option value="none">Hide</option>
     <option value="households">Number of households</option>
     <option value="people">Number of people</option>
     {#each Object.entries(PER_PERSON_NUMERIC_PROPS) as [key, prop]}
