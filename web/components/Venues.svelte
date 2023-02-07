@@ -10,19 +10,24 @@
   let showRetail = true;
   let showPrimarySchool = true;
   let showSecondarySchool = true;
-  let showHome = true;
+  // Too many to show by default
+  let showHome = false;
   let showWork = true;
 
   function venues(activity) {
     let gj = emptyGeojson();
     for (let venue of pop.venuesPerActivity[activity].venues) {
-      gj.features.push({
-        type: "Feature",
-        geometry: {
-          coordinates: pointToGeojson(venue.location),
-          type: "Point",
-        },
-      });
+      gj.features.push(feature(venue.location));
+    }
+    return gj;
+  }
+
+  function homes() {
+    let gj = emptyGeojson();
+    for (let info of Object.values(pop.infoPerMsoa)) {
+      for (let pt of info.buildings) {
+        gj.features.push(feature(pt));
+      }
     }
     return gj;
   }
@@ -34,6 +39,16 @@
         "circle-color": color,
         "circle-radius": 5,
         "circle-opacity": 0.5,
+      },
+    };
+  }
+
+  function feature(pt) {
+    return {
+      type: "Feature",
+      geometry: {
+        coordinates: pointToGeojson(pt),
+        type: "Point",
       },
     };
   }
@@ -74,6 +89,18 @@
   gj={venues(synthpop.Activity.SECONDARY_SCHOOL)}
   layerStyle={circle("brown")}
   show={showSecondarySchool}
+/>
+<Layer
+  source="home"
+  gj={homes()}
+  layerStyle={circle("purple")}
+  show={showHome}
+/>
+<Layer
+  source="work"
+  gj={venues(synthpop.Activity.WORK)}
+  layerStyle={circle("orange")}
+  show={showWork}
 />
 
 <style>
