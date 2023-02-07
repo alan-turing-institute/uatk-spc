@@ -6,6 +6,7 @@
   import Flows from "./components/Flows.svelte";
   import Plots from "./components/Plots.svelte";
   import Diaries from "./components/Diaries.svelte";
+  import Venues from "./components/Venues.svelte";
 
   import { onMount } from "svelte";
   import { synthpop } from "./pb/synthpop_pb.js";
@@ -63,6 +64,7 @@
         <MsoaBoundaries {msoas} bind:hoveredMsoa bind:clickedMsoa />
         <Flows {pop} {msoas} {hoveredMsoa} />
         <Diaries {pop} />
+        <Venues {pop} />
       </Map>
     </div>
   </Layout>
