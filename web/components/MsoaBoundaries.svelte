@@ -7,7 +7,9 @@
   const { getMap, setCamera } = getContext("map");
   let map = getMap();
 
+  // Input
   export let msoas;
+  // Output
   export let hoveredMsoa;
   export let clickedMsoa;
 
