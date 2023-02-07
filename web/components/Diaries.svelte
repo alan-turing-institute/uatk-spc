@@ -8,7 +8,11 @@
   const { getMap } = getContext("map");
   let map = getMap();
 
+  // Input
   export let pop;
+
+  // State
+  let hoverId;
 
   let sample_size = 50;
   const start_date = new Date("February 5, 2023");
@@ -26,7 +30,11 @@
 
   // Set up the source and two layers once, with no data
   onMount(() => {
-    map.addSource(source, { type: "geojson", data: emptyGeojson() });
+    map.addSource(source, {
+      type: "geojson",
+      data: emptyGeojson(),
+      generateId: true,
+    });
     map.addLayer({
       id: homeLayer,
       source,
@@ -36,7 +44,12 @@
       paint: {
         "circle-color": homeColor,
         "circle-radius": ["*", 20, ["get", "phome_total"]],
-        "circle-opacity": 0.5,
+        "circle-opacity": [
+          "case",
+          ["boolean", ["feature-state", "hover"], false],
+          0.8,
+          0.4,
+        ],
       },
     });
     map.addLayer({
@@ -57,6 +70,17 @@
         ],
         "line-width": ["*", 50, ["get", "pct"]],
       },
+    });
+
+    setupHovering(homeLayer);
+    map.on("click", (e) => {
+      let features = map.queryRenderedFeatures(e.point, {
+        layers: [homeLayer],
+      });
+      if (features.length == 1) {
+        let person = pop.people[features[0].properties.id];
+        window.alert(`${JSON.stringify(person, null, "  ")}`);
+      }
     });
   });
 
@@ -103,6 +127,7 @@
           type: "Feature",
           properties: {
             phome_total: diary.phomeTotal,
+            id: person.id,
           },
           geometry: {
             coordinates: home,
@@ -173,6 +198,8 @@
   }
 
   onDestroy(() => {
+    unhover();
+    // TODO Remove all the Map event listeners
     if (map.getLayer(homeLayer)) {
       map.removeLayer(homeLayer);
     }
@@ -247,6 +274,26 @@
         Plotly.purge(node);
       },
     };
+  }
+
+  // TODO Share hoverable/clickable logic somehow
+  function unhover() {
+    if (hoverId != null) {
+      map.setFeatureState({ source, id: hoverId }, { hover: false });
+    }
+  }
+  function setupHovering(layer) {
+    map.on("mousemove", layer, (e) => {
+      if (e.features.length > 0 && hoverId != e.features[0].id) {
+        unhover();
+        hoverId = e.features[0].id;
+        map.setFeatureState({ source, id: hoverId }, { hover: true });
+      }
+    });
+    map.on("mouseleave", layer, () => {
+      unhover();
+      hoverId = null;
+    });
   }
 </script>
 
