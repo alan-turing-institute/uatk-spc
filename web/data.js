@@ -80,6 +80,37 @@ export const PER_PERSON_CATEGORICAL_PROPS = {
   },
 };
 
+export const PER_HOUSEHOLD_CATEGORICAL_PROPS = {
+  // TODO Most of these are optional
+  socioeconomic_classification: {
+    get: (hh) => hh.nssec8,
+    label: "Professional working status of reference person",
+    lookup: enumToString(synthpop.Nssec8),
+    theme: "Household",
+  },
+  accommodation_type: {
+    get: (hh) => hh.accommodationType,
+    label: "Accomodation type",
+    lookup: enumToString(synthpop.AccommodationType),
+    theme: "Household",
+  },
+  communal_type: {
+    get: (hh) => hh.communalType,
+    label: "Type of communal establishment",
+    lookup: enumToString(synthpop.CommunalType),
+    theme: "Household",
+  },
+  // TODO num_rooms is effectively an enum
+  // TODO central_heat is effectively an enum
+  tenure: {
+    get: (hh) => hh.tenure,
+    label: "Tenure",
+    lookup: enumToString(synthpop.Tenure),
+    theme: "Household",
+  },
+  // TODO num_cars is effectively an enum
+};
+
 // Returns a mapping from MSOA ID to the GJ Feature
 export function msoaStats(pop) {
   // Counts

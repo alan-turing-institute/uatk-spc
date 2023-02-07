@@ -4,6 +4,7 @@
   import {
     PER_PERSON_NUMERIC_PROPS,
     PER_PERSON_CATEGORICAL_PROPS,
+    PER_HOUSEHOLD_CATEGORICAL_PROPS,
   } from "../data.js";
 
   export let pop;
@@ -12,7 +13,8 @@
   let theme = "Demographics";
 
   let numericData = {};
-  let categoricalData = {};
+  let categoricalPersonData = {};
+  let categoricalHouseholdData = {};
 
   $: {
     for (let key of Object.keys(PER_PERSON_NUMERIC_PROPS)) {
@@ -20,7 +22,10 @@
     }
     for (let key of Object.keys(PER_PERSON_CATEGORICAL_PROPS)) {
       // A count for each category item
-      categoricalData[key] = {};
+      categoricalPersonData[key] = {};
+    }
+    for (let key of Object.keys(PER_HOUSEHOLD_CATEGORICAL_PROPS)) {
+      categoricalHouseholdData[key] = {};
     }
 
     for (let hh of pop.households) {
@@ -33,15 +38,25 @@
               numericData[key].push(value);
             }
           }
-          for (let [key, list] of Object.entries(categoricalData)) {
+          for (let [key, list] of Object.entries(categoricalPersonData)) {
             let prop = PER_PERSON_CATEGORICAL_PROPS[key];
             let value = prop.lookup[prop.get(person)];
-            let dict = categoricalData[key];
+            let dict = categoricalPersonData[key];
             if (!dict.hasOwnProperty(value)) {
               dict[value] = 0;
             }
             dict[value]++;
           }
+        }
+
+        for (let [key, list] of Object.entries(categoricalHouseholdData)) {
+          let prop = PER_HOUSEHOLD_CATEGORICAL_PROPS[key];
+          let value = prop.lookup[prop.get(hh.details)];
+          let dict = categoricalHouseholdData[key];
+          if (!dict.hasOwnProperty(value)) {
+            dict[value] = 0;
+          }
+          dict[value]++;
         }
       }
     }
@@ -95,6 +110,7 @@ Theme:
   <option value="Demographics">Demographics</option>
   <option value="Employment">Employment</option>
   <option value="Health">Health</option>
+  <option value="Household">Household</option>
 </select>
 
 {#each Object.entries(numericData) as [key, dataset]}
@@ -105,10 +121,20 @@ Theme:
   {/if}
 {/each}
 
-{#each Object.entries(categoricalData) as [key, dataset]}
+{#each Object.entries(categoricalPersonData) as [key, dataset]}
   {#if PER_PERSON_CATEGORICAL_PROPS[key].theme == theme}
     <div
       use:barChart={{ title: PER_PERSON_CATEGORICAL_PROPS[key].label, dataset }}
+    />
+  {/if}
+{/each}
+{#each Object.entries(categoricalHouseholdData) as [key, dataset]}
+  {#if PER_HOUSEHOLD_CATEGORICAL_PROPS[key].theme == theme}
+    <div
+      use:barChart={{
+        title: PER_HOUSEHOLD_CATEGORICAL_PROPS[key].label,
+        dataset,
+      }}
     />
   {/if}
 {/each}

@@ -47,7 +47,7 @@ message HouseholdDetails {
     required bool central_heat = 6;
     // Tenure (based on LC4402EW, census 2011)
     optional Tenure tenure = 7;
-    // Number of cars capped at 3 (LC4202EW, census 2011)k
+    // Number of cars capped at 3 (LC4202EW, census 2011)
     optional uint64 num_cars = 8;
 }
 
