@@ -68,7 +68,7 @@
           retailColor,
           "black",
         ],
-        "line-width": ["*", 50, ["get", "pct"]],
+        "line-width": ["*", 30, ["get", "pct"]],
       },
     });
 
@@ -85,7 +85,12 @@
   });
 
   // Resample people when sample_size changes
-  $: people = geometricReservoirSample(sample_size, pop.people);
+  // TODO Revisit filtering when all data available. For now, skip people without stuff
+  let validPeople = pop.people.filter(
+    (p) => p.weekdayDiaries.length > 0 && p.weekdayDiaries[0] != "Baby"
+  );
+
+  $: people = geometricReservoirSample(sample_size, validPeople);
   $: schoolsPerPerson = people.map(pickSchool);
 
   let averages = {
