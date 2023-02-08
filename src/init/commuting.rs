@@ -93,7 +93,7 @@ impl Businesses {
         info!("Finding all businesses");
         let mut total_jobs = 0;
         for rec in csv::Reader::from_reader(File::open(
-            "data/raw_data/nationaldata/businessRegistry.csv",
+            "data/raw_data/nationaldata-v2/businessRegistry.csv",
         )?)
         .deserialize()
         {
