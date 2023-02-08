@@ -87,6 +87,30 @@ pub fn unzip(file: PathBuf, output_dir: &str) -> Result<()> {
     }
 }
 
+/// Gunzip a file in-place. Returns the path without the .gz extension
+pub fn gunzip(file: PathBuf) -> Result<String> {
+    let target = file
+        .display()
+        .to_string()
+        .trim_end_matches(".gz")
+        .to_string();
+    if Path::new(&target).exists() {
+        info!("{target} already exists, not gunzipping");
+        return Ok(target);
+    }
+
+    info!("Gunzipping {}...", file.display());
+    let status = Command::new("gunzip").arg(file).status()?;
+    if status.success() {
+        Ok(target)
+    } else {
+        bail!("Command failed");
+    }
+
+    // TODO Ideally delete the .gz file, and make the download+gunzip step smart about seeing the
+    // final target
+}
+
 /// Extract the filename from a path -- for example, "foo.txt.gz" from "/home/someone/foo.txt.gz"
 pub fn filename<P: AsRef<Path>>(path: P) -> String {
     path.as_ref()
