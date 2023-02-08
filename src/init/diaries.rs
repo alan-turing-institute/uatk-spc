@@ -15,8 +15,7 @@ pub fn load_time_use_diaries(population: &mut Population) -> Result<()> {
     info!("Loading TimeUseDiaries");
     let mut map = BTreeMap::new();
 
-    // TODO real files
-    let path = "/home/dabreegster/Downloads/new_spc_data/diariesRef.csv";
+    let path = "data/raw_data/nationaldata-v2/diariesRef.csv";
     for rec in csv::Reader::from_reader(File::open(path)?).deserialize() {
         let rec: HashMap<String, String> = rec?;
         let uid = DiaryID(rec["uniqueID"].clone());
