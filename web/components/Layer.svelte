@@ -23,6 +23,10 @@
       type: "circle",
       ...layerStyle,
     });
+    // We may need to hide initially
+    if (!show) {
+      map.setLayoutProperty(layer, "visibility", "none");
+    }
   });
 
   onDestroy(() => {
