@@ -73,9 +73,11 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
 
     // CommutingOD is all commented out
 
-    download_file("nationaldata", "businessRegistry.csv").await?;
+    let zip_path = download_file("nationaldata-v2", "businessRegistry.csv.zip").await?;
+    unzip(zip_path, "data/raw_data/nationaldata-v2/")?;
 
-    download_file("nationaldata", "timeAtHomeIncreaseCTY.csv").await?;
+    let zip_path = download_file("nationaldata-v2", "timeAtHomeIncreaseCTY.csv.zip").await?;
+    unzip(zip_path, "data/raw_data/nationaldata-v2/")?;
 
     let path = download_file("nationaldata", "MSOAS_shp.tar.gz").await?;
     untar(path, "data/raw_data/nationaldata/MSOAS_shp/")?;
