@@ -5,7 +5,7 @@ use anyhow::Result;
 use fs_err::File;
 use serde::Deserialize;
 
-use crate::utilities::{basename, download, filename, print_count, untar, unzip};
+use crate::utilities::{basename, download, filename, gunzip, print_count, untar, unzip};
 use crate::{County, Input, MSOA};
 
 pub struct RawDataResults {
@@ -23,14 +23,14 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     };
 
     // This maps MSOA IDs to things like OSM geofabrik URL
-    let lookup_path = download_file("referencedata", "lookUp.csv").await?;
+    let lookup_path = gunzip(download_file("referencedata", "lookUp-GB.csv.gz").await?)?;
 
     let mut pop_files_needed = BTreeSet::new();
     let mut osm_needed = BTreeSet::new();
     for rec in csv::Reader::from_reader(File::open(lookup_path)?).deserialize() {
         let rec: MsoaLookupRow = rec?;
         if input.msoas.contains(&rec.msoa) {
-            pop_files_needed.insert(rec.new_tu);
+            pop_files_needed.insert(rec.azure_ref);
             osm_needed.insert(rec.osm);
             results
                 .msoas_per_county
@@ -47,6 +47,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     );
 
     for area in pop_files_needed {
+        // TODO The path will change -- Year, country, then something like pop_central-valleys_2020.gz
         let gzip_path = download_file("countydata", format!("pop_{area}.gz")).await?;
         let output_path = format!("data/raw_data/countydata/pop_{area}.csv");
         untar(gzip_path, &output_path)?;
@@ -89,8 +90,8 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
 struct MsoaLookupRow {
     #[serde(rename = "MSOA11CD")]
     msoa: MSOA,
-    #[serde(rename = "NewTU")]
-    new_tu: String,
+    #[serde(rename = "AzureRef")]
+    azure_ref: String,
     #[serde(rename = "OSM")]
     osm: String,
     #[serde(rename = "GoogleMob")]
@@ -99,7 +100,7 @@ struct MsoaLookupRow {
 
 /// Calculates all MSOAs nationally from the lookup table
 pub async fn all_msoas_nationally() -> Result<BTreeSet<MSOA>> {
-    let lookup_path = download_file("referencedata", "lookUp.csv").await?;
+    let lookup_path = gunzip(download_file("referencedata", "lookUp-GB.csv.gz").await?)?;
     let mut msoas = BTreeSet::new();
     for rec in csv::Reader::from_reader(File::open(lookup_path)?).deserialize() {
         let rec: MsoaLookupRow = rec?;
@@ -110,8 +111,6 @@ pub async fn all_msoas_nationally() -> Result<BTreeSet<MSOA>> {
 
 async fn download_file<P: AsRef<str>>(dir: &str, file: P) -> Result<PathBuf> {
     let azure = Path::new("https://ramp0storage.blob.core.windows.net/");
-    // TODO Azure uses nationaldata, countydata, etc. Local output in Python inserts an underscore.
-    // Meh?
     let file = file.as_ref();
     download(
         azure.join(dir).join(file),

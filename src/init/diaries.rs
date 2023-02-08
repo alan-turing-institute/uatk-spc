@@ -95,7 +95,10 @@ pub fn load_diaries_per_person(population: &mut Population) -> Result<()> {
                 }
             }
         } else {
-            warn!("Person {} has no diaries defined", person.identifiers.orig_pid);
+            warn!(
+                "Person {} has no diaries defined",
+                person.identifiers.orig_pid
+            );
         }
     }
 
