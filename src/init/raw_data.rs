@@ -69,8 +69,8 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
         results.osm_directories.push(output_dir);
     }
 
-    let path = download_file("nationaldata", "QUANT_RAMP_spc.tar.gz").await?;
-    untar(path, "data/raw_data/nationaldata/QUANT_RAMP/")?;
+    let path = download_file("nationaldata-v2", "QUANT_RAMP_spc.tar.gz").await?;
+    untar(path, "data/raw_data/nationaldata-v2/QUANT_RAMP/")?;
 
     let zip_path = download_file("nationaldata-v2", "businessRegistry.csv.zip").await?;
     unzip(zip_path, "data/raw_data/nationaldata-v2/")?;
