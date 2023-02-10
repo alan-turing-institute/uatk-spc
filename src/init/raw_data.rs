@@ -78,8 +78,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     let zip_path = download_file("nationaldata-v2", "timeAtHomeIncreaseCTY.csv.zip").await?;
     unzip(zip_path, "data/raw_data/nationaldata-v2/")?;
 
-    let path = download_file("nationaldata", "MSOAS_shp.tar.gz").await?;
-    untar(path, "data/raw_data/nationaldata/MSOAS_shp/")?;
+    download_file("nationaldata-v2", "GIS/MSOA_2011_Pop20.geojson").await?;
 
     gunzip(download_file("nationaldata-v2", "diariesRef.csv.gz").await?)?;
 
