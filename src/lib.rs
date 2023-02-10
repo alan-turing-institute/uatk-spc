@@ -146,7 +146,7 @@ pub struct Venue {
     pub location: Point<f32>,
     /// This only exists for PrimarySchool and SecondarySchool. It's a
     /// https://en.wikipedia.org/wiki/Unique_Reference_Number
-    pub urn: Option<u64>,
+    pub urn: Option<String>,
 }
 
 // These are unsigned integers, used to index into different vectors. They're wrapped in a type, so

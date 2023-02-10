@@ -10,7 +10,6 @@ use geo::Point;
 use ndarray::Array2;
 use ndarray_npy::ReadNpyExt;
 use ordered_float::NotNan;
-use proj::Proj;
 use serde::Deserialize;
 use typed_index_collections::TiVec;
 
@@ -126,9 +125,6 @@ fn get_venue_flows(
 }
 
 pub fn load_venues(activity: Activity) -> Result<TiVec<VenueID, Venue>> {
-    // I had the wrong CRS originally, but it's from "British National Grid"
-    let reproject = Proj::new_known_crs("EPSG:27700", "EPSG:4326", None)?;
-
     let csv_path = match activity {
         Activity::Retail => "retailpointsZones.csv",
         Activity::PrimarySchool => "primaryZones.csv",
@@ -146,12 +142,10 @@ pub fn load_venues(activity: Activity) -> Result<TiVec<VenueID, Venue>> {
         // Let's check this while we're at it
         assert_eq!(venues.len(), rec.zonei);
 
-        let (x, y) = reproject.convert((rec.east, rec.north))?;
-
         venues.push(Venue {
             id: VenueID(venues.len()),
             activity,
-            location: Point::new(x, y),
+            location: Point::new(rec.lon, rec.lat),
             urn: rec.urn,
         });
     }
@@ -166,10 +160,11 @@ struct PopulationRow {
 
 #[derive(Debug, Deserialize)]
 struct ZoneRow {
-    east: f32,
-    north: f32,
+    lon: f32,
+    lat: f32,
     zonei: usize,
-    urn: Option<u64>,
+    #[serde(rename = "URN")]
+    urn: Option<String>,
 }
 
 // Make things sum to 1

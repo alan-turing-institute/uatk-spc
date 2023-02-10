@@ -49,7 +49,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
                     id: venue.id.0.try_into().unwrap(),
                     activity: convert_activity(activity).into(),
                     location: convert_point(&venue.location),
-                    urn: venue.urn,
+                    urn: venue.urn.clone(),
                 })
                 .collect(),
         };

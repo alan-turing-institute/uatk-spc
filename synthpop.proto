@@ -292,7 +292,7 @@ message Venue {
     required Point location = 3;
     // This only exists for PrimarySchool and SecondarySchool. It's a
     // https://en.wikipedia.org/wiki/Unique_Reference_Number.
-    optional uint64 urn = 4;
+    optional string urn = 4;
 }
 
 enum Activity {
