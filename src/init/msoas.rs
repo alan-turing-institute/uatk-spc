@@ -1,12 +1,10 @@
 use std::collections::{BTreeMap, BTreeSet};
-use std::io::{BufReader, Write};
 
 use anyhow::Result;
 use enum_map::EnumMap;
-use geo::map_coords::MapCoords;
 use geo::prelude::{BoundingRect, Centroid, Contains};
-use geo::{Coord, MultiPolygon, Point};
-use proj::{Proj, Transform};
+use geo::{Geometry, MultiPolygon, Point};
+use geojson::GeoJson;
 use rstar::{RTree, AABB};
 
 use crate::utilities::{print_count, progress_count};
@@ -19,9 +17,6 @@ pub fn get_info_per_msoa(
 ) -> Result<BTreeMap<MSOA, InfoPerMSOA>> {
     info!("Loading MSOA shapes");
     let mut info_per_msoa = load_msoa_shapes(msoas)?;
-    if false {
-        dump_msoa_shapes(&info_per_msoa)?;
-    }
     let mut building_centroids: Vec<Point<f32>> = Vec::new();
     for dir in osm_directories {
         // TODO Progress bars
@@ -43,67 +38,44 @@ pub fn get_info_per_msoa(
 }
 
 fn load_msoa_shapes(msoas: &BTreeSet<MSOA>) -> Result<BTreeMap<MSOA, InfoPerMSOA>> {
-    // We can't use from_path, because the file isn't named .shp.dbf as expected
-    let shape_reader =
-        shapefile::ShapeReader::from_path("data/raw_data/nationaldata/MSOAS_shp/msoas.shp")?;
-    // TODO Weird error type
-    // TODO BufReader doesn't work with fs_err
-    let dbf_reader = shapefile::dbase::Reader::new(BufReader::new(std::fs::File::open(
-        "data/raw_data/nationaldata/MSOAS_shp/msoas.dbf",
-    )?))
-    .unwrap();
-    let mut reader = shapefile::Reader::new(shape_reader, dbf_reader);
-
-    // I opened the file in QGIS to figure out the source CRS
-    let reproject = Proj::new_known_crs("EPSG:27700", "EPSG:4326", None)?;
+    let raw = fs_err::read_to_string("data/raw_data/nationaldata-v2/GIS/MSOA_2011_Pop20.geojson")?;
+    // TODO Use https://docs.rs/geojson/0.24.0/geojson/de/index.html? But we have Polygons and
+    // MultiPolygons
+    let geojson: GeoJson = raw.parse()?;
 
     let mut results = BTreeMap::new();
-    for pair in reader.iter_shapes_and_records_as::<shapefile::Polygon, shapefile::dbase::Record>()
-    {
-        let (shape, record) = pair?;
-        if let Some(shapefile::dbase::FieldValue::Character(Some(msoa))) = record.get("MSOA11CD") {
-            let msoa = MSOA(msoa.clone());
+    if let GeoJson::FeatureCollection(fc) = geojson {
+        for feature in fc.features {
+            let msoa = MSOA(
+                feature
+                    .property("MSOA11CD")
+                    .unwrap()
+                    .as_str()
+                    .unwrap()
+                    .to_string(),
+            );
             if !msoas.contains(&msoa) {
                 continue;
             }
-            if let Some(shapefile::dbase::FieldValue::Numeric(Some(population))) = record.get("pop")
-            {
-                let mut geo_polygon: MultiPolygon<f64> = shape.try_into()?;
-                geo_polygon.transform(&reproject)?;
-                // f64 -> f32
-                let shape: MultiPolygon<f32> = geo_polygon.map_coords(|Coord { x, y }| Coord {
-                    x: x as f32,
-                    y: y as f32,
-                });
-                results.insert(
-                    msoa,
-                    InfoPerMSOA {
-                        shape,
-                        population: *population as u64,
-                        buildings: Vec::new(),
-                        flows_per_activity: EnumMap::default(),
-                    },
-                );
-            }
+            let population = feature.property("PopCount").unwrap().as_u64().unwrap();
+            let geom: Geometry<f32> = feature.geometry.unwrap().try_into()?;
+            let shape = match geom {
+                Geometry::MultiPolygon(mp) => mp,
+                Geometry::Polygon(p) => MultiPolygon::new(vec![p]),
+                _ => bail!("Unexpected geometry"),
+            };
+            results.insert(
+                msoa,
+                InfoPerMSOA {
+                    shape,
+                    population,
+                    buildings: Vec::new(),
+                    flows_per_activity: EnumMap::default(),
+                },
+            );
         }
     }
-
     Ok(results)
-}
-
-// TODO If this is ever removed, cleanup dependencies on geojson and serde_json
-// TODO Also, there should be a less verbose way to do this sort of thing
-fn dump_msoa_shapes(msoas: &BTreeMap<MSOA, InfoPerMSOA>) -> Result<()> {
-    let geom_collection: geo::GeometryCollection<f32> =
-        msoas.values().map(|info| info.shape.clone()).collect();
-    let mut feature_collection = geojson::FeatureCollection::from(&geom_collection);
-    for (feature, msoa) in feature_collection.features.iter_mut().zip(msoas.keys()) {
-        feature.set_property("msoa11cd", msoa.0.clone());
-    }
-    let gj = geojson::GeoJson::from(feature_collection);
-    let mut file = fs_err::File::create("msoas.geojson")?;
-    write!(file, "{}", serde_json::to_string_pretty(&gj)?)?;
-    Ok(())
 }
 
 fn load_building_centroids(path: &str) -> Result<Vec<Point<f32>>> {
