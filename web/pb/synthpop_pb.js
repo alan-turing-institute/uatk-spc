@@ -5328,7 +5328,7 @@ export const synthpop = $root.synthpop = (() => {
          * @property {number|Long} id Venue id
          * @property {synthpop.Activity} activity Venue activity
          * @property {synthpop.IPoint} location Venue location
-         * @property {number|Long|null} [urn] Venue urn
+         * @property {string|null} [urn] Venue urn
          */
 
         /**
@@ -5372,11 +5372,11 @@ export const synthpop = $root.synthpop = (() => {
 
         /**
          * Venue urn.
-         * @member {number|Long} urn
+         * @member {string} urn
          * @memberof synthpop.Venue
          * @instance
          */
-        Venue.prototype.urn = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+        Venue.prototype.urn = "";
 
         /**
          * Creates a new Venue instance using the specified properties.
@@ -5406,7 +5406,7 @@ export const synthpop = $root.synthpop = (() => {
             writer.uint32(/* id 2, wireType 0 =*/16).int32(message.activity);
             $root.synthpop.Point.encode(message.location, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
             if (message.urn != null && Object.hasOwnProperty.call(message, "urn"))
-                writer.uint32(/* id 4, wireType 0 =*/32).uint64(message.urn);
+                writer.uint32(/* id 4, wireType 2 =*/34).string(message.urn);
             return writer;
         };
 
@@ -5454,7 +5454,7 @@ export const synthpop = $root.synthpop = (() => {
                         break;
                     }
                 case 4: {
-                        message.urn = reader.uint64();
+                        message.urn = reader.string();
                         break;
                     }
                 default:
@@ -5516,8 +5516,8 @@ export const synthpop = $root.synthpop = (() => {
                     return "location." + error;
             }
             if (message.urn != null && message.hasOwnProperty("urn"))
-                if (!$util.isInteger(message.urn) && !(message.urn && $util.isInteger(message.urn.low) && $util.isInteger(message.urn.high)))
-                    return "urn: integer|Long expected";
+                if (!$util.isString(message.urn))
+                    return "urn: string expected";
             return null;
         };
 
@@ -5576,14 +5576,7 @@ export const synthpop = $root.synthpop = (() => {
                 message.location = $root.synthpop.Point.fromObject(object.location);
             }
             if (object.urn != null)
-                if ($util.Long)
-                    (message.urn = $util.Long.fromValue(object.urn)).unsigned = true;
-                else if (typeof object.urn === "string")
-                    message.urn = parseInt(object.urn, 10);
-                else if (typeof object.urn === "number")
-                    message.urn = object.urn;
-                else if (typeof object.urn === "object")
-                    message.urn = new $util.LongBits(object.urn.low >>> 0, object.urn.high >>> 0).toNumber(true);
+                message.urn = String(object.urn);
             return message;
         };
 
@@ -5608,11 +5601,7 @@ export const synthpop = $root.synthpop = (() => {
                     object.id = options.longs === String ? "0" : 0;
                 object.activity = options.enums === String ? "RETAIL" : 0;
                 object.location = null;
-                if ($util.Long) {
-                    let long = new $util.Long(0, 0, true);
-                    object.urn = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
-                } else
-                    object.urn = options.longs === String ? "0" : 0;
+                object.urn = "";
             }
             if (message.id != null && message.hasOwnProperty("id"))
                 if (typeof message.id === "number")
@@ -5624,10 +5613,7 @@ export const synthpop = $root.synthpop = (() => {
             if (message.location != null && message.hasOwnProperty("location"))
                 object.location = $root.synthpop.Point.toObject(message.location, options);
             if (message.urn != null && message.hasOwnProperty("urn"))
-                if (typeof message.urn === "number")
-                    object.urn = options.longs === String ? String(message.urn) : message.urn;
-                else
-                    object.urn = options.longs === String ? $util.Long.prototype.toString.call(message.urn) : options.longs === Number ? new $util.LongBits(message.urn.low >>> 0, message.urn.high >>> 0).toNumber(true) : message.urn;
+                object.urn = message.urn;
             return object;
         };
 
