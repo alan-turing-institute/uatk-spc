@@ -9,23 +9,23 @@ use super::quant::{get_flows, load_venues, Threshold};
 use crate::utilities::{memory_usage, print_count, progress_count, progress_file_with_msg};
 use crate::{pb, Activity, Household, Person, PersonID, Population, VenueID, MSOA, OA};
 
-pub fn read_individual_time_use_and_health_data(
+pub fn read_people(
     population: &mut Population,
     population_files: Vec<String>,
+    oa_to_msoa: BTreeMap<OA, MSOA>,
 ) -> Result<()> {
-    let _s = info_span!("read_individual_time_use_and_health_data").entered();
+    let _s = info_span!("read_people").entered();
 
     // First read the raw CSV files and just group the raw rows by household ID. This isn't all
     // that memory-intensive; the Population ultimately has to hold everyone anyway.
     //
     // If there are multiple time use files, we assume this grouping won't have any overlaps --
     // household IDs should be globally unique.
-    let mut people_per_household: BTreeMap<String, Vec<TuPerson>> = BTreeMap::new();
+    let mut people_per_household: BTreeMap<String, Vec<RawPerson>> = BTreeMap::new();
     let mut household_details: BTreeMap<String, pb::HouseholdDetails> = BTreeMap::new();
 
     // TODO Two-level progress bar. MultiProgress seems to demand two threads and calling join() :(
-    //for path in population_files {
-    for path in vec!["/home/dabreegster/Downloads/new_spc_data/E09000002.csv"] {
+    for path in population_files {
         let _s = info_span!("Reading", ?path).entered();
         let file = File::open(path)?;
         let pb = progress_file_with_msg(&file)?;
@@ -38,10 +38,15 @@ pub fn read_individual_time_use_and_health_data(
                 ));
             }
 
-            let rec: TuPerson = rec?;
+            let rec: RawPerson = rec?;
+            let msoa = if let Some(msoa) = oa_to_msoa.get(&rec.oa) {
+                msoa.clone()
+            } else {
+                bail!("Unknown {:?}", rec.oa);
+            };
 
             // Only keep people in the input set of MSOAs
-            if !population.msoas.contains(&rec.msoa) {
+            if !population.msoas.contains(&msoa) {
                 continue;
             }
 
@@ -87,7 +92,7 @@ pub fn read_individual_time_use_and_health_data(
         let mut household = Household {
             id: household_id,
             // TODO Assume everyone in the same household belongs to the same MSOA and OA. Check this?
-            msoa: raw_people[0].msoa.clone(),
+            msoa: oa_to_msoa[&raw_people[0].oa].clone(),
             oa: raw_people[0].oa.clone(),
             members: Vec::new(),
             details: household_details.remove(&hid).unwrap(),
@@ -129,9 +134,7 @@ pub fn read_individual_time_use_and_health_data(
 }
 
 #[derive(Deserialize)]
-struct TuPerson {
-    #[serde(rename = "MSOA11CD")]
-    msoa: MSOA,
+struct RawPerson {
     #[serde(rename = "OA11CD")]
     oa: OA,
     hid: String,
@@ -222,7 +225,7 @@ fn parse_optional_neg1(x: i64) -> Result<Option<u64>> {
     }
 }
 
-impl TuPerson {
+impl RawPerson {
     fn create(self, household: VenueID, id: PersonID) -> Result<Person> {
         Ok(Person {
             id,

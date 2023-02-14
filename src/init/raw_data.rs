@@ -6,12 +6,13 @@ use fs_err::File;
 use serde::Deserialize;
 
 use crate::utilities::{basename, download, filename, gunzip, print_count, untar, unzip};
-use crate::{County, Input, MSOA};
+use crate::{County, Input, MSOA, OA};
 
 pub struct RawDataResults {
     pub population_files: Vec<String>,
     pub osm_directories: Vec<String>,
     pub msoas_per_county: BTreeMap<County, Vec<MSOA>>,
+    pub oa_to_msoa: BTreeMap<OA, MSOA>,
 }
 
 #[instrument(skip_all)]
@@ -20,6 +21,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
         population_files: Vec::new(),
         osm_directories: Vec::new(),
         msoas_per_county: BTreeMap::new(),
+        oa_to_msoa: BTreeMap::new(),
     };
 
     // This maps MSOA IDs to things like OSM geofabrik URL
@@ -28,15 +30,16 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     let mut pop_files_needed = BTreeSet::new();
     let mut osm_needed = BTreeSet::new();
     for rec in csv::Reader::from_reader(File::open(lookup_path)?).deserialize() {
-        let rec: MsoaLookupRow = rec?;
+        let rec: LookupRow = rec?;
         if input.msoas.contains(&rec.msoa) {
-            pop_files_needed.insert(rec.azure_ref);
+            pop_files_needed.insert((rec.country, rec.azure_ref));
             osm_needed.insert(rec.osm);
             results
                 .msoas_per_county
                 .entry(rec.county)
                 .or_insert_with(Vec::new)
-                .push(rec.msoa);
+                .push(rec.msoa.clone());
+            results.oa_to_msoa.insert(rec.oa, rec.msoa);
         }
     }
     info!(
@@ -46,12 +49,14 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
         print_count(osm_needed.len())
     );
 
-    for area in pop_files_needed {
-        // TODO The path will change -- Year, country, then something like pop_central-valleys_2020.gz
-        let gzip_path = download_file("countydata", format!("pop_{area}.gz")).await?;
-        let output_path = format!("data/raw_data/countydata/pop_{area}.csv");
-        untar(gzip_path, &output_path)?;
-        results.population_files.push(output_path);
+    for (country, area) in pop_files_needed {
+        results.population_files.push(gunzip(
+            download_file(
+                &format!("countydata-v2/{country}/2020"),
+                format!("pop_{area}.csv.gz"),
+            )
+            .await?,
+        )?);
     }
 
     for osm_url in osm_needed {
@@ -86,15 +91,19 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
 }
 
 #[derive(Deserialize)]
-struct MsoaLookupRow {
+struct LookupRow {
     #[serde(rename = "MSOA11CD")]
     msoa: MSOA,
+    #[serde(rename = "OA11CD")]
+    oa: OA,
     #[serde(rename = "AzureRef")]
     azure_ref: String,
     #[serde(rename = "OSM")]
     osm: String,
     #[serde(rename = "GoogleMob")]
     county: County,
+    #[serde(rename = "Country")]
+    country: String,
 }
 
 /// Calculates all MSOAs nationally from the lookup table
@@ -102,7 +111,7 @@ pub async fn all_msoas_nationally() -> Result<BTreeSet<MSOA>> {
     let lookup_path = gunzip(download_file("referencedata", "lookUp-GB.csv.gz").await?)?;
     let mut msoas = BTreeSet::new();
     for rec in csv::Reader::from_reader(File::open(lookup_path)?).deserialize() {
-        let rec: MsoaLookupRow = rec?;
+        let rec: LookupRow = rec?;
         msoas.insert(rec.msoa);
     }
     Ok(msoas)
