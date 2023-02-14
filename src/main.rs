@@ -39,8 +39,8 @@ async fn main() -> Result<()> {
     info!("Saving output file");
     let pb_file_size = indicatif::HumanBytes({
         // Create the output dir if needed
-        fs_err::create_dir_all("data/output")?;
-        let output = format!("data/output/{region}.pb");
+        fs_err::create_dir_all(format!("data/output/{}", population.year))?;
+        let output = format!("data/output/{}/{region}.pb", population.year);
         let _s = info_span!("Writing protobuf to", ?output).entered();
         protobuf::convert_to_pb(&population, output)?
     } as u64)
@@ -64,7 +64,7 @@ async fn main() -> Result<()> {
 struct Args {
     msoa_input: String,
     #[clap(long, default_value_t = 2020)]
-    year: usize,
+    year: u32,
     #[clap(long)]
     no_commuting: bool,
     #[clap(long)]

@@ -48,10 +48,12 @@ pub struct Population {
 
     pub lockdown: pb::Lockdown,
     pub time_use_diaries: BTreeMap<DiaryID, pb::TimeUseDiary>,
+
+    pub year: u32,
 }
 
 pub struct Input {
-    pub year: usize,
+    pub year: u32,
     pub enable_commuting: bool,
     pub filter_empty_msoas: bool,
     /// Only people living in MSOAs filled out here will be part of the population
