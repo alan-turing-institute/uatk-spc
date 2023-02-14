@@ -1755,7 +1755,6 @@ dependencies = [
  "reqwest",
  "rstar",
  "serde",
- "serde_json",
  "shapefile",
  "tar",
  "tokio",

@@ -6,7 +6,6 @@ extern crate anyhow;
 extern crate tracing;
 
 mod init;
-mod json_seq;
 pub mod protobuf;
 pub mod tracing_span_tree;
 pub mod utilities;
