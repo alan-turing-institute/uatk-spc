@@ -398,4 +398,11 @@ message TimeUseDiary {
     // + pmpublic + pmprivate sum to 1 or 0 if no travel is made (derived from
     // uktus15_diary_ep_long)
     required float pmunknown = 21;
+
+    // Characteristics of the person who filled out this diary
+    required Sex sex = 22;
+    // An ONS-defined age bucket
+    required uint32 age35g = 23;
+    optional Nssec8 nssec8 = 24;
+    required PwkStat pwkstat = 25;
 }

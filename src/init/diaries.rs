@@ -1,12 +1,9 @@
 use std::collections::{BTreeMap, HashMap};
-use std::io::BufReader;
 
 use anyhow::Result;
 use fs_err::File;
-use serde::Deserialize;
 
-use crate::json_seq::iter_json_array;
-use crate::pb::TimeUseDiary;
+use crate::pb::{Nssec8, PwkStat, Sex, TimeUseDiary};
 use crate::utilities::print_count;
 use crate::{DiaryID, Population};
 
@@ -45,6 +42,16 @@ pub fn load_time_use_diaries(population: &mut Population) -> Result<()> {
                 pmpublic: rec["pmpublic"].parse()?,
                 pmprivate: rec["pmprivate"].parse()?,
                 pmunknown: rec["pmunknown"].parse()?,
+                sex: Sex::from_i32(rec["sex"].parse()?)
+                    .expect("Unknown sex")
+                    .into(),
+                age35g: rec["age35g"].parse()?,
+                // TODO If the numeric values don't match, just gives up. Should we check for -1
+                // explicitly?
+                nssec8: Nssec8::from_i32(rec["nssec8"].parse()?).map(|x| x.into()),
+                pwkstat: PwkStat::from_i32(rec["pwkstat"].parse()?)
+                    .expect("Unknown pwkstat")
+                    .into(),
             },
         );
     }
@@ -64,51 +71,98 @@ pub fn load_time_use_diaries(population: &mut Population) -> Result<()> {
 pub fn load_diaries_per_person(population: &mut Population) -> Result<()> {
     info!("Matching people to weekday and weekend diaries");
 
-    // TODO Real file
-    let reader = BufReader::new(File::open(
-        "/home/dabreegster/Downloads/new_spc_data/E09000002_Diaries.json",
-    )?);
+    // TODO prost throws away type safety on enums!
+    let mut all_nssec8: Vec<Option<i32>> = (0..=8).map(Some).collect();
+    all_nssec8.push(None);
+    let all_pwkstat: Vec<i32> = (0..=10).collect();
 
-    // Turn into a map by pid
-    let mut map: HashMap<String, (Vec<DiaryID>, Vec<DiaryID>)> = HashMap::new();
-    for row in iter_json_array(reader) {
-        let row: Row = row?;
-        map.insert(row.pid, (row.weekday, row.weekend));
+    // Group diaries by (is weekday, age35g, sex, nssec8, pwkstat)
+    let mut diaries: HashMap<(bool, u32, i32, Option<i32>, i32), Vec<DiaryID>> = HashMap::new();
+    for (id, diary) in &population.time_use_diaries {
+        let key = (
+            diary.weekday,
+            diary.age35g,
+            diary.sex,
+            diary.nssec8,
+            diary.pwkstat,
+        );
+        diaries.entry(key).or_insert_with(Vec::new).push(id.clone());
     }
 
+    // Assign weekday and weekend diaries to each person
     for person in &mut population.people {
-        if let Some((weekday, weekend)) = map.remove(&person.identifiers.orig_pid) {
-            person.weekday_diaries = weekday;
-            person.weekend_diaries = weekend;
+        let mut age_group = bucket_age(person.demographics.age_years);
+        if age_group == 1 || age_group == 2 {
+            // TODO Baby special case. How do we want to encode this?
+            continue;
+        }
+        // Pretend group 3 is group 4; there were no time-use surveys filled out for group age 5,
+        // 6, 7
+        if age_group == 3 {
+            age_group = 4;
+        }
 
-            for diary in person
-                .weekday_diaries
-                .iter()
-                .chain(person.weekend_diaries.iter())
-            {
-                if !population.time_use_diaries.contains_key(diary) {
-                    warn!(
-                        "Person {} has missing diary {:?}",
-                        person.identifiers.orig_pid, diary
-                    );
+        for weekday in [true, false] {
+            let mut ids: Vec<DiaryID> = Vec::new();
+            // Ideally use everything to match
+            if let Some(matches) = diaries.get(&(
+                weekday,
+                age_group,
+                person.demographics.sex,
+                person.demographics.nssec8,
+                person.employment.pwkstat,
+            )) {
+                ids.extend(matches.clone());
+            } else {
+                // Give up on matching nssec8 and pwkstat
+                for nssec8 in &all_nssec8 {
+                    for pwkstat in &all_pwkstat {
+                        ids.extend(
+                            diaries
+                                .get(&(
+                                    weekday,
+                                    age_group,
+                                    person.demographics.sex,
+                                    *nssec8,
+                                    *pwkstat,
+                                ))
+                                .cloned()
+                                .unwrap_or_else(Vec::new),
+                        );
+                    }
                 }
             }
-        } else {
-            warn!(
-                "Person {} has no diaries defined",
-                person.identifiers.orig_pid
-            );
+            if ids.is_empty() {
+                warn!("No diary entries for {}", person.id);
+            }
+            if weekday {
+                person.weekday_diaries = ids;
+            } else {
+                person.weekend_diaries = ids;
+            }
         }
     }
 
     Ok(())
 }
 
-#[derive(Deserialize)]
-struct Row {
-    pid: String,
-    #[serde(rename = "diaryWD")]
-    weekday: Vec<DiaryID>,
-    #[serde(rename = "diaryWE")]
-    weekend: Vec<DiaryID>,
+// Based on ONS-defined groups
+fn bucket_age(a: u32) -> u32 {
+    if a == 0 || a == 1 {
+        1
+    } else if a < 11 {
+        2 + (a - 2) / 3
+    } else if a == 11 || a == 12 {
+        5
+    } else if a < 16 {
+        6
+    } else if a <= 19 {
+        7
+    } else if a > 99 {
+        23
+    } else if a > 19 {
+        8 + (a - 20) / 5
+    } else {
+        unreachable!()
+    }
 }

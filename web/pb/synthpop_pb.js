@@ -5965,6 +5965,10 @@ export const synthpop = $root.synthpop = (() => {
          * @property {number} pmprivate TimeUseDiary pmprivate
          * @property {number} pmpublic TimeUseDiary pmpublic
          * @property {number} pmunknown TimeUseDiary pmunknown
+         * @property {synthpop.Sex} sex TimeUseDiary sex
+         * @property {number} age35g TimeUseDiary age35g
+         * @property {synthpop.Nssec8|null} [nssec8] TimeUseDiary nssec8
+         * @property {synthpop.PwkStat} pwkstat TimeUseDiary pwkstat
          */
 
         /**
@@ -6151,6 +6155,38 @@ export const synthpop = $root.synthpop = (() => {
         TimeUseDiary.prototype.pmunknown = 0;
 
         /**
+         * TimeUseDiary sex.
+         * @member {synthpop.Sex} sex
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.sex = 1;
+
+        /**
+         * TimeUseDiary age35g.
+         * @member {number} age35g
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.age35g = 0;
+
+        /**
+         * TimeUseDiary nssec8.
+         * @member {synthpop.Nssec8} nssec8
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.nssec8 = 1;
+
+        /**
+         * TimeUseDiary pwkstat.
+         * @member {synthpop.PwkStat} pwkstat
+         * @memberof synthpop.TimeUseDiary
+         * @instance
+         */
+        TimeUseDiary.prototype.pwkstat = 0;
+
+        /**
          * Creates a new TimeUseDiary instance using the specified properties.
          * @function create
          * @memberof synthpop.TimeUseDiary
@@ -6195,6 +6231,11 @@ export const synthpop = $root.synthpop = (() => {
             writer.uint32(/* id 19, wireType 5 =*/157).float(message.pmprivate);
             writer.uint32(/* id 20, wireType 5 =*/165).float(message.pmpublic);
             writer.uint32(/* id 21, wireType 5 =*/173).float(message.pmunknown);
+            writer.uint32(/* id 22, wireType 0 =*/176).int32(message.sex);
+            writer.uint32(/* id 23, wireType 0 =*/184).uint32(message.age35g);
+            if (message.nssec8 != null && Object.hasOwnProperty.call(message, "nssec8"))
+                writer.uint32(/* id 24, wireType 0 =*/192).int32(message.nssec8);
+            writer.uint32(/* id 25, wireType 0 =*/200).int32(message.pwkstat);
             return writer;
         };
 
@@ -6313,6 +6354,22 @@ export const synthpop = $root.synthpop = (() => {
                         message.pmunknown = reader.float();
                         break;
                     }
+                case 22: {
+                        message.sex = reader.int32();
+                        break;
+                    }
+                case 23: {
+                        message.age35g = reader.uint32();
+                        break;
+                    }
+                case 24: {
+                        message.nssec8 = reader.int32();
+                        break;
+                    }
+                case 25: {
+                        message.pwkstat = reader.int32();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -6360,6 +6417,12 @@ export const synthpop = $root.synthpop = (() => {
                 throw $util.ProtocolError("missing required 'pmpublic'", { instance: message });
             if (!message.hasOwnProperty("pmunknown"))
                 throw $util.ProtocolError("missing required 'pmunknown'", { instance: message });
+            if (!message.hasOwnProperty("sex"))
+                throw $util.ProtocolError("missing required 'sex'", { instance: message });
+            if (!message.hasOwnProperty("age35g"))
+                throw $util.ProtocolError("missing required 'age35g'", { instance: message });
+            if (!message.hasOwnProperty("pwkstat"))
+                throw $util.ProtocolError("missing required 'pwkstat'", { instance: message });
             return message;
         };
 
@@ -6432,6 +6495,45 @@ export const synthpop = $root.synthpop = (() => {
                 return "pmpublic: number expected";
             if (typeof message.pmunknown !== "number")
                 return "pmunknown: number expected";
+            switch (message.sex) {
+            default:
+                return "sex: enum value expected";
+            case 1:
+            case 2:
+                break;
+            }
+            if (!$util.isInteger(message.age35g))
+                return "age35g: integer expected";
+            if (message.nssec8 != null && message.hasOwnProperty("nssec8"))
+                switch (message.nssec8) {
+                default:
+                    return "nssec8: enum value expected";
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                    break;
+                }
+            switch (message.pwkstat) {
+            default:
+                return "pwkstat: enum value expected";
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+                break;
+            }
             return null;
         };
 
@@ -6489,6 +6591,116 @@ export const synthpop = $root.synthpop = (() => {
                 message.pmpublic = Number(object.pmpublic);
             if (object.pmunknown != null)
                 message.pmunknown = Number(object.pmunknown);
+            switch (object.sex) {
+            default:
+                if (typeof object.sex === "number") {
+                    message.sex = object.sex;
+                    break;
+                }
+                break;
+            case "MALE":
+            case 1:
+                message.sex = 1;
+                break;
+            case "FEMALE":
+            case 2:
+                message.sex = 2;
+                break;
+            }
+            if (object.age35g != null)
+                message.age35g = object.age35g >>> 0;
+            switch (object.nssec8) {
+            default:
+                if (typeof object.nssec8 === "number") {
+                    message.nssec8 = object.nssec8;
+                    break;
+                }
+                break;
+            case "HIGHER":
+            case 1:
+                message.nssec8 = 1;
+                break;
+            case "LOWER":
+            case 2:
+                message.nssec8 = 2;
+                break;
+            case "INTERMEDIATE":
+            case 3:
+                message.nssec8 = 3;
+                break;
+            case "SMALL":
+            case 4:
+                message.nssec8 = 4;
+                break;
+            case "SUPER":
+            case 5:
+                message.nssec8 = 5;
+                break;
+            case "SEMIROUTINE":
+            case 6:
+                message.nssec8 = 6;
+                break;
+            case "ROUTINE":
+            case 7:
+                message.nssec8 = 7;
+                break;
+            case "NEVER":
+            case 8:
+                message.nssec8 = 8;
+                break;
+            }
+            switch (object.pwkstat) {
+            default:
+                if (typeof object.pwkstat === "number") {
+                    message.pwkstat = object.pwkstat;
+                    break;
+                }
+                break;
+            case "NA":
+            case 0:
+                message.pwkstat = 0;
+                break;
+            case "EMPLOYEE_FT":
+            case 1:
+                message.pwkstat = 1;
+                break;
+            case "EMPLOYEE_PT":
+            case 2:
+                message.pwkstat = 2;
+                break;
+            case "EMPLOYEE_UNSPEC":
+            case 3:
+                message.pwkstat = 3;
+                break;
+            case "SELF_EMPLOYED":
+            case 4:
+                message.pwkstat = 4;
+                break;
+            case "PWK_UNEMPLOYED":
+            case 5:
+                message.pwkstat = 5;
+                break;
+            case "RETIRED":
+            case 6:
+                message.pwkstat = 6;
+                break;
+            case "HOMEMAKER":
+            case 7:
+                message.pwkstat = 7;
+                break;
+            case "STUDENT_FT":
+            case 8:
+                message.pwkstat = 8;
+                break;
+            case "LONG_TERM_SICK":
+            case 9:
+                message.pwkstat = 9;
+                break;
+            case "PWK_OTHER":
+            case 10:
+                message.pwkstat = 10;
+                break;
+            }
             return message;
         };
 
@@ -6527,6 +6739,10 @@ export const synthpop = $root.synthpop = (() => {
                 object.pmprivate = 0;
                 object.pmpublic = 0;
                 object.pmunknown = 0;
+                object.sex = options.enums === String ? "MALE" : 1;
+                object.age35g = 0;
+                object.nssec8 = options.enums === String ? "HIGHER" : 1;
+                object.pwkstat = options.enums === String ? "NA" : 0;
             }
             if (message.uid != null && message.hasOwnProperty("uid"))
                 object.uid = message.uid;
@@ -6570,6 +6786,14 @@ export const synthpop = $root.synthpop = (() => {
                 object.pmpublic = options.json && !isFinite(message.pmpublic) ? String(message.pmpublic) : message.pmpublic;
             if (message.pmunknown != null && message.hasOwnProperty("pmunknown"))
                 object.pmunknown = options.json && !isFinite(message.pmunknown) ? String(message.pmunknown) : message.pmunknown;
+            if (message.sex != null && message.hasOwnProperty("sex"))
+                object.sex = options.enums === String ? $root.synthpop.Sex[message.sex] === undefined ? message.sex : $root.synthpop.Sex[message.sex] : message.sex;
+            if (message.age35g != null && message.hasOwnProperty("age35g"))
+                object.age35g = message.age35g;
+            if (message.nssec8 != null && message.hasOwnProperty("nssec8"))
+                object.nssec8 = options.enums === String ? $root.synthpop.Nssec8[message.nssec8] === undefined ? message.nssec8 : $root.synthpop.Nssec8[message.nssec8] : message.nssec8;
+            if (message.pwkstat != null && message.hasOwnProperty("pwkstat"))
+                object.pwkstat = options.enums === String ? $root.synthpop.PwkStat[message.pwkstat] === undefined ? message.pwkstat : $root.synthpop.PwkStat[message.pwkstat] : message.pwkstat;
             return object;
         };
 
