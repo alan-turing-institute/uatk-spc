@@ -143,8 +143,9 @@ pub fn print_count(x: usize) -> String {
 // https://github.com/mihaigalos/tutorials/blob/master/rust/download_with_progressbar/src/main.rs
 async fn download_file(url: &str, path: &str) -> Result<()> {
     let client = Client::new();
-    let res = client.get(url).send().await?;
-    let total_size = res
+    let response = client.get(url).send().await?;
+    let response = response.error_for_status()?;
+    let total_size = response
         .content_length()
         .ok_or_else(|| anyhow!("Failed to get content length from {}", url))?;
 
@@ -156,7 +157,7 @@ async fn download_file(url: &str, path: &str) -> Result<()> {
 
     let mut file = File::create(path)?;
     let mut downloaded: u64 = 0;
-    let mut stream = res.bytes_stream();
+    let mut stream = response.bytes_stream();
 
     while let Some(item) = stream.next().await {
         let chunk = item?;

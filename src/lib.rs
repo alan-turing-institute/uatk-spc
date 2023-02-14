@@ -51,6 +51,7 @@ pub struct Population {
 }
 
 pub struct Input {
+    pub year: usize,
     pub enable_commuting: bool,
     pub filter_empty_msoas: bool,
     /// Only people living in MSOAs filled out here will be part of the population
