@@ -41,9 +41,10 @@ impl Population {
         population.info_per_msoa =
             msoas::get_info_per_msoa(&population.msoas, raw_results.osm_directories)?;
 
-        population::read_individual_time_use_and_health_data(
+        population::read_people(
             &mut population,
             raw_results.population_files,
+            raw_results.oa_to_msoa,
         )?;
 
         // The order doesn't matter for these steps
