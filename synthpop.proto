@@ -16,6 +16,9 @@ message Population {
 
     // Keyed by serial_pnum_weekday, derived from TUS 15
     map<string, TimeUseDiary> time_use_diaries = 6;
+
+    // The year represented by this population
+    required uint32 year = 7;
 }
 
 message Household {

@@ -36,6 +36,7 @@ impl Population {
             info_per_msoa: BTreeMap::new(),
             lockdown: crate::pb::Lockdown::default(),
             time_use_diaries: BTreeMap::new(),
+            year: input.year,
         };
 
         population.info_per_msoa =

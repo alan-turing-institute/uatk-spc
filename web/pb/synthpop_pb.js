@@ -28,6 +28,7 @@ export const synthpop = $root.synthpop = (() => {
          * @property {Object.<string,synthpop.IInfoPerMSOA>|null} [infoPerMsoa] Population infoPerMsoa
          * @property {synthpop.ILockdown} lockdown Population lockdown
          * @property {Object.<string,synthpop.ITimeUseDiary>|null} [timeUseDiaries] Population timeUseDiaries
+         * @property {number} year Population year
          */
 
         /**
@@ -99,6 +100,14 @@ export const synthpop = $root.synthpop = (() => {
         Population.prototype.timeUseDiaries = $util.emptyObject;
 
         /**
+         * Population year.
+         * @member {number} year
+         * @memberof synthpop.Population
+         * @instance
+         */
+        Population.prototype.year = 0;
+
+        /**
          * Creates a new Population instance using the specified properties.
          * @function create
          * @memberof synthpop.Population
@@ -144,6 +153,7 @@ export const synthpop = $root.synthpop = (() => {
                     writer.uint32(/* id 6, wireType 2 =*/50).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]);
                     $root.synthpop.TimeUseDiary.encode(message.timeUseDiaries[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim().ldelim();
                 }
+            writer.uint32(/* id 7, wireType 0 =*/56).uint32(message.year);
             return writer;
         };
 
@@ -263,6 +273,10 @@ export const synthpop = $root.synthpop = (() => {
                         message.timeUseDiaries[key] = value;
                         break;
                     }
+                case 7: {
+                        message.year = reader.uint32();
+                        break;
+                    }
                 default:
                     reader.skipType(tag & 7);
                     break;
@@ -270,6 +284,8 @@ export const synthpop = $root.synthpop = (() => {
             }
             if (!message.hasOwnProperty("lockdown"))
                 throw $util.ProtocolError("missing required 'lockdown'", { instance: message });
+            if (!message.hasOwnProperty("year"))
+                throw $util.ProtocolError("missing required 'year'", { instance: message });
             return message;
         };
 
@@ -357,6 +373,8 @@ export const synthpop = $root.synthpop = (() => {
                         return "timeUseDiaries." + error;
                 }
             }
+            if (!$util.isInteger(message.year))
+                return "year: integer expected";
             return null;
         };
 
@@ -427,6 +445,8 @@ export const synthpop = $root.synthpop = (() => {
                     message.timeUseDiaries[keys[i]] = $root.synthpop.TimeUseDiary.fromObject(object.timeUseDiaries[keys[i]]);
                 }
             }
+            if (object.year != null)
+                message.year = object.year >>> 0;
             return message;
         };
 
@@ -452,8 +472,10 @@ export const synthpop = $root.synthpop = (() => {
                 object.infoPerMsoa = {};
                 object.timeUseDiaries = {};
             }
-            if (options.defaults)
+            if (options.defaults) {
                 object.lockdown = null;
+                object.year = 0;
+            }
             if (message.households && message.households.length) {
                 object.households = [];
                 for (let j = 0; j < message.households.length; ++j)
@@ -482,6 +504,8 @@ export const synthpop = $root.synthpop = (() => {
                 for (let j = 0; j < keys2.length; ++j)
                     object.timeUseDiaries[keys2[j]] = $root.synthpop.TimeUseDiary.toObject(message.timeUseDiaries[keys2[j]], options);
             }
+            if (message.year != null && message.hasOwnProperty("year"))
+                object.year = message.year;
             return object;
         };
 
