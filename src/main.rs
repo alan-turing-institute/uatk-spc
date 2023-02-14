@@ -63,6 +63,8 @@ async fn main() -> Result<()> {
 #[clap(about, version, author)]
 struct Args {
     msoa_input: String,
+    #[clap(long, default_value_t = 2020)]
+    year: usize,
     #[clap(long)]
     no_commuting: bool,
     #[clap(long)]
@@ -84,6 +86,7 @@ struct Args {
 impl Args {
     async fn to_input(self) -> Result<(Input, String)> {
         let mut input = Input {
+            year: self.year,
             enable_commuting: !self.no_commuting,
             filter_empty_msoas: self.filter_empty_msoas,
             msoas: BTreeSet::new(),
