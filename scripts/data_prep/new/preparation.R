@@ -1,26 +1,30 @@
 library(dplyr)
 library(tidyr)
 library(foreign)
-library(ggplot2)
+
+
+folderIn <- "Data/raw/"
 
 outputFolder <- "Data/prepData/"
 set.seed(12345)
+
 
 ####################
 ##### HSE data #####
 ####################
 
-# Load raw for all 3 countries (downloaded from UK Data Service)
 
-inputFolder <- "Data/hs/"
+### Load raw for all 3 countries (downloaded from UK Data Service, requires registration)
+folderIn2 <- "hs/"
+HSE <- read.table(paste(folderIn,folderIn2,"hse_2019_eul_20211006.tab",sep = ""), sep="\t", header=TRUE)
+HSWa <- read.table(paste(folderIn,folderIn2,"whs_2015_adult_archive_v1.tab",sep = ""), sep="\t", header=TRUE)
+HSWc <- read.table(paste(folderIn,folderIn2,"whs_2015_child_archive_v1.tab",sep = ""), sep="\t", header=TRUE)
+HSS <- read.table(paste(folderIn,folderIn2,"shes19i_eul.tab",sep = ""), sep="\t", header=TRUE)
 
-HSE <- read.table(paste(inputFolder,"hse_2019_eul_20211006.tab",sep = ""), sep="\t", header=TRUE)
-HSWa <- read.table(paste(inputFolder,"whs_2015_adult_archive_v1.tab",sep = ""), sep="\t", header=TRUE)
-HSWc <- read.table(paste(inputFolder,"whs_2015_child_archive_v1.tab",sep = ""), sep="\t", header=TRUE)
-HSS <- read.table(paste(inputFolder,"shes19i_eul.tab",sep = ""), sep="\t", header=TRUE)
 
-# Normalisation
+### Normalisation
 
+# England
 HSE <- data.frame(id_HS = HSE$SerialA, sex = HSE$Sex, age35g = HSE$Age35g, nssec5 = HSE$nssec5,
                   diabetes = HSE$Diabetes, bloodpressure = HSE$bp1, cvd = HSE$CardioTakg2)
 for(i in 1:nrow(HSE)){
@@ -39,6 +43,7 @@ for(i in 1:nrow(HSE)){
 }
 HSE$country <- "England"
 
+# Scotland
 HSS <- data.frame(id_HS = HSS$CPSerialA, sex = HSS$Sex, age35g = HSS$age, nssec5 = HSS$NSSEC5,
                   diabetes = HSS$diabete2, bloodpressure = HSS$bp1, cvd = HSS$cvddef1)
 for(i in 1:nrow(HSS)){
@@ -106,6 +111,7 @@ for(i in 1:nrow(HSS)){
 }
 HSS$country <- "Scotland"
 
+# Wales
 HSWa <- data.frame(id_HS = HSWa$archpsn, sex = HSWa$sex, age35g = HSWa$age5yrm, nssec5 = HSWa$nssec5,
                    diabetes = HSWa$diab, bloodpressure = HSWa$hbp, cvd = HSWa$heart) # For Wales, blood pressure is only if treated
 for(i in 1:nrow(HSWa)){
@@ -131,7 +137,7 @@ for(i in 1:nrow(HSWc)){
   a <- HSWc$age35g[i]
   if(a == 1){
     a <- sample(c(1,2), size = 1)
-  }else if(a %in% 2:4){
+  }else if(a == 2){
     a <- sample(c(2,3,3,3,4,4,4,5,5), size = 1)
   }else if(a == 3){
     a <- 6
@@ -140,9 +146,9 @@ for(i in 1:nrow(HSWc)){
 }
 HSWc$country <- "Wales"
 
-HS <- rbind(HSE,HSS,HSWa,HSWc)
 
-# Output single file
+### Output single file
+HS <- rbind(HSE,HSS,HSWa,HSWc)
 write.table(HS,paste(outputFolder,"HSComplete.csv",sep = ""),row.names = F, sep = ",")
 
 
@@ -150,23 +156,79 @@ write.table(HS,paste(outputFolder,"HSComplete.csv",sep = ""),row.names = F, sep 
 ##### NSSEC data #####
 ######################
 
-# NSSEC data: https://www.nomisweb.co.uk/datasets/st042
 
-inputFolder <- "Data/nssec/"
+# SOURCE:
+# DC6114EW - NS-SeC by sex and age at MSOA level (England and Wales)
+# DC6206SC - NS-SeC by sex / age / ethnnicity at Country level (Scotland)
 
-NSSEC <- read.csv(paste(inputFolder,"modified.csv",sep = ""))
-NSSEC$sex <- 2
-NSSEC$sex[1:(348*15)] <- 1
-NSSEC$age <- 7
-for(i in 0:10){
-  NSSEC$age[(348*(4+i) + 1):(348*(4+i+1))] <- i + 8
-  NSSEC$age[(348*(19+i) + 1):(348*(19+i+1))] <- i + 8
+
+### England and Wales
+downloadNSSEC <- function(age,sex){
+  URLB <- "https://www.nomisweb.co.uk/api/v01/dataset/NM_796_1.data.csv?date=latest&geography="
+  URL1 <- "1245710776...1245710790,1245712478...1245712543,1245710706...1245710716,1245715055,1245710717...1245710734,1245714957,1245713863...1245713902,1245710735...1245710751,1245714958,1245715056,1245710752...1245710775,1245709926...1245709950,1245714987,1245714988,1245709951...1245709978,1245715039,1245709979...1245710067,1245710832...1245710868,1245712005...1245712034,1245712047...1245712067,1245711988...1245712004,1245712035...1245712046,1245712068...1245712085,1245710791...1245710831,1245712159...1245712222,1245709240...1245709350,1245715048,1245715058...1245715063,1245709351...1245709382,1245715006,1245709383...1245709577,1245713352...1245713362,1245715027,1245713363...1245713411,1245715017,1245713412...1245713456,1245715030,1245713457...1245713502,1245709578...1245709655,1245715077...1245715079,1245709679...1245709716,1245709656...1245709678,1245709717...1245709758,1245710900...1245710939,1245714960,1245715037,1245715038,1245710869...1245710899,1245714959,1245710940...1245711009,1245713903...1245713953,1245715016,1245713954...1245713977,1245709759...1245709925,1245714949,1245714989,1245714990,1245715014,1245715015,1245710411...1245710660,1245714998,1245715007,1245715021,1245715022,1245710661...1245710705,1245711010...1245711072,1245714961,1245714963,1245714965,1245714996,1245714997,1245711078...1245711112,1245714980,1245715050,1245715051,1245711073...1245711077,1245712223...1245712237,1245714973"
+  URL2 <- "1245712238...1245712284,1245714974,1245712285...1245712294,1245715018,1245712295...1245712306,1245714950,1245712307...1245712316,1245715065,1245715066,1245713503...1245713513,1245714966,1245713514...1245713544,1245714962,1245713545...1245713581,1245714964,1245715057,1245713582...1245713587,1245715010,1245715011,1245713588...1245713627,1245715012,1245715013,1245713628...1245713665,1245713774...1245713779,1245715008,1245715009,1245713780...1245713862,1245713978...1245714006,1245715049,1245714007...1245714019,1245715052,1245714020...1245714033,1245714981,1245714034...1245714074,1245711113...1245711135,1245714160...1245714198,1245711159...1245711192,1245711136...1245711158,1245714270...1245714378,1245714616...1245714638,1245714952,1245714639...1245714680,1245710068...1245710190,1245714953,1245714955,1245715041...1245715047,1245710191...1245710231,1245714951,1245710232...1245710311,1245714956,1245710312...1245710339,1245714954,1245710340...1245710410,1245715040,1245714843...1245714927,1245711814...1245711833,1245711797...1245711813,1245711834...1245711849,1245711458...1245711478,1245711438...1245711457,1245715023,1245715024,1245711479...1245711512,1245715005,1245715071,1245711915...1245711936,1245714971,1245711937...1245711987,1245715019,1245715020,1245712611...1245712711,1245715068,1245712712...1245712784,1245713023...1245713175,1245713666...1245713758,1245715053,1245715054,1245713759...1245713773"
+  URL3 <- "1245714379...1245714395,1245714972,1245714396...1245714467,1245708449...1245708476,1245708289,1245708620...1245708645,1245715064,1245715067,1245708646...1245708705,1245714941,1245708822...1245708865,1245708886...1245708919,1245714947,1245708920...1245708952,1245714930,1245714931,1245714944,1245708978...1245709014,1245709066...1245709097,1245714948,1245709121...1245709150,1245714999,1245715000,1245709179...1245709239,1245708290...1245708310,1245714945,1245708311...1245708378,1245714932,1245708379...1245708448,1245714929,1245714934,1245714936,1245708477...1245708519,1245714935,1245708520...1245708557,1245714938,1245708558...1245708592,1245714940,1245708593...1245708619,1245714933,1245715072...1245715076,1245708706...1245708733,1245714942,1245715028,1245708734...1245708794,1245714943,1245708795...1245708821,1245714939,1245708866...1245708885,1245708953...1245708977,1245709015...1245709042,1245714946,1245715069,1245715070,1245709043...1245709065,1245709098...1245709120,1245714982,1245709151...1245709178,1245711551...1245711565,1245711690...1245711722,1245711779...1245711796,1245711513...1245711550,1245711658...1245711689,1245711723...1245711746,1245714967,1245711588...1245711619,1245711747...1245711778,1245711566...1245711587,1245711620...1245711657,1245711850...1245711884,1245714969,1245711885...1245711914,1245714970,1245712544...1245712554,1245715003,1245715004,1245712555...1245712610"
+  URL4 <- "1245712860...1245712894,1245714975,1245714984,1245712895...1245712958,1245714968,1245714976,1245714977,1245712959...1245713022,1245713176...1245713206,1245715001,1245715002,1245713207...1245713279,1245714978,1245713280...1245713291,1245715025,1245715026,1245713292...1245713337,1245714979,1245713338...1245713351,1245714075...1245714144,1245715032,1245714145...1245714159,1245714468...1245714493,1245714983,1245714494...1245714587,1245714937,1245714588...1245714603,1245714985,1245714604...1245714615,1245714681...1245714780,1245711193...1245711219,1245711375...1245711395,1245715029,1245715031,1245711220...1245711270,1245715033...1245715036,1245712086...1245712158,1245714928,1245711271...1245711294,1245714991,1245714992,1245711327...1245711358,1245711396...1245711413,1245711295...1245711326,1245711414...1245711437,1245714993...1245714995,1245711359...1245711374,1245714986,1245714781...1245714842,1245712317...1245712477,1245712785...1245712859,1245714199...1245714269,1245715080...1245715134,1245715485,1245715135...1245715171,1245715486,1245715172...1245715188,1245715480,1245715482,1245715189...1245715196,1245715487,1245715197...1245715236,1245715484,1245715237...1245715285,1245715483,1245715286...1245715319,1245715434...1245715479,1245715488,1245715489,1245715320...1245715356,1245715481,1245715357...1245715433"
+  URLE <- paste("&c_sex=",sex,"&c_nssec=1,4...10,13&c_age=",age,"&measures=20100&select=geography_code,c_nssec_name,obs_value",sep="")
+  download.file(paste(URLB,URL1,URLE,sep = ""),destfile = "Data/dl/data1.csv")
+  download.file(paste(URLB,URL2,URLE,sep = ""),destfile = "Data/dl/data2.csv")
+  download.file(paste(URLB,URL3,URLE,sep = ""),destfile = "Data/dl/data3.csv")
+  download.file(paste(URLB,URL4,URLE,sep = ""),destfile = "Data/dl/data4.csv")
+  data1 <- read.csv("Data/dl/data1.csv")
+  data2 <- read.csv("Data/dl/data2.csv")
+  data3 <- read.csv("Data/dl/data3.csv")
+  data4 <- read.csv("Data/dl/data4.csv")
+  data <- rbind(data1,data2,data3,data4)
+  data$C_NSSEC_NAME <- substr(as.character(data$C_NSSEC_NAME),1,1)
+  data$C_NSSEC_NAME[data$C_NSSEC_NAME == "L"] <- 9
+  data$C_NSSEC_NAME <- as.numeric(data$C_NSSEC_NAME)
+  colnames(data) <- c("MSOA11CD","nssec8","number")
+  return(data)
+}
+writeNSSECTables <- function(age,sex){
+  ref <- matrix(c("M_16-24","M_25-34","M_35-49","M_50-64","M_65p",
+                  "F_16-24","F_25-34","F_35-49","F_50-64","F_65p"),
+                ncol = 2)
+  NSSEC <- downloadNSSEC(age,sex)
+  NSSEC <- spread(NSSEC, nssec8, number)
+  colnames(NSSEC) <- c("MSOA11CD","N1","N2","N3","N4","N5","N6","N7","N8","Student")
+  write.table(NSSEC,paste(outputFolder,"NSSEC8_EW_",ref[age,sex],"_CLEAN.csv",sep = ""),row.names = F, sep = ",")
 }
 
-NSSEC <- aggregate(NSSEC[,3:11], by = list(NSSEC$LAD11NM,NSSEC$LAD11CD,NSSEC$sex,NSSEC$age), FUN = sum)
-colnames(NSSEC)[1:4] <- c("LAD11NM","LAD11CD","sex","age")
+for(i in 1:5){
+  for(j in 1:2){
+    writeNSSECTables(i,j)
+  }
+}
 
-write.table(NSSEC,paste(outputFolder,"nssec.csv",sep = ""),row.names = F, sep = ",")
+
+### Scotland
+NSSEC <- read.csv(paste(inputFolder,"NSSEC8_S_Country_Age-Sex-Eth.csv",sep = ""),skip = 3)
+NSSEC <- NSSEC[c(62:100,112:150),2:10]
+rownames(NSSEC) <- 1:nrow(NSSEC)
+
+NSSEC$sex <- substr(NSSEC$X.1,1,1)
+NSSEC$sex[NSSEC$sex == "M"] <- 1
+NSSEC$sex[NSSEC$sex == "F"] <- 2
+
+NSSEC$nssec8 <- substr(NSSEC$X.2,1,1)
+NSSEC$nssec8[NSSEC$nssec8 == "L"] <- 9
+NSSEC <- NSSEC[-which(NSSEC$nssec8 == "T"),]
+rownames(NSSEC) <- 1:nrow(NSSEC)
+
+NSSEC$age <- rep(c(rep(1,9),rep(2,9),rep(3,9),rep(4,9)),2)
+NSSEC <- NSSEC[,c(10,12,11,4:9)]
+
+NSSEC$white <- as.numeric(gsub(",",".",NSSEC$White))
+NSSEC$black <- as.numeric(gsub(",",".",NSSEC$African)) + as.numeric(gsub(",",".",NSSEC$Caribbean.or.Black))
+NSSEC$asian <- as.numeric(gsub(",",".",NSSEC$Asian..Asian.Scottish.or.Asian.British))
+NSSEC$mixed <- as.numeric(gsub(",",".",NSSEC$Mixed.or.multiple.ethnic.groups))
+NSSEC$other <- as.numeric(gsub(",",".",NSSEC$Other.ethnic.groups))
+
+NSSEC$black[is.na(NSSEC$black)] <- 0
+NSSEC <- NSSEC[,c(1:3,10:14)]
+
+write.table(NSSEC,paste(outputFolder,"NSSECS_CLEAN.csv",sep = ""),row.names = F, sep = ",")
 
 
 ####################
@@ -442,7 +504,20 @@ test$uniqueID <- paste(test$id_TUS,test$pnum, sep = "_")
 TUS$uniqueIDb <- substr(b$uniqueID,1,10)
 TUS <- merge(TUS,test, by.x = "uniqueIDb", by.y = "uniqueID", all.x = T)
 TUS <- TUS[!is.na(TUS$age),]
+row.names(TUS) <- 1:nrow(TUS)
+
 TUS <- TUS[,c(2:22,25:29)]
+
+TUS[nrow(TUS)+1,] <- c("00000000_1_0",0)
+
+TUS[1,]
+
+
+#00000000_1_0
+#00000000_1_1
+#00000000_1_0
+#00000000_1_0
+colnames(TUS)
 
 # Output
 write.table(TUS,paste("Outputs/","diariesRef.csv",sep = ""),row.names = F, sep = ",")
@@ -870,3 +945,34 @@ createTIMESPENT <- function(x){
   res <- 
   return(c(res,sum(res[1:3]),sum(res[4:10]),1 - sum(res)))
 }
+
+# Old NSSEC from pre-loaded data: England and Wales
+NSSECF <- read.csv(paste(folderIn,folderIn2,"NSSEC8_EW_MSOA_F.csv",sep = ""),skip = 8)
+NSSECM <- read.csv(paste(folderIn,folderIn2,"NSSEC8_EW_MSOA_M.csv",sep = ""),skip = 8)
+
+NSSECM16to24 <- read.csv(paste(folderIn,folderIn2,"NSSEC8_EW_MSOA_F_16-24.csv",sep = ""),skip = 8)
+
+NSSEC25to34 <- read.csv(paste(folderIn,folderIn2,"NSSEC8_EW_MSOA_25-34.csv",sep = ""),skip = 8)
+NSSEC35to49 <- read.csv(paste(folderIn,folderIn2,"NSSEC8_EW_MSOA_35-49.csv",sep = ""),skip = 8)
+NSSEC50to64 <- read.csv(paste(folderIn,folderIn2,"NSSEC8_EW_MSOA_50-64.csv",sep = ""),skip = 8)
+NSSEC65P <- read.csv(paste(folderIn,folderIn2,"NSSEC8_EW_MSOA_65Plus.csv",sep = ""),skip = 8)
+
+
+set = "F_16-24"
+cleanNSSEC <- function(set){
+  NSSEC <- read.csv(paste("Data/nssec/NSSEC8_EW_MSOA_",set,".csv",sep = ""),skip = 8)
+  NSSEC <- NSSEC[,2:11]
+  colnames(NSSEC) <- c("MSOA11CD","N1","N2","N3","N4","N5","N6","N7","N8","Student")
+  write.table(NSSEC,paste(outputFolder,"NSSEC8_EW_",set,"_CLEAN.csv",sep = ""),row.names = F, sep = ",")
+}
+
+cleanNSSEC("F_16-24")
+cleanNSSEC("F_25-34")
+cleanNSSEC("F_35-49")
+cleanNSSEC("F_50-64")
+cleanNSSEC("F_65p")
+cleanNSSEC("M_16-24")
+cleanNSSEC("M_25-34")
+cleanNSSEC("M_35-49")
+cleanNSSEC("M_50-64")
+cleanNSSEC("M_65p")
