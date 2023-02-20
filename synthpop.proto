@@ -334,7 +334,7 @@ message TimeUseDiary {
     // -7	Interview not achieved
     // -2	Schedule not applicable
     required int32 day_type = 3;
-    // Month of the year as a numeric (dmonth in uktus15_dv_time_vars)
+    // Month of the year, as [1, 12] (dmonth in uktus15_dv_time_vars)
     required uint32 month = 4;
 
     // Time at home
