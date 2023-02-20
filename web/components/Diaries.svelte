@@ -106,6 +106,7 @@
     // TODO Hack, how do we also not do this until onMount is done?
     if (map.getSource(source)) {
       let is_weekday = today.getDay() != 0 && today.getDay() != 6;
+      let month_number = today.getMonth() + 1;
 
       let gj = emptyGeojson();
 
@@ -115,6 +116,9 @@
       for (let [index, person] of people.entries()) {
         // Pick a diary for them (arbitrarily)
         let list = is_weekday ? person.weekdayDiaries : person.weekendDiaries;
+        list = list.filter(
+          (id) => pop.timeUseDiaries[id].month == month_number
+        );
         let diary_id = list[date_offset % list.length];
         let diary = pop.timeUseDiaries[diary_id];
         // TODO Bad data coming in
