@@ -12,6 +12,7 @@
   export let pop;
 
   // State
+  let show = false;
   let hoverId;
 
   let sample_size = 50;
@@ -303,13 +304,16 @@
 </script>
 
 <div class="legend">
-  Number of people: {sample_size}
-  <input type="range" bind:value={sample_size} min="1" max="100" />
-  <br />
-  Day: <input type="number" bind:value={date_offset} min="0" max="100" />
-  {today.toDateString()}
-  <br />
-  <div use:pieChart={{ data: averages }} />
+  <div><input type="checkbox" bind:checked={show} />Daily diaries</div>
+  {#if show}
+    Number of people: {sample_size}
+    <input type="range" bind:value={sample_size} min="1" max="100" />
+    <br />
+    Day: <input type="number" bind:value={date_offset} min="0" max="100" />
+    {today.toDateString()}
+    <br />
+    <div use:pieChart={{ data: averages }} />
+  {/if}
 </div>
 
 <style>
