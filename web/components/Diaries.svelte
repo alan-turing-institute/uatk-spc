@@ -4,6 +4,7 @@
   import Plotly from "plotly.js-dist";
   import { synthpop } from "../pb/synthpop_pb.js";
   import { emptyGeojson } from "../data.js";
+  import DateInput from "./DateInput.svelte";
 
   const { getMap } = getContext("map");
   let map = getMap();
@@ -16,7 +17,7 @@
   let hoverId;
 
   let sample_size = 50;
-  const start_date = new Date("February 5, 2023");
+  let start_date = new Date("February 5, 2019");
   let date_offset = 0;
   $: today = addDays(start_date, date_offset);
 
@@ -310,12 +311,17 @@
 <div class="legend">
   <div><input type="checkbox" bind:checked={show} />Daily diaries</div>
   {#if show}
-    Number of people: {sample_size}
-    <input type="range" bind:value={sample_size} min="1" max="100" />
-    <br />
-    Day: <input type="number" bind:value={date_offset} min="0" max="100" />
-    {today.toDateString()}
-    <br />
+    <div>
+      Number of people: {sample_size}
+      <input type="range" bind:value={sample_size} min="1" max="100" />
+    </div>
+    <div>
+      Start date: <DateInput bind:date={start_date} />
+    </div>
+    <div>
+      Day: <input type="number" bind:value={date_offset} min="0" max="100" />
+      {today.toDateString()}
+    </div>
     <div use:pieChart={{ data: averages }} />
   {/if}
 </div>
