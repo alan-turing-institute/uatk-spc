@@ -54,7 +54,7 @@ function enumToString(enumObj) {
 
 function numberEnumMap(max) {
   return Object.fromEntries(
-    [...Array(max).keys()].map((i) => [i, i.toString()])
+    [...Array(max + 1).keys()].map((i) => [i, i.toString()])
   );
 }
 
@@ -131,7 +131,7 @@ export const PER_HOUSEHOLD_CATEGORICAL_PROPS = {
   num_cars: {
     get: (hh) => hh.numCars,
     label: "Number of cars (capped at 3)",
-    lookup: numberEnumMap(6),
+    lookup: numberEnumMap(3),
     theme: "Household",
   },
 };
