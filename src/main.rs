@@ -2,6 +2,7 @@
 
 use std::collections::BTreeSet;
 use std::io::{BufRead, BufReader, Write};
+use std::path::Path;
 use std::time::Instant;
 
 use anyhow::Result;
@@ -29,7 +30,7 @@ async fn main() -> Result<()> {
     let start = Instant::now();
     let output_stats = args.output_stats;
 
-    let (input, country, region) = args.to_input().await?;
+    let (input, region) = args.to_input().await?;
     let _s = info_span!("initialisation", ?region).entered();
     let (population, commuting_runtime) = Population::create(input, &mut rng).await?;
 
@@ -38,9 +39,8 @@ async fn main() -> Result<()> {
     info!("Saving output file");
     let pb_file_size = indicatif::HumanBytes({
         // Create the output dir if needed
-        let dir = format!("data/output/{country}/{}", population.year);
-        fs_err::create_dir_all(&dir)?;
-        let output = format!("{dir}/{region}.pb");
+        fs_err::create_dir_all(format!("data/output/{}", population.year))?;
+        let output = format!("data/output/{}/{region}.pb", population.year);
         let _s = info_span!("Writing protobuf to", ?output).entered();
         protobuf::convert_to_pb(&population, output)?
     } as u64)
@@ -49,7 +49,7 @@ async fn main() -> Result<()> {
     if output_stats {
         write_stats(
             &population,
-            format!("{country}/{region}"),
+            &region,
             pb_file_size,
             indicatif::HumanDuration(Instant::now() - start).to_string(),
             indicatif::HumanDuration(commuting_runtime).to_string(),
@@ -84,7 +84,7 @@ struct Args {
 }
 
 impl Args {
-    async fn to_input(self) -> Result<(Input, String, String)> {
+    async fn to_input(self) -> Result<(Input, String)> {
         let mut input = Input {
             year: self.year,
             enable_commuting: !self.no_commuting,
@@ -92,39 +92,35 @@ impl Args {
             msoas: BTreeSet::new(),
             sic_threshold: self.sic_threshold,
         };
-
-        let path_pieces: Vec<_> = self.msoa_input.split("/").collect();
-        let mut country = "unknown_country".to_string();
-        let mut region = "unknown_region".to_string();
-        if path_pieces.len() == 3 && path_pieces[0] == "config" {
-            country = path_pieces[1].to_string();
-            // Strip the .txt
-            region = path_pieces[2].split(".").next().unwrap().to_string();
-        }
+        let region = Path::new(&self.msoa_input)
+            .file_stem()
+            .unwrap()
+            .to_os_string()
+            .into_string()
+            .unwrap();
 
         // A special case
         if region == "national" {
             input.msoas = MSOA::all_msoas_nationally().await?;
-            Ok((input, "UK".to_string(), "national".to_string()))
+            Ok((input, "national".to_string()))
         } else {
             for line in BufReader::new(File::open(&self.msoa_input)?).lines() {
                 // Strip leading/trailing quotes
                 let msoa = MSOA(line?.trim_matches('"').to_string());
                 input.msoas.insert(msoa);
             }
-            Ok((input, country, region))
+            Ok((input, region))
         }
     }
 }
 
 fn write_stats(
     population: &Population,
-    country_region: String,
+    region: &str,
     pb_file_size: String,
     runtime: String,
     commuting_runtime: String,
 ) -> Result<()> {
-    let year = population.year;
     let num_msoas = print_count(population.msoas.len());
     let num_households = print_count(population.households.len());
     let num_people = print_count(population.people.len());
@@ -134,10 +130,10 @@ fn write_stats(
         .to_string();
     let mut file = File::create("stats.csv")?;
     // The formatted numbers use commas; add quotes around them
-    writeln!(file, "year,study_area,num_msoas,num_households,num_people,pb_file_size,runtime,commuting_runtime,memory_usage")?;
+    writeln!(file, "study_area,num_msoas,num_households,num_people,pb_file_size,runtime,commuting_runtime,memory_usage")?;
     writeln!(
         file,
-        r#""{year}","{country_region}","{num_msoas}","{num_households}","{num_people}","{pb_file_size}","{runtime}","{commuting_runtime}","{memory_usage}""#
+        r#""{region}","{num_msoas}","{num_households}","{num_people}","{pb_file_size}","{runtime}","{commuting_runtime}","{memory_usage}""#
     )?;
     Ok(())
 }

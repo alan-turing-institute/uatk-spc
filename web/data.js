@@ -9,32 +9,40 @@ export const PER_PERSON_NUMERIC_PROPS = {
     theme: "Demographics",
   },
   salary_yearly: {
-    get: (p) => getOptional(p.employment, "salaryYearly"),
+    // TODO Reinventing Option types and what the codegen should do :(
+    get: (p) => {
+      if (p.employment.hasOwnProperty("salaryYearly")) {
+        return p.employment.salaryYearly;
+      }
+      return null;
+    },
     label: "yearly salary for working population",
     fmt: (x) => x.toFixed(1),
     theme: "Employment",
   },
   salary_hourly: {
-    get: (p) => getOptional(p.employment, "salaryHourly"),
+    get: (p) => {
+      if (p.employment.hasOwnProperty("salaryHourly")) {
+        return p.employment.salaryHourly;
+      }
+      return null;
+    },
     label: "hourly salary for working population",
     fmt: (x) => x.toFixed(1),
     theme: "Employment",
   },
   bmi: {
-    get: (p) => getOptional(p.health, "bmi"),
+    get: (p) => {
+      if (p.health.hasOwnProperty("bmi")) {
+        return p.health.bmi;
+      }
+      return null;
+    },
     label: "BMI for adult population",
     fmt: (x) => x.toFixed(1),
     theme: "Health",
   },
 };
-
-function getOptional(object, key) {
-  // TODO Reinventing Option types and what the codegen should do :(
-  if (object.hasOwnProperty(key)) {
-    return object[key];
-  }
-  return null;
-}
 
 function enumToString(enumObj) {
   let mapping = {};
@@ -46,7 +54,7 @@ function enumToString(enumObj) {
 
 function numberEnumMap(max) {
   return Object.fromEntries(
-    [...Array(max + 1).keys()].map((i) => [i, i.toString()])
+    [...Array(max).keys()].map((i) => [i, i.toString()])
   );
 }
 
@@ -63,8 +71,9 @@ export const PER_PERSON_CATEGORICAL_PROPS = {
     lookup: enumToString(synthpop.Ethnicity),
     theme: "Demographics",
   },
+  // TODO This one becomes optional
   socioeconomic_classification: {
-    get: (p) => getOptional(p.demographics, "nssec8"),
+    get: (p) => p.demographics.nssec8,
     label: "socioeconomic classification",
     lookup: enumToString(synthpop.Nssec8),
     theme: "Employment",
@@ -78,31 +87,32 @@ export const PER_PERSON_CATEGORICAL_PROPS = {
 };
 
 export const PER_HOUSEHOLD_CATEGORICAL_PROPS = {
+  // TODO Most of these are optional
   socioeconomic_classification: {
-    get: (hh) => getOptional(hh, "nssec8"),
+    get: (hh) => hh.nssec8,
     label: "Professional working status of reference person",
     lookup: enumToString(synthpop.Nssec8),
     theme: "Household",
   },
   accommodation_type: {
-    get: (hh) => getOptional(hh, "accommodationType"),
+    get: (hh) => hh.accommodationType,
     label: "Accomodation type",
     lookup: enumToString(synthpop.AccommodationType),
     theme: "Household",
   },
   communal_type: {
-    get: (hh) => getOptional(hh, "communalType"),
+    get: (hh) => hh.communalType,
     label: "Type of communal establishment",
     lookup: enumToString(synthpop.CommunalType),
     theme: "Household",
   },
   num_rooms: {
-    get: (hh) => getOptional(hh, "numRooms"),
+    get: (hh) => hh.numRooms,
     label: "Number of rooms (capped at 6)",
     lookup: numberEnumMap(6),
     theme: "Household",
   },
-  // central_heat is effectively an enum
+  // TODO central_heat is effectively an enum
   central_heat: {
     get: (hh) => hh.centralHeat,
     label: "Central heating",
@@ -113,15 +123,15 @@ export const PER_HOUSEHOLD_CATEGORICAL_PROPS = {
     theme: "Household",
   },
   tenure: {
-    get: (hh) => getOptional(hh, "tenure"),
+    get: (hh) => hh.tenure,
     label: "Tenure",
     lookup: enumToString(synthpop.Tenure),
     theme: "Household",
   },
   num_cars: {
-    get: (hh) => getOptional(hh, "numCars"),
+    get: (hh) => hh.numCars,
     label: "Number of cars (capped at 3)",
-    lookup: numberEnumMap(3),
+    lookup: numberEnumMap(6),
     theme: "Household",
   },
 };

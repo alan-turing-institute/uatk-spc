@@ -4,7 +4,6 @@
   import Plotly from "plotly.js-dist";
   import { synthpop } from "../pb/synthpop_pb.js";
   import { emptyGeojson } from "../data.js";
-  import DateInput from "./DateInput.svelte";
 
   const { getMap } = getContext("map");
   let map = getMap();
@@ -13,11 +12,10 @@
   export let pop;
 
   // State
-  let show = false;
   let hoverId;
 
   let sample_size = 50;
-  let start_date = new Date("February 5, 2019");
+  const start_date = new Date("February 5, 2023");
   let date_offset = 0;
   $: today = addDays(start_date, date_offset);
 
@@ -107,7 +105,6 @@
     // TODO Hack, how do we also not do this until onMount is done?
     if (map.getSource(source)) {
       let is_weekday = today.getDay() != 0 && today.getDay() != 6;
-      let month_number = today.getMonth() + 1;
 
       let gj = emptyGeojson();
 
@@ -117,9 +114,6 @@
       for (let [index, person] of people.entries()) {
         // Pick a diary for them (arbitrarily)
         let list = is_weekday ? person.weekdayDiaries : person.weekendDiaries;
-        list = list.filter(
-          (id) => pop.timeUseDiaries[id].month == month_number
-        );
         let diary_id = list[date_offset % list.length];
         let diary = pop.timeUseDiaries[diary_id];
         // TODO Bad data coming in
@@ -309,21 +303,13 @@
 </script>
 
 <div class="legend">
-  <div><input type="checkbox" bind:checked={show} />Daily diaries</div>
-  {#if show}
-    <div>
-      Number of people: {sample_size}
-      <input type="range" bind:value={sample_size} min="1" max="100" />
-    </div>
-    <div>
-      Start date: <DateInput bind:date={start_date} />
-    </div>
-    <div>
-      Day: <input type="number" bind:value={date_offset} min="0" max="100" />
-      {today.toDateString()}
-    </div>
-    <div use:pieChart={{ data: averages }} />
-  {/if}
+  Number of people: {sample_size}
+  <input type="range" bind:value={sample_size} min="1" max="100" />
+  <br />
+  Day: <input type="number" bind:value={date_offset} min="0" max="100" />
+  {today.toDateString()}
+  <br />
+  <div use:pieChart={{ data: averages }} />
 </div>
 
 <style>
