@@ -34,17 +34,13 @@
           let person = pop.people[id];
           for (let [key, list] of Object.entries(numericData)) {
             let value = PER_PERSON_NUMERIC_PROPS[key].get(person);
-            if (value == null) {
-              continue;
+            if (value != null) {
+              numericData[key].push(value);
             }
-            numericData[key].push(value);
           }
           for (let [key, list] of Object.entries(categoricalPersonData)) {
             let prop = PER_PERSON_CATEGORICAL_PROPS[key];
             let value = prop.lookup[prop.get(person)];
-            if (value == null) {
-              continue;
-            }
             let dict = categoricalPersonData[key];
             if (!dict.hasOwnProperty(value)) {
               dict[value] = 0;
@@ -56,9 +52,6 @@
         for (let [key, list] of Object.entries(categoricalHouseholdData)) {
           let prop = PER_HOUSEHOLD_CATEGORICAL_PROPS[key];
           let value = prop.lookup[prop.get(hh.details)];
-          if (value == null) {
-            continue;
-          }
           let dict = categoricalHouseholdData[key];
           if (!dict.hasOwnProperty(value)) {
             dict[value] = 0;
