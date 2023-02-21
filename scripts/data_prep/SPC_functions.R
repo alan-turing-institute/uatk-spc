@@ -151,6 +151,42 @@ assignNSSEC_EW <- function(msoa,merge){
   
   return(merge)
 }
+assignNSSEC_S <- function(eth,merge){
+  indETH <- which(merge$ethnicity == eth)
+  indRefP <- intersect(indETH,which(!duplicated(merge$hid)))
+  indNotRefP <- intersect(indETH,which(duplicated(merge$hid)))
+  
+  indM16to24 <- intersect(indNotRefP,which(merge$sex == 1 & merge$age > 15 & merge$age < 25))
+  probM16to24 <- NSSECS[NSSECS$age == 1 & NSSECS$sex == 1, eth + 3]
+  indM25to49 <- intersect(indNotRefP,which(merge$sex == 1 & merge$age > 24 & merge$age < 50))
+  probM25to49 <- NSSECS[NSSECS$age == 2 & NSSECS$sex == 1, eth + 3]
+  indM50to64 <- intersect(indNotRefP,which(merge$sex == 1 & merge$age > 49 & merge$age < 65))
+  probM50to64 <- NSSECS[NSSECS$age == 3 & NSSECS$sex == 1, eth + 3]
+  indM65to74 <- intersect(indNotRefP,which(merge$sex == 1 & merge$age > 64 & merge$age < 75))
+  probM65to74 <- NSSECS[NSSECS$age == 4 & NSSECS$sex == 1, eth + 3]
+  
+  indF16to24 <- intersect(indNotRefP,which(merge$sex == 2 & merge$age > 15 & merge$age < 25))
+  probF16to24 <- NSSECS[NSSECS$age == 1 & NSSECS$sex == 2, eth + 3]
+  indF25to49 <- intersect(indNotRefP,which(merge$sex == 2 & merge$age > 24 & merge$age < 50))
+  probF25to49 <- NSSECS[NSSECS$age == 2 & NSSECS$sex == 2, eth + 3]
+  indF50to64 <- intersect(indNotRefP,which(merge$sex == 2 & merge$age > 49 & merge$age < 65))
+  probF50to64 <- NSSECS[NSSECS$age == 3 & NSSECS$sex == 2, eth + 3]
+  indF65to74 <- intersect(indNotRefP,which(merge$sex == 2 & merge$age > 64 & merge$age < 75))
+  probF65to74 <- NSSECS[NSSECS$age == 4 & NSSECS$sex == 2, eth + 3]
+  
+  merge$nssec8[indRefP] <- merge$HOUSE_nssec8[indRefP]
+  
+  merge$nssec8[indM16to24] <- sample(nssecRef,length(indM16to24), prob = probM16to24, replace = T)
+  merge$nssec8[indM25to49] <- sample(nssecRef,length(indM25to49), prob = probM25to49, replace = T)
+  merge$nssec8[indM50to64] <- sample(nssecRef,length(indM50to64), prob = probM50to64, replace = T)
+  merge$nssec8[indM65to74] <- sample(nssecRef,length(indM65to74), prob = probM65to74, replace = T)
+  merge$nssec8[indF16to24] <- sample(nssecRef,length(indF16to24), prob = probF16to24, replace = T)
+  merge$nssec8[indF25to49] <- sample(nssecRef,length(indF25to49), prob = probF25to49, replace = T)
+  merge$nssec8[indF50to64] <- sample(nssecRef,length(indF50to64), prob = probF50to64, replace = T)
+  merge$nssec8[indF65to74] <- sample(nssecRef,length(indF65to74), prob = probF65to74, replace = T)
+  
+  return(merge)
+}
 
 # Match with TUS
 findTUSMatch <- function(i,merge,indivTUS){
@@ -174,6 +210,7 @@ findTUSMatch <- function(i,merge,indivTUS){
 }
 
 ### Income
+
 drawTime <- function(soc,sex,fulltime,region){
   perc <- floor(runif(1,1,100))
   if(sex == 2 & fulltime == T){

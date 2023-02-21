@@ -5,7 +5,7 @@
 
 countryR <- ifelse(grepl("E",lad),"England",ifelse(grepl("W",lad),"Wales","Scotland"))
 
-folderIn <- paste("Data/test/", date, "/", countryR, "/", sep = "") # Link to SPENSER data
+folderIn <- paste("Data/test/", countryR, "/", date, "/", sep = "") # Link to SPENSER data
 
 HS <- HST %>% filter(country == countryR)
 
@@ -16,7 +16,7 @@ HS <- HST %>% filter(country == countryR)
 
 
 pop <- read.csv(paste(folderIn,"ass_",lad,"_MSOA11_",date,".csv",sep = ""))
-pop <- pop[which(pop$HID > 0),]
+pop <- pop[which(pop$HID >= 0),]
 house <- read.csv(paste(folderIn,"ass_hh_",lad,"_OA11_",date,".csv",sep = ""))
 #
 merge <- merge(pop,house,by.x = "HID",by.y="HID",all.x = T)
@@ -54,17 +54,19 @@ merge$ethnicity <- sapply(merge$ethnicity, newEth)
 
 age35g <- sapply(merge$age, createAge35g)
 
-### HSE
+### HSs
 age35gH <- age35g
 if(countryR == "Wales"){
   age35gH[age35gH > 19] <- 19
 }
 ind <- mcmapply(function(x){findHSEMatch(x,merge$sex,age35gH,HS)},1:nrow(merge), mc.cores = cores)
 merge$id_HS <- HS$id_HS[ind]
-merge$diabetes <- HS$diabetes[ind]
-merge$bloodpressure <- HS$bloodpressure[ind]
-merge$cvd <- HS$cvd[ind]
-
+merge$HEALTH_diabetes <- HS$diabetes[ind]
+merge$HEALTH_bloodpressure <- HS$bloodpressure[ind]
+merge$HEALTH_cvd <- HS$cvd[ind]
+merge$HEALTH_NMedicines <- HS$NMedicines[ind]
+merge$HEALTH_selfAssessed <- HS$selfAssessed[ind]
+merge$HEALTH_lifeSat <- HS$lifeSat[ind]
 
 ### BMI
 if(countryR == "England"){
@@ -80,8 +82,8 @@ if(countryR == "England"){
   coefM <- BMIdiff$ScotlandM
   minBMI <- 14.71
 }
-merge$bmi <- mcmapply(function(x){applyBMI(x,merge,dMean,varData)}, 1:nrow(merge), mc.cores = cores)
-merge$bmi[which(merge$bmi < minBMI)] <- minBMI
+merge$HEALTH_bmi <- mcmapply(function(x){applyBMI(x,merge,dMean,varData)}, 1:nrow(merge), mc.cores = cores)
+merge$HEALTH_bmi[which(merge$HEALTH_bmi < minBMI)] <- minBMI
 
 
 ### TUS
@@ -90,9 +92,16 @@ merge$bmi[which(merge$bmi < minBMI)] <- minBMI
 merge$nssec8 <- -1
 nssecRef <- c(1:9)
 msoas = unique(lu$MSOA11CD[lu$LAD20CD == lad])
-for(i in msoas){
-  merge <- assignNSSEC_EW(i,merge)
+if(countryR == "England" | countryR == "Wales"){
+  for(i in msoas){
+    merge <- assignNSSEC_EW(i,merge)
+  }
+} else {
+  for(i in 1:5){
+    merge <- assignNSSEC_S(i,merge)
+  }
 }
+
 
 # Match with TUS
 ind <- unlist(mcmapply(function(x){findTUSMatch(x,merge,indivTUS)}, 1:nrow(merge), mc.cores = cores))
@@ -108,7 +117,7 @@ merge$workedHoursWeekly <- indivTUS$workedHoursWeekly[ind]
 
 merge$nssec8[merge$nssec8 == 9] <- -1
 
-merge <- merge[,c(1:7,20,8:19,21:28)]
+merge <- merge[,c(1:7,23,8:22,24:31)]
 
 
 ### Income
@@ -141,8 +150,8 @@ merge <- merge(merge,OACoords,by.x = "OA11CD",by.y = "OA11CD")
 ###################
 
 
-merge <- merge[order(merge$pid),c(2:3,1,5:43)]
+merge <- merge[order(merge$pid),c(2:3,1,5:46)]
 row.names(merge) <- 1:nrow(merge)
 
-write.table(merge,paste(folderOut,date,"/",countryR,"/",lad,".csv",sep=""),sep = ",",row.names = F)
+write.table(merge,paste(folderOut, countryR,"/", date,"/",lad,".csv",sep=""),sep = ",",row.names = F)
 

@@ -1,34 +1,28 @@
-# One-time loading
-source("SPC_loadWorkspace.R")
+#source("SPC_loadWorkspace.R")
 
-
-unique(lu$LAD20NM[lu$AzureRef == "central-valleys"])
-unique(lu$LAD20CD[lu$AzureRef == "central-valleys"])
-
-lad <- "W06000016"
-lad <- "W06000024"
-
+# Select year
+#date <- 2012
 date <- 2020
-date <- 2012
+#date <- 2022
+#date <- 2032
+#date <- 2039
 
-# Morgannwg Ganol
-# 242k in 142 secs
-
-
-length(unique(lu$OA11CD[lu$AzureRef == "central-valleys"]))
-length(unique(lu$OA11CD[lu$LAD20CD == "W06000016"]))
-length(unique(lu$OA11CD[lu$LAD20CD == "W06000024"]))
-
+# Select lad
 lad <- "E06000002"
+lad <- "E06000017"
 lad <- "E09000002"
 lad <- "W06000015"
-date <- 2020
-
 lad <- "S"
 
+lads <- sort(unique(lu$LAD20CD[lu$Country == "Wales"]))
 
-source("SPC_pipelineLAD.R")
-system.time(source("SPC_pipelineLAD.R"))
+for(i in lads){
+  lad <- lads[i]
+  source("SPC_pipelineLAD.R")
+}
+
+#source("SPC_pipelineLAD.R")
+#system.time(source("SPC_pipelineLAD.R"))
 
 
 
