@@ -1,3 +1,8 @@
+# One-time loading
+#install.packages("stringr")
+#install.packages("tidyverse")
+#install.packages("rgdal")
+
 library(parallel)
 library(stringr)
 library(tidyverse)
@@ -46,6 +51,7 @@ nssecNames<- c("F_16to24","F_25to34","F_35to49","F_50to64","F_65to74",
 for(i in nssecNames){
   assign(paste("NSSEC",i,sep = ""), read.csv(paste(folderInOT,"NSSEC8_EW_",i,"_CLEAN.csv",sep = "")))
 }
+NSSECS <- read.csv(paste(folderInOT,"NSSECS_CLEAN.csv", sep = ""))
 
 # TUS
 indivTUS <- read.table(paste(folderInOT,"indivTUS.csv",sep = ""), sep=",", header=TRUE)
