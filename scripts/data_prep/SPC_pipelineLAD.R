@@ -5,7 +5,7 @@
 
 countryR <- ifelse(grepl("E",lad),"England",ifelse(grepl("W",lad),"Wales","Scotland"))
 
-folderIn <- paste("/mnt/vmfileshare/SCP_Outputs/", countryR, "/", date, "/", sep = "") # Link to SPENSER data
+folderIn <- paste("/mnt/vmfileshare/SCP_Outputs/input/", countryR, "/", date, "/", sep = "") # Link to SPENSER data
 
 HS <- HST %>% filter(country == countryR)
 

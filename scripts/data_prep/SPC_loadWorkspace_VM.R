@@ -5,7 +5,7 @@ library(tidyverse)
 library(rgdal)
 
 folderInOT <- "data/" # Link to common data
-folderOut <- "output/"
+folderOut <- "/mnt/vmfileshare/SCP_Outputs/outputs/"
 
 set.seed(10091989)
 
