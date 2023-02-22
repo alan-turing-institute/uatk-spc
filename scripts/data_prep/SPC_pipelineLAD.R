@@ -14,6 +14,7 @@ HS <- HST %>% filter(country == countryR)
 ##### Load and glue SPENSER #####
 #################################
 
+print("starting...")
 
 pop <- read.csv(paste(folderIn,"ass_",lad,"_MSOA11_",date,".csv",sep = ""))
 pop <- pop[which(pop$HID >= 0),]
@@ -52,6 +53,8 @@ merge$ethnicity <- sapply(merge$ethnicity, newEth)
 ##### Add various #####
 #######################
 
+print("adding Health data")
+
 age35g <- sapply(merge$age, createAge35g)
 
 ### HSs
@@ -88,6 +91,8 @@ merge$HEALTH_bmi[which(merge$HEALTH_bmi < minBMI)] <- minBMI
 
 ### TUS
 
+print("adding time use data")
+
 # Assign new NSSEC8 for non reference people
 merge$nssec8 <- -1
 nssecRef <- c(1:9)
@@ -122,6 +127,8 @@ merge <- merge[,c(1:7,23,8:22,24:31)]
 
 ### Income
 
+print("adding income data")
+
 region <- unique(lu$RGN20NM[lu$LAD20CD == lad])
 if(countryR == "England"){
   merge <- addToData2(merge,region,coefFFT,coefFPT,coefMFT,coefMPT)
@@ -135,12 +142,16 @@ if(countryR == "England"){
 
 ### Events
 
+print("adding events proba")
+
 merge <- addSport(merge)
 merge <- addConcert(merge)
 merge <- addMuseum(merge)
 
 
 ### Coordinates
+
+print("adding coordinates")
 
 merge <- merge(merge,OACoords,by.x = "OA11CD",by.y = "OA11CD")
 
@@ -152,6 +163,8 @@ merge <- merge(merge,OACoords,by.x = "OA11CD",by.y = "OA11CD")
 
 merge <- merge[order(merge$pid),c(2:3,1,5:46)]
 row.names(merge) <- 1:nrow(merge)
+
+print("... and writing output")
 
 write.table(merge,paste(folderOut, countryR,"/", date,"/",lad,".csv",sep=""),sep = ",",row.names = F)
 
