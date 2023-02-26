@@ -7,6 +7,7 @@
   import Plots from "./components/Plots.svelte";
   import Diaries from "./components/Diaries.svelte";
   import Venues from "./components/Venues.svelte";
+  import About from "./components/About.svelte";
 
   import { onMount } from "svelte";
   import { synthpop } from "./pb/synthpop_pb.js";
@@ -20,7 +21,7 @@
   // When using 'npm run dev', auto-load a file for quicker development
   if (import.meta.env.DEV) {
     onMount(async () => {
-      let resp = await fetch("greater_london.pb");
+      let resp = await fetch("rutland.pb");
       loadArrayBuffer(await resp.arrayBuffer());
     });
   }
@@ -55,6 +56,7 @@
   <Layout>
     <div slot="left">
       <h1>SPC</h1>
+      <About />
       <Sidebar {msoas} {hoveredMsoa} />
       <hr />
       <Plots {pop} {clickedMsoa} />
