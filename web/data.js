@@ -4,25 +4,25 @@ import { synthpop } from "./pb/synthpop_pb.js";
 export const PER_PERSON_NUMERIC_PROPS = {
   age: {
     get: (p) => p.demographics.ageYears,
-    label: "age (years)",
+    label: "Age (years)",
     fmt: (x) => x.toFixed(0),
     theme: "Demographics",
   },
   salary_yearly: {
     get: (p) => getOptional(p.employment, "salaryYearly"),
-    label: "yearly salary for working population",
+    label: "Yearly salary for working population",
     fmt: (x) => x.toFixed(1),
     theme: "Employment",
   },
   salary_hourly: {
     get: (p) => getOptional(p.employment, "salaryHourly"),
-    label: "hourly salary for working population",
+    label: "Hourly salary for working population",
     fmt: (x) => x.toFixed(1),
     theme: "Employment",
   },
   bmi: {
     get: (p) => getOptional(p.health, "bmi"),
-    label: "BMI for adult population",
+    label: "BMI for individuals over 16",
     fmt: (x) => x.toFixed(1),
     theme: "Health",
   },
@@ -53,19 +53,19 @@ function numberEnumMap(max) {
 export const PER_PERSON_CATEGORICAL_PROPS = {
   sex: {
     get: (p) => p.demographics.sex,
-    label: "sex",
+    label: "Sex",
     lookup: enumToString(synthpop.Sex),
     theme: "Demographics",
   },
   ethnicity: {
     get: (p) => p.demographics.ethnicity,
-    label: "ethnicity",
+    label: "Ethnicity",
     lookup: enumToString(synthpop.Ethnicity),
     theme: "Demographics",
   },
   socioeconomic_classification: {
     get: (p) => getOptional(p.demographics, "nssec8"),
-    label: "socioeconomic classification",
+    label: "NSSEC socioeconomic classification",
     lookup: enumToString(synthpop.Nssec8),
     theme: "Employment",
   },
@@ -80,7 +80,7 @@ export const PER_PERSON_CATEGORICAL_PROPS = {
 export const PER_HOUSEHOLD_CATEGORICAL_PROPS = {
   socioeconomic_classification: {
     get: (hh) => getOptional(hh, "nssec8"),
-    label: "Professional working status of reference person",
+    label: "NSSEC of reference person",
     lookup: enumToString(synthpop.Nssec8),
     theme: "Household",
   },
@@ -120,7 +120,7 @@ export const PER_HOUSEHOLD_CATEGORICAL_PROPS = {
   },
   num_cars: {
     get: (hh) => getOptional(hh, "numCars"),
-    label: "Number of cars (capped at 3)",
+    label: "Number of cars (capped at 2)",
     lookup: numberEnumMap(3),
     theme: "Household",
   },

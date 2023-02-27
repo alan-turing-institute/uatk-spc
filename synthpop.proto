@@ -251,6 +251,30 @@ message Health {
     required bool has_diabetes = 3;
     // For Scotland and England, Doctor diagnosed high blood pressure; for Wales, high blood pressure currently treated
     required bool has_high_blood_pressure = 4;
+
+    // Number of prescribed medications; capped at 8 for England, at 18 for Scotland, at 1 for Wales
+    //optional uint32 number_medicine = 5;
+    // Self assessed general health; for Welsh adults, very good includes excellent and bad and very bad have been merged
+    //optional SelfAssessed self_assessed_health = 6;
+    // How satisfied with life nowadays
+    //optional LifeSatisfaction life_satisfaction = 7;
+}
+
+// Self-assessed general health
+enum SelfAssessed {
+    VERY_GOOD = 1;
+    GOOD = 2;
+    FAIR = 3;
+    BAD = 4;
+    VERY_BAD = 5;
+}
+
+// Life satisfaction
+enum LifeSatisfaction {
+    LOW = 1;
+    MEDIUM = 2;
+    HIGH = 3;
+    VERY_HIGH = 4;
 }
 
 message Events {

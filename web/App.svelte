@@ -55,7 +55,7 @@
 {#if pop}
   <Layout>
     <div slot="left">
-      <h1>SPC</h1>
+      <h1>Synthetic Population Catalyst (SPC)</h1>
       <About />
       <Sidebar {msoas} {hoveredMsoa} />
       <hr />

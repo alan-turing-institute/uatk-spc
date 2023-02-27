@@ -53,7 +53,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
         results.population_files.push(gunzip(
             download_file(
                 &format!("countydata-v2/{country}/{}", input.year),
-                format!("pop_{area}.csv.gz"),
+                format!("pop_{area}_{}.csv.gz", input.year),
             )
             .await?,
         )?);
