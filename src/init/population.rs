@@ -162,10 +162,13 @@ struct RawPerson {
     #[serde(rename = "incomeY", deserialize_with = "parse_f32_or_na")]
     salary_yearly: Option<f32>,
 
-    #[serde(deserialize_with = "parse_f32_or_na")]
+    #[serde(rename = "HEALTH_bmi", deserialize_with = "parse_f32_or_na")]
     bmi: Option<f32>,
+    #[serde(rename = "HEALTH_cvd")]
     cvd: u8,
+    #[serde(rename = "HEALTH_diabetes")]
     diabetes: u8,
+    #[serde(rename = "HEALTH_bloodpressure")]
     bloodpressure: u8,
 
     #[serde(rename = "HOUSE_nssec8")]
