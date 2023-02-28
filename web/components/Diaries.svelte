@@ -16,7 +16,8 @@
   // State
   let show = false;
   let hoverId;
-  let modalContents = null;
+  let modalContents;
+  let showModal = false;
 
   let sample_size = 50;
   let start_date = new Date("February 5, 2019");
@@ -84,6 +85,7 @@
       if (features.length == 1) {
         let person = pop.people[features[0].properties.id];
         modalContents = JSON.stringify(person, null, "  ");
+        showModal = true;
       }
     });
   });
@@ -332,7 +334,9 @@
   {/if}
 </div>
 
-<Modal bind:contents={modalContents} />
+<Modal bind:show={showModal}>
+  {modalContents}
+</Modal>
 
 <style>
   .legend {

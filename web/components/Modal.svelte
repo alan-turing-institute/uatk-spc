@@ -1,24 +1,57 @@
 <script>
-  export let contents = null;
+  import { onMount } from "svelte";
+
+  let div;
+
+  export let show = false;
+
+  // TODO This is flaky
+  onMount(() => {
+    window.onclick = (e) => {
+      if (show && e.target == div) {
+        show = false;
+      }
+    };
+  });
 </script>
 
-{#if contents != null}
-  <div>
-    <button type="button" on:click={() => (contents = null)}>Close</button>
-    <pre>{contents}</pre>
+<div class="background" bind:this={div} class:show class:hide={!show}>
+  <div class="content centered-fullscreen">
+    <div>
+      <button type="button" on:click={() => (show = false)}>Close</button>
+    </div>
+    <slot />
   </div>
-{/if}
+</div>
 
 <style>
-  div {
+  .background {
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .content {
     background: white;
     padding: 30px;
     border: 1px solid black;
+  }
 
-    position: absolute;
-    width: 60vw;
-    height: 60vh;
-    z-index: 10;
-    overflow: scroll;
+  .centered-fullscreen {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .show {
+    display: block;
+  }
+  .hide {
+    display: none;
   }
 </style>
