@@ -204,6 +204,10 @@
 
       averages.values = sums.map((x) => x / sample_size);
 
+      if (!show) {
+        gj.features = [];
+      }
+
       map.getSource(source).setData(gj);
     }
   }
