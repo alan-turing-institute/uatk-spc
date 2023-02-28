@@ -1,4 +1,5 @@
 <script>
+  import Modal from "./Modal.svelte";
   import { getContext, onMount, onDestroy } from "svelte";
   import { geometricReservoirSample, createWeightedChoice } from "pandemonium";
   import Plotly from "plotly.js-dist";
@@ -15,6 +16,7 @@
   // State
   let show = false;
   let hoverId;
+  let modalContents = null;
 
   let sample_size = 50;
   let start_date = new Date("February 5, 2019");
@@ -81,7 +83,7 @@
       });
       if (features.length == 1) {
         let person = pop.people[features[0].properties.id];
-        window.alert(`${JSON.stringify(person, null, "  ")}`);
+        modalContents = JSON.stringify(person, null, "  ");
       }
     });
   });
@@ -329,6 +331,8 @@
     <div use:pieChart={{ data: averages }} />
   {/if}
 </div>
+
+<Modal bind:contents={modalContents} />
 
 <style>
   .legend {
