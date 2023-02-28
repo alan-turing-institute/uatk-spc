@@ -4215,6 +4215,9 @@ export const synthpop = $root.synthpop = (() => {
          * @property {boolean} hasCardiovascularDisease Health hasCardiovascularDisease
          * @property {boolean} hasDiabetes Health hasDiabetes
          * @property {boolean} hasHighBloodPressure Health hasHighBloodPressure
+         * @property {number|Long|null} [numberMedications] Health numberMedications
+         * @property {synthpop.SelfAssessedHealth|null} [selfAssessedHealth] Health selfAssessedHealth
+         * @property {synthpop.LifeSatisfaction|null} [lifeSatisfaction] Health lifeSatisfaction
          */
 
         /**
@@ -4265,6 +4268,30 @@ export const synthpop = $root.synthpop = (() => {
         Health.prototype.hasHighBloodPressure = false;
 
         /**
+         * Health numberMedications.
+         * @member {number|Long} numberMedications
+         * @memberof synthpop.Health
+         * @instance
+         */
+        Health.prototype.numberMedications = $util.Long ? $util.Long.fromBits(0,0,true) : 0;
+
+        /**
+         * Health selfAssessedHealth.
+         * @member {synthpop.SelfAssessedHealth} selfAssessedHealth
+         * @memberof synthpop.Health
+         * @instance
+         */
+        Health.prototype.selfAssessedHealth = 1;
+
+        /**
+         * Health lifeSatisfaction.
+         * @member {synthpop.LifeSatisfaction} lifeSatisfaction
+         * @memberof synthpop.Health
+         * @instance
+         */
+        Health.prototype.lifeSatisfaction = 1;
+
+        /**
          * Creates a new Health instance using the specified properties.
          * @function create
          * @memberof synthpop.Health
@@ -4293,6 +4320,12 @@ export const synthpop = $root.synthpop = (() => {
             writer.uint32(/* id 2, wireType 0 =*/16).bool(message.hasCardiovascularDisease);
             writer.uint32(/* id 3, wireType 0 =*/24).bool(message.hasDiabetes);
             writer.uint32(/* id 4, wireType 0 =*/32).bool(message.hasHighBloodPressure);
+            if (message.numberMedications != null && Object.hasOwnProperty.call(message, "numberMedications"))
+                writer.uint32(/* id 5, wireType 0 =*/40).uint64(message.numberMedications);
+            if (message.selfAssessedHealth != null && Object.hasOwnProperty.call(message, "selfAssessedHealth"))
+                writer.uint32(/* id 6, wireType 0 =*/48).int32(message.selfAssessedHealth);
+            if (message.lifeSatisfaction != null && Object.hasOwnProperty.call(message, "lifeSatisfaction"))
+                writer.uint32(/* id 7, wireType 0 =*/56).int32(message.lifeSatisfaction);
             return writer;
         };
 
@@ -4341,6 +4374,18 @@ export const synthpop = $root.synthpop = (() => {
                     }
                 case 4: {
                         message.hasHighBloodPressure = reader.bool();
+                        break;
+                    }
+                case 5: {
+                        message.numberMedications = reader.uint64();
+                        break;
+                    }
+                case 6: {
+                        message.selfAssessedHealth = reader.int32();
+                        break;
+                    }
+                case 7: {
+                        message.lifeSatisfaction = reader.int32();
                         break;
                     }
                 default:
@@ -4393,6 +4438,30 @@ export const synthpop = $root.synthpop = (() => {
                 return "hasDiabetes: boolean expected";
             if (typeof message.hasHighBloodPressure !== "boolean")
                 return "hasHighBloodPressure: boolean expected";
+            if (message.numberMedications != null && message.hasOwnProperty("numberMedications"))
+                if (!$util.isInteger(message.numberMedications) && !(message.numberMedications && $util.isInteger(message.numberMedications.low) && $util.isInteger(message.numberMedications.high)))
+                    return "numberMedications: integer|Long expected";
+            if (message.selfAssessedHealth != null && message.hasOwnProperty("selfAssessedHealth"))
+                switch (message.selfAssessedHealth) {
+                default:
+                    return "selfAssessedHealth: enum value expected";
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                    break;
+                }
+            if (message.lifeSatisfaction != null && message.hasOwnProperty("lifeSatisfaction"))
+                switch (message.lifeSatisfaction) {
+                default:
+                    return "lifeSatisfaction: enum value expected";
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                    break;
+                }
             return null;
         };
 
@@ -4416,6 +4485,67 @@ export const synthpop = $root.synthpop = (() => {
                 message.hasDiabetes = Boolean(object.hasDiabetes);
             if (object.hasHighBloodPressure != null)
                 message.hasHighBloodPressure = Boolean(object.hasHighBloodPressure);
+            if (object.numberMedications != null)
+                if ($util.Long)
+                    (message.numberMedications = $util.Long.fromValue(object.numberMedications)).unsigned = true;
+                else if (typeof object.numberMedications === "string")
+                    message.numberMedications = parseInt(object.numberMedications, 10);
+                else if (typeof object.numberMedications === "number")
+                    message.numberMedications = object.numberMedications;
+                else if (typeof object.numberMedications === "object")
+                    message.numberMedications = new $util.LongBits(object.numberMedications.low >>> 0, object.numberMedications.high >>> 0).toNumber(true);
+            switch (object.selfAssessedHealth) {
+            default:
+                if (typeof object.selfAssessedHealth === "number") {
+                    message.selfAssessedHealth = object.selfAssessedHealth;
+                    break;
+                }
+                break;
+            case "VERY_GOOD":
+            case 1:
+                message.selfAssessedHealth = 1;
+                break;
+            case "GOOD":
+            case 2:
+                message.selfAssessedHealth = 2;
+                break;
+            case "FAIR":
+            case 3:
+                message.selfAssessedHealth = 3;
+                break;
+            case "BAD":
+            case 4:
+                message.selfAssessedHealth = 4;
+                break;
+            case "VERY_BAD":
+            case 5:
+                message.selfAssessedHealth = 5;
+                break;
+            }
+            switch (object.lifeSatisfaction) {
+            default:
+                if (typeof object.lifeSatisfaction === "number") {
+                    message.lifeSatisfaction = object.lifeSatisfaction;
+                    break;
+                }
+                break;
+            case "LOW":
+            case 1:
+                message.lifeSatisfaction = 1;
+                break;
+            case "MEDIUM":
+            case 2:
+                message.lifeSatisfaction = 2;
+                break;
+            case "HIGH":
+            case 3:
+                message.lifeSatisfaction = 3;
+                break;
+            case "VERY_HIGH":
+            case 4:
+                message.lifeSatisfaction = 4;
+                break;
+            }
             return message;
         };
 
@@ -4437,6 +4567,13 @@ export const synthpop = $root.synthpop = (() => {
                 object.hasCardiovascularDisease = false;
                 object.hasDiabetes = false;
                 object.hasHighBloodPressure = false;
+                if ($util.Long) {
+                    let long = new $util.Long(0, 0, true);
+                    object.numberMedications = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                } else
+                    object.numberMedications = options.longs === String ? "0" : 0;
+                object.selfAssessedHealth = options.enums === String ? "VERY_GOOD" : 1;
+                object.lifeSatisfaction = options.enums === String ? "LOW" : 1;
             }
             if (message.bmi != null && message.hasOwnProperty("bmi"))
                 object.bmi = options.json && !isFinite(message.bmi) ? String(message.bmi) : message.bmi;
@@ -4446,6 +4583,15 @@ export const synthpop = $root.synthpop = (() => {
                 object.hasDiabetes = message.hasDiabetes;
             if (message.hasHighBloodPressure != null && message.hasOwnProperty("hasHighBloodPressure"))
                 object.hasHighBloodPressure = message.hasHighBloodPressure;
+            if (message.numberMedications != null && message.hasOwnProperty("numberMedications"))
+                if (typeof message.numberMedications === "number")
+                    object.numberMedications = options.longs === String ? String(message.numberMedications) : message.numberMedications;
+                else
+                    object.numberMedications = options.longs === String ? $util.Long.prototype.toString.call(message.numberMedications) : options.longs === Number ? new $util.LongBits(message.numberMedications.low >>> 0, message.numberMedications.high >>> 0).toNumber(true) : message.numberMedications;
+            if (message.selfAssessedHealth != null && message.hasOwnProperty("selfAssessedHealth"))
+                object.selfAssessedHealth = options.enums === String ? $root.synthpop.SelfAssessedHealth[message.selfAssessedHealth] === undefined ? message.selfAssessedHealth : $root.synthpop.SelfAssessedHealth[message.selfAssessedHealth] : message.selfAssessedHealth;
+            if (message.lifeSatisfaction != null && message.hasOwnProperty("lifeSatisfaction"))
+                object.lifeSatisfaction = options.enums === String ? $root.synthpop.LifeSatisfaction[message.lifeSatisfaction] === undefined ? message.lifeSatisfaction : $root.synthpop.LifeSatisfaction[message.lifeSatisfaction] : message.lifeSatisfaction;
             return object;
         };
 
@@ -4476,6 +4622,44 @@ export const synthpop = $root.synthpop = (() => {
         };
 
         return Health;
+    })();
+
+    /**
+     * SelfAssessedHealth enum.
+     * @name synthpop.SelfAssessedHealth
+     * @enum {number}
+     * @property {number} VERY_GOOD=1 VERY_GOOD value
+     * @property {number} GOOD=2 GOOD value
+     * @property {number} FAIR=3 FAIR value
+     * @property {number} BAD=4 BAD value
+     * @property {number} VERY_BAD=5 VERY_BAD value
+     */
+    synthpop.SelfAssessedHealth = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[1] = "VERY_GOOD"] = 1;
+        values[valuesById[2] = "GOOD"] = 2;
+        values[valuesById[3] = "FAIR"] = 3;
+        values[valuesById[4] = "BAD"] = 4;
+        values[valuesById[5] = "VERY_BAD"] = 5;
+        return values;
+    })();
+
+    /**
+     * LifeSatisfaction enum.
+     * @name synthpop.LifeSatisfaction
+     * @enum {number}
+     * @property {number} LOW=1 LOW value
+     * @property {number} MEDIUM=2 MEDIUM value
+     * @property {number} HIGH=3 HIGH value
+     * @property {number} VERY_HIGH=4 VERY_HIGH value
+     */
+    synthpop.LifeSatisfaction = (function() {
+        const valuesById = {}, values = Object.create(valuesById);
+        values[valuesById[1] = "LOW"] = 1;
+        values[valuesById[2] = "MEDIUM"] = 2;
+        values[valuesById[3] = "HIGH"] = 3;
+        values[valuesById[4] = "VERY_HIGH"] = 4;
+        return values;
     })();
 
     synthpop.Events = (function() {

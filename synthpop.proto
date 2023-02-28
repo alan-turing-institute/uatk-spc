@@ -253,18 +253,20 @@ message Health {
     required bool has_high_blood_pressure = 4;
 
     // Number of prescribed medications; capped at 8 for England, at 18 for Scotland, at 1 for Wales
-    //optional uint32 number_medicine = 5;
-    // Self assessed general health; for Welsh adults, very good includes excellent and bad and very bad have been merged
-    //optional SelfAssessed self_assessed_health = 6;
+    optional uint64 number_medications = 5;
+    // Self assessed general health
+    optional SelfAssessedHealth self_assessed_health = 6;
     // How satisfied with life nowadays
-    //optional LifeSatisfaction life_satisfaction = 7;
+    optional LifeSatisfaction life_satisfaction = 7;
 }
 
 // Self-assessed general health
-enum SelfAssessed {
+enum SelfAssessedHealth {
+    // For Welsh adults, VERY_GOOD includes EXCELLENT
     VERY_GOOD = 1;
     GOOD = 2;
     FAIR = 3;
+    // For Welsh adults, BAD includes VERY_BAD
     BAD = 4;
     VERY_BAD = 5;
 }
