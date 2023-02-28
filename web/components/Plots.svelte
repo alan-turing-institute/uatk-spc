@@ -1,4 +1,5 @@
 <script>
+  import Tabs from "./Tabs.svelte";
   import { onMount } from "svelte";
   import Plotly from "plotly.js-dist";
   import {
@@ -112,13 +113,10 @@
   <p>Click an MSOA to filter</p>
 {/if}
 
-Theme:
-<select bind:value={theme}>
-  <option value="Demographics">Demographics</option>
-  <option value="Employment">Employment</option>
-  <option value="Health">Health</option>
-  <option value="Household">Household</option>
-</select>
+<Tabs
+  tabs={["Demographics", "Employment", "Health", "Household"]}
+  bind:active={theme}
+/>
 
 {#each Object.entries(numericData) as [key, dataset]}
   {#if PER_PERSON_NUMERIC_PROPS[key].theme == theme}
