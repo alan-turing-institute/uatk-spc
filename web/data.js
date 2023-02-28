@@ -75,6 +75,18 @@ export const PER_PERSON_CATEGORICAL_PROPS = {
     lookup: enumToString(synthpop.PwkStat),
     theme: "Employment",
   },
+  self_assessed_health: {
+    get: (p) => getOptional(p.health, "selfAssessedHealth"),
+    label: "Self-assessed general health",
+    lookup: enumToString(synthpop.SelfAssessedHealth),
+    theme: "Health",
+  },
+  life_satisfaction: {
+    get: (p) => getOptional(p.health, "lifeSatisfaction"),
+    label: "Life satisfaction",
+    lookup: enumToString(synthpop.LifeSatisfaction),
+    theme: "Health",
+  },
 };
 
 export const PER_HOUSEHOLD_CATEGORICAL_PROPS = {

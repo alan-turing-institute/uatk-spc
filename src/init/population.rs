@@ -170,6 +170,12 @@ struct RawPerson {
     diabetes: u8,
     #[serde(rename = "HEALTH_bloodpressure")]
     bloodpressure: u8,
+    #[serde(rename = "HEALTH_NMedicines")]
+    number_medications: i64,
+    #[serde(rename = "HEALTH_selfAssessed")]
+    self_assessed_health: i32,
+    #[serde(rename = "HEALTH_lifeSat")]
+    life_satisfaction: i32,
 
     #[serde(rename = "HOUSE_nssec8")]
     hh_nssec8: i32,
@@ -271,6 +277,11 @@ impl RawPerson {
                 has_cardiovascular_disease: self.cvd > 0,
                 has_diabetes: self.diabetes > 0,
                 has_high_blood_pressure: self.bloodpressure > 0,
+                number_medications: parse_optional_neg1(self.number_medications)?,
+                self_assessed_health: pb::SelfAssessedHealth::from_i32(self.self_assessed_health)
+                    .map(|x| x.into()),
+                life_satisfaction: pb::LifeSatisfaction::from_i32(self.life_satisfaction)
+                    .map(|x| x.into()),
             },
             events: pb::Events {
                 sport: self.e_sport,

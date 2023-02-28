@@ -21,7 +21,7 @@
   // When using 'npm run dev', auto-load a file for quicker development
   if (import.meta.env.DEV) {
     onMount(async () => {
-      let resp = await fetch("rutland.pb");
+      let resp = await fetch("isle-of-anglesey.pb");
       loadArrayBuffer(await resp.arrayBuffer());
     });
   }
