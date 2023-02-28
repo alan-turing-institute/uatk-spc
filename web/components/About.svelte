@@ -8,7 +8,6 @@
   onMount(() => {
     window.onclick = (e) => {
       if (show && e.target == div) {
-        console.log(`close modal`);
         show = false;
       }
     };
