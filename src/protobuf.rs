@@ -37,8 +37,9 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
             employment: person.employment.clone(),
             health: person.health.clone(),
             events: person.events.clone(),
-            weekday_diaries: person.weekday_diaries.iter().map(|x| x.0.clone()).collect(),
-            weekend_diaries: person.weekend_diaries.iter().map(|x| x.0.clone()).collect(),
+            // We earlier verify these IDs fit
+            weekday_diaries: person.weekday_diaries.iter().map(|x| x.0 as u32).collect(),
+            weekend_diaries: person.weekend_diaries.iter().map(|x| x.0 as u32).collect(),
         });
     }
 
@@ -69,8 +70,8 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
         );
     }
 
-    for (id, diary) in &input.time_use_diaries {
-        output.time_use_diaries.insert(id.0.clone(), diary.clone());
+    for diary in &input.time_use_diaries {
+        output.time_use_diaries.push(diary.clone());
     }
 
     let mut buf = Vec::new();

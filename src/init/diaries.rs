@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, HashMap};
+use std::collections::HashMap;
 
 use anyhow::Result;
 use fs_err::File;
@@ -10,53 +10,50 @@ use crate::{DiaryID, Population};
 #[instrument(skip_all)]
 pub fn load_time_use_diaries(population: &mut Population) -> Result<()> {
     info!("Loading TimeUseDiaries");
-    let mut map = BTreeMap::new();
 
     let path = "data/raw_data/nationaldata-v2/diariesRef.csv";
     for rec in csv::Reader::from_reader(File::open(path)?).deserialize() {
         let rec: HashMap<String, String> = rec?;
-        let uid = DiaryID(rec["uniqueID"].clone());
 
         // TODO We could be more paranoid here
-        map.insert(
-            uid.clone(),
-            TimeUseDiary {
-                uid: rec["uniqueID"].clone(),
-                weekday: rec["weekday"] == "1",
-                day_type: rec["dayType"].parse()?,
-                month: rec["month"].parse()?,
-                pworkhome: rec["pworkhome"].parse()?,
-                phomeother: rec["phomeother"].parse()?,
-                pwork: rec["pwork"].parse()?,
-                pschool: rec["pschool"].parse()?,
-                pshop: rec["pshop"].parse()?,
-                pservices: rec["pservices"].parse()?,
-                pleisure: rec["pleisure"].parse()?,
-                pescort: rec["pescort"].parse()?,
-                ptransport: rec["ptransport"].parse()?,
-                phome_total: rec["phomeTOT"].parse()?,
-                pnothome_total: rec["pnothomeTOT"].parse()?,
-                punknown_total: rec["punknownTOT"].parse()?,
-                pmwalk: rec["pmwalk"].parse()?,
-                pmcycle: rec["pmcycle"].parse()?,
-                pmpublic: rec["pmpublic"].parse()?,
-                pmprivate: rec["pmprivate"].parse()?,
-                pmunknown: rec["pmunknown"].parse()?,
-                sex: Sex::from_i32(rec["sex"].parse()?)
-                    .expect("Unknown sex")
-                    .into(),
-                age35g: rec["age35g"].parse()?,
-                // TODO If the numeric values don't match, just gives up. Should we check for -1
-                // explicitly?
-                nssec8: Nssec8::from_i32(rec["nssec8"].parse()?).map(|x| x.into()),
-                pwkstat: PwkStat::from_i32(rec["pwkstat"].parse()?)
-                    .expect("Unknown pwkstat")
-                    .into(),
-            },
-        );
+        population.time_use_diaries.push(TimeUseDiary {
+            uid: rec["uniqueID"].clone(),
+            weekday: rec["weekday"] == "1",
+            day_type: rec["dayType"].parse()?,
+            month: rec["month"].parse()?,
+            pworkhome: rec["pworkhome"].parse()?,
+            phomeother: rec["phomeother"].parse()?,
+            pwork: rec["pwork"].parse()?,
+            pschool: rec["pschool"].parse()?,
+            pshop: rec["pshop"].parse()?,
+            pservices: rec["pservices"].parse()?,
+            pleisure: rec["pleisure"].parse()?,
+            pescort: rec["pescort"].parse()?,
+            ptransport: rec["ptransport"].parse()?,
+            phome_total: rec["phomeTOT"].parse()?,
+            pnothome_total: rec["pnothomeTOT"].parse()?,
+            punknown_total: rec["punknownTOT"].parse()?,
+            pmwalk: rec["pmwalk"].parse()?,
+            pmcycle: rec["pmcycle"].parse()?,
+            pmpublic: rec["pmpublic"].parse()?,
+            pmprivate: rec["pmprivate"].parse()?,
+            pmunknown: rec["pmunknown"].parse()?,
+            sex: Sex::from_i32(rec["sex"].parse()?)
+                .expect("Unknown sex")
+                .into(),
+            age35g: rec["age35g"].parse()?,
+            // TODO If the numeric values don't match, just gives up. Should we check for -1
+            // explicitly?
+            nssec8: Nssec8::from_i32(rec["nssec8"].parse()?).map(|x| x.into()),
+            pwkstat: PwkStat::from_i32(rec["pwkstat"].parse()?)
+                .expect("Unknown pwkstat")
+                .into(),
+        });
     }
 
-    population.time_use_diaries = map;
+    if population.time_use_diaries.len() >= 2_usize.pow(32) {
+        bail!("There are too many diaries; uint32 in the output proto schema won't work");
+    }
 
     info!(
         "{} diaries for {} people",
@@ -78,7 +75,7 @@ pub fn load_diaries_per_person(population: &mut Population) -> Result<()> {
 
     // Group diaries by (is weekday, age35g, sex, nssec8, pwkstat)
     let mut diaries: HashMap<(bool, u32, i32, Option<i32>, i32), Vec<DiaryID>> = HashMap::new();
-    for (id, diary) in &population.time_use_diaries {
+    for (id, diary) in population.time_use_diaries.iter_enumerated() {
         let key = (
             diary.weekday,
             diary.age35g,
@@ -86,7 +83,7 @@ pub fn load_diaries_per_person(population: &mut Population) -> Result<()> {
             diary.nssec8,
             diary.pwkstat,
         );
-        diaries.entry(key).or_insert_with(Vec::new).push(id.clone());
+        diaries.entry(key).or_insert_with(Vec::new).push(id);
     }
 
     // Assign weekday and weekend diaries to each person
