@@ -62,12 +62,12 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     for osm_url in osm_needed {
         let zip_path = download(
             &osm_url,
-            format!("data/raw_data/countydata/OSM/{}", filename(&osm_url)),
+            format!("data/raw_data/countydata-v2/OSM/{}", filename(&osm_url)),
         )
         .await?;
         // TODO .shp.zip, so we have to do basename twice
         let output_dir = format!(
-            "data/raw_data/countydata/OSM/{}/",
+            "data/raw_data/countydata-v2/OSM/{}/",
             basename(&basename(&osm_url))
         );
         unzip(zip_path, &output_dir)?;
@@ -77,11 +77,9 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     let path = download_file("nationaldata-v2", "QUANT_RAMP_spc.tar.gz").await?;
     untar(path, "data/raw_data/nationaldata-v2/QUANT_RAMP/")?;
 
-    let zip_path = download_file("nationaldata-v2", "businessRegistry.csv.zip").await?;
-    unzip(zip_path, "data/raw_data/nationaldata-v2/")?;
+    gunzip(download_file("nationaldata-v2", "businessRegistry.csv.gz").await?)?;
 
-    let zip_path = download_file("nationaldata-v2", "timeAtHomeIncreaseCTY.csv.zip").await?;
-    unzip(zip_path, "data/raw_data/nationaldata-v2/")?;
+    gunzip(download_file("nationaldata-v2", "timeAtHomeIncreaseCTY.csv.gz").await?)?;
 
     download_file("nationaldata-v2", "GIS/MSOA_2011_Pop20.geojson").await?;
 
