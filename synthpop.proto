@@ -14,8 +14,7 @@ message Population {
 
     required Lockdown lockdown = 5;
 
-    // Keyed by serial_pnum_weekday, derived from TUS 15
-    map<string, TimeUseDiary> time_use_diaries = 6;
+    repeated TimeUseDiary time_use_diaries = 6;
 
     // The year represented by this population
     required uint32 year = 7;
@@ -89,8 +88,8 @@ message Person {
 
     // A person's time use isn't the same every day.
     // These're keys in the Population-wide time_use_diaries mapping
-    repeated string weekday_diaries = 9;
-    repeated string weekend_diaries = 10;
+    repeated uint32 weekday_diaries = 9;
+    repeated uint32 weekend_diaries = 10;
 }
 
 message Identifiers {

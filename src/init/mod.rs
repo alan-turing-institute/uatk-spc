@@ -35,7 +35,7 @@ impl Population {
             venues_per_activity: EnumMap::default(),
             info_per_msoa: BTreeMap::new(),
             lockdown: crate::pb::Lockdown::default(),
-            time_use_diaries: BTreeMap::new(),
+            time_use_diaries: TiVec::new(),
             year: input.year,
         };
 

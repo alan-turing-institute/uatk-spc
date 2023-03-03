@@ -46,7 +46,7 @@ pub struct Population {
     pub info_per_msoa: BTreeMap<MSOA, InfoPerMSOA>,
 
     pub lockdown: pb::Lockdown,
-    pub time_use_diaries: BTreeMap<DiaryID, pb::TimeUseDiary>,
+    pub time_use_diaries: TiVec<DiaryID, pb::TimeUseDiary>,
 
     pub year: u32,
 }
@@ -78,10 +78,6 @@ pub struct OA(pub String);
 /// mobility data. It's not the same county as defined by ONS.
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
 pub struct County(String);
-
-/// serial_pnum_weekday, derived from TUS 15
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
-pub struct DiaryID(pub String);
 
 impl MSOA {
     pub async fn all_msoas_nationally() -> Result<BTreeSet<MSOA>> {
@@ -170,5 +166,13 @@ pub struct VenueID(pub usize);
 impl fmt::Display for VenueID {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "Venue #{}", self.0)
+    }
+}
+
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into)]
+pub struct DiaryID(pub usize);
+impl fmt::Display for DiaryID {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Diary #{}", self.0)
     }
 }
