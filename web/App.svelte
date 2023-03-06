@@ -17,6 +17,7 @@
   let hoveredMsoa;
   let clickedMsoa = null;
   let showDiaries = false;
+  let msoasColorBy = "households";
 
   // When using 'npm run dev', auto-load a file for quicker development
   if (import.meta.env.DEV) {
@@ -44,8 +45,9 @@
           bind:hoveredMsoa
           bind:clickedMsoa
           {showDiaries}
+          bind:colorBy={msoasColorBy}
         />
-        <Flows {pop} {msoas} {hoveredMsoa} {showDiaries} />
+        <Flows {pop} {msoas} {hoveredMsoa} {showDiaries} {msoasColorBy} />
         <Diaries {pop} bind:show={showDiaries} />
         <Venues {pop} />
       </Map>

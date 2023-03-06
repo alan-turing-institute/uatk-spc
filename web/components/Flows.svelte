@@ -10,6 +10,7 @@
   export let msoas;
   export let hoveredMsoa;
   export let showDiaries;
+  export let msoasColorBy;
 
   let show = "all";
 
@@ -19,6 +20,11 @@
   let layerDynamic = "flows-dynamic";
 
   $: if (showDiaries) {
+    show = "none";
+  }
+
+  // Flows depend on some MSOA layer being shown
+  $: if (msoasColorBy == "none") {
     show = "none";
   }
 
