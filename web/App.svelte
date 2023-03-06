@@ -31,6 +31,7 @@
     <div slot="left">
       <h1>Synthetic Population Catalyst (SPC)</h1>
       <About />
+      <FileLoader bind:pop bind:msoas />
       <Sidebar {msoas} {hoveredMsoa} />
       <hr />
       <Plots {pop} {clickedMsoa} />
