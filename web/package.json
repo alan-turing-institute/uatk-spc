@@ -28,6 +28,7 @@
     "maplibre-gl": "^2.4.0",
     "pandemonium": "^2.4.1",
     "plotly.js-dist": "^2.18.0",
+    "pretty-print-json": "^1.4.0",
     "svelte": "^3.54.0"
   }
 }

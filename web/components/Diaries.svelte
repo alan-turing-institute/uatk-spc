@@ -6,6 +6,8 @@
   import { synthpop } from "../pb/synthpop_pb.js";
   import { emptyGeojson } from "../data.js";
   import DateInput from "./DateInput.svelte";
+  import { prettyPrintJson } from "pretty-print-json";
+  import "pretty-print-json/css/pretty-print-json.css";
 
   const { getMap } = getContext("map");
   let map = getMap();
@@ -84,7 +86,7 @@
       });
       if (features.length == 1) {
         let person = pop.people[features[0].properties.id];
-        modalContents = JSON.stringify(person, null, "  ");
+        modalContents = prettyPrintJson.toHtml(person, { lineNumbers: true });
         showModal = true;
       }
     });
@@ -335,7 +337,7 @@
 </div>
 
 <Modal bind:show={showModal}>
-  <pre>{modalContents}</pre>
+  {@html modalContents}
 </Modal>
 
 <style>
