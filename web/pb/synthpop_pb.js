@@ -5871,7 +5871,7 @@ export const synthpop = $root.synthpop = (() => {
          * @memberof synthpop
          * @interface ILockdown
          * @property {string} startDate Lockdown startDate
-         * @property {Array.<number>|null} [perDay] Lockdown perDay
+         * @property {Array.<number>|null} [changePerDay] Lockdown changePerDay
          */
 
         /**
@@ -5883,7 +5883,7 @@ export const synthpop = $root.synthpop = (() => {
          * @param {synthpop.ILockdown=} [properties] Properties to set
          */
         function Lockdown(properties) {
-            this.perDay = [];
+            this.changePerDay = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -5899,12 +5899,12 @@ export const synthpop = $root.synthpop = (() => {
         Lockdown.prototype.startDate = "";
 
         /**
-         * Lockdown perDay.
-         * @member {Array.<number>} perDay
+         * Lockdown changePerDay.
+         * @member {Array.<number>} changePerDay
          * @memberof synthpop.Lockdown
          * @instance
          */
-        Lockdown.prototype.perDay = $util.emptyArray;
+        Lockdown.prototype.changePerDay = $util.emptyArray;
 
         /**
          * Creates a new Lockdown instance using the specified properties.
@@ -5931,9 +5931,9 @@ export const synthpop = $root.synthpop = (() => {
             if (!writer)
                 writer = $Writer.create();
             writer.uint32(/* id 1, wireType 2 =*/10).string(message.startDate);
-            if (message.perDay != null && message.perDay.length)
-                for (let i = 0; i < message.perDay.length; ++i)
-                    writer.uint32(/* id 2, wireType 5 =*/21).float(message.perDay[i]);
+            if (message.changePerDay != null && message.changePerDay.length)
+                for (let i = 0; i < message.changePerDay.length; ++i)
+                    writer.uint32(/* id 2, wireType 5 =*/21).float(message.changePerDay[i]);
             return writer;
         };
 
@@ -5973,14 +5973,14 @@ export const synthpop = $root.synthpop = (() => {
                         break;
                     }
                 case 2: {
-                        if (!(message.perDay && message.perDay.length))
-                            message.perDay = [];
+                        if (!(message.changePerDay && message.changePerDay.length))
+                            message.changePerDay = [];
                         if ((tag & 7) === 2) {
                             let end2 = reader.uint32() + reader.pos;
                             while (reader.pos < end2)
-                                message.perDay.push(reader.float());
+                                message.changePerDay.push(reader.float());
                         } else
-                            message.perDay.push(reader.float());
+                            message.changePerDay.push(reader.float());
                         break;
                     }
                 default:
@@ -6022,12 +6022,12 @@ export const synthpop = $root.synthpop = (() => {
                 return "object expected";
             if (!$util.isString(message.startDate))
                 return "startDate: string expected";
-            if (message.perDay != null && message.hasOwnProperty("perDay")) {
-                if (!Array.isArray(message.perDay))
-                    return "perDay: array expected";
-                for (let i = 0; i < message.perDay.length; ++i)
-                    if (typeof message.perDay[i] !== "number")
-                        return "perDay: number[] expected";
+            if (message.changePerDay != null && message.hasOwnProperty("changePerDay")) {
+                if (!Array.isArray(message.changePerDay))
+                    return "changePerDay: array expected";
+                for (let i = 0; i < message.changePerDay.length; ++i)
+                    if (typeof message.changePerDay[i] !== "number")
+                        return "changePerDay: number[] expected";
             }
             return null;
         };
@@ -6046,12 +6046,12 @@ export const synthpop = $root.synthpop = (() => {
             let message = new $root.synthpop.Lockdown();
             if (object.startDate != null)
                 message.startDate = String(object.startDate);
-            if (object.perDay) {
-                if (!Array.isArray(object.perDay))
-                    throw TypeError(".synthpop.Lockdown.perDay: array expected");
-                message.perDay = [];
-                for (let i = 0; i < object.perDay.length; ++i)
-                    message.perDay[i] = Number(object.perDay[i]);
+            if (object.changePerDay) {
+                if (!Array.isArray(object.changePerDay))
+                    throw TypeError(".synthpop.Lockdown.changePerDay: array expected");
+                message.changePerDay = [];
+                for (let i = 0; i < object.changePerDay.length; ++i)
+                    message.changePerDay[i] = Number(object.changePerDay[i]);
             }
             return message;
         };
@@ -6070,15 +6070,15 @@ export const synthpop = $root.synthpop = (() => {
                 options = {};
             let object = {};
             if (options.arrays || options.defaults)
-                object.perDay = [];
+                object.changePerDay = [];
             if (options.defaults)
                 object.startDate = "";
             if (message.startDate != null && message.hasOwnProperty("startDate"))
                 object.startDate = message.startDate;
-            if (message.perDay && message.perDay.length) {
-                object.perDay = [];
-                for (let j = 0; j < message.perDay.length; ++j)
-                    object.perDay[j] = options.json && !isFinite(message.perDay[j]) ? String(message.perDay[j]) : message.perDay[j];
+            if (message.changePerDay && message.changePerDay.length) {
+                object.changePerDay = [];
+                for (let j = 0; j < message.changePerDay.length; ++j)
+                    object.changePerDay[j] = options.json && !isFinite(message.changePerDay[j]) ? String(message.changePerDay[j]) : message.changePerDay[j];
             }
             return object;
         };

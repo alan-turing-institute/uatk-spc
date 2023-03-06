@@ -8,6 +8,7 @@
   import DateInput from "./DateInput.svelte";
   import { prettyPrintJson } from "pretty-print-json";
   import "pretty-print-json/css/pretty-print-json.css";
+  import dayjs from "dayjs";
 
   const { getMap } = getContext("map");
   let map = getMap();
@@ -22,8 +23,9 @@
   let showModal = false;
 
   let sample_size = 50;
-  let start_date = new Date("February 5, 2019");
+  let start_date = new Date("February 5, 2020");
   let date_offset = 0;
+  let lockdown;
   $: today = addDays(start_date, date_offset);
 
   let source = "people";
@@ -230,6 +232,23 @@
     map.removeSource(source);
   });
 
+  // Calculate lockdown when today changes
+  $: {
+    let lockdownStart = dayjs(pop.lockdown.startDate, "YYYY-MM-DD").toDate();
+    // TODO Can't get dayjs/plugin/duration to work. The below probably breaks
+    // with leap seconds and stuff.
+    let dayIndex = Math.floor((today - lockdownStart) / (1000 * 60 * 60 * 24));
+    if (dayIndex < 0) {
+      lockdown = `${-dayIndex} days before lockdown started`;
+    } else if (dayIndex >= pop.lockdown.changePerDay.length) {
+      lockdown = `${
+        dayIndex - pop.lockdown.changePerDay.length
+      } days after available mobility data`;
+    } else {
+      lockdown = pop.lockdown.changePerDay[dayIndex];
+    }
+  }
+
   function homeLocation(person) {
     let msoa = pop.infoPerMsoa[pop.households[person.household].msoa11cd];
     if (msoa.buildings.length > 0) {
@@ -329,9 +348,10 @@
       Start date: <DateInput bind:date={start_date} />
     </div>
     <div>
-      Day: <input type="number" bind:value={date_offset} min="0" max="100" />
+      Day: <input type="number" bind:value={date_offset} min="0" />
       {today.toDateString()}
     </div>
+    Lockdown change: {lockdown}
     <div use:pieChart={{ data: averages }} />
   {/if}
 </div>

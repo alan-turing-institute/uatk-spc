@@ -68,8 +68,7 @@ impl Population {
             &mut population,
         )?;
 
-        population.lockdown =
-            lockdown::calculate_lockdown_per_day(raw_results.msoas_per_county, &population)?;
+        population.lockdown = lockdown::calculate_lockdown_per_day(raw_results.msoas_per_county)?;
         population.remove_unused_venues();
 
         diaries::load_time_use_diaries(&mut population)?;
