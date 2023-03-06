@@ -6,7 +6,7 @@ use std::time::Instant;
 
 use anyhow::Result;
 use clap::Parser;
-use fs_err::File;
+use fs_err::{File, OpenOptions};
 use rand::rngs::StdRng;
 use rand::SeedableRng;
 use tracing::{info, info_span};
@@ -132,9 +132,7 @@ fn write_stats(
         .strip_prefix("Memory usage: ")
         .unwrap()
         .to_string();
-    let mut file = File::create("stats.csv")?;
-    // The formatted numbers use commas; add quotes around them
-    writeln!(file, "year,study_area,num_msoas,num_households,num_people,pb_file_size,runtime,commuting_runtime,memory_usage")?;
+    let mut file = OpenOptions::new().append(true).open("stats.csv")?;
     writeln!(
         file,
         r#""{year}","{country_region}","{num_msoas}","{num_households}","{num_people}","{pb_file_size}","{runtime}","{commuting_runtime}","{memory_usage}""#

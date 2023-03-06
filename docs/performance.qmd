@@ -67,5 +67,6 @@ Notes:
 - The total `runtime` is usually dominated by matching workers to businesses, so `commuting_runtime` gives a breakdown
 - Measuring memory usage of Linux processes isn't straightforward, so `memory_usage` should just be a guide
 - These measurements were all taken on one developer's laptop, and they don't represent multiple runs. This table just aims to give a general sense of how long running takes.
+- The time doesn't include downloading raw data.
   - That machine has 24 cores, which matters for the parallelized commuting calculation.
 - `scripts/collect_stats.py` produces the table above
