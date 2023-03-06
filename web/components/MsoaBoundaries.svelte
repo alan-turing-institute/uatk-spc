@@ -13,8 +13,8 @@
   // Output
   export let hoveredMsoa;
   export let clickedMsoa;
+  export let colorBy = "households";
 
-  let colorBy = "households";
   let limits = [];
   let colorScale = [];
 
