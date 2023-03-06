@@ -33,12 +33,11 @@
       features: Object.values(msoas),
     };
 
-    if (setCamera) {
-      map.fitBounds(bbox(gj), {
-        padding: 20,
-        animate: false,
-      });
-    }
+    // Ignore setCamera. When we switch files, the hash in the URL is irrelevant.
+    map.fitBounds(bbox(gj), {
+      padding: 20,
+      animate: false,
+    });
 
     // TODO If we pass the MSOA ID as feature.id, it gets dropped?
     map.addSource(source, { type: "geojson", data: gj, generateId: true });
