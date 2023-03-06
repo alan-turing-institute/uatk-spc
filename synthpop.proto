@@ -335,10 +335,10 @@ enum Activity {
 message Lockdown {
     // The YYYY-MM-DD date of the first entry in the daily list.
     required string start_date = 1;
-    // A coefficient to be applied to all not at home activities (unknown;
-    // work; school; shop; services; leisure; escort; transport; not_home).
-    // Update at home activity so that it still sums to 1.
-    repeated float per_day = 2;
+    // A list of factors by which regular mobility was reduced, with the first
+    // corresponding to start_date. 1.0 means no change from normal. Greater
+    // than 1 means some percent of regular mobility was reduced.
+    repeated float change_per_day = 2;
 }
 
 message TimeUseDiary {

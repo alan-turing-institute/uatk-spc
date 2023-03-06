@@ -12,6 +12,7 @@ use crate::{pb, Activity, InfoPerMSOA, Population};
 pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
     let mut output = pb::Population::default();
     output.year = input.year;
+    output.lockdown = input.lockdown.clone();
 
     for household in &input.households {
         output.households.push(pb::Household {

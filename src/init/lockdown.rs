@@ -5,40 +5,21 @@ use fs_err::File;
 use serde::Deserialize;
 
 use crate::pb::Lockdown;
-use crate::utilities::print_count;
-use crate::{County, Population, MSOA};
+use crate::{County, MSOA};
 
 #[instrument(skip_all)]
 pub fn calculate_lockdown_per_day(
     msoas_per_county: BTreeMap<County, Vec<MSOA>>,
-    population: &Population,
 ) -> Result<Lockdown> {
     let day0 = "2020-02-15";
 
     info!("Calculating per-day lockdown values");
 
-    // First get the total population per Google mobility area (which is a bunch of MSOAs)
-    let population_per_county: BTreeMap<County, u64> = msoas_per_county
-        .into_iter()
-        .map(|(county, msoas)| {
-            (
-                county,
-                msoas
-                    .iter()
-                    .map(|msoa| population.info_per_msoa[msoa].population)
-                    .sum(),
-            )
-        })
-        .collect();
-    let total_population: u64 = population_per_county.values().sum();
-    info!(
-        "Population has {} people, but based on per-county sum, it's {}",
-        print_count(population.people.len()),
-        print_count(total_population as usize)
-    );
+    // msoas_per_county only contains counties matching some MSOA in this study area. Just average
+    // the value in the Google mobility data for matching counties.
 
-    // Indexed by day. This is change * population, summed over all matching counties
-    let mut total_change_per_day: Vec<f32> = Vec::new();
+    // Indexed by day. This is change, with all all matching counties listed
+    let mut all_changes_per_day: Vec<Vec<f32>> = Vec::new();
 
     for rec in csv::Reader::from_reader(File::open(
         "data/raw_data/nationaldata-v2/timeAtHomeIncreaseCTY.csv",
@@ -53,37 +34,25 @@ pub fn calculate_lockdown_per_day(
 
         // The CSV file seems to list days in order, but just in case, pad with 0's to make sure
         // the vector is the right size
-        if rec.day >= total_change_per_day.len() {
-            total_change_per_day.resize(rec.day + 1, 0.0);
+        if rec.day >= all_changes_per_day.len() {
+            all_changes_per_day.resize(rec.day + 1, Vec::new());
         }
-        // We only have some Google mobility regions
-        if let Some(pop) = population_per_county.get(&rec.county) {
-            // Weight by the population in this area
-            total_change_per_day[rec.day] += rec.change * (*pop as f32);
+        if msoas_per_county.contains_key(&rec.county) {
+            all_changes_per_day[rec.day].push(rec.change);
         }
     }
 
-    // Find the mean decrease of time spent outside of home, over the entire population
-    /*let mean_pr_home_tot = population
-    .people
-    .iter()
-    .map(|person| person.time_use.home_total as f32)
-    .sum::<f32>()
-    / total_population as f32;*/
-    // TODO What do we change here?
-    let mean_pr_home_tot = 0.42;
-
-    let mut per_day = Vec::new();
-    for change in total_change_per_day {
-        // Re-scale the change by total population
-        let x = change / total_population as f32;
-        // From extra time at home to less time away from home
-        per_day.push((1.0 - (mean_pr_home_tot * x)) / (1.0 - mean_pr_home_tot));
+    // Now average per day
+    let mut change_per_day = Vec::new();
+    for changes in all_changes_per_day {
+        let n = changes.len() as f32;
+        let avg = changes.into_iter().sum::<f32>() / n;
+        change_per_day.push(avg);
     }
 
     Ok(Lockdown {
         start_date: day0.to_string(),
-        per_day,
+        change_per_day,
     })
 }
 
