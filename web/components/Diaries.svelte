@@ -335,7 +335,7 @@
 </div>
 
 <Modal bind:show={showModal}>
-  {modalContents}
+  <pre>{modalContents}</pre>
 </Modal>
 
 <style>
