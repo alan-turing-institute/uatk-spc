@@ -9,6 +9,7 @@
   export let pop;
   export let msoas;
   export let hoveredMsoa;
+  export let showDiaries;
 
   let show = "all";
 
@@ -16,6 +17,10 @@
   let source = "flows";
   let layerStatic = "flows-static";
   let layerDynamic = "flows-dynamic";
+
+  $: if (showDiaries) {
+    show = "none";
+  }
 
   // Set up the source and two layers once, with no data
   onMount(() => {
