@@ -27,7 +27,7 @@ export const synthpop = $root.synthpop = (() => {
          * @property {Object.<string,synthpop.IVenueList>|null} [venuesPerActivity] Population venuesPerActivity
          * @property {Object.<string,synthpop.IInfoPerMSOA>|null} [infoPerMsoa] Population infoPerMsoa
          * @property {synthpop.ILockdown} lockdown Population lockdown
-         * @property {Object.<string,synthpop.ITimeUseDiary>|null} [timeUseDiaries] Population timeUseDiaries
+         * @property {Array.<synthpop.ITimeUseDiary>|null} [timeUseDiaries] Population timeUseDiaries
          * @property {number} year Population year
          */
 
@@ -44,7 +44,7 @@ export const synthpop = $root.synthpop = (() => {
             this.people = [];
             this.venuesPerActivity = {};
             this.infoPerMsoa = {};
-            this.timeUseDiaries = {};
+            this.timeUseDiaries = [];
             if (properties)
                 for (let keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                     if (properties[keys[i]] != null)
@@ -93,11 +93,11 @@ export const synthpop = $root.synthpop = (() => {
 
         /**
          * Population timeUseDiaries.
-         * @member {Object.<string,synthpop.ITimeUseDiary>} timeUseDiaries
+         * @member {Array.<synthpop.ITimeUseDiary>} timeUseDiaries
          * @memberof synthpop.Population
          * @instance
          */
-        Population.prototype.timeUseDiaries = $util.emptyObject;
+        Population.prototype.timeUseDiaries = $util.emptyArray;
 
         /**
          * Population year.
@@ -148,11 +148,9 @@ export const synthpop = $root.synthpop = (() => {
                     $root.synthpop.InfoPerMSOA.encode(message.infoPerMsoa[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim().ldelim();
                 }
             $root.synthpop.Lockdown.encode(message.lockdown, writer.uint32(/* id 5, wireType 2 =*/42).fork()).ldelim();
-            if (message.timeUseDiaries != null && Object.hasOwnProperty.call(message, "timeUseDiaries"))
-                for (let keys = Object.keys(message.timeUseDiaries), i = 0; i < keys.length; ++i) {
-                    writer.uint32(/* id 6, wireType 2 =*/50).fork().uint32(/* id 1, wireType 2 =*/10).string(keys[i]);
-                    $root.synthpop.TimeUseDiary.encode(message.timeUseDiaries[keys[i]], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim().ldelim();
-                }
+            if (message.timeUseDiaries != null && message.timeUseDiaries.length)
+                for (let i = 0; i < message.timeUseDiaries.length; ++i)
+                    $root.synthpop.TimeUseDiary.encode(message.timeUseDiaries[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
             writer.uint32(/* id 7, wireType 0 =*/56).uint32(message.year);
             return writer;
         };
@@ -251,26 +249,9 @@ export const synthpop = $root.synthpop = (() => {
                         break;
                     }
                 case 6: {
-                        if (message.timeUseDiaries === $util.emptyObject)
-                            message.timeUseDiaries = {};
-                        let end2 = reader.uint32() + reader.pos;
-                        key = "";
-                        value = null;
-                        while (reader.pos < end2) {
-                            let tag2 = reader.uint32();
-                            switch (tag2 >>> 3) {
-                            case 1:
-                                key = reader.string();
-                                break;
-                            case 2:
-                                value = $root.synthpop.TimeUseDiary.decode(reader, reader.uint32());
-                                break;
-                            default:
-                                reader.skipType(tag2 & 7);
-                                break;
-                            }
-                        }
-                        message.timeUseDiaries[key] = value;
+                        if (!(message.timeUseDiaries && message.timeUseDiaries.length))
+                            message.timeUseDiaries = [];
+                        message.timeUseDiaries.push($root.synthpop.TimeUseDiary.decode(reader, reader.uint32()));
                         break;
                     }
                 case 7: {
@@ -364,11 +345,10 @@ export const synthpop = $root.synthpop = (() => {
                     return "lockdown." + error;
             }
             if (message.timeUseDiaries != null && message.hasOwnProperty("timeUseDiaries")) {
-                if (!$util.isObject(message.timeUseDiaries))
-                    return "timeUseDiaries: object expected";
-                let key = Object.keys(message.timeUseDiaries);
-                for (let i = 0; i < key.length; ++i) {
-                    let error = $root.synthpop.TimeUseDiary.verify(message.timeUseDiaries[key[i]]);
+                if (!Array.isArray(message.timeUseDiaries))
+                    return "timeUseDiaries: array expected";
+                for (let i = 0; i < message.timeUseDiaries.length; ++i) {
+                    let error = $root.synthpop.TimeUseDiary.verify(message.timeUseDiaries[i]);
                     if (error)
                         return "timeUseDiaries." + error;
                 }
@@ -436,13 +416,13 @@ export const synthpop = $root.synthpop = (() => {
                 message.lockdown = $root.synthpop.Lockdown.fromObject(object.lockdown);
             }
             if (object.timeUseDiaries) {
-                if (typeof object.timeUseDiaries !== "object")
-                    throw TypeError(".synthpop.Population.timeUseDiaries: object expected");
-                message.timeUseDiaries = {};
-                for (let keys = Object.keys(object.timeUseDiaries), i = 0; i < keys.length; ++i) {
-                    if (typeof object.timeUseDiaries[keys[i]] !== "object")
+                if (!Array.isArray(object.timeUseDiaries))
+                    throw TypeError(".synthpop.Population.timeUseDiaries: array expected");
+                message.timeUseDiaries = [];
+                for (let i = 0; i < object.timeUseDiaries.length; ++i) {
+                    if (typeof object.timeUseDiaries[i] !== "object")
                         throw TypeError(".synthpop.Population.timeUseDiaries: object expected");
-                    message.timeUseDiaries[keys[i]] = $root.synthpop.TimeUseDiary.fromObject(object.timeUseDiaries[keys[i]]);
+                    message.timeUseDiaries[i] = $root.synthpop.TimeUseDiary.fromObject(object.timeUseDiaries[i]);
                 }
             }
             if (object.year != null)
@@ -466,11 +446,11 @@ export const synthpop = $root.synthpop = (() => {
             if (options.arrays || options.defaults) {
                 object.households = [];
                 object.people = [];
+                object.timeUseDiaries = [];
             }
             if (options.objects || options.defaults) {
                 object.venuesPerActivity = {};
                 object.infoPerMsoa = {};
-                object.timeUseDiaries = {};
             }
             if (options.defaults) {
                 object.lockdown = null;
@@ -499,10 +479,10 @@ export const synthpop = $root.synthpop = (() => {
             }
             if (message.lockdown != null && message.hasOwnProperty("lockdown"))
                 object.lockdown = $root.synthpop.Lockdown.toObject(message.lockdown, options);
-            if (message.timeUseDiaries && (keys2 = Object.keys(message.timeUseDiaries)).length) {
-                object.timeUseDiaries = {};
-                for (let j = 0; j < keys2.length; ++j)
-                    object.timeUseDiaries[keys2[j]] = $root.synthpop.TimeUseDiary.toObject(message.timeUseDiaries[keys2[j]], options);
+            if (message.timeUseDiaries && message.timeUseDiaries.length) {
+                object.timeUseDiaries = [];
+                for (let j = 0; j < message.timeUseDiaries.length; ++j)
+                    object.timeUseDiaries[j] = $root.synthpop.TimeUseDiary.toObject(message.timeUseDiaries[j], options);
             }
             if (message.year != null && message.hasOwnProperty("year"))
                 object.year = message.year;
@@ -2391,8 +2371,8 @@ export const synthpop = $root.synthpop = (() => {
          * @property {synthpop.IEmployment} employment Person employment
          * @property {synthpop.IHealth} health Person health
          * @property {synthpop.IEvents} events Person events
-         * @property {Array.<string>|null} [weekdayDiaries] Person weekdayDiaries
-         * @property {Array.<string>|null} [weekendDiaries] Person weekendDiaries
+         * @property {Array.<number>|null} [weekdayDiaries] Person weekdayDiaries
+         * @property {Array.<number>|null} [weekendDiaries] Person weekendDiaries
          */
 
         /**
@@ -2478,7 +2458,7 @@ export const synthpop = $root.synthpop = (() => {
 
         /**
          * Person weekdayDiaries.
-         * @member {Array.<string>} weekdayDiaries
+         * @member {Array.<number>} weekdayDiaries
          * @memberof synthpop.Person
          * @instance
          */
@@ -2486,7 +2466,7 @@ export const synthpop = $root.synthpop = (() => {
 
         /**
          * Person weekendDiaries.
-         * @member {Array.<string>} weekendDiaries
+         * @member {Array.<number>} weekendDiaries
          * @memberof synthpop.Person
          * @instance
          */
@@ -2527,10 +2507,10 @@ export const synthpop = $root.synthpop = (() => {
             $root.synthpop.Events.encode(message.events, writer.uint32(/* id 8, wireType 2 =*/66).fork()).ldelim();
             if (message.weekdayDiaries != null && message.weekdayDiaries.length)
                 for (let i = 0; i < message.weekdayDiaries.length; ++i)
-                    writer.uint32(/* id 9, wireType 2 =*/74).string(message.weekdayDiaries[i]);
+                    writer.uint32(/* id 9, wireType 0 =*/72).uint32(message.weekdayDiaries[i]);
             if (message.weekendDiaries != null && message.weekendDiaries.length)
                 for (let i = 0; i < message.weekendDiaries.length; ++i)
-                    writer.uint32(/* id 10, wireType 2 =*/82).string(message.weekendDiaries[i]);
+                    writer.uint32(/* id 10, wireType 0 =*/80).uint32(message.weekendDiaries[i]);
             return writer;
         };
 
@@ -2600,13 +2580,23 @@ export const synthpop = $root.synthpop = (() => {
                 case 9: {
                         if (!(message.weekdayDiaries && message.weekdayDiaries.length))
                             message.weekdayDiaries = [];
-                        message.weekdayDiaries.push(reader.string());
+                        if ((tag & 7) === 2) {
+                            let end2 = reader.uint32() + reader.pos;
+                            while (reader.pos < end2)
+                                message.weekdayDiaries.push(reader.uint32());
+                        } else
+                            message.weekdayDiaries.push(reader.uint32());
                         break;
                     }
                 case 10: {
                         if (!(message.weekendDiaries && message.weekendDiaries.length))
                             message.weekendDiaries = [];
-                        message.weekendDiaries.push(reader.string());
+                        if ((tag & 7) === 2) {
+                            let end2 = reader.uint32() + reader.pos;
+                            while (reader.pos < end2)
+                                message.weekendDiaries.push(reader.uint32());
+                        } else
+                            message.weekendDiaries.push(reader.uint32());
                         break;
                     }
                 default:
@@ -2694,15 +2684,15 @@ export const synthpop = $root.synthpop = (() => {
                 if (!Array.isArray(message.weekdayDiaries))
                     return "weekdayDiaries: array expected";
                 for (let i = 0; i < message.weekdayDiaries.length; ++i)
-                    if (!$util.isString(message.weekdayDiaries[i]))
-                        return "weekdayDiaries: string[] expected";
+                    if (!$util.isInteger(message.weekdayDiaries[i]))
+                        return "weekdayDiaries: integer[] expected";
             }
             if (message.weekendDiaries != null && message.hasOwnProperty("weekendDiaries")) {
                 if (!Array.isArray(message.weekendDiaries))
                     return "weekendDiaries: array expected";
                 for (let i = 0; i < message.weekendDiaries.length; ++i)
-                    if (!$util.isString(message.weekendDiaries[i]))
-                        return "weekendDiaries: string[] expected";
+                    if (!$util.isInteger(message.weekendDiaries[i]))
+                        return "weekendDiaries: integer[] expected";
             }
             return null;
         };
@@ -2776,14 +2766,14 @@ export const synthpop = $root.synthpop = (() => {
                     throw TypeError(".synthpop.Person.weekdayDiaries: array expected");
                 message.weekdayDiaries = [];
                 for (let i = 0; i < object.weekdayDiaries.length; ++i)
-                    message.weekdayDiaries[i] = String(object.weekdayDiaries[i]);
+                    message.weekdayDiaries[i] = object.weekdayDiaries[i] >>> 0;
             }
             if (object.weekendDiaries) {
                 if (!Array.isArray(object.weekendDiaries))
                     throw TypeError(".synthpop.Person.weekendDiaries: array expected");
                 message.weekendDiaries = [];
                 for (let i = 0; i < object.weekendDiaries.length; ++i)
-                    message.weekendDiaries[i] = String(object.weekendDiaries[i]);
+                    message.weekendDiaries[i] = object.weekendDiaries[i] >>> 0;
             }
             return message;
         };

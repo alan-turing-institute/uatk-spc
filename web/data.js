@@ -139,7 +139,7 @@ export const PER_HOUSEHOLD_CATEGORICAL_PROPS = {
 };
 
 // Returns a mapping from MSOA ID to the GJ Feature
-export function msoaStats(pop) {
+function msoaStats(pop) {
   // Counts
   let households_per_msoa = {};
   let people_per_msoa = {};
@@ -247,4 +247,24 @@ export function emptyGeojson() {
     type: "FeatureCollection",
     features: [],
   };
+}
+
+// Loads a .pb and returns [pop, msoas].
+export function loadArrayBuffer(buffer) {
+  try {
+    console.time("Load protobuf");
+    let bytes = new Uint8Array(buffer);
+    let pop = synthpop.Population.decode(bytes);
+    console.timeEnd("Load protobuf");
+    console.time("Calculate msoaStats");
+    let msoas = msoaStats(pop);
+    console.timeEnd("Calculate msoaStats");
+
+    // Debugging
+    window.pop = pop;
+
+    return [pop, msoas];
+  } catch (err) {
+    window.alert(`Couldn't load SPC proto file: ${err}`);
+  }
 }

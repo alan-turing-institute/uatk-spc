@@ -8,10 +8,9 @@
   import Diaries from "./components/Diaries.svelte";
   import Venues from "./components/Venues.svelte";
   import About from "./components/About.svelte";
-
+  import FileLoader from "./components/FileLoader.svelte";
+  import { loadArrayBuffer } from "./data.js";
   import { onMount } from "svelte";
-  import { synthpop } from "./pb/synthpop_pb.js";
-  import { msoaStats } from "./data.js";
 
   let pop;
   let msoas;
@@ -19,37 +18,12 @@
   let clickedMsoa = null;
 
   // When using 'npm run dev', auto-load a file for quicker development
-  if (import.meta.env.DEV) {
+  /*if (import.meta.env.DEV) {
     onMount(async () => {
-      let resp = await fetch("isle-of-anglesey.pb");
-      loadArrayBuffer(await resp.arrayBuffer());
+      let resp = await fetch("rutland.pb");
+      [pop, msoas] = loadArrayBuffer(await resp.arrayBuffer());
     });
-  }
-
-  function loadArrayBuffer(buffer) {
-    try {
-      console.time("Load protobuf");
-      let bytes = new Uint8Array(buffer);
-      pop = synthpop.Population.decode(bytes);
-      console.timeEnd("Load protobuf");
-      console.time("Calculate msoaStats");
-      msoas = msoaStats(pop);
-      console.timeEnd("Calculate msoaStats");
-
-      // Debugging
-      window.pop = pop;
-    } catch (err) {
-      window.alert(`Couldn't load SPC proto file: ${err}`);
-    }
-  }
-
-  function loadFile(e) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      loadArrayBuffer(e.target.result);
-    };
-    reader.readAsArrayBuffer(e.target.files[0]);
-  }
+  }*/
 </script>
 
 {#if pop}
@@ -70,15 +44,12 @@
       </Map>
     </div>
   </Layout>
-{:else if import.meta.env.PROD}
+{:else}
   <p>
     Download and gunzip a file from <a
       href="https://alan-turing-institute.github.io/uatk-spc/outputs.html"
       >here</a
     >.
   </p>
-  <label for="input">Load an SPC .pb file</label>
-  <input name="input" type="file" on:change={loadFile} />
-{:else}
-  <p>Loading</p>
+  <FileLoader bind:pop bind:msoas />
 {/if}
