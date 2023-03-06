@@ -1,6 +1,6 @@
 <script>
-  import { getContext, onMount, onDestroy } from "svelte";
-  import { PER_PERSON_NUMERIC_PROPS } from "../data.js";
+  import { getContext, onDestroy } from "svelte";
+  import { PER_PERSON_NUMERIC_PROPS, emptyGeojson } from "../data.js";
   import bbox from "@turf/bbox";
   import chroma from "chroma-js";
 
@@ -27,20 +27,17 @@
     }
   }
 
-  onMount(() => {
-    let gj = {
-      type: "FeatureCollection",
-      features: Object.values(msoas),
-    };
-
-    // Ignore setCamera. When we switch files, the hash in the URL is irrelevant.
-    map.fitBounds(bbox(gj), {
-      padding: 20,
-      animate: false,
-    });
+  function setup() {
+    if (map.getSource(source)) {
+      return;
+    }
 
     // TODO If we pass the MSOA ID as feature.id, it gets dropped?
-    map.addSource(source, { type: "geojson", data: gj, generateId: true });
+    map.addSource(source, {
+      type: "geojson",
+      data: emptyGeojson(),
+      generateId: true,
+    });
 
     // TODO Just fill-outline-color
     map.addLayer({
@@ -93,7 +90,22 @@
         clickedId = null;
       }
     });
-  });
+  }
+
+  // When data changes
+  $: {
+    setup();
+    let gj = {
+      type: "FeatureCollection",
+      features: Object.values(msoas),
+    };
+    map.getSource(source).setData(gj);
+    // Ignore setCamera. When we switch files, the hash in the URL is irrelevant.
+    map.fitBounds(bbox(gj), {
+      padding: 20,
+      animate: false,
+    });
+  }
 
   function setLayer() {
     if (map.getLayer(layer)) {
