@@ -16,6 +16,7 @@
   let msoas;
   let hoveredMsoa;
   let clickedMsoa = null;
+  let showDiaries = false;
 
   // When using 'npm run dev', auto-load a file for quicker development
   if (import.meta.env.DEV) {
@@ -38,9 +39,14 @@
     </div>
     <div slot="main">
       <Map>
-        <MsoaBoundaries {msoas} bind:hoveredMsoa bind:clickedMsoa />
-        <Flows {pop} {msoas} {hoveredMsoa} />
-        <Diaries {pop} />
+        <MsoaBoundaries
+          {msoas}
+          bind:hoveredMsoa
+          bind:clickedMsoa
+          {showDiaries}
+        />
+        <Flows {pop} {msoas} {hoveredMsoa} {showDiaries} />
+        <Diaries {pop} bind:show={showDiaries} />
         <Venues {pop} />
       </Map>
     </div>

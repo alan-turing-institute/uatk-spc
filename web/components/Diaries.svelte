@@ -17,7 +17,7 @@
   export let pop;
 
   // State
-  let show = false;
+  export let show = false;
   let hoverId;
   let modalContents;
   let showModal = false;

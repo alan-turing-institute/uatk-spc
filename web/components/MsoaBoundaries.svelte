@@ -9,6 +9,7 @@
 
   // Input
   export let msoas;
+  export let showDiaries;
   // Output
   export let hoveredMsoa;
   export let clickedMsoa;
@@ -19,6 +20,11 @@
 
   let source = "msoas";
   let layer = "msoas-polygons";
+
+  $: if (showDiaries) {
+    colorBy = "none";
+    setLayer();
+  }
 
   let hoverId;
   function unhover() {
