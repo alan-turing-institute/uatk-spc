@@ -18,12 +18,12 @@
   let clickedMsoa = null;
 
   // When using 'npm run dev', auto-load a file for quicker development
-  /*if (import.meta.env.DEV) {
+  if (import.meta.env.DEV) {
     onMount(async () => {
       let resp = await fetch("rutland.pb");
       [pop, msoas] = loadArrayBuffer(await resp.arrayBuffer());
     });
-  }*/
+  }
 </script>
 
 {#if pop}
@@ -44,7 +44,7 @@
       </Map>
     </div>
   </Layout>
-{:else}
+{:else if import.meta.env.PROD}
   <p>
     Download and gunzip a file from <a
       href="https://alan-turing-institute.github.io/uatk-spc/outputs.html"
@@ -52,4 +52,6 @@
     >.
   </p>
   <FileLoader bind:pop bind:msoas />
+{:else}
+  <p>Loading</p>
 {/if}
