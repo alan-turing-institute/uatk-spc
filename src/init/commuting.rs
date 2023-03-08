@@ -218,6 +218,7 @@ impl JobMarket {
         assert_eq!(self.jobs.len(), self.workers.len());
 
         let mut choices: Vec<(VenueID, usize)> = self.to_job_choices();
+        let mut empty_jobs = 0;
 
         let mut output = Vec::new();
         for person in self.workers {
@@ -230,10 +231,21 @@ impl JobMarket {
                 })
                 .unwrap();
 
+            output.push((person, pair.0));
+
             // This job is gone
             pair.1 -= 1;
-
-            output.push((person, pair.0));
+            // Periodically clean up the list of choices. Doing this constantly would be slow
+            // (Vec::retain isn't free), but never doing it means choose_weighted_mut repeatedly
+            // skips past a bunch of useless choices
+            if pair.1 == 0 {
+                empty_jobs += 1;
+                // This exact value is not so carefully tuned. 10 and 500 provided similar timings.
+                if empty_jobs == 100 {
+                    empty_jobs = 0;
+                    choices.retain(|pair| pair.1 > 0);
+                }
+            }
         }
         output
     }
