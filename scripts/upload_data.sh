@@ -11,16 +11,24 @@ if [ "$VERSION" == "" ]; then
 		  exit 1
 fi
 
-mkdir $VERSION
+# This modifies the local copy of data/output in-place, then undoes that later.
+# Feel free to copy everything before starting this script, if you have that
+# much space and are paranoid about not undoing something properly.
 
-for path in data/output/*; do
-	area=$(basename "${path%%.*}")
-	echo $area;
-	cp $path $VERSION
-	gzip $VERSION/$(basename $path)
-	echo "- [$area](https://ramp0storage.blob.core.windows.net/spc-output/$VERSION/$area.pb.gz)" >> urls
-done
+mv data/output $VERSION
+gzip -rv $VERSION
 
 echo Uploading
 az storage blob upload-batch --account-name ramp0storage -d spc-output/$VERSION -s $VERSION/
-echo Update docs/outputs.md with urls, categorizing manually
+
+# Generate URLs for docs/outputs.qmd
+cd $VERSION
+for x in */*/*; do
+	echo "- [$x](https://ramp0storage.blob.core.windows.net/spc-output/v2/$x)" >> urls
+done
+mv urls ..
+cd ..
+
+echo Restoring original output data
+mv $VERSION data/output
+gunzip -rv data/output
