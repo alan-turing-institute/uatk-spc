@@ -351,6 +351,7 @@ data/raw_data/countydata-v2/England/2022/pop_wiltshire_2022.csv.gz,51867031,5a63
 data/raw_data/countydata-v2/England/2022/pop_greater-london_2022.csv,2951638410,3f39e4f327707ff29418a6080ca1f8f3
 data/raw_data/countydata-v2/England/2022/pop_tyne-and-wear_2022.csv,359239270,8c46035ebf77b08060981c99f7a53c0a
 data/raw_data/countydata-v2/England/2022/pop_west-sussex_2022.csv,289033131,c1f6742e4067b4b6a95651ba7dcb0ee2
+data/raw_data/countydata-v2/England/2022/pop_south-yorkshire_2022.csv,460055267,353a67460a40f70a0b13b1f1cf2c70e8
 data/raw_data/countydata-v2/England/2022/pop_rutland_2022.csv.gz,2929863,a1eec9eb04be6053f9361f3086b395b8
 data/raw_data/countydata-v2/England/2022/pop_shropshire_2022.csv.gz,37103912,73a2aacbf33205eb93b8dae158747142
 data/raw_data/countydata-v2/England/2022/pop_warwickshire_2022.csv,327500744,079d4062be1605191ce8970a56b59a5b
@@ -367,7 +368,6 @@ data/raw_data/countydata-v2/England/2022/pop_nottinghamshire_2022.csv.gz,8259691
 data/raw_data/countydata-v2/England/2022/pop_west-midlands_2022.csv.gz,174622645,50f5ebb5614ad69190deb2c2b0d9d125
 data/raw_data/countydata-v2/England/2022/pop_oxfordshire_2022.csv.gz,48022747,1c5c9e963170270c6aa9332de88ad69a
 data/raw_data/countydata-v2/England/2022/pop_surrey_2022.csv.gz,81274185,f7d470366aec102de6f63f607f438175
-data/raw_data/countydata-v2/England/2022/pop_south-yorkshire_2022.csv.gz,53743616,3fd53a7b516f69e4be885351445bc06d
 data/raw_data/countydata-v2/England/2022/pop_greater-london_2022.csv.gz,648015883,bc76c5785f738cc54210ac1bbd3a36c9
 data/raw_data/countydata-v2/England/2022/pop_buckinghamshire_2022.csv.gz,19417659,82ab73ce2bc7995516419000d04cd82b
 data/raw_data/countydata-v2/England/2022/pop_durham_2022.csv,314879289,d68a5f83559496dd92d851c6568c242b
