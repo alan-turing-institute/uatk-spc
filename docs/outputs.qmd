@@ -135,6 +135,7 @@ different list of MSOAs, [see here](custom_areas.qmd).
 - [England/2022/rutland.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2/England/2022/rutland.pb.gz)
 - [England/2022/shropshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2/England/2022/shropshire.pb.gz)
 - [England/2022/somerset.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2/England/2022/somerset.pb.gz)
+- [England/2022/south-yorkshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2/England/2022/south-yorkshire.pb.gz)
 - [England/2022/staffordshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2/England/2022/staffordshire.pb.gz)
 - [England/2022/suffolk.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2/England/2022/suffolk.pb.gz)
 - [England/2022/surrey.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2/England/2022/surrey.pb.gz)
