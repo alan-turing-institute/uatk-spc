@@ -14,6 +14,6 @@ with open("stats.csv") as f:
         rows.append(row)
 
 # Print as a Markdown table for convenience
-with open("perf_table") as f:
+with open("perf_table", "w") as f:
     # This still isn't quite Github's format; the +'s are weird
-    print(markdownTable(rows).setParams(row_sep="markdown", quote=False).getMarkdown())
+    f.write(markdownTable(rows).setParams(row_sep="markdown", quote=False).getMarkdown())

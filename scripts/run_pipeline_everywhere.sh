@@ -22,7 +22,7 @@ echo 'year,study_area,num_msoas,num_households,num_people,pb_file_size,runtime,c
 
 for cfg in config/*/*; do
 	for year in 2012 2020 2022 2032 2039; do
-		echo pueue add -- ./target/release/spc $cfg --year $year --output-stats;
+		pueue add -- ./target/release/spc $cfg --year $year --output-stats;
 	done
 done
 
