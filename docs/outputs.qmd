@@ -328,7 +328,7 @@ update.
 - v1.2, released 29/12/2022, [schema](https://github.com/alan-turing-institute/uatk-spc/blob/86c550e738a4f9cde052a8e33f0f9d5dcdf6000d/synthpop.proto)
   - switched to proto2 and made some fields optional
   - adjusted some numeric enum values to match ONS
-- v2, released 09/03/2023, schema
+- v2, released 09/03/2023, [schema](https://github.com/alan-turing-institute/uatk-spc/blob/f550a323afadd03bd3bfdd797b66ff2276a2a6d5/synthpop.proto)
   - new per-person and per-household fields
   - various changes to existing fields (adjusting enum number, removing the BMI enum, etc)
   - adding time-use diaries
