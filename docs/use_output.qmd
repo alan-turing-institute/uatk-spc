@@ -19,6 +19,13 @@ model.
 
 We have examples for Python below, but feel free to request other languages.
 
+## Javascript
+
+We have a [web app](https://alan-turing-institute.github.io/uatk-spc/app/)
+using Svelte to interactively explore SPC data. Its [source
+code](https://github.com/alan-turing-institute/uatk-spc/tree/main/web) is great
+reference for how to use the proto output.
+
 ## Python
 
 To work with SPC protobufs in Python, you need two dependencies setup:
