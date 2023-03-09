@@ -221,12 +221,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="dependencies" class="level2" data-number="4.1">
 <h2 data-number="4.1" class="anchored" data-anchor-id="dependencies"><span class="header-section-number">4.1</span> Dependencies</h2>
 <ul>
-<li><p><strong>Rust</strong>: The latest stable version of Rust: <a href="https://www.rust-lang.org/tools/install">https://www.rust-lang.org/tools/install</a></p></li>
-<li><p>A build environment for <a href="https://proj.org">proj</a>, to transform coordinates.</p>
-<ul>
-<li>On Ubuntu, run <code>apt-get install cmake sqlite3 libclang-dev</code></li>
-<li>On Mac, <a href="https://brew.sh">install Homebrew</a> and run <code>brew install pkg-config cmake proj</code></li>
-</ul></li>
+<li><strong>Rust</strong>: The latest stable version of Rust: <a href="https://www.rust-lang.org/tools/install">https://www.rust-lang.org/tools/install</a></li>
 </ul>
 </section>
 <section id="compiling-spc" class="level2" data-number="4.2">
@@ -235,7 +230,6 @@ ul.task-list li input[type="checkbox"] {
 cd uatk-spc
 # The next command will take a few minutes the first time you do it, to build external dependencies
 cargo build --release</code></pre>
-<p>If you get <code>error: failed to run custom build command for 'proj-sys v0.18.4'</code>, then you’re likely missing dependencies listed above. Please <a href="https://github.com/alan-turing-institute/uatk-spc/issues">open an issue</a> if you have any trouble.</p>
 </section>
 <section id="troubleshooting-downloading" class="level2" data-number="4.3">
 <h2 data-number="4.3" class="anchored" data-anchor-id="troubleshooting-downloading"><span class="header-section-number">4.3</span> Troubleshooting downloading</h2>
