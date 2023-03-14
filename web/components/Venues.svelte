@@ -14,6 +14,12 @@
   let showHome = false;
   let showWork = true;
 
+  const houseColour = "#AD4BB7";
+  const primarySchoolColour = "#F9DEE5";
+  const secondarySchoolColour = "#E8BDC9";
+  const workplaceColour = "#AFB2F1";
+  const shopsColour = "#67A724";
+
   function venues(activity) {
     let gj = emptyGeojson();
     for (let venue of pop.venuesPerActivity[activity].venues) {
@@ -60,46 +66,46 @@
 
 <div class="legend">
   <h3>Venues:</h3>
-  <input type="checkbox" bind:checked={showRetail} />
-  <label style="color: #9CD891">Retail</label><br />
-  <input type="checkbox" bind:checked={showPrimarySchool} />
-  <label style="color: green">Primary school</label><br />
-  <input type="checkbox" bind:checked={showSecondarySchool} />
-  <label style="color: brown">Secondary school</label><br />
   <input type="checkbox" bind:checked={showHome} />
-  <label style="color: purple">Home</label><br />
+  <label style="color: {houseColour}">Home</label><br />
   <input type="checkbox" bind:checked={showWork} />
-  <label style="color: orange">Work</label><br />
+  <label style="color: {workplaceColour}">Work</label><br />
+  <input type="checkbox" bind:checked={showPrimarySchool} />
+  <label style="color: {primarySchoolColour}">Primary school</label><br />
+  <input type="checkbox" bind:checked={showSecondarySchool} />
+  <label style="color: {secondarySchoolColour}">Secondary school</label><br />
+  <input type="checkbox" bind:checked={showRetail} />
+  <label style="color: {shopsColour}">Retail</label>
 </div>
 
 <Layer
   source="retail"
   gj={venues(synthpop.Activity.RETAIL)}
-  layerStyle={circle("red")}
+  layerStyle={circle(shopsColour)}
   show={showRetail}
 />
 <Layer
   source="primary-school"
   gj={venues(synthpop.Activity.PRIMARY_SCHOOL)}
-  layerStyle={circle("green")}
+  layerStyle={circle(primarySchoolColour)}
   show={showPrimarySchool}
 />
 <Layer
   source="secondary-school"
   gj={venues(synthpop.Activity.SECONDARY_SCHOOL)}
-  layerStyle={circle("brown")}
+  layerStyle={circle(secondarySchoolColour)}
   show={showSecondarySchool}
 />
 <Layer
   source="home"
   gj={homes()}
-  layerStyle={circle("purple")}
+  layerStyle={circle(houseColour)}
   show={showHome}
 />
 <Layer
   source="work"
   gj={venues(synthpop.Activity.WORK)}
-  layerStyle={circle("orange")}
+  layerStyle={circle(workplaceColour)}
   show={showWork}
 />
 
@@ -109,7 +115,9 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    background: white;
-    padding: 10px;
+    background: whitesmoke;
+    padding: 4px 10px;
+    border: solid 1px black;
   }
 </style>
+

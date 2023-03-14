@@ -209,10 +209,12 @@
   .legend {
     z-index: 1;
     position: absolute;
-    top: 70px;
+    top: 60px;
     right: 10px;
-    background: white;
-    padding: 10px;
+    width: 290px;
+    background: whitesmoke;
+    border: solid 1px black;
+    padding: 10px 15px;
   }
 
   select {

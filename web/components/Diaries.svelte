@@ -33,9 +33,9 @@
   let flowsLayer = "people-flows";
 
   const homeColor = "#AD4BB7";
-  const schoolColor = "#FFDBDE";
+  const schoolColor = "#D99CAD";
   const workColor = "#AFB2F1";
-  const retailColor = "#BDE5B6";
+  const retailColor = "#3C7D11";
 
   // Set up the source and two layers once, with no data
   onMount(() => {
@@ -105,7 +105,7 @@
 
   let averages = {
     values: [0.25, 0.25, 0.25, 0.25],
-    labels: ["Home", "Work", "Shop", "School"],
+    labels: ["Home", "Work", "Retail", "School"],
     marker: { colors: [homeColor, workColor, retailColor, schoolColor] },
     type: "pie",
   };
@@ -364,9 +364,11 @@
   .legend {
     z-index: 1;
     position: absolute;
-    top: 400px;
+    top: 385px;
     right: 10px;
-    background: white;
-    padding: 10px;
+    width: 290px;
+    background: whitesmoke;
+    border: solid 1px black;
+    padding: 15px;
   }
 </style>

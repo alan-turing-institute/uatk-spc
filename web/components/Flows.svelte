@@ -135,8 +135,10 @@
     position: absolute;
     top: 10px;
     right: 10px;
-    background: white;
-    padding: 10px;
+    width: 280px;
+    background: whitesmoke;
+    border: solid 1px black;
+    padding: 10px 20px;
   }
 
   select {
@@ -144,3 +146,4 @@
     padding: 4px 8px;
   }
 </style>
+
