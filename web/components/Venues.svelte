@@ -61,7 +61,7 @@
 <div class="legend">
   <h3>Venues:</h3>
   <input type="checkbox" bind:checked={showRetail} />
-  <label style="color: red">Retail</label><br />
+  <label style="color: #9CD891">Retail</label><br />
   <input type="checkbox" bind:checked={showPrimarySchool} />
   <label style="color: green">Primary school</label><br />
   <input type="checkbox" bind:checked={showSecondarySchool} />
