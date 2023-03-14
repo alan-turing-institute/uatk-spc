@@ -32,10 +32,10 @@
   let homeLayer = "people-home";
   let flowsLayer = "people-flows";
 
-  const homeColor = "#1F77B4";
-  const schoolColor = "#FF7F0E";
-  const workColor = "#D62728";
-  const retailColor = "#2CA02C";
+  const homeColor = "#AD4BB7";
+  const schoolColor = "#FFDBDE";
+  const workColor = "#AFB2F1";
+  const retailColor = "#BDE5B6";
 
   // Set up the source and two layers once, with no data
   onMount(() => {
