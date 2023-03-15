@@ -353,6 +353,7 @@
     </div>
     Lockdown change: {lockdown}
     <div use:pieChart={{ data: averages }} />
+
   {/if}
 </div>
 
@@ -364,7 +365,7 @@
   .legend {
     z-index: 1;
     position: absolute;
-    top: 385px;
+    top: 382px;
     right: 10px;
     width: 290px;
     background: whitesmoke;

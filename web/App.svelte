@@ -22,7 +22,7 @@
   // When using 'npm run dev', auto-load a file for quicker development
   if (import.meta.env.DEV) {
     onMount(async () => {
-      let resp = await fetch("somerset.pbq");
+      let resp = await fetch("somerset.pb");
       [pop, msoas] = loadArrayBuffer(await resp.arrayBuffer());
     });
   }
@@ -30,12 +30,14 @@
 
 {#if pop}
   <Layout>
-    <div slot="left">
-      <h1>Synthetic Population Catalyst (SPC)</h1>
+    <div slot="left" class="base">
+      <img src="/logo_SPC_Black.png" alt="SPC logo" width="100px"/>
+      <h1>Synthetic Population Catalyst</h1>
       <About />
+      <hr />
+      <h2>Load region</h2>
       <FileLoader bind:pop bind:msoas />
       <Sidebar {msoas} {hoveredMsoa} />
-      <hr />
       <Plots {pop} {clickedMsoa} />
     </div>
     <div slot="main">
@@ -54,8 +56,9 @@
     </div>
   </Layout>
 {:else if import.meta.env.PROD}
+<h2>Load region</h2>
   <p>
-    Download and gunzip a file from <a
+    Run SPC or download and gunzip a file from <a
       href="https://alan-turing-institute.github.io/uatk-spc/outputs.html"
       >here</a
     >.
@@ -64,3 +67,11 @@
 {:else}
   <p>Loading</p>
 {/if}
+
+<style>
+	.base {
+		background-color: whitesmoke;
+		padding: 10px;
+    width: 360px;
+	}
+</style>

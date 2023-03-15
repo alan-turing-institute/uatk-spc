@@ -15,10 +15,10 @@
 
 <style>
   .tab {
-    background-color: #f4f4f5;
-    padding: 1rem;
+    background-color: white;
+    padding: 10px;
   }
   .tab.active {
-    background-color: #e4e4e7;
+    background-color: #b3b3b3;
   }
 </style>

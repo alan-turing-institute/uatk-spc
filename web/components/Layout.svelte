@@ -8,16 +8,16 @@
 <style>
   div {
     float: left;
-    padding: 8px;
+    padding: 0px;
   }
 
   .left {
-    width: 25%;
+    width: 395px;
     height: 100vh;
     overflow: scroll;
   }
   .main {
     /* TODO 75% wraps?! */
-    width: 73%;
+    width: calc(100% - 395px);
   }
 </style>

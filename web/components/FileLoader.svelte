@@ -13,5 +13,17 @@
   }
 </script>
 
-<label for="input">Load an SPC .pb file</label>
-<input name="input" type="file" on:change={loadFile} />
+<input name="input" type="file" class="chooseFile" on:change={loadFile} />
+
+<style>
+  .chooseFile {
+    background-color: white;
+    padding: 3px;
+    border-radius: 0%;
+    border: 2px solid;
+    border-bottom-color: black;
+    border-right-color: black;
+    border-top-color: #737373;
+    border-left-color: #737373;
+  }
+</style>

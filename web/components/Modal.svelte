@@ -18,12 +18,18 @@
 <div class="background" bind:this={div} class:show class:hide={!show}>
   <div class="content centered-fullscreen">
     <div>
-      <button type="button" on:click={() => (show = false)}>Close</button>
+      <button
+        class="close"
+        on:click={() => (show = false)}
+      >
+      Close
+      </button>
     </div>
     <slot />
   </div>
 </div>
 
+  
 <style>
   .background {
     position: fixed;
@@ -33,6 +39,10 @@
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .close{
+    background-color: whitesmoke;
   }
 
   .content {
@@ -46,13 +56,13 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    height: 80vh;
-    overflow: scroll;
+    height: 40vh;
   }
 
   .show {
     display: block;
   }
+
   .hide {
     display: none;
   }
