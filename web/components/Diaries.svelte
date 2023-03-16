@@ -353,7 +353,6 @@
     </div>
     Lockdown change: {lockdown}
     <div use:pieChart={{ data: averages }} />
-
   {/if}
 </div>
 

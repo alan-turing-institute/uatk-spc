@@ -69,19 +69,19 @@
   <label style="color: {houseColour}">
     <input type="checkbox" bind:checked={showHome} />
     Home
-  </label> <br/>
+  </label> <br />
   <label style="color: {workplaceColour}">
     <input type="checkbox" bind:checked={showWork} />
     Work
-  </label> <br/>
+  </label> <br />
   <label style="color: {primarySchoolColour}">
     <input type="checkbox" bind:checked={showPrimarySchool} />
     Primary school
-  </label> <br/>
+  </label> <br />
   <label style="color: {secondarySchoolColour}">
     <input type="checkbox" bind:checked={showSecondarySchool} />
     Secondary school
-  </label> <br/>
+  </label> <br />
   <label style="color: {shopsColour}">
     <input type="checkbox" bind:checked={showRetail} />
     Retail
@@ -130,4 +130,3 @@
     border: solid 1px black;
   }
 </style>
-

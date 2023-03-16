@@ -110,7 +110,7 @@
 {#if clickedMsoa}
   <h2>{clickedMsoa}</h2>
 {:else}
-  <h2> Click an MSOA to filter </h2>
+  <h2>Click an MSOA to filter</h2>
 {/if}
 
 <Tabs
@@ -118,8 +118,8 @@
   bind:active={theme}
 />
 
-<br/>
-<br/>
+<br />
+<br />
 
 {#each Object.entries(numericData) as [key, dataset]}
   {#if PER_PERSON_NUMERIC_PROPS[key].theme == theme}
