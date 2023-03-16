@@ -36,7 +36,6 @@
       <h1>Synthetic Population Catalyst</h1>
       <About />
       <hr />
-      <h2>Load region</h2>
       <FileLoader bind:pop bind:msoas />
       <Sidebar {pop} {msoas} {hoveredMsoa} />
       <Plots {pop} {clickedMsoa} />

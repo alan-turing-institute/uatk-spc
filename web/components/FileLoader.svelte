@@ -13,17 +13,28 @@
   }
 </script>
 
-<input name="input" type="file" class="chooseFile" on:change={loadFile} />
+<!-- TODO Interactive elements inside a label are apparently invalid, but this works -->
+<label>
+  <input type="file" id="load_file" on:change={loadFile} />
+  <button type="button" onclick="document.getElementById('load_file').click();">
+    Load region
+  </button>
+</label>
 
 <style>
-  .chooseFile {
+  input[type="file"] {
+    cursor: pointer;
+
+    /* Make the input type=file effectively invisible, but still let browser accessibility stuff work */
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+  }
+
+  button {
     background-color: white;
-    padding: 3px;
-    border-radius: 0%;
-    border: 2px solid;
-    border-bottom-color: black;
-    border-right-color: black;
-    border-top-color: #737373;
-    border-left-color: #737373;
   }
 </style>
