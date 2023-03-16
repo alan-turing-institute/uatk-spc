@@ -10,6 +10,7 @@
   import About from "./components/About.svelte";
   import FileLoader from "./components/FileLoader.svelte";
   import { loadArrayBuffer } from "./data.js";
+  import logo from "./assets/logo.png";
   import { onMount } from "svelte";
 
   let pop;
@@ -31,7 +32,7 @@
 {#if pop}
   <Layout>
     <div slot="left" class="base">
-      <img src="/logo_SPC_Black.png" alt="SPC logo" width="100px" />
+      <img src={logo} alt="SPC logo" width="100px" />
       <h1>Synthetic Population Catalyst</h1>
       <About />
       <hr />
