@@ -17,7 +17,6 @@
     overflow: scroll;
   }
   .main {
-    /* TODO 75% wraps?! */
     width: calc(100% - 395px);
   }
 </style>

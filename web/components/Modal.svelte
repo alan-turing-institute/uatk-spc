@@ -18,7 +18,7 @@
 <div class="background" bind:this={div} class:show class:hide={!show}>
   <div class="content centered-fullscreen">
     <div>
-      <button class="close" on:click={() => (show = false)}> Close </button>
+      <button on:click={() => (show = false)}> Close </button>
     </div>
     <slot />
   </div>
@@ -35,7 +35,7 @@
     background-color: rgba(0, 0, 0, 0.5);
   }
 
-  .close {
+  button {
     background-color: whitesmoke;
   }
 

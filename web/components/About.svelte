@@ -4,7 +4,7 @@
   let showModal = false;
 </script>
 
-<button class="about" on:click={() => (showModal = true)}> About </button>
+<button on:click={() => (showModal = true)}> About </button>
 
 <Modal bind:show={showModal}>
   <h1>About SPC</h1>
@@ -40,7 +40,7 @@
 </Modal>
 
 <style>
-  .about {
+  button {
     background-color: white;
   }
 </style>
