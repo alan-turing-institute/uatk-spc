@@ -36,6 +36,7 @@
   const schoolColor = "#D99CAD";
   const workColor = "#AFB2F1";
   const retailColor = "#3C7D11";
+  const otherColor = "red";
 
   // Set up the source and two layers once, with no data
   onMount(() => {
@@ -104,9 +105,11 @@
   $: schoolsPerPerson = people.map(pickSchool);
 
   let averages = {
-    values: [0.25, 0.25, 0.25, 0.25],
-    labels: ["Home", "Work", "Retail", "School"],
-    marker: { colors: [homeColor, workColor, retailColor, schoolColor] },
+    values: [0.2, 0.2, 0.2, 0.2, 0.2],
+    labels: ["Home", "Work", "Retail", "School", "Other"],
+    marker: {
+      colors: [homeColor, workColor, retailColor, schoolColor, otherColor],
+    },
     type: "pie",
   };
 
@@ -120,7 +123,7 @@
       let gj = emptyGeojson();
 
       // In the order matching averages
-      let sums = [0.0, 0.0, 0.0, 0.0];
+      let sums = [0.0, 0.0, 0.0, 0.0, 0.0];
 
       for (let [index, person] of people.entries()) {
         // Pick a diary for them (arbitrarily)
@@ -139,6 +142,8 @@
         sums[1] += diary.pwork;
         sums[2] += diary.pshop;
         sums[3] += diary.pschool;
+        sums[4] +=
+          diary.pservices + diary.pleisure + diary.pescort + diary.ptransport;
 
         // Make a circle representing how long they spend at home
         let home = homeLocation(person);
