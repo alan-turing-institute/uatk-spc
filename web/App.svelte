@@ -37,7 +37,7 @@
       <hr />
       <h2>Load region</h2>
       <FileLoader bind:pop bind:msoas />
-      <Sidebar {msoas} {hoveredMsoa} />
+      <Sidebar {pop} {msoas} {hoveredMsoa} />
       <Plots {pop} {clickedMsoa} />
     </div>
     <div slot="main">

@@ -1,6 +1,7 @@
 <script>
   import { PER_PERSON_NUMERIC_PROPS } from "../data.js";
 
+  export let pop;
   export let msoas;
   export let hoveredMsoa;
 
@@ -36,9 +37,9 @@
 </script>
 
 {#if hoveredMsoa}
-  <h2>{hoveredMsoa}</h2>
+  <h2>{hoveredMsoa} ({pop.year})</h2>
 {:else}
-  <h2>{Object.keys(msoas).length} MSOAs</h2>
+  <h2>{Object.keys(msoas).length} MSOAs ({pop.year})</h2>
 {/if}
 <p>{props.households.toLocaleString("en-us")} households</p>
 <p>{props.people.toLocaleString("en-us")} people</p>
