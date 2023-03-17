@@ -3,28 +3,38 @@ import { synthpop } from "./pb/synthpop_pb.js";
 
 export const PER_PERSON_NUMERIC_PROPS = {
   age: {
-    get: (p) => p.demographics.ageYears,
+    get: (p) => {
+      let age = p.demographics.ageYears;
+      if (age == 86) {
+        return null;
+      }
+      return age;
+    },
     label: "Age (years)",
     fmt: (x) => x.toFixed(0),
     theme: "Demographics",
+    note: "Age 86 and above are filtered out, because the data is clamped to this max value",
   },
   salary_yearly: {
     get: (p) => getOptional(p.employment, "salaryYearly"),
     label: "Yearly salary for working population",
     fmt: (x) => x.toFixed(1),
     theme: "Employment",
+    note: null,
   },
   salary_hourly: {
     get: (p) => getOptional(p.employment, "salaryHourly"),
     label: "Hourly salary for working population",
     fmt: (x) => x.toFixed(1),
     theme: "Employment",
+    note: null,
   },
   bmi: {
     get: (p) => getOptional(p.health, "bmi"),
     label: "BMI for individuals over 16",
     fmt: (x) => x.toFixed(1),
     theme: "Health",
+    note: null,
   },
 };
 

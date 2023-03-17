@@ -105,6 +105,7 @@ message Identifiers {
 
 message Demographics {
     required Sex sex = 1;
+    // Clamped at 86 as a maximum, due to limits with source data
     required uint32 age_years = 2;
     required Ethnicity ethnicity = 3;
     optional Nssec8 nssec8 = 4;

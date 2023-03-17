@@ -17,6 +17,7 @@
 
   let limits = [];
   let colorScale = [];
+  let note = null;
 
   let source = "msoas";
   let layer = "msoas-polygons";
@@ -121,6 +122,7 @@
     if (colorBy == "none") {
       limits = [];
       colorScale = [];
+      note = null;
       return;
     }
 
@@ -167,6 +169,7 @@
     let prop = PER_PERSON_NUMERIC_PROPS[colorBy];
     if (prop) {
       limits = limits.map((x) => prop.fmt(x));
+      note = prop.note;
     }
   }
 
@@ -192,6 +195,10 @@
     {/each}
   </select>
   <ul>
+    {#if note}
+      <div title={note}>(Info)</div>
+    {/if}
+
     {#each colorScale as color, i}
       <li>
         <div class="square" style="background-color: {color}" />
