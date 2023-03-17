@@ -50,7 +50,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    height: 40vh;
+    height: 45vh;
     overflow: scroll;
   }
 
