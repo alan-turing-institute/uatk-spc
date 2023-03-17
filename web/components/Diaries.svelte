@@ -104,12 +104,17 @@
   $: people = geometricReservoirSample(sample_size, validPeople);
   $: schoolsPerPerson = people.map(pickSchool);
 
-  let averages = {
+  let averageActivities = {
     values: [0.2, 0.2, 0.2, 0.2, 0.2],
     labels: ["Home", "Work", "Retail", "School", "Other"],
     marker: {
       colors: [homeColor, workColor, retailColor, schoolColor, otherColor],
     },
+    type: "pie",
+  };
+  let averageTransport = {
+    values: [0.25, 0.25, 0.25, 0.25],
+    labels: ["Walk", "Cycle", "Public transport", "Unknown"],
     type: "pie",
   };
 
@@ -123,7 +128,8 @@
       let gj = emptyGeojson();
 
       // In the order matching averages
-      let sums = [0.0, 0.0, 0.0, 0.0, 0.0];
+      let sumActivities = [0.0, 0.0, 0.0, 0.0, 0.0];
+      let sumTransport = [0.0, 0.0, 0.0, 0.0];
 
       for (let [index, person] of people.entries()) {
         // Pick a diary for them (arbitrarily)
@@ -138,12 +144,17 @@
           continue;
         }
 
-        sums[0] += diary.phomeTotal;
-        sums[1] += diary.pwork;
-        sums[2] += diary.pshop;
-        sums[3] += diary.pschool;
-        sums[4] +=
+        sumActivities[0] += diary.phomeTotal;
+        sumActivities[1] += diary.pwork;
+        sumActivities[2] += diary.pshop;
+        sumActivities[3] += diary.pschool;
+        sumActivities[4] +=
           diary.pservices + diary.pleisure + diary.pescort + diary.ptransport;
+
+        sumTransport[0] += diary.pmwalk;
+        sumTransport[1] += diary.pmcycle;
+        sumTransport[2] += diary.pmpublic;
+        sumTransport[3] += diary.pmunknown;
 
         // Make a circle representing how long they spend at home
         let home = homeLocation(person);
@@ -215,7 +226,8 @@
         }
       }
 
-      averages.values = sums.map((x) => x / sample_size);
+      averageActivities.values = sumActivities.map((x) => x / sample_size);
+      averageTransport.values = sumTransport.map((x) => x / sample_size);
 
       if (!show) {
         gj.features = [];
@@ -342,7 +354,7 @@
   }
 </script>
 
-<div class="legend">
+<div class="legend" style:top={show ? "120px" : "382px"}>
   <div><input type="checkbox" bind:checked={show} />Daily diaries</div>
   {#if show}
     <div>
@@ -357,7 +369,8 @@
       {today.toDateString()}
     </div>
     Lockdown change: {lockdown}
-    <div use:pieChart={{ data: averages }} />
+    <div use:pieChart={{ data: averageActivities }} />
+    <div use:pieChart={{ data: averageTransport }} />
   {/if}
 </div>
 
@@ -369,7 +382,6 @@
   .legend {
     z-index: 1;
     position: absolute;
-    top: 382px;
     right: 10px;
     width: 290px;
     background: whitesmoke;
