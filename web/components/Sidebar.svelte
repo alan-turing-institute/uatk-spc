@@ -26,5 +26,6 @@
 <p>{props.people.toLocaleString("en-us")} people</p>
 
 {#each Object.entries(PER_PERSON_NUMERIC_PROPS) as [key, prop]}
-  <p>Average {prop.label}: {prop.fmt(props[key])}</p>
+  {@const stat = prop.showAverage ? "Average" : "Median"}
+  <p>{stat} {prop.label}: {prop.fmt(props[key])}</p>
 {/each}

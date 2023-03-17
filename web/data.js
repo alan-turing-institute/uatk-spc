@@ -1,4 +1,4 @@
-import { mean } from "simple-statistics";
+import { mean, median } from "simple-statistics";
 import centroid from "@turf/centroid";
 import { synthpop } from "./pb/synthpop_pb.js";
 
@@ -33,6 +33,7 @@ export const PER_PERSON_NUMERIC_PROPS = {
     label: "BMI for individuals over 16",
     fmt: (x) => x.toFixed(1),
     theme: "Health",
+    showAverage: true,
   },
 };
 
@@ -204,7 +205,11 @@ function msoaStats(pop) {
       people: people_per_msoa[id],
     };
     for (let [key, listPerMsoa] of Object.entries(numericData)) {
-      properties[key] = mean(listPerMsoa[id]);
+      if (PER_PERSON_NUMERIC_PROPS[key].showAverage) {
+        properties[key] = mean(listPerMsoa[id]);
+      } else {
+        properties[key] = median(listPerMsoa[id]);
+      }
     }
 
     msoas[id] = {
@@ -222,7 +227,11 @@ function msoaStats(pop) {
     people: people_per_msoa.all,
   };
   for (let [key, listPerMsoa] of Object.entries(numericData)) {
-    all[key] = mean(listPerMsoa.all);
+    if (PER_PERSON_NUMERIC_PROPS[key].showAverage) {
+      all[key] = mean(listPerMsoa.all);
+    } else {
+      all[key] = median(listPerMsoa.all);
+    }
   }
 
   return [msoas, all];
