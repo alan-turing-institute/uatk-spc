@@ -126,6 +126,9 @@
     <div
       use:histogram={{ title: PER_PERSON_NUMERIC_PROPS[key].label, dataset }}
     />
+    {#if PER_PERSON_NUMERIC_PROPS[key].note}
+      <small>{PER_PERSON_NUMERIC_PROPS[key].note}</small>
+    {/if}
   {/if}
 {/each}
 
