@@ -32,11 +32,11 @@
   let homeLayer = "people-home";
   let flowsLayer = "people-flows";
 
-  const homeColor = "#AD4BB7";
-  const schoolColor = "#D99CAD";
-  const workColor = "#AFB2F1";
-  const retailColor = "#3C7D11";
-  const otherColor = "red";
+  const homeColor = "#0d0d0d";
+  const schoolColor = "#952611";
+  const workColor = "#0979B5";
+  const retailColor = "#008E4A";
+  const otherColor = "#d9d9d9";
 
   // Set up the source and two layers once, with no data
   onMount(() => {
@@ -78,7 +78,7 @@
           retailColor,
           "black",
         ],
-        "line-width": ["*", 30, ["get", "pct"]],
+        "line-width": ["*", 10, ["^", ["get", "pct"], 0.5]],
       },
     });
 

@@ -14,11 +14,11 @@
   let showHome = false;
   let showWork = true;
 
-  const houseColour = "#AD4BB7";
-  const primarySchoolColour = "#F9DEE5";
-  const secondarySchoolColour = "#E8BDC9";
-  const workplaceColour = "#AFB2F1";
-  const shopsColour = "#67A724";
+  const houseColour = "#0D0D0D";
+  const primarySchoolColour = "#C44601";
+  const secondarySchoolColour = "#AC360C";
+  const workplaceColour = "#89AED2";
+  const shopsColour = "#008E4A";
 
   function venues(activity) {
     let gj = emptyGeojson();
@@ -43,8 +43,8 @@
       type: "circle",
       paint: {
         "circle-color": color,
-        "circle-radius": 5,
-        "circle-opacity": 0.5,
+        "circle-radius": 4,
+        "circle-opacity": 0.6,
       },
     };
   }
