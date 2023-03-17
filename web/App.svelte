@@ -64,7 +64,7 @@
       >here</a
     >.
   </p>
-  <FileLoader bind:pop bind:msoas />
+  <FileLoader bind:pop bind:msoas bind:allMsoaData />
 {:else}
   <p>Loading</p>
 {/if}
