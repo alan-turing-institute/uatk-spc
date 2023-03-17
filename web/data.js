@@ -78,10 +78,17 @@ export const PER_PERSON_CATEGORICAL_PROPS = {
     theme: "Employment",
   },
   pwkstat: {
-    get: (p) => p.employment.pwkstat,
+    get: (p) => {
+      let x = p.employment.pwkstat;
+      if (x == synthpop.PwkStat.NA || x == synthpop.PwkStat.PWK_OTHER) {
+        return null;
+      }
+      return x;
+    },
     label: "Professional working status",
     lookup: enumToString(synthpop.PwkStat),
     theme: "Employment",
+    note: 'Under 16 years and "other" categories filtered out',
   },
   self_assessed_health: {
     get: (p) => getOptional(p.health, "selfAssessedHealth"),
