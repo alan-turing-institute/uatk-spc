@@ -161,7 +161,8 @@ export const PER_HOUSEHOLD_CATEGORICAL_PROPS = {
 
 function aggregateStat(data, showAverage) {
   if (data.length == 0) {
-    return "no data";
+    // Messy to show, but doesn't break prop.fmt quite so badly
+    return NaN;
   }
   return showAverage ? mean(data) : median(data);
 }
