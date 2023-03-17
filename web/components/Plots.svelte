@@ -105,6 +105,13 @@
       },
     };
   }
+
+  function maybeNote(note) {
+    if (note) {
+      return `<small>${note}</small>`;
+    }
+    return "";
+  }
 </script>
 
 {#if clickedMsoa}
@@ -126,9 +133,7 @@
     <div
       use:histogram={{ title: PER_PERSON_NUMERIC_PROPS[key].label, dataset }}
     />
-    {#if PER_PERSON_NUMERIC_PROPS[key].note}
-      <small>{PER_PERSON_NUMERIC_PROPS[key].note}</small>
-    {/if}
+    {@html maybeNote(PER_PERSON_NUMERIC_PROPS[key].note)}
   {/if}
 {/each}
 
@@ -137,6 +142,7 @@
     <div
       use:barChart={{ title: PER_PERSON_CATEGORICAL_PROPS[key].label, dataset }}
     />
+    {@html maybeNote(PER_PERSON_CATEGORICAL_PROPS[key].note)}
   {/if}
 {/each}
 {#each Object.entries(categoricalHouseholdData) as [key, dataset]}
@@ -147,5 +153,6 @@
         dataset,
       }}
     />
+    {@html maybeNote(PER_HOUSEHOLD_CATEGORICAL_PROPS[key].note)}
   {/if}
 {/each}

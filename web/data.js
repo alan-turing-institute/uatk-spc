@@ -20,21 +20,18 @@ export const PER_PERSON_NUMERIC_PROPS = {
     label: "Yearly salary for working population",
     fmt: (x) => x.toFixed(1),
     theme: "Employment",
-    note: null,
   },
   salary_hourly: {
     get: (p) => getOptional(p.employment, "salaryHourly"),
     label: "Hourly salary for working population",
     fmt: (x) => x.toFixed(1),
     theme: "Employment",
-    note: null,
   },
   bmi: {
     get: (p) => getOptional(p.health, "bmi"),
     label: "BMI for individuals over 16",
     fmt: (x) => x.toFixed(1),
     theme: "Health",
-    note: null,
   },
 };
 
@@ -66,6 +63,7 @@ export const PER_PERSON_CATEGORICAL_PROPS = {
     label: "Sex",
     lookup: enumToString(synthpop.Sex),
     theme: "Demographics",
+    note: "Sex assigned at birth, as reported in census",
   },
   ethnicity: {
     get: (p) => p.demographics.ethnicity,
