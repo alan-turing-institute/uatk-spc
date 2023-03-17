@@ -70,12 +70,15 @@ export const PER_PERSON_CATEGORICAL_PROPS = {
     label: "Ethnicity",
     lookup: enumToString(synthpop.Ethnicity),
     theme: "Demographics",
+    note: "Self-reported in the census",
+    pieChart: true,
   },
   socioeconomic_classification: {
     get: (p) => getOptional(p.demographics, "nssec8"),
     label: "NSSEC socioeconomic classification",
     lookup: enumToString(synthpop.Nssec8),
     theme: "Employment",
+    pieChart: true,
   },
   pwkstat: {
     get: (p) => {
@@ -110,6 +113,7 @@ export const PER_HOUSEHOLD_CATEGORICAL_PROPS = {
     label: "NSSEC of reference person",
     lookup: enumToString(synthpop.Nssec8),
     theme: "Household",
+    pieChart: true,
   },
   accommodation_type: {
     get: (hh) => getOptional(hh, "accommodationType"),

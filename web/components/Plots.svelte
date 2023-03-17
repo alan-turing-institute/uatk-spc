@@ -106,6 +106,40 @@
     };
   }
 
+  function pieChart(node, { dataset, title }) {
+    Plotly.purge(node);
+    Plotly.newPlot(
+      node,
+      [
+        {
+          labels: Object.keys(dataset),
+          values: Object.values(dataset),
+          type: "pie",
+        },
+      ],
+      { title }
+    );
+
+    return {
+      update({ dataset: newData }) {
+        Plotly.newPlot(
+          node,
+          [
+            {
+              labels: Object.keys(newData),
+              values: Object.values(newData),
+              type: "pie",
+            },
+          ],
+          { title }
+        );
+      },
+      destroy() {
+        Plotly.purge(node);
+      },
+    };
+  }
+
   function maybeNote(note) {
     if (note) {
       return `<small>${note}</small>`;
@@ -139,20 +173,41 @@
 
 {#each Object.entries(categoricalPersonData) as [key, dataset]}
   {#if PER_PERSON_CATEGORICAL_PROPS[key].theme == theme}
-    <div
-      use:barChart={{ title: PER_PERSON_CATEGORICAL_PROPS[key].label, dataset }}
-    />
+    {#if PER_PERSON_CATEGORICAL_PROPS[key].pieChart}
+      <div
+        use:pieChart={{
+          title: PER_PERSON_CATEGORICAL_PROPS[key].label,
+          dataset,
+        }}
+      />
+    {:else}
+      <div
+        use:barChart={{
+          title: PER_PERSON_CATEGORICAL_PROPS[key].label,
+          dataset,
+        }}
+      />
+    {/if}
     {@html maybeNote(PER_PERSON_CATEGORICAL_PROPS[key].note)}
   {/if}
 {/each}
 {#each Object.entries(categoricalHouseholdData) as [key, dataset]}
   {#if PER_HOUSEHOLD_CATEGORICAL_PROPS[key].theme == theme}
-    <div
-      use:barChart={{
-        title: PER_HOUSEHOLD_CATEGORICAL_PROPS[key].label,
-        dataset,
-      }}
-    />
+    {#if PER_HOUSEHOLD_CATEGORICAL_PROPS[key].pieChart}
+      <div
+        use:pieChart={{
+          title: PER_HOUSEHOLD_CATEGORICAL_PROPS[key].label,
+          dataset,
+        }}
+      />
+    {:else}
+      <div
+        use:barChart={{
+          title: PER_HOUSEHOLD_CATEGORICAL_PROPS[key].label,
+          dataset,
+        }}
+      />
+    {/if}
     {@html maybeNote(PER_HOUSEHOLD_CATEGORICAL_PROPS[key].note)}
   {/if}
 {/each}
