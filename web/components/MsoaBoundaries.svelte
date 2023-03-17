@@ -53,13 +53,12 @@
       type: "line",
       paint: {
         "line-color": "black",
-        "line-width": 3,
         "line-width": [
           "case",
           // TODO This feels backwards, but before the feature state is defined at all, it's unclear
           ["boolean", ["feature-state", "focused"], false],
-          10,
-          3,
+          5,
+          2,
         ],
       },
     });
