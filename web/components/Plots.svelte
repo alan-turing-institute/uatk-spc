@@ -163,51 +163,52 @@
 <br />
 
 {#each Object.entries(numericData) as [key, dataset]}
-  {#if PER_PERSON_NUMERIC_PROPS[key].theme == theme}
-    <div
-      use:histogram={{ title: PER_PERSON_NUMERIC_PROPS[key].label, dataset }}
-    />
-    {@html maybeNote(PER_PERSON_NUMERIC_PROPS[key].note)}
+  {@const props = PER_PERSON_NUMERIC_PROPS[key]}
+  {#if props.theme == theme}
+    <div use:histogram={{ title: props.label, dataset }} />
+    {@html maybeNote(props.note)}
   {/if}
 {/each}
 
 {#each Object.entries(categoricalPersonData) as [key, dataset]}
-  {#if PER_PERSON_CATEGORICAL_PROPS[key].theme == theme}
-    {#if PER_PERSON_CATEGORICAL_PROPS[key].pieChart}
+  {@const props = PER_PERSON_CATEGORICAL_PROPS[key]}
+  {#if props.theme == theme}
+    {#if props.pieChart}
       <div
         use:pieChart={{
-          title: PER_PERSON_CATEGORICAL_PROPS[key].label,
+          title: props.label,
           dataset,
         }}
       />
     {:else}
       <div
         use:barChart={{
-          title: PER_PERSON_CATEGORICAL_PROPS[key].label,
+          title: props.label,
           dataset,
         }}
       />
     {/if}
-    {@html maybeNote(PER_PERSON_CATEGORICAL_PROPS[key].note)}
+    {@html maybeNote(props.note)}
   {/if}
 {/each}
 {#each Object.entries(categoricalHouseholdData) as [key, dataset]}
-  {#if PER_HOUSEHOLD_CATEGORICAL_PROPS[key].theme == theme}
-    {#if PER_HOUSEHOLD_CATEGORICAL_PROPS[key].pieChart}
+  {@const props = PER_HOUSEHOLD_CATEGORICAL_PROPS[key]}
+  {#if props.theme == theme}
+    {#if props.pieChart}
       <div
         use:pieChart={{
-          title: PER_HOUSEHOLD_CATEGORICAL_PROPS[key].label,
+          title: props.label,
           dataset,
         }}
       />
     {:else}
       <div
         use:barChart={{
-          title: PER_HOUSEHOLD_CATEGORICAL_PROPS[key].label,
+          title: props.label,
           dataset,
         }}
       />
     {/if}
-    {@html maybeNote(PER_HOUSEHOLD_CATEGORICAL_PROPS[key].note)}
+    {@html maybeNote(props.note)}
   {/if}
 {/each}
