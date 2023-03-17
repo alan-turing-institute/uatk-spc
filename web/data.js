@@ -159,6 +159,13 @@ export const PER_HOUSEHOLD_CATEGORICAL_PROPS = {
   },
 };
 
+function aggregateStat(data, showAverage) {
+  if (data.length == 0) {
+    return "no data";
+  }
+  return showAverage ? mean(data) : median(data);
+}
+
 // Returns a mapping from MSOA ID to the GJ Feature, and also the equivalent of
 // `properties` for all MSOAs together.
 function msoaStats(pop) {
@@ -205,11 +212,10 @@ function msoaStats(pop) {
       people: people_per_msoa[id],
     };
     for (let [key, listPerMsoa] of Object.entries(numericData)) {
-      if (PER_PERSON_NUMERIC_PROPS[key].showAverage) {
-        properties[key] = mean(listPerMsoa[id]);
-      } else {
-        properties[key] = median(listPerMsoa[id]);
-      }
+      properties[key] = aggregateStat(
+        listPerMsoa[id],
+        PER_PERSON_NUMERIC_PROPS[key].showAverage
+      );
     }
 
     msoas[id] = {
@@ -227,11 +233,10 @@ function msoaStats(pop) {
     people: people_per_msoa.all,
   };
   for (let [key, listPerMsoa] of Object.entries(numericData)) {
-    if (PER_PERSON_NUMERIC_PROPS[key].showAverage) {
-      all[key] = mean(listPerMsoa.all);
-    } else {
-      all[key] = median(listPerMsoa.all);
-    }
+    all[key] = aggregateStat(
+      listPerMsoa.all,
+      PER_PERSON_NUMERIC_PROPS[key].showAverage
+    );
   }
 
   return [msoas, all];
