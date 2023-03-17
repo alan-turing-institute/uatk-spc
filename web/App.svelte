@@ -15,6 +15,7 @@
 
   let pop;
   let msoas;
+  let allMsoaData;
   let hoveredMsoa;
   let clickedMsoa = null;
   let showDiaries = false;
@@ -24,7 +25,7 @@
   if (import.meta.env.DEV) {
     onMount(async () => {
       let resp = await fetch("somerset.pb");
-      [pop, msoas] = loadArrayBuffer(await resp.arrayBuffer());
+      [pop, msoas, allMsoaData] = loadArrayBuffer(await resp.arrayBuffer());
     });
   }
 </script>
@@ -36,8 +37,8 @@
       <h1>Synthetic Population Catalyst</h1>
       <About />
       <hr />
-      <FileLoader bind:pop bind:msoas />
-      <Sidebar {pop} {msoas} {hoveredMsoa} />
+      <FileLoader bind:pop bind:msoas bind:allMsoaData />
+      <Sidebar {pop} {msoas} {allMsoaData} {hoveredMsoa} />
       <Plots {pop} {clickedMsoa} />
     </div>
     <div slot="main">

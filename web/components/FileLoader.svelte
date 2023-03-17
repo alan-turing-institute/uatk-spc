@@ -3,11 +3,12 @@
 
   export let pop;
   export let msoas;
+  export let allMsoaData;
 
   function loadFile(e) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      [pop, msoas] = loadArrayBuffer(e.target.result);
+      [pop, msoas, allMsoaData] = loadArrayBuffer(e.target.result);
     };
     reader.readAsArrayBuffer(e.target.files[0]);
   }

@@ -1,3 +1,4 @@
+import { mean } from "simple-statistics";
 import centroid from "@turf/centroid";
 import { synthpop } from "./pb/synthpop_pb.js";
 
@@ -157,51 +158,41 @@ export const PER_HOUSEHOLD_CATEGORICAL_PROPS = {
   },
 };
 
-// Returns a mapping from MSOA ID to the GJ Feature
+// Returns a mapping from MSOA ID to the GJ Feature, and also the equivalent of
+// `properties` for all MSOAs together.
 function msoaStats(pop) {
   // Counts
   let households_per_msoa = {};
   let people_per_msoa = {};
 
-  // Averages of numeric data. Map<key, Map<MSOA, float>>
-  let averages = {};
-  let n = {};
-  // TODO Look for something that can build up in-place
-  for (let key of Object.keys(PER_PERSON_NUMERIC_PROPS)) {
-    averages[key] = {};
-    n[key] = {};
-  }
+  // Lists of numeric data. Map<key, Map<MSOA, List<float>>>
+  let numericData = {};
 
-  // Initialize sum for all MSOAs
-  for (let id of Object.keys(pop.infoPerMsoa)) {
+  // Initialize for MSOAs and the special all case
+  for (let id of Object.keys(pop.infoPerMsoa).concat(["all"])) {
     households_per_msoa[id] = 0;
     people_per_msoa[id] = 0;
     for (let key of Object.keys(PER_PERSON_NUMERIC_PROPS)) {
-      averages[key][id] = 0.0;
-      n[key][id] = 0;
+      numericData[key] ||= {};
+      numericData[key][id] = [];
     }
   }
 
   for (let hh of pop.households) {
     households_per_msoa[hh.msoa11cd]++;
     people_per_msoa[hh.msoa11cd] += hh.members.length;
+    households_per_msoa.all++;
+    people_per_msoa.all += hh.members.length;
 
-    // Sum per MSOA
     for (let id of hh.members) {
       let person = pop.people[id];
       for (let [key, prop] of Object.entries(PER_PERSON_NUMERIC_PROPS)) {
         let value = prop.get(person);
         if (value != null) {
-          averages[key][hh.msoa11cd] += value;
-          n[key][hh.msoa11cd]++;
+          numericData[key][hh.msoa11cd].push(value);
+          numericData[key].all.push(value);
         }
       }
-    }
-  }
-
-  for (let id of Object.keys(pop.infoPerMsoa)) {
-    for (let [key, avg] of Object.entries(averages)) {
-      avg[id] /= n[key][id];
     }
   }
 
@@ -212,8 +203,8 @@ function msoaStats(pop) {
       households: households_per_msoa[id],
       people: people_per_msoa[id],
     };
-    for (let [key, avg] of Object.entries(averages)) {
-      properties[key] = avg[id];
+    for (let [key, listPerMsoa] of Object.entries(numericData)) {
+      properties[key] = mean(listPerMsoa[id]);
     }
 
     msoas[id] = {
@@ -225,7 +216,16 @@ function msoaStats(pop) {
       },
     };
   }
-  return msoas;
+
+  let all = {
+    households: households_per_msoa.all,
+    people: people_per_msoa.all,
+  };
+  for (let [key, listPerMsoa] of Object.entries(numericData)) {
+    all[key] = mean(listPerMsoa.all);
+  }
+
+  return [msoas, all];
 }
 
 export function getFlows(pop, msoas, msoa, activity) {
@@ -268,7 +268,7 @@ export function emptyGeojson() {
   };
 }
 
-// Loads a .pb and returns [pop, msoas].
+// Loads a .pb and returns [pop, msoas, allMsoaData].
 export function loadArrayBuffer(buffer) {
   try {
     console.time("Load protobuf");
@@ -276,13 +276,13 @@ export function loadArrayBuffer(buffer) {
     let pop = synthpop.Population.decode(bytes);
     console.timeEnd("Load protobuf");
     console.time("Calculate msoaStats");
-    let msoas = msoaStats(pop);
+    let [msoas, allMsoaData] = msoaStats(pop);
     console.timeEnd("Calculate msoaStats");
 
     // Debugging
     window.pop = pop;
 
-    return [pop, msoas];
+    return [pop, msoas, allMsoaData];
   } catch (err) {
     window.alert(`Couldn't load SPC proto file: ${err}`);
   }
