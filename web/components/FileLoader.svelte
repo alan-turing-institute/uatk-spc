@@ -52,16 +52,18 @@
 
   button {
     background-color: #fff0;
-    outline-color: #fff0;
-    outline-color: invert;
+    outline-style: auto;
+
   }
 
   .homepagePosition {
     position: absolute;
-    top: 650px;
+    top: 478px;
     right: 48%;
     text-align: center;
-    font-size: 34px;
+    font-size: 32px;
     font-family: 'Poppins-SemiBold', sans-serif;
+    outline-color: #fff0;
+    outline-color: invert;
   }
 </style>
