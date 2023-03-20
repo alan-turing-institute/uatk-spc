@@ -10,7 +10,7 @@
   import About from "./components/About.svelte";
   import FileLoader from "./components/FileLoader.svelte";
   import { loadArrayBuffer } from "./data.js";
-  import logo from "./assets/logo.png";
+  import logo from "./assets/SPC_WebExplorerLogo.png";
   import { onMount } from "svelte";
 
   let pop;
@@ -33,8 +33,7 @@
 {#if pop}
   <Layout>
     <div slot="left" class="base">
-      <img src={logo} alt="SPC logo" width="100px" />
-      <h1>Synthetic Population Catalyst</h1>
+      <img src={logo} alt="SPC logo" width="100%" />
       <About />
       <hr />
       <FileLoader bind:pop bind:msoas bind:allMsoaData />
@@ -56,7 +55,9 @@
       </Map>
     </div>
   </Layout>
+
 {:else if import.meta.env.PROD}
+  
   <h2>Load region</h2>
   <p>
     Run SPC or download and gunzip a file from <a
@@ -66,10 +67,14 @@
   </p>
   <FileLoader bind:pop bind:msoas bind:allMsoaData />
 {:else}
-  <p>Loading</p>
+  <p>Loading file, it will take some seconds, please wait...</p>
 {/if}
 
 <style>
+  :global(body){
+        background-color: rgb(255, 255, 255);
+        background-image: url('https://github.com/alan-turing-institute/uatk-spc/blob/aiuk_updates/web/assets/SPC_Explorer.png');
+    }
   .base {
     background-color: whitesmoke;
     padding: 10px;
