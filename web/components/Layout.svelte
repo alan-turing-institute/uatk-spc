@@ -17,6 +17,6 @@
     overflow: scroll;
   }
   .main {
-    width: calc(100% - 420px);
+    width: calc(100% - 425px);
   }
 </style>
