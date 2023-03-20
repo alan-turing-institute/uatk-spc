@@ -37,5 +37,10 @@
 
   button {
     background-color: white;
+    position: absolute;
+    top: 65%;
+    right: 50%;
+    text-align: center;
+    font-size: 28px;
   }
 </style>
