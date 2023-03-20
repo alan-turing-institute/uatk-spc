@@ -53,6 +53,7 @@
   button {
     background-color: #fff0;
     outline-style: auto;
+    font-family: 'Poppins-SemiBold', sans-serif;
 
   }
 

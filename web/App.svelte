@@ -35,9 +35,10 @@
   <Layout>
     <div slot="left" class="base">
       <img src={logo} alt="SPC logo" width="100%" />
+      <FileLoader bind:pop bind:msoas bind:allMsoaData />
+      &emsp;&emsp;
       <About />
       <hr />
-      <FileLoader bind:pop bind:msoas bind:allMsoaData />
       <Sidebar {pop} {msoas} {allMsoaData} {hoveredMsoa} />
       <Plots {pop} {clickedMsoa} />
     </div>
