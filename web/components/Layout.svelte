@@ -12,7 +12,7 @@
   }
 
   .left {
-    width: 400px;
+    width: 415px;
     height: 100vh;
     overflow: scroll;
   }
