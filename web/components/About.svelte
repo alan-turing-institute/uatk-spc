@@ -34,7 +34,8 @@
   are safeguarded and require registration to the UK Data Service for access.
   <br />
   <br />
-  Web app created by Dustin Carlino, designed by Fernando Benitez-Paez and Hadrien Salat
+  Web app created by Dustin Carlino, designed by Fernando Benitez-Paez and Hadrien
+  Salat
   <br />
   &copy;2020 Urban-Analytics
 </Modal>
