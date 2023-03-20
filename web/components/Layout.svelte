@@ -12,11 +12,11 @@
   }
 
   .left {
-    width: 415px;
+    width: 420px;
     height: 100vh;
     overflow: scroll;
   }
   .main {
-    width: calc(100% - 395px);
+    width: calc(100% - 420px);
   }
 </style>
