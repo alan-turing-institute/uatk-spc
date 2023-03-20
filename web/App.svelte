@@ -11,7 +11,7 @@
   import FileLoader from "./components/FileLoader.svelte";
   import { loadArrayBuffer } from "./data.js";
   import logo from "./assets/SPC_WebExplorerLogo.png";
-  import bg_image from "./assets/SPC_Explorer.png"
+  import bgImage from "./assets/SPC_Explorer.png";
   import { onMount } from "svelte";
 
   let pop;
@@ -56,17 +56,9 @@
       </Map>
     </div>
   </Layout>
-
-{:else if import.meta.env.PROD}  
-  <!-- <h2>Load region</h2> -->
+{:else if import.meta.env.PROD}
   <!-- svelte-ignore a11y-img-redundant-alt -->
-  <img src={bg_image} alt="BG Image" width="100%"/>
-  <!-- <p>
-    Run SPC or download and gunzip a file from <a
-      href="https://alan-turing-institute.github.io/uatk-spc/outputs.html"
-      >here</a
-    >.
-  </p> -->
+  <img src={bgImage} alt="SPC logo" width="100%" />
   <FileLoader bind:pop bind:msoas bind:allMsoaData />
 {:else}
   <p>Loading file, it will take some seconds, please wait...</p>
