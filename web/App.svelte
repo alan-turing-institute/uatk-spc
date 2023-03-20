@@ -59,7 +59,7 @@
 {:else if import.meta.env.PROD}
   <!-- svelte-ignore a11y-img-redundant-alt -->
   <img src={bgImage} alt="SPC logo" width="100%" />
-  <FileLoader bind:pop bind:msoas bind:allMsoaData />
+  <FileLoader bind:pop bind:msoas bind:allMsoaData homepageStyle={true} />
 {:else}
   <p>Loading file, it will take some seconds, please wait...</p>
 {/if}

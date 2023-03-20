@@ -4,6 +4,7 @@
   export let pop;
   export let msoas;
   export let allMsoaData;
+  export let homepageStyle = false;
 
   function loadFile(e) {
     const reader = new FileReader();
@@ -17,7 +18,11 @@
 <!-- TODO Interactive elements inside a label are apparently invalid, but this works -->
 <label>
   <input type="file" id="load_file" on:change={loadFile} />
-  <button type="button" onclick="document.getElementById('load_file').click();">
+  <button
+    type="button"
+    onclick="document.getElementById('load_file').click();"
+    class:homepagePosition={homepageStyle}
+  >
     Load region
   </button>
 </label>
@@ -37,6 +42,9 @@
 
   button {
     background-color: white;
+  }
+
+  .homepagePosition {
     position: absolute;
     top: 65%;
     right: 50%;
