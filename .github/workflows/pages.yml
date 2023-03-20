@@ -7,22 +7,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-      # Make sure the primary copy is from main, even if new_schema is the
-      # branch that triggers this workflow
-      with:
-        ref: main
 
     - name: Install quarto
       uses: quarto-dev/quarto-actions/setup@v2
       with:
-        tinytex: false
+        tinytex: true
 
     - name: Render site
       run: |
-        quarto install tinytex
         cd docs
-        # tinyex gets installed here, but who knows how the shell gets up
-        PATH=$PATH:~/bin quarto render --to all
+        quarto render --to all
 
     - name: Install node
       uses: actions/setup-node@v2
