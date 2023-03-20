@@ -67,7 +67,7 @@
 <style>
   .base {
     background-color: whitesmoke;
-    padding: 20px;
-    width: 360px;
+    padding: 10px;
+    width: 400px;
   }
 </style>
