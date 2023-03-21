@@ -34,7 +34,8 @@
 {#if pop}
   <Layout>
     <div slot="left" class="base">
-      <img src={logo} alt="SPC logo" width="100%" />
+      <img src={logo} alt="SPC logo" width="100%" /><br />
+      <h2> Synthetic Population Catalyst </h2><br />
       <FileLoader bind:pop bind:msoas bind:allMsoaData />
       &emsp;&emsp;
       <About />
