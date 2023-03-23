@@ -35,7 +35,8 @@
   <Layout>
     <div slot="left" class="base">
       <img src={logo} alt="SPC logo" width="100%" /><br />
-      <h2> Synthetic Population Catalyst </h2><br />
+      <h2>Synthetic Population Catalyst</h2>
+      <br />
       <FileLoader bind:pop bind:msoas bind:allMsoaData />
       &emsp;&emsp;
       <About />
@@ -68,18 +69,21 @@
 
 <style>
   @font-face {
-          font-family: 'Poppins', sans-serif;
-          font-style: normal;
-          font-weight: 400,600;
-          font-display: swap;
-          src: local('Poppins Regular'), local('Poppins-SemiBold'), url(https://fonts.googleapis.com/css2?family=Poppins:wght@400..600&display=swap) format('woff2');
-          unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-      }
+    font-family: "Poppins", sans-serif;
+    font-style: normal;
+    font-weight: 400, 600;
+    font-display: swap;
+    src: local("Poppins Regular"), local("Poppins-SemiBold"),
+      url(https://fonts.googleapis.com/css2?family=Poppins:wght@400..600&display=swap)
+        format("woff2");
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+      U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212,
+      U+2215, U+FEFF, U+FFFD;
+  }
   .base {
     background-color: whitesmoke;
     padding: 10px;
     width: 400px;
-    font-family: 'Poppins', sans-serif;
-
+    font-family: "Poppins", sans-serif;
   }
 </style>
