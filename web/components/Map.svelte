@@ -17,11 +17,14 @@
     map = new Map({
       container: mapContainer,
       style:
-        "https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL",
+        "https://api.maptiler.com/maps/streets/style.json?key=MZEJTanw3WpxRvt7qDfo",
       hash: true,
     });
     map.addControl(new ScaleControl());
-    map.addControl(new NavigationControl(), "bottom-right");
+    map.addControl(
+      new NavigationControl({ visualizePitch: true }),
+      "bottom-right"
+    );
 
     map.on("load", () => {
       loaded = true;
