@@ -202,8 +202,14 @@ ul.task-list li input[type="checkbox"] {
    
   <ul>
   <li><a href="#utility-data" id="toc-utility-data" class="nav-link active" data-scroll-target="#utility-data"><span class="toc-section-number">10.1</span>  Utility data</a></li>
-  <li><a href="#county-level-data" id="toc-county-level-data" class="nav-link" data-scroll-target="#county-level-data"><span class="toc-section-number">10.2</span>  County level data</a></li>
-  <li><a href="#national-data" id="toc-national-data" class="nav-link" data-scroll-target="#national-data"><span class="toc-section-number">10.3</span>  National data</a></li>
+  <li><a href="#lookup-gb.csv.gz" id="toc-lookup-gb.csv.gz" class="nav-link" data-scroll-target="#lookup-gb.csv.gz"><span class="toc-section-number">11</span>  lookUp-GB.csv.gz</a>
+  <ul class="collapse">
+  <li><a href="#county-level-data" id="toc-county-level-data" class="nav-link" data-scroll-target="#county-level-data"><span class="toc-section-number">11.1</span>  County level data</a></li>
+  </ul></li>
+  <li><a href="#pop_.csv.gz" id="toc-pop_.csv.gz" class="nav-link" data-scroll-target="#pop_.csv.gz"><span class="toc-section-number">12</span>  pop_<area_name>.csv.gz</area_name></a>
+  <ul class="collapse">
+  <li><a href="#national-data" id="toc-national-data" class="nav-link" data-scroll-target="#national-data"><span class="toc-section-number">12.1</span>  National data</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -231,14 +237,34 @@ ul.task-list li input[type="checkbox"] {
 <p>The data from Open Street Map (OSM) is downloaded directly from https://www.openstreetmap.org. Everything else is hosted through local copies inside one Azure repository that interacts automatically with the model. We describe below the content of this repository and indicate the raw source used for each indicator. It is divided into utilities, county level data and national data. To recreate the content of this repository from raw sources, please refer to <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/scripts/data_prep">this part of the code</a>.</p>
 <section id="utility-data" class="level2" data-number="10.1">
 <h2 data-number="10.1" class="anchored" data-anchor-id="utility-data"><span class="header-section-number">10.1</span> Utility data</h2>
-<pre><code>[lookUp-GB.csv.gz](https://ramp0storage.blob.core.windows.net/referencedata/lookUp-GB.csv.gz)</code></pre>
-<p>The look-up table links different geographies of Great Britain together. It is used internally by the model, but can also help the user define their own study area. The following are standard denominations, compatible with ONS fields of the same name. They are based on ONS <a href="https://geoportal.statistics.gov.uk/">lookups</a>. See ONS documentation for more details. - <code>OA11CD</code>: Output area codes for the 2011 census (120 to 129 households) - <code>LSOA11CD</code> &amp; <code>LSOA11NM</code>: Lower-layer Super Output Areas (about 2000 individuals), replaced by Intermediary Zones for Scotland - <code>MSOA11CD</code>,<code>MSOA11NM</code>: Middle-layer Super Output Areas (about 8000 individuals), replaced by Data Zones for Scotland - <code>LAD20CD</code>, <code>LAD20NM</code>: Local Authority Districts (314 for England, 22 for Wales and 32 for Scotland) - <code>ITL321CD</code>, <code>ITL321NM</code>, <code>ITL221CD</code>, <code>ITL221NM</code>, <code>ITL121CD</code> &amp; <code>ITL121NM</code>: International Territorial Level, replacing pre-Brexit NUTS European divisions. - <code>RGN20CD</code> &amp; <code>RGN20NM</code>: Regions of England (NA for other Wales and Scotland) - <code>Country</code>: England, Wales or Scotland In addition, - “AzureRef”: Name of the geographical unit for the County level data folder inside Azure (Lieutenancy Areas – a.k.a. Ceremonial Counties – for England, Scottish Police Divisions and ITL321NM for Wales) For Wales: ITL321NM - “GoogleMob” &amp; “OSM” are alternate spellings used by Google and OSM for their data releases.</p>
 </section>
-<section id="county-level-data" class="level2" data-number="10.2">
-<h2 data-number="10.2" class="anchored" data-anchor-id="county-level-data"><span class="header-section-number">10.2</span> County level data</h2>
-<p>Contains 47 files, each representing the population in 2020 of one of the counties of England mentioned above, and named</p>
-<pre><code>pop_&lt;county_name&gt;.gz</code></pre>
-<p>This data is based on the <a href="http://dx.doi.org/10.5257/census/aggregate-2011-1">2011 UK census</a>, the <a href="http://dx.doi.org/10.5255/UKDA-SN-8128-1">Time Use Survey 2014-15</a> and the <a href="http://dx.doi.org/10.5255/UKDA-SN-8488-2">Health Survey for England 2017</a>. The SPENSER (Synthetic Population Estimation and Scenario Projection) microsimulation model (<a href="http://dx.doi.org/10.1111/gean.12320">reference</a>) distributes a synthetic population based on the census at MSOA scale and projects it to 2020 according to estimates from the Office for National Statistics (ONS). This information was enriched with some of the content of the other two datasets through propensity score matching (PSM) by Prof.&nbsp;Karyn Morrissey (Technical University of Denmark). The rest of the datasets can be added <em>a posteriori</em> from the identifiers provided.</p>
+<section id="lookup-gb.csv.gz" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> <a href="https://ramp0storage.blob.core.windows.net/referencedata/lookUp-GB.csv.gz">lookUp-GB.csv.gz</a></h1>
+<p>The look-up table links different geographies of Great Britain together. It is used internally by the model, but can also help the user define their own study area. The following are standard denominations, compatible with ONS fields of the same name. They are based on ONS <a href="https://geoportal.statistics.gov.uk/">lookups</a>. See ONS documentation for more details.</p>
+<ul>
+<li><code>OA11CD</code>: Output area codes for the 2011 census (120 to 129 households)</li>
+<li><code>LSOA11CD</code> &amp; <code>LSOA11NM</code>: Lower-layer Super Output Areas (about 2000 individuals), replaced by Intermediary Zones for Scotland</li>
+<li><code>MSOA11CD</code>,<code>MSOA11NM</code>: Middle-layer Super Output Areas (about 8000 individuals), replaced by Data Zones for Scotland</li>
+<li><code>LAD20CD</code>, <code>LAD20NM</code>: Local Authority Districts (314 for England, 22 for Wales and 32 for Scotland)</li>
+<li><code>ITL321CD</code>, <code>ITL321NM</code>, <code>ITL221CD</code>, <code>ITL221NM</code>, <code>ITL121CD</code> &amp; <code>ITL121NM</code>: International Territorial Level, replacing pre-Brexit NUTS European divisions.</li>
+<li><code>RGN20CD</code> &amp; <code>RGN20NM</code>: Regions of England (NA for other Wales and Scotland)</li>
+<li><code>Country</code>: England, Wales or Scotland</li>
+</ul>
+<p>In addition,</p>
+<ul>
+<li>“AzureRef”: Name of the geographical unit for the County level data folder inside Azure (Lieutenancy Areas – a.k.a. Ceremonial Counties – for England, Scottish Police Divisions and ITL321NM for Wales) For Wales: ITL321NM</li>
+<li>“GoogleMob” &amp; “OSM” are alternate spellings used by Google and OSM for their data releases.</li>
+</ul>
+<section id="county-level-data" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="county-level-data"><span class="header-section-number">11.1</span> County level data</h2>
+<p>Files in this section are grouped by country (England, Wales and Scotland), then date (2012, 2020, 2022, 2032, 2039). The format of a path to an individual file is:</p>
+<pre><code>https://ramp0storage.blob.core.windows.net/countydata-v2/[country]/[date]/pop_[area_name].csv.gz</code></pre>
+<p>As of March 2023, England contains 5 series of 46 files (Dorset is missing), Wales 5 series of 12 files and Scotland is missing.</p>
+</section>
+</section>
+<section id="pop_.csv.gz" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> pop_<area_name>.csv.gz</area_name></h1>
+<p>The data is mainly based on the <a href="http://dx.doi.org/10.5257/census/aggregate-2011-1">2011 UK census</a>, the UK <a href="http://dx.doi.org/10.5255/UKDA-SN-8128-1">Time Use Survey 2014-15</a> and the health surveys of GB (<a href="http://dx.doi.org/10.5255/UKDA-SN-8488-2">England</a>, <a href="http://dx.doi.org/10.5255/UKDA-SN-8090-1">Wales</a>, <a href="http://dx.doi.org/10.5255/UKDA-SN-8737-1">Scotland</a>). The SPENSER (Synthetic Population Estimation and Scenario Projection) microsimulation model (<a href="http://dx.doi.org/10.1111/gean.12320">ref</a>) distributes individuals from the census with MSOA scale constraints into synthetic households with OA constraints. It is able to project this synthetic population in the future according to estimates from the Office for National Statistics (ONS). These data were enriched with some of the content of the other datasets mentioned (the rest of which can be added <em>a posteriori</em> from the identifiers provided). The data have also been complented with a modelling of BMI and salaries. The methods used to join the different datasets are explained in the <a href="https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html">methods</a>.</p>
 <p>The fields currently contained are:</p>
 <ul>
 <li><code>idp</code>: a unique global individual identifier across all counties</li>
@@ -288,9 +314,8 @@ ul.task-list li input[type="checkbox"] {
 <li><code>lat</code>: latitude of the MSOA11CD centroid</li>
 </ul>
 <p>Some other fields were kept from and for other specific projects but are not from official sources and should generally not be used.</p>
-</section>
-<section id="national-data" class="level2" data-number="10.3">
-<h2 data-number="10.3" class="anchored" data-anchor-id="national-data"><span class="header-section-number">10.3</span> National data</h2>
+<section id="national-data" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="national-data"><span class="header-section-number">12.1</span> National data</h2>
 <pre><code>businessRegistry.csv</code></pre>
 <p>Contains a breakdown of all business units (i.e.&nbsp;a single workplace) in England at LSOA scale (smaller than MSOA), estimated by the project contributors from two nomis datasets: <a href="https://www.nomisweb.co.uk/datasets/idbrlu">UK Business Counts - local units by industry and employment size band 2020</a> and <a href="https://www.nomisweb.co.uk/datasets/newbrespub">Business Register and Employment Survey 2015</a>. Each item contains the <code>size</code> of the unit and its main <code>sic1d07</code> code in reference to standard <a href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities">Industrial Classification of Economic Activities 2007</a> (number corresponding to the letter in alphabetical order). It is used to compute commuting flows.</p>
 <p>The <i>R</i> codes to compute this file are <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createWorkplaceFile.R">here</a>.</p>
@@ -303,6 +328,7 @@ ul.task-list li input[type="checkbox"] {
 <p>The <i>R</i> codes to process these data are <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createMobilityFile.R">here</a>.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
