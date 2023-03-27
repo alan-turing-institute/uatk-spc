@@ -9,7 +9,7 @@ The data from Open Street Map (OSM) is downloaded directly from https://www.open
 
 ## Utility data
 
-# [lookUp-GB.csv.gz](https://ramp0storage.blob.core.windows.net/referencedata/lookUp-GB.csv.gz)
+### [lookUp-GB.csv.gz](https://ramp0storage.blob.core.windows.net/referencedata/lookUp-GB.csv.gz) {-}
 
 The look-up table links different geographies of Great Britain together. It is used internally by the model, but can also help the user define their own study area. The following are standard denominations, compatible with ONS fields of the same name. They are based on ONS [lookups](https://geoportal.statistics.gov.uk/). See ONS documentation for more details.
 
@@ -35,80 +35,79 @@ https://ramp0storage.blob.core.windows.net/countydata-v2/[country]/[date]/pop_[a
 ```
 As of March 2023, England contains 5 series of 46 files (Dorset is missing), Wales 5 series of 12 files and Scotland is missing.
 
-# pop_<area_name>.csv.gz
+### pop_<area_name>.csv.gz {-}
 
 The data is mainly based on the [2011 UK census](http://dx.doi.org/10.5257/census/aggregate-2011-1), the UK [Time Use Survey 2014-15](http://dx.doi.org/10.5255/UKDA-SN-8128-1) and the health surveys of GB ([England](http://dx.doi.org/10.5255/UKDA-SN-8488-2), [Wales](http://dx.doi.org/10.5255/UKDA-SN-8090-1), [Scotland](http://dx.doi.org/10.5255/UKDA-SN-8737-1)). The SPENSER (Synthetic Population Estimation and Scenario Projection) microsimulation model ([ref](http://dx.doi.org/10.1111/gean.12320)) distributes individuals from the census with MSOA scale constraints into synthetic households with OA constraints. It is able to project this synthetic population in the future according to estimates from the Office for National Statistics (ONS). These data were enriched with some of the content of the other datasets mentioned (the rest of which can be added _a posteriori_ from the identifiers provided). The data have also been complented with a modelling of BMI and salaries. The methods used to join the different datasets are explained in the [methods](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html).
 
-The fields currently contained are:
+The fields currently contained are detailed [here](https://ramp0storage.blob.core.windows.net/referencedata/pop_Definitions.txt). They are:
 
-- `idp`: a unique global individual identifier across all counties
-- `MSOA11CD`: MSOA code where the individual lives
-- `hid`: household identifier, includes communal establishments
-- `pid`: identifier linking to the 2011 Census
-- `pid_tus`: identifier linking to the Time Use Survey 2015
-- `pid_hse`: identifier linking to the Health Survey for England 2017
-- `sex`: 0 female; 1 male
-- `age`: in years
-- `origin`: 1 White; 2 Black; 3 Asian; 4 Mixed; 5 Other
-- `nssec5`: National Statistics Socio-economic classification:
-  - 1: Higher managerial, administrative and professional occupations
-  - 2: Intermediate occupations
-  - 3: Small employers and own account workers
-  - 4: Lower supervisory and technical occupations
-  - 5: Semi-routine and routine occupations
-  - 0: Never worked and long-term unemployed
-- `soc2010`: Previous version of the [Standard Occupational Classification](https://www.ons.gov.uk/methodology/classificationsandstandards/standardoccupationalclassificationsoc/soc2010)
-- `sic1d07`: Standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities), 1st layer (number corresponding to the letter in alphabetical order)
-- `sic2d07`: Standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities), 2nd layer
-- `pwkstat`: Employment status according to the TUS
-- Proportion of 24h spent doing different daily activities:
-  - `punknown` + `pwork` + `pschool` + `pshop` + `pservices` + `pleisure` + `pescort` + `ptransport` = `pnothome`
-  - `phome` + `pworkhome` = `phometot`
-  - `pnothome` + `phometot` = 1
-- `IncomeX`: hourly (X = "H") and annual (X = "Y") income for employees, see [modelling methods](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html) for more details
-- `cvd`: has a cardio-vascular disease (0 or 1)
-- `diabetes`: has diabetes (0 or 1)
-- `bloodpressure`: has high blood pressure (0 or 1)
-- `BMIvg6`: Body Mass Index:
-  - Not applicable
-  - Underweight: less than 18.5
-  - Normal: 18.5 to less than 25
-  - Overweight: 25 to less than 30
-  - Obese I: 30 to less than 35
-  - Obese II: 35 to less than 40
-  - Obese III: 40 or more
-- `bmiNew` is a float estimated value for the BMI of the individual. These were drawn directly according to age, sex and ethnicity and are completely independent of the above values (see [modelling methods](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html)).
-- `lng`: longitude of the MSOA11CD centroid
-- `lat`: latitude of the MSOA11CD centroid
-
-Some other fields were kept from and for other specific projects but are not from official sources and should generally not be used.
+- `pid`: Unique person identifier at GB level within SPC
+- `hid`: Unique household identifier at GB level within SPC
+- `OA11CD`: Output Area code of the individual's home (ONS, 2011 boundaries)
+- `sex`: Sex assigned at birth (DC1117EW, census 2011)
+- `age`: Age in years (DC1117EW, census 2011)
+- `ethnicity`: Based on self-report (aggregated from DC2101EW, census 2011)
+- `nssec8`: National Statistics Socio-economic classification (see methods)
+- `HOUSE_nssec8`: National Statistics Socio-economic classification of the reference person of the household (LC4605, census 2011)
+- `House_type`: Type of accommodation (based on LC4402EW, census 2011)
+- `HOUSE_typeCommunal`: Type of communal establishment (based on QS420, census 2011)
+- `HOUSE_NRooms`: Number of rooms in the accommodation (LC4404EW, census 2011)
+- `HOUSE_centralHeat`: Presence of central heating (based on LC4402EW, census 2011)
+- `HOUSE_tenure`: Tenure (based on LC4402EW, census 2011)
+- `HOUSE_NCars`: Number of cars (derived from LC4202EW by SPENSER team, census 2011)
+- `id_HS`: unique identifier within the Health Survey (aggregated from the Health surveys from England, Wales and Scotland)
+- `HEALTH_diabetes`: for Scotland and England, has doctor diagnosed diabetes; for Wales, diabetes currently treated (derived from HSE, HSW, SHS)
+- `HEALTH_bloodpressure`: for Scotland and England, Doctor diagnosed high blood pressure; for Wales, high blood pressure currently treated (derived from HSE, HSW, SHS)
+- `HEALTH_cvd`: for England, cardiovascular medication taken in the last 7 days; for Scotland, had cardiovascular condition excluding diabetes / blood pressure; for Wales, any heart condition excluding high blood pressure (derived from HSE, HSW, SHS)
+- `HEALTH_NMedecines`: Number of prescribed medications (derived from HSE, HSW, SHS)
+- `HEALTH_selfAssessed`: Self assessed general health (derived from HSE, HSW, SHS)
+- `HEALTH_lifeSat`: how satisfied with life nowadays? (derived from HSE, HSW, SHS)
+- `HEALTH_bmi`: BMI (see methods)
+- `id_TUS_hh`: serial household identifier field in the UK Time Use Survey 2015
+- `id_TUS_p`: pnum person identifier field in the UK Time Use Survey 2015
+- `pwkstat`: Employment status (derived from UK TUS 2015)
+- `soc2010`: Standard Occupational Classification (derived from UK TUS 2015)
+- `sic1d2007`: Standard Industry Classification of economic activities 2007, 1st level (derived from UK TUS 2015)
+- `sic2d2007`: Standard Industry Classification of economic activities 2007, 2nd level (derived from UK TUS 2015)
+- `netPayWeekly`: Weekly take home pay after all deductions (derived from UK TUS 2015)
+- `workedHoursWeekly`: Number of hours per week usually worked in main job or business (derived from UK TUS 2015)
+- `incomeH`: Hourly gross salary for full-time and part-time employees (see methods)
+- `incomeY`: Yearly gross salary for full-time and part-time employees (see methods)
+- `incomeHAsIf`: Hourly gross salary for employees with self employed/other employees as employees of the same industry and with mean hourly worked for the industry when the number of hours is missing (see methods)
+- `incomeYAsIf`: Yearly gross salary for employees with self employed/other employees as employees of the same industry and with mean hourly worked for the industry when the number of hours is missing (see methods)
+- `ESport`: Relative probability weight to attend a sport fixture (Experimental, WIP)
+- `ERugby`: Relative probability weight to attend a Rugby fixture (Experimental, WIP)
+- `EConcertM`: Relative probability weight to attend a concert primarily targeting young males (Experimental, WIP)
+- `EConcertF`: Relative probability weight to attend a concert primarily targeting young females (Experimental, WIP)
+- `EConcertMS`: Relative probability weight to attend a concert primarily targeting middle-aged males (Experimental, WIP)
+- `EConcertMS`: Relative probability weight to attend a concert primarily targeting middle-aged females (Experimental, WIP)
+- `EMuseum`: Relative probability weight to visit a museum (Experimental, WIP)
+- `easting`: X coordinate of the OA centroid in the British National Grid coordinate system (epsg:27700, source: ONS)
+- `northing`: Y coordinate of the OA centroid in the British National Grid coordinate system (epsg:27700, source: ONS)
+- `lng`: X coordinate of the OA centroid in the Longitude/Latitude coordinate system (epsg:4326, derived from ONS)
+- `lat`: Y coordinate of the OA centroid in the Longitude/Latitude coordinate system (epsg:4326, derived from ONS)
 
 ## National data
 
-```
-businessRegistry.csv
-```
+### [businessRegistry.csv.gz](https://ramp0storage.blob.core.windows.net/nationaldata-v2/businessRegistry.csv.gz) {-}
 
-Contains a breakdown of all business units (i.e. a single workplace) in England at LSOA scale (smaller than MSOA), estimated by the project contributors from two nomis datasets: [UK Business Counts - local units by industry and employment size band 2020](https://www.nomisweb.co.uk/datasets/idbrlu) and [Business Register and Employment Survey 2015](https://www.nomisweb.co.uk/datasets/newbrespub). Each item contains the `size` of the unit and its main `sic1d07` code in reference to standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities) (number corresponding to the letter in alphabetical order). It is used to compute commuting flows.
+Contains a breakdown of all business units (i.e. a single workplace) in Great Britain at LSOA scale, estimated by the project contributors from two nomis datasets: [UK Business Counts - local units by industry and employment size band 2020](https://www.nomisweb.co.uk/datasets/idbrlu) and [Business Register and Employment Survey 2015](https://www.nomisweb.co.uk/datasets/newbrespub). Each item contains the `size` of the unit and its main `sic1d07` code in reference to standard [Industrial Classification of Economic Activities 2007](https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities) (number corresponding to the letter in alphabetical order). It is used to compute commuting flows.
 
-The <i>R</i> codes to compute this file are [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createWorkplaceFile.R).
+### `GIS/` {-}
 
-```
-MSOAS_shp.tar.gz
-```
+Contains three GIS datasets of GB in GeoJson format taken from ONS [boundaries](https://geoportal.statistics.gov.uk/):
+- [OA_2011_Pop20.geojson](https://ramp0storage.blob.core.windows.net/nationaldata-v2/GIS/OA_2011_Pop20.geojson) at OA level
+- [LSOA_2011_Pop20.geojson](https://ramp0storage.blob.core.windows.net/nationaldata-v2/GIS/LSOA_2011_Pop20.geojson) at LSOA level
+- [MSOA_2011_Pop20.geojson](https://ramp0storage.blob.core.windows.net/nationaldata-v2/GIS/MSOA_2011_Pop20.geojson) at MSOA level
 
-Is a simple shapefile taken from ONS [boundaries](https://geoportal.statistics.gov.uk/).
-
-```
-QUANT_RAMP.tar.gz
-```
+### [QUANT_RAMP_spc.tar.gz](https://ramp0storage.blob.core.windows.net/nationaldata-v2/QUANT_RAMP_spc.tar.gz) {-}
 
 See: Milton R, Batty M, Dennett A, dedicated [RAMP Spatial Interaction Model GitHub repository](https://github.com/maptube/QUANT_RAMP). It is used to compute the flows towards schools and retail.
 
-```
-timeAtHomeIncreaseCTY.csv
-```
+### [timeAtHomeIncreaseCTY.csv.gz](https://ramp0storage.blob.core.windows.net/nationaldata-v2/timeAtHomeIncreaseCTY.csv.gz) {-}
 
-This file is a subset from [Google COVID-19 Community Mobility Reports](https://www.google.com/covid19/mobility/), cropped to England. It describes the daily reduction in mobility, averaged at county level, due to lockdown and other COVID-19 restrictions between the 15<sup>th</sup> of February 2020 and 15<sup>th</sup> of April 2022. Missing values have been replaced by the national average. These values can be used directly to reduce `pnothome` and increase `phometot` (and their sub-categories) to simulate more accurately the period.
+This file is a subset from [Google COVID-19 Community Mobility Reports](https://www.google.com/covid19/mobility/), cropped to GB. It describes the daily reduction in mobility, averaged at county level, due to lockdown and other COVID-19 restrictions between the 15<sup>th</sup> of February 2020 and 15<sup>th</sup> of October 2022. Missing values have been replaced by the national average. These values can be used directly to reduce `pnothome` and increase `phometot` (and their sub-categories) to simulate more accurately the period.
 
-The <i>R</i> codes to process these data are [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createMobilityFile.R).
+### [diariesRef.csv.gz](https://ramp0storage.blob.core.windows.net/nationaldata-v2/diariesRef.csv.gz) {-}
+
+Contains diaries taken from the UK TUS that can be distributed to the population on a daily basis. They contain weekend days and weekday days. A full description of the fields can be found [here](https://ramp0storage.blob.core.windows.net/nationaldata-v2/diariesRef_Definitions.txt).
