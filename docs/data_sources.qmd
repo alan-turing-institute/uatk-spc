@@ -95,7 +95,8 @@ Contains a breakdown of all business units (i.e. a single workplace) in Great Br
 
 ### `GIS/` {-}
 
-Contains three GIS datasets of GB in GeoJson format taken from ONS [boundaries](https://geoportal.statistics.gov.uk/):
+Contains three GIS datasets of GB in GeoJson format taken from [ONS boundaries](https://geoportal.statistics.gov.uk/):
+
 - [OA_2011_Pop20.geojson](https://ramp0storage.blob.core.windows.net/nationaldata-v2/GIS/OA_2011_Pop20.geojson) at OA level
 - [LSOA_2011_Pop20.geojson](https://ramp0storage.blob.core.windows.net/nationaldata-v2/GIS/LSOA_2011_Pop20.geojson) at LSOA level
 - [MSOA_2011_Pop20.geojson](https://ramp0storage.blob.core.windows.net/nationaldata-v2/GIS/MSOA_2011_Pop20.geojson) at MSOA level
