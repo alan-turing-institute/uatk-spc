@@ -3,26 +3,48 @@ title: "Modelling methods"
 toc: true
 ---
 
-The principles behind the generation of the enriched [SPENSER](https://github.com/nismod/microsimulation) population data and behind the modelling of trips to schools and retail from [QUANT](https://github.com/maptube/QUANT_RAMP) are detailed in
-
-> Spooner F et al. A dynamic microsimulation model for epidemics. Soc Sci Med., 291:114461 (2021). ([DOI](https://doi.org/10.1016/j.socscimed.2021.114461))
+The principles behind the generation of [SPENSER](https://github.com/nismod/microsimulation) population data and behind the modelling of trips to schools and retail by [QUANT](https://github.com/maptube/QUANT_RAMP) are detailed in
 
 > Lomax N et al. An Open-Source Model for Projecting Small Area Demographic and Land-Use Change. Geographical analysis, 54(3), 599-622 (2022). ([DOI](https://doi.org/10.1111/gean.12320))
 
-## Commuting flows
+and
 
-In order to distribute each individual of the population to a unique physical workplace, we first created a population of all individual workplaces in England, based on a combination of the Nomis UK Business Counts 2020 dataset and the Nomis Business register and Employment Survey 2015 (see [Data sources](data_sources.qmd)). The first dataset gives the number of individual workplace counts per industry, using the SIC 2007 industry classification, with imprecise size (i.e. number of employees) bands at MSOA level. The second dataset gives the total number of jobs available at LSOA level per SIC 2007 industry category. We found that the distribution of workplace sizes follows closely a simple 1/x distribution, allowing us to draw for each workplace a size within their band, with sum constraints given by the total number of jobs available, according to the second dataset.
+> Spooner F et al. A dynamic microsimulation model for epidemics. Soc Sci Med., 291:114461 (2021). ([DOI](https://doi.org/10.1016/j.socscimed.2021.114461))
 
-The workplace 'population' and individual population are then levelled for each SIC 2007 category by removing the exceeding part of whichever dataset lists more items. This takes into account that people and business companies are likely to over-report their working availability (e.g. part time and seasonal contracts are not counted differently than full time contracts, jobseekers or people on maternity leave might report the SIC of their last job). This process can be controlled by a threshold in the parameter file that defines the maximal total proportion of workers or jobs that can be removed. If the two datasets cannot be levelled accordingly, the categories are dropped and the datasets are levelled globally. Tests in the West Yorkshire area have shown than when the level 1 SIC, containing 21 unique categories, is used, 90% of the volume of commuting flows were recovered compared to the Nomis commuting OD matrices at MSOA level.
+The result of SPENSER is two separate datasets and a merging key: one dataset for individuals, accurate at MSOA level and containing the `sex`, `age` and `ethnicity` [fields](https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz); and one for households, accurate at OA level and containing the `OA11CD`, `HOUSE_nssec8`, `House_type`, `HOUSE_typeCommunal`, `HOUSE_NRooms`, `HOUSE_centralHeat`, `HOUSE_tenure` and `HOUSE_NCars` [fields](https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz) respectively.
 
-The employees for each workplace are drawn according to the 'universal law of visitation', see
+## Join with the Health Surveys and UK Time Used Survey
 
-> Schläpfer M et al. The universal visitation law of human mobility. Nature 593, 522–527 (2021). ([DOI](https://doi.org/10.1038/s41586-021-03480-9))
+Once merged into one dataset according to the matching key, the SPENSER data is enriched with the Health Surveys and UK Time Used Survey.
 
-This framework predicts that visitors to any destination follow a simple
+An individual among those sharing the same 5-year age group (see code for details of age groups for under 18) and sex is drawn from the participants of the Health Survey. This adds the `id_HS`, `HEALTH_diabetes`, `HEALTH_bloodpressure`, `HEALTH_cvd`, `HEALTH_NMedecines`, `HEALTH_selfAssessed` and `HEALTH_lifeSat` [fields](https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz). This join is not spatially differentiated and other matching criteria (ethnicity and nssec8) were retained due to a lack of representativity inside the survey. The BMI field is the result of a more comprehensive modelling detailed [below](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#bmi-data).
 
-<p align=center> &rho;(<i>r</i>,<i>f</i>)= <i>K</i> / (<i>rf</i>)<sup>2</sup> </p align=center>
-distribution, where &rho;(<i>r</i>,<i>f</i>) is the density of visitors coming from a distance <i>r</i> with frequency <i>f</i> and <i>K</i> is a balancing constant depending on the specific area. In the context of commuting, it can be assumed that <i>f</i> = 1. Additionally, we only need to weigh potential employees against each other, which removes the necessity to compute explicitly  <i>K</i>. In the West Yorkshire test, we found a Pearson coefficient of 0.7 between the predicted flows when aggregated at MSOA level and the OD matrix at MSOA level available from Nomis.
+Each individual that is not a head of household is assigned an nssec8 category. This is done according to nssec8 category distributions among the general population by sex and age groups according to ONS data ([DC6114EW](https://www.nomisweb.co.uk/census/2011/dc6114ew) and [DC6206SC](https://www.nrscotland.gov.uk/news/2014/census-2011-release-3i) datasets).
+
+An individual among those sharing the same 5-year age group (see code for details of age groups for under 18), sex and nssec8 category is drawn from the participants of the UK Time Use Survey. This adds the `id_TUS_hh`, `id_TUS_p`, `pwkstat`, `soc2010`, `sic1d2007`, `sic2d2007`, `netPayWeekly` and `workedHoursWeekly` [fields](https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz). Note that the `netPayWeekly` and `workedHoursWeekly` fields have a low response rate among participants of the survey. For that reason, we have a added a much more detailed modelling of income, see [below](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#income-data), that includes spatial differences at region level.
+
+
+## BMI data
+
+Body Max Index (BMI) is calculated for each individual from the [Health Survey for England 2019](https://digital.nhs.uk/data-and-information/areas-of-interest/public-health/health-survey-for-england---health-social-care-and-lifestyles#top) (access needs to be requested to the UK Data Service). This calculation is completely indepedent from the PSM to the HSE 2017, and therefore the new BMI values will not fit within the categories indicated by this earlier PSM. As the BMI variable is not necessarily independent from the other health variables (diabetes etc.), the new variable should only be used for studies where all other variables are considered equal. The new variable is continuous (a float).
+
+According to the HSE 2019, the distribution of BMI values should follow figure 1. Socio-economic category was discarded for the modelling as it is not independent from the other variables and "mixed" and "other" ethnicities have been merged due to small sample sizes.
+
+<img src="img/BMIStart.png" align="left" width="600"/>
+Figure 1. BMI per age. Columns represent ethnicity (White, Black, Asian, Other), and the rows sex (female, male).
+
+The distribution for each age group is a gamma distribution. See figure 2.
+
+<img src="img/BMIDistrib.png" align="left" width="600"/>
+Figure 2. Distribution of BMI values for white females aged 30-34.
+
+Due to small sample sizes, the BMI is calculated for each individual depending on their age according to a gamma distribution whose mean is the mean for the corrresponding age, sex and ethnicity (thick line in figure 1), but whose variance is only determined by the total variance by sex and ethnicity. The resulting BMI where validated for Bedfordshire, and correlations of 0.93 and 0.97 were found between the mean and variance of the modelled data compared to those for the reference HSE 2019 data. See figure 3. The distribution per age, as in figure 1, were also validated.
+
+<img src="img/BMIControl.png" align="left" width="600"/>
+Figure 3. Modelled mean and variance compared to the reference mean and variance from the HSE 2019 data for each of the eight categories of figure 1.
+
+The <i>R</i> codes for this modelling are [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createBMI.R).
+
 
 ## Income data
 
@@ -148,23 +170,17 @@ Table after weighting by age:
 The pearson correlations for mean and median between the modelled and raw values are 0.99 and 0.99.
 
 
-## BMI data
+## Commuting flows
 
-Body Max Index (BMI) is calculated for each individual from the [Health Survey for England 2019](https://digital.nhs.uk/data-and-information/areas-of-interest/public-health/health-survey-for-england---health-social-care-and-lifestyles#top) (access needs to be requested to the UK Data Service). This calculation is completely indepedent from the PSM to the HSE 2017, and therefore the new BMI values will not fit within the categories indicated by this earlier PSM. As the BMI variable is not necessarily independent from the other health variables (diabetes etc.), the new variable should only be used for studies where all other variables are considered equal. The new variable is continuous (a float).
+In order to distribute each individual of the population to a unique physical workplace, we first created a population of all individual workplaces in England, based on a combination of the Nomis UK Business Counts 2020 dataset and the Nomis Business register and Employment Survey 2015 (see [Data sources](data_sources.qmd)). The first dataset gives the number of individual workplace counts per industry, using the SIC 2007 industry classification, with imprecise size (i.e. number of employees) bands at MSOA level. The second dataset gives the total number of jobs available at LSOA level per SIC 2007 industry category. We found that the distribution of workplace sizes follows closely a simple 1/x distribution, allowing us to draw for each workplace a size within their band, with sum constraints given by the total number of jobs available, according to the second dataset.
 
-According to the HSE 2019, the distribution of BMI values should follow figure 1. Socio-economic category was discarded for the modelling as it is not independent from the other variables and "mixed" and "other" ethnicities have been merged due to small sample sizes.
+The workplace 'population' and individual population are then levelled for each SIC 2007 category by removing the exceeding part of whichever dataset lists more items. This takes into account that people and business companies are likely to over-report their working availability (e.g. part time and seasonal contracts are not counted differently than full time contracts, jobseekers or people on maternity leave might report the SIC of their last job). This process can be controlled by a threshold in the parameter file that defines the maximal total proportion of workers or jobs that can be removed. If the two datasets cannot be levelled accordingly, the categories are dropped and the datasets are levelled globally. Tests in the West Yorkshire area have shown than when the level 1 SIC, containing 21 unique categories, is used, 90% of the volume of commuting flows were recovered compared to the Nomis commuting OD matrices at MSOA level.
 
-<img src="img/BMIStart.png" align="left" width="600"/>
-Figure 1. BMI per age. Columns represent ethnicity (White, Black, Asian, Other), and the rows sex (female, male).
+The employees for each workplace are drawn according to the 'universal law of visitation', see
 
-The distribution for each age group is a gamma distribution. See figure 2.
+> Schläpfer M et al. The universal visitation law of human mobility. Nature 593, 522–527 (2021). ([DOI](https://doi.org/10.1038/s41586-021-03480-9))
 
-<img src="img/BMIDistrib.png" align="left" width="600"/>
-Figure 2. Distribution of BMI values for white females aged 30-34.
+This framework predicts that visitors to any destination follow a simple
 
-Due to small sample sizes, the BMI is calculated for each individual depending on their age according to a gamma distribution whose mean is the mean for the corrresponding age, sex and ethnicity (thick line in figure 1), but whose variance is only determined by the total variance by sex and ethnicity. The resulting BMI where validated for Bedfordshire, and correlations of 0.93 and 0.97 were found between the mean and variance of the modelled data compared to those for the reference HSE 2019 data. See figure 3. The distribution per age, as in figure 1, were also validated.
-
-<img src="img/BMIControl.png" align="left" width="600"/>
-Figure 3. Modelled mean and variance compared to the reference mean and variance from the HSE 2019 data for each of the eight categories of figure 1.
-
-The <i>R</i> codes for this modelling are [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createBMI.R).
+<p align=center> &rho;(<i>r</i>,<i>f</i>)= <i>K</i> / (<i>rf</i>)<sup>2</sup> </p align=center>
+distribution, where &rho;(<i>r</i>,<i>f</i>) is the density of visitors coming from a distance <i>r</i> with frequency <i>f</i> and <i>K</i> is a balancing constant depending on the specific area. In the context of commuting, it can be assumed that <i>f</i> = 1. Additionally, we only need to weigh potential employees against each other, which removes the necessity to compute explicitly  <i>K</i>. In the West Yorkshire test, we found a Pearson coefficient of 0.7 between the predicted flows when aggregated at MSOA level and the OD matrix at MSOA level available from Nomis.
