@@ -1,5 +1,7 @@
 # Scripts to prepare the input data for SPC
 
+![SPC Schema](https://github.com/alan-turing-institute/uatk-spc/blob/main/docs/img/SPC_Schema_full.png)
+
 ## Step 1: Curate public data from diverse sources (WIP)
 
 Use `raw_to_prepared.R`. Health and time use data are safegarded, dowload directly from [10.5255/UKDA-SN-8860-1](http://doi.org/10.5255/UKDA-SN-8860-1), [10.5255/UKDA-SN-8090-1](http://doi.org/10.5255/UKDA-SN-8090-1), [10.5255/UKDA-SN-8737-1](http://doi.org/10.5255/UKDA-SN-8737-1) and [10.5255/UKDA-SN-8128-1](http://doi.org/10.5255/UKDA-SN-8128-1) and place inside the download folder (path defined by `folderIn`) before running the script.
