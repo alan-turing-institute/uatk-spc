@@ -255,9 +255,9 @@ ul.task-list li input[type="checkbox"] {
 <p><img src="img/BMIStart.png" align="left" width="600"> Figure 1. BMI per age. Columns represent ethnicity (White, Black, Asian, Other), and the rows sex (female, male).</p>
 <p>The distribution for each age group is a gamma distribution. See figure 2.</p>
 <p><img src="img/BMIDistrib.png" align="left" width="600"> Figure 2. Distribution of BMI values for white females aged 30-34.</p>
-<p>Due to small sample sizes, the BMI is calculated for each individual depending on their age according to a gamma distribution whose mean is the mean for the corrresponding age, sex and ethnicity (thick line in figure 1), but whose variance is only determined by the total variance by sex and ethnicity. The resulting BMI where validated for Bedfordshire, and correlations of 0.93 and 0.97 were found between the mean and variance of the modelled data compared to those for the reference HSE 2019 data. See figure 3. The distribution per age, as in figure 1, were also validated.</p>
+<p>Due to small sample sizes, the BMI is calculated for each individual depending on their age according to a gamma distribution whose mean is the mean for the corresponding age, sex and ethnicity (thick line in figure 1), but whose variance is only determined by the total variance by sex and ethnicity. The resulting BMI where validated for Bedfordshire, and correlations of 0.93 and 0.97 were found between the mean and variance of the modelled data compared to those for the reference HSE 2019 data. See figure 3. The distribution per age, as in figure 1, were also validated.</p>
 <p><img src="img/BMIControl.png" align="left" width="600"> Figure 3. Modelled mean and variance compared to the reference mean and variance from the HSE 2019 data for each of the eight categories of figure 1.</p>
-<p>The <i>R</i> codes for this modelling are <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createBMI.R">here</a>.</p>
+<p>The <i>R</i> codes for this modelling are <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/legacy/createBMI.R">here</a>.</p>
 </section>
 <section id="income-data" class="level2" data-number="9.3">
 <h2 data-number="9.3" class="anchored" data-anchor-id="income-data"><span class="header-section-number">9.3</span> Income data</h2>
@@ -351,7 +351,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-<p>A significant number of individuals listed as working either full or part time have 0 effective worked hours per day according to the Time Use Survey matching. In those cases, an hourly salary is modelled depending on their SOC, region and sex, as for any other employee, but the annual salary will be displayed as 0. It is possible to estimate their likely true number of hours worked from the same ONS dataset (Table 15.9a: Paid hours worked - Total 2020), also depending on their sex, soc and region. This calculation has been added to the “As If” column.</p>
+<p>A significant number of individuals listed as working either full or part time have 0 effective worked hours per day according to the Time Use Survey matching. In those cases, an hourly salary is modelled depending on their SOC, region and sex, as for any other employee, but the annual salary will be displayed as 0. It is possible to estimate the likely true number of hours worked from the same ONS dataset (Table 15.9a: Paid hours worked - Total 2020), also depending on their sex, soc and region. This calculation has been added to the “As If” column.</p>
 <p><strong>Hourly gross salary per sex and full-time/part-time classification</strong></p>
 <table class="table">
 <colgroup>
@@ -683,7 +683,7 @@ ul.task-list li input[type="checkbox"] {
 <li>Process, plant and machine operatives</li>
 <li>Elementary occupations.</li>
 </ol>
-<p>The pearson correlations for mean and median between the modelled and raw values are 0.98 and 0.98.</p>
+<p>The Pearson correlations for mean and median between the modelled and raw values are 0.98 and 0.98.</p>
 <p><strong>Hourly gross salary per age</strong></p>
 <p>The reference for this table is: <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6">Table 6.5a Hourly pay - Gross 2020</a></p>
 <p>Table before weighting by age:</p>
@@ -743,7 +743,7 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-<p>The pearson correlations for mean and median between the modelled and raw values are 0.92 and 0.92.</p>
+<p>The Pearson correlations for mean and median between the modelled and raw values are 0.92 and 0.92.</p>
 <p>Table after weighting by age:</p>
 <table class="table">
 <thead>
@@ -801,13 +801,13 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 </tbody>
 </table>
-<p>The pearson correlations for mean and median between the modelled and raw values are 0.99 and 0.99.</p>
+<p>The Pearson correlations for mean and median between the modelled and raw values are 0.99 and 0.99.</p>
 </section>
 </section>
 <section id="commuting-flows" class="level2" data-number="9.4">
 <h2 data-number="9.4" class="anchored" data-anchor-id="commuting-flows"><span class="header-section-number">9.4</span> Commuting flows</h2>
-<p>In order to distribute each individual of the population to a unique physical workplace, we first created a population of all individual workplaces in England, based on a combination of the Nomis UK Business Counts 2020 dataset and the Nomis Business register and Employment Survey 2015 (see <a href="./data_sources.html">Data sources</a>). The first dataset gives the number of individual workplace counts per industry, using the SIC 2007 industry classification, with imprecise size (i.e.&nbsp;number of employees) bands at MSOA level. The second dataset gives the total number of jobs available at LSOA level per SIC 2007 industry category. We found that the distribution of workplace sizes follows closely a simple 1/x distribution, allowing us to draw for each workplace a size within their band, with sum constraints given by the total number of jobs available, according to the second dataset.</p>
-<p>The workplace ‘population’ and individual population are then levelled for each SIC 2007 category by removing the exceeding part of whichever dataset lists more items. This takes into account that people and business companies are likely to over-report their working availability (e.g.&nbsp;part time and seasonal contracts are not counted differently than full time contracts, jobseekers or people on maternity leave might report the SIC of their last job). This process can be controlled by a threshold in the parameter file that defines the maximal total proportion of workers or jobs that can be removed. If the two datasets cannot be levelled accordingly, the categories are dropped and the datasets are levelled globally. Tests in the West Yorkshire area have shown than when the level 1 SIC, containing 21 unique categories, is used, 90% of the volume of commuting flows were recovered compared to the Nomis commuting OD matrices at MSOA level.</p>
+<p>In order to distribute each individual of the population to a unique physical workplace, we first created a population of all individual workplaces in England, based on a combination of the Nomis UK Business Counts 2020 dataset and the Nomis Business register and Employment Survey 2015 (see <a href="./data_sources.html">Data sources</a>). The first dataset gives the number of individual workplace counts per industry, using the SIC 2007 industry classification, with imprecise size (i.e.&nbsp;number of employees) bands at MSOA level. The second dataset gives the total number of jobs available at LSOA level per SIC 2007 industry category. We found that the distribution of workplace sizes follows closely a simple 1/x distribution, allowing us to draw for each workplace a size within their band, with sum constraints given by the total number of jobs available, according to the second dataset. The <i>R</i> codes to create the list of all workplaces can be found <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/raw_to_prepared_Workplaces.R">here</a>.</p>
+<p>The workplace ‘population’ and individual population are then levelled for each SIC 2007 category by removing the exceeding part of whichever dataset lists more items. This takes into account that people and business companies are likely to over-report their working availability (e.g.&nbsp;part time and seasonal contracts are not counted differently than full time contracts, jobseekers or people on maternity leave might report the SIC of their last job). This process can be controlled by a threshold in the parameter file that defines the maximal total proportion of workers or jobs that can be removed. If the two datasets cannot be levelled accordingly, the categories are dropped and the datasets are levelled globally. Tests in the West Yorkshire area have shown that when the level 1 SIC, containing 21 unique categories, is used, 90% of the volume of commuting flows were recovered compared to the Nomis commuting OD matrices at MSOA level.</p>
 <p>The employees for each workplace are drawn according to the ‘universal law of visitation’, see</p>
 <blockquote class="blockquote">
 <p>Schläpfer M et al.&nbsp;The universal visitation law of human mobility. Nature 593, 522–527 (2021). (<a href="https://doi.org/10.1038/s41586-021-03480-9">DOI</a>)</p>
