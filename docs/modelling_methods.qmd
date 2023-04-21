@@ -38,12 +38,12 @@ The distribution for each age group is a gamma distribution. See figure 2.
 <img src="img/BMIDistrib.png" align="left" width="600"/>
 Figure 2. Distribution of BMI values for white females aged 30-34.
 
-Due to small sample sizes, the BMI is calculated for each individual depending on their age according to a gamma distribution whose mean is the mean for the corrresponding age, sex and ethnicity (thick line in figure 1), but whose variance is only determined by the total variance by sex and ethnicity. The resulting BMI where validated for Bedfordshire, and correlations of 0.93 and 0.97 were found between the mean and variance of the modelled data compared to those for the reference HSE 2019 data. See figure 3. The distribution per age, as in figure 1, were also validated.
+Due to small sample sizes, the BMI is calculated for each individual depending on their age according to a gamma distribution whose mean is the mean for the corresponding age, sex and ethnicity (thick line in figure 1), but whose variance is only determined by the total variance by sex and ethnicity. The resulting BMI where validated for Bedfordshire, and correlations of 0.93 and 0.97 were found between the mean and variance of the modelled data compared to those for the reference HSE 2019 data. See figure 3. The distribution per age, as in figure 1, were also validated.
 
 <img src="img/BMIControl.png" align="left" width="600"/>
 Figure 3. Modelled mean and variance compared to the reference mean and variance from the HSE 2019 data for each of the eight categories of figure 1.
 
-The <i>R</i> codes for this modelling are [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/createBMI.R).
+The <i>R</i> codes for this modelling are [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/legacy/createBMI.R).
 
 
 ## Income data
@@ -85,7 +85,7 @@ The numbers given by ONS vary from dataset to dataset and are reported by ONS as
 | Mod tot H | 23.1k  | 18.5k  | 4.6k | 11.8k  | 11k   | 0.8k   | 11.3k  | 7.5k     | 3.8k     |
 | Mod tot Y | 17.6k  | 14.8k  | 2.8k | 9.4k   | 8.9k  | 0.5k   | 8.2k   | 5.9k     | 2.3k     |
 
-A significant number of individuals listed as working either full or part time have 0 effective worked hours per day according to the Time Use Survey matching. In those cases, an hourly salary is modelled depending on their SOC, region and sex, as for any other employee, but the annual salary will be displayed as 0. It is possible to estimate their likely true number of hours worked from the same ONS dataset (Table 15.9a: Paid hours worked - Total 2020), also depending on their sex, soc and region. This calculation has been added to the "As If" column.
+A significant number of individuals listed as working either full or part time have 0 effective worked hours per day according to the Time Use Survey matching. In those cases, an hourly salary is modelled depending on their SOC, region and sex, as for any other employee, but the annual salary will be displayed as 0. It is possible to estimate the likely true number of hours worked from the same ONS dataset (Table 15.9a: Paid hours worked - Total 2020), also depending on their sex, soc and region. This calculation has been added to the "As If" column.
 
 **Hourly gross salary per sex and full-time/part-time classification**
 
@@ -141,7 +141,7 @@ The pearson correlations for mean and median between the modelled and raw values
 8. Process, plant and machine operatives
 9. Elementary occupations.
 
-The pearson correlations for mean and median between the modelled and raw values are 0.98 and 0.98.
+The Pearson correlations for mean and median between the modelled and raw values are 0.98 and 0.98.
 
 **Hourly gross salary per age**
 
@@ -156,7 +156,7 @@ Table before weighting by age:
 | Mod mean   | 12.77 | 14.96 | 16.33 | 16.93 | 16.83 | 16.66 | 16.29 |
 | Mod median | 10.93 | 12.71 | 13.88 | 14.02 | 13.96 | 13.85 | 13.65 |
 
-The pearson correlations for mean and median between the modelled and raw values are 0.92 and 0.92.
+The Pearson correlations for mean and median between the modelled and raw values are 0.92 and 0.92.
 
 Table after weighting by age:
 
@@ -167,14 +167,14 @@ Table after weighting by age:
 | Mod mean   | 9.05  | 11.15 | 14.87 | 17.35 | 17.96 | 17.47 | 15.41 |
 | Mod median | 8.20  | 9.51  | 12.86 | 14.41 | 14.78 | 14.43 | 12.56 |
 
-The pearson correlations for mean and median between the modelled and raw values are 0.99 and 0.99.
+The Pearson correlations for mean and median between the modelled and raw values are 0.99 and 0.99.
 
 
 ## Commuting flows
 
-In order to distribute each individual of the population to a unique physical workplace, we first created a population of all individual workplaces in England, based on a combination of the Nomis UK Business Counts 2020 dataset and the Nomis Business register and Employment Survey 2015 (see [Data sources](data_sources.qmd)). The first dataset gives the number of individual workplace counts per industry, using the SIC 2007 industry classification, with imprecise size (i.e. number of employees) bands at MSOA level. The second dataset gives the total number of jobs available at LSOA level per SIC 2007 industry category. We found that the distribution of workplace sizes follows closely a simple 1/x distribution, allowing us to draw for each workplace a size within their band, with sum constraints given by the total number of jobs available, according to the second dataset.
+In order to distribute each individual of the population to a unique physical workplace, we first created a population of all individual workplaces in England, based on a combination of the Nomis UK Business Counts 2020 dataset and the Nomis Business register and Employment Survey 2015 (see [Data sources](data_sources.qmd)). The first dataset gives the number of individual workplace counts per industry, using the SIC 2007 industry classification, with imprecise size (i.e. number of employees) bands at MSOA level. The second dataset gives the total number of jobs available at LSOA level per SIC 2007 industry category. We found that the distribution of workplace sizes follows closely a simple 1/x distribution, allowing us to draw for each workplace a size within their band, with sum constraints given by the total number of jobs available, according to the second dataset. The <i>R</i> codes to create the list of all workplaces can be found [here](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/raw_to_prepared_Workplaces.R).
 
-The workplace 'population' and individual population are then levelled for each SIC 2007 category by removing the exceeding part of whichever dataset lists more items. This takes into account that people and business companies are likely to over-report their working availability (e.g. part time and seasonal contracts are not counted differently than full time contracts, jobseekers or people on maternity leave might report the SIC of their last job). This process can be controlled by a threshold in the parameter file that defines the maximal total proportion of workers or jobs that can be removed. If the two datasets cannot be levelled accordingly, the categories are dropped and the datasets are levelled globally. Tests in the West Yorkshire area have shown than when the level 1 SIC, containing 21 unique categories, is used, 90% of the volume of commuting flows were recovered compared to the Nomis commuting OD matrices at MSOA level.
+The workplace 'population' and individual population are then levelled for each SIC 2007 category by removing the exceeding part of whichever dataset lists more items. This takes into account that people and business companies are likely to over-report their working availability (e.g. part time and seasonal contracts are not counted differently than full time contracts, jobseekers or people on maternity leave might report the SIC of their last job). This process can be controlled by a threshold in the parameter file that defines the maximal total proportion of workers or jobs that can be removed. If the two datasets cannot be levelled accordingly, the categories are dropped and the datasets are levelled globally. Tests in the West Yorkshire area have shown that when the level 1 SIC, containing 21 unique categories, is used, 90% of the volume of commuting flows were recovered compared to the Nomis commuting OD matrices at MSOA level.
 
 The employees for each workplace are drawn according to the 'universal law of visitation', see
 

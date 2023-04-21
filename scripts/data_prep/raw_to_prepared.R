@@ -9,6 +9,7 @@ library(rgeos)
 library(raster)
 library(fitdistrplus)
 library(reshape2)
+library(readxl)
 #library(ggplot2)
 
 folderIn <- "Data/dl/"
@@ -16,12 +17,15 @@ folderOut <- "Data/prepData/"
 
 set.seed(12345)
 
+source("raw_to_prepared_Income.R")
+source("raw_to_prepared_Workplaces.R")
+
 
 #######################
 ##### Health data #####
 #######################
 
-
+print("Working on health data")
 ### Load raw for all 3 countries (downloaded from UK Data Service, requires registration: 10.5255/UKDA-SN-8860-1; 10.5255/UKDA-SN-8090-1; 10.5255/UKDA-SN-8737-1)
 HSE <- read.table(paste(folderIn,"hse_2019_eul_20211006.tab",sep = ""), sep="\t", header=TRUE)
 HSWa <- read.table(paste(folderIn,"whs_2015_adult_archive_v1.tab",sep = ""), sep="\t", header=TRUE)
@@ -224,6 +228,7 @@ HSWc$country <- "Wales"
 
 ### Output single file
 HS <- rbind(HSE,HSS,HSWa,HSWc)
+print("Writing outputs...")
 write.table(HS,paste(folderOut,"HSComplete.csv",sep = ""),row.names = F, sep = ",")
 
 
@@ -231,6 +236,7 @@ write.table(HS,paste(folderOut,"HSComplete.csv",sep = ""),row.names = F, sep = "
 ##### BMI data #####
 ####################
 
+print("Working on BMI data")
 
 # Uses same base data as Health data above
 # Load Health Survey for England
@@ -337,6 +343,7 @@ dMean <- data.frame(F1 = unname(fitF1$coefficients),F2 = unname(fitF2$coefficien
                     M1 = unname(fitM1$coefficients),M2 = unname(fitM2$coefficients),M3 = unname(fitM3$coefficients),M4 = unname(fitM4$coefficients)
 )
 
+print("Writing outputs...")
 write.table(dMean,paste(folderOut,"BMIdMean.csv",sep = ""),row.names = F, sep = ",")
 
 varData <- rep(NA,8)
@@ -360,6 +367,11 @@ varData
 # DC6114EW - NS-SeC by sex and age at MSOA level (England and Wales)
 # DC6206SC - NS-SeC by sex / age / ethnnicity at Country level (Scotland)
 
+print("Working on NSSEC")
+
+# /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\
+#  Please note that the links to the nomis API below must currently include "date=latest". This means that those links will eventually stop pointing to the correct data
+# /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\
 
 ### England and Wales
 downloadNSSEC <- function(age,sex){
@@ -384,6 +396,7 @@ downloadNSSEC <- function(age,sex){
   colnames(data) <- c("MSOA11CD","nssec8","number")
   return(data)
 }
+print("Writing outputs for England and Wales...")
 writeNSSECTables <- function(age,sex){
   ref <- matrix(c("M_16-24","M_25-34","M_35-49","M_50-64","M_65p",
                   "F_16-24","F_25-34","F_35-49","F_50-64","F_65p"),
@@ -431,12 +444,16 @@ NSSEC$other <- as.numeric(gsub(",",".",NSSEC$Other.ethnic.groups))
 NSSEC$black[is.na(NSSEC$black)] <- 0
 NSSEC <- NSSEC[,c(1:3,10:14)]
 
+print("Writing outputs for Scotland...")
 write.table(NSSEC,paste(folderOut,"NSSECS_CLEAN.csv",sep = ""),row.names = F, sep = ",")
 
 
 ####################
 ##### TUS data #####
 ####################
+
+
+print("Working on TUS data")
 
 
 ###
@@ -709,11 +726,15 @@ row.names(TUS) <- 1:nrow(TUS)
 # Output
 write.table(TUS,paste(folderOut,"diariesRef.csv",sep = ""),row.names = F, sep = ",")
 
+print("Outputs written")
+
 
 ###########################################
-##### Google mobility abd new Look-Up #####
+##### Google mobility and new Look-Up #####
 ###########################################
 
+
+print("Working on mobility data...")
 
 ### Google mobility
 
@@ -753,19 +774,22 @@ gm$date[is.na(gm$date)] <- ref[gm$day[is.na(gm$date)] + 1]
 
 # Output file
 gm$change <- round(gm$change/100 + 1,2)
+print("Writing outputs...")
 write.table(gm,paste(folderOut,"timeAtHomeIncreaseCTY.csv",sep = ""),row.names = F,sep=",")
 
 # Updated list of areas to build the look-up
-googleCTY_CNC <- unique(gm$GoogleCTY_CNC)
+#googleCTY_CNC <- unique(gm$GoogleCTY_CNC)
 #write.table(googleCTY_CNC,paste(folderOut,"googleCTY_CNC_list.csv",sep = ""),row.names = F,sep=",")
 
 
 ### New look-up
 
+print("Working on the look-up")
+
 # Old European NUTS geographies, now renamed "ITL"
 download.file("https://www.arcgis.com/sharing/rest/content/items/cdb629f13c8f4ebc86f30e8fe3cddda4/data",destfile = paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv",sep = ""))
 
-itlRef <- read.csv(paste(folderIn,"/LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv",sep = ""))
+itlRef <- read.csv(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv",sep = ""))
 itlRef <- itlRef[,c(1,5:10)]
 itlRef <- itlRef[!duplicated(itlRef),]
 
@@ -776,9 +800,10 @@ itlRef <- itlRef[!duplicated(itlRef$LAD20CD),] # Necessary due to two ITL321 not
 ### England and Wales
 ###
 
-download.file("https://www.arcgis.com/sharing/rest/content/items/792f7ab3a99d403ca02cc9ca1cf8af02/data",destfile = paste(folderIn,"/Output_Area_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Authority_District_(December_2020)_Lookup_in_England_and_Wales.csv",sep = ""))
 
-oatoOtherEW <- read.csv(paste(folderIn,"/Users/hsalat/SPC_Extension/Data/dl/Output_Area_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Authority_District_(December_2020)_Lookup_in_England_and_Wales.csv",sep = ""))
+download.file("https://www.arcgis.com/sharing/rest/content/items/792f7ab3a99d403ca02cc9ca1cf8af02/data",destfile = paste(folderIn,"Output_Area_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Authority_District_(December_2020)_Lookup_in_England_and_Wales.csv",sep = ""))
+
+oatoOtherEW <- read.csv(paste(folderIn,"Output_Area_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Authority_District_(December_2020)_Lookup_in_England_and_Wales.csv",sep = ""))
 oatoOtherEW$Country <- NA
 oatoOtherEW$Country[grep("E",oatoOtherEW$MSOA11CD)] <- "England"
 oatoOtherEW$Country[grep("W",oatoOtherEW$MSOA11CD)] <- "Wales"
@@ -819,8 +844,14 @@ rownames(oatoOtherS) <- 1:nrow(oatoOtherS)
 ###
 
 
-oatoOtherS1 <- read.csv("/Users/hsalat/SPC_Extension/Data/geographies/OA_DZ_IZ_2011.csv")
-oatoOtherS2 <- read.csv("/Users/hsalat/SPC_Extension/Data/geographies/DataZone2011lookup_2022-05-31.csv")
+# Basic look-up table
+download.file("https://www.nrscotland.gov.uk/files//geography/2011-census/OA_DZ_IZ_2011.xlsx",destfile = paste(folderIn,"OA_DZ_IZ_2011.xlsx",sep = ""))
+# More details (codes, names, other geographies)
+download.file("https://statistics.gov.scot/downloads/file?id=13360f3a-ca68-4f3e-8b7f-caffed8712eb%2FDataZone2011lookup_2022-05-31.csv",destfile = paste(folderIn,"DataZone2011lookup_2022-05-31.csv",sep = ""))
+
+oatoOtherS1 <- read_excel(paste(folderIn,"OA_DZ_IZ_2011.xlsx",sep = ""), sheet = 1)
+oatoOtherS1 <- as.data.frame(oatoOtherS1)
+oatoOtherS2 <- read.csv(paste(folderIn,"DataZone2011lookup_2022-05-31.csv",sep = ""))
 
 oatoOtherS <- merge(oatoOtherS1,oatoOtherS2,by.x = "DataZone2011Code",by.y = "DZ2011_Code",all.x = T)
 oatoOtherS <- data.frame(OA11CD = oatoOtherS$OutputArea2011Code, LSOA11CD = oatoOtherS$DataZone2011Code, LSOA11NM = oatoOtherS$DZ2011_Name,
@@ -831,7 +862,8 @@ oatoOtherS <- data.frame(OA11CD = oatoOtherS$OutputArea2011Code, LSOA11CD = oato
 oatoOtherS$AzureRef <- tolower(oatoOtherS$AzureRef)
 oatoOtherS$AzureRef <- gsub(" ","-",oatoOtherS$AzureRef)
 
-temp1 <- as.character(unique(oatoOtherS$LAD20NM))
+temp1 <- sort(as.character(unique(oatoOtherS$LAD20NM)),decr = F)
+
 googleNamesS <- data.frame(ons = temp1,
                            googleCTY_CNC = c("Aberdeen City","Aberdeenshire","Angus Council","Argyll and Bute Council","Clackmannanshire","Dumfries and Galloway",
                                              "Dundee City Council","East Ayrshire Council","East Dunbartonshire Council","East Lothian Council","East Renfrewshire Council","Edinburgh",   
@@ -859,263 +891,7 @@ oatoOther <- rbind(oatoOtherEW,oatoOtherS)
 rownames(oatoOther) <- 1:nrow(oatoOther)
 
 # Output
+print("Writing outputs...")
 write.table(oatoOther,paste(folderOut,"lookUp-GB.csv",sep = ""),row.names = F, sep = ",")
 
-
-#############################
-##### Business Registry #####
-#############################
-
-
-### 
-### Employees per business unit at national level (NOMIS)
-###
-
-
-oldBR <- read.csv("/Users/hsalat/SPC_Extension/Data/businessRegistry/businessRegistryOld.csv")
-
-### REQUIRED: UK Business Counts - local units by industry and employment size band (https://www.nomisweb.co.uk/datasets/idbrlu)
-### REQUIRED: Employment survey (https://www.nomisweb.co.uk/datasets/apsnew)
-### OUTDATED? Look Up tables for employment specific geographies
-
-
-####### Data is per industry sic2017 "section" (21 categories), summing all (checks only)
-
-totW <- read.csv("/Users/hsalat/SPC_Extension/Data/businessRegistry/WalesAll.csv",skip = 8)
-totS <- read.csv("/Users/hsalat/SPC_Extension/Data/businessRegistry/ScotlandAll.csv",skip = 8)
-
-nat <- data.frame(realW = rowSums(totW[1:9,3:23]), realS = rowSums(totS[1:9,3:23]))
-nat$mid <- c((4-0)/2,5+(9-5)/2,10+(19-10)/2,20+(49-20)/2,50+(99-50)/2,100+(249-100)/2,250+(499-250)/2,500+(999-500)/2,1000+(2000-1000)/2) # 2000 as upper limit is arbitrary
-
-# 1/x fit
-fitW <- lm(log(nat$realW[1:8]) ~ log(nat$mid[1:8]))
-fitS <- lm(log(nat$realS[1:9]) ~ log(nat$mid[1:9]))
-nat$fitW <-c(exp(fitted(fitW)),1)
-nat$fitS <-exp(fitted(fitS))
-
-# Plot: real values vs 1/x fit
-ggplot(nat, aes(x=mid, y=realW)) + geom_line(color="black",size=2,alpha=0.6) + 
-  geom_line(aes(x=mid, y=fitW),color = 3) +
-  ylab("Number of business units") + xlab("Number of employees") +
-  ggtitle("National distribution of business unit sizes")
-
-ggplot(nat, aes(x=mid, y=realS)) + geom_line(color="black",size=2,alpha=0.6) + 
-  geom_line(aes(x=mid, y=fitS),color = 4) +
-  ylab("Number of business units") + xlab("Number of employees") +
-  ggtitle("National distribution of business unit sizes")
-
-####################
-####### Data #######
-####################
-
-name = "0-9"
-country = "Scotland"
-
-####### #Business units per employee size band at MSOA level and per business sic2017 2d division (89 categories)
-loadNBus <- function(name,country){
-  temp <- read.csv(paste("/Users/hsalat/SPC_Extension/Data/businessRegistry/",country,name,"MSOA.csv",sep=""),skip = 8)  # <--- UK Business Counts
-  colnames(temp)[1] <- "X2011.super.output.area...middle.layer"
-  temp <- temp[which(!(temp$X2011.super.output.area...middle.layer == "" | temp$X2011.super.output.area...middle.layer == "Column Total")),2:ncol(temp)]
-  colnames(temp)[1] <- "MSOA11CD"
-  temp <- temp[order(temp$MSOA11CD),]
-  rownames(temp) <- 1:nrow(temp)
-  return(temp)
-}
-
-E0to9W <- loadNBus("0-9","Wales")
-E10to49W <- loadNBus("10-49","Wales")
-E50to249W <- loadNBus("50-249","Wales")
-E250pW <- loadNBus("250p","Wales")
-
-E0to9S <- loadNBus("0-9","Scotland")
-E10to49S <- loadNBus("10-49","Scotland")
-E50to249S <- loadNBus("50-249","Scotland")
-E250pS <- loadNBus("250p","Scotland")
-
-ref <- c("E0to9W" ,"E10to49W","E50to249W","E250pW","E0to9S" ,"E10to49S","E50to249S","E250pS")
-
-# Merging into one dataset
-msoaData <- data.frame(catTemp = NA, band = NA, MSOA11CD = NA, refTemp=NA)
-for(i in 1:length(ref)){
-  temp2 <- get(ref[i])
-  for(j in 1:nrow(temp2)){
-    for(k in 2:ncol(temp2)){
-      if(temp2[j,k]>0){
-        temp3 <- data.frame(catTemp = rep(k-1,temp2[j,k]) , band = i, MSOA11CD = temp2$MSOA11CD[j], refTemp = 1:temp2[j,k])
-        msoaData <- rbind(msoaData,temp3)
-      }
-    }
-  }
-}
-
-#######  #Employees at LSOA level per business sic2017 2d division (89 categories)
-
-loadlsoa <- function(country){
-  temp <- read.csv(paste("/Users/hsalat/SPC_Extension/Data/businessRegistry/",country,"LSOA.csv",sep=""),skip = 8) # <--- Employment Survey
-  colnames(temp)[1] <- "X2011.super.output.area...lower.layer"
-  temp <- temp[which(!(temp$X2011.super.output.area...lower.layer == "" | temp$X2011.super.output.area...lower.layer == "Column Total" | temp$X2011.super.output.area...lower.layer == "*")),2:ncol(temp)]
-  colnames(temp)[1] <- "LSOA11CD"
-  temp <- temp[order(temp$LSOA11CD),]
-  rownames(temp) <- 1:nrow(temp)
-  temp <- temp[,c(1,seq(2,177,by=2))]
-  return(temp)
-}
-
-Wlsoa <- loadlsoa("Wales")
-Slsoa <- loadlsoa("Scotland")
-
-
-# Merging into one dataset
-lsoaData <- rbind(Wlsoa,Slsoa)
-
-
-####### look up tables: MSOA/LSOA and industry sic2017 categories
-
-lookUp <- read.csv("data/Output_Area_to_Local_Authority_District_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Enterprise_Partnership__April_2020__Lookup_in_England.csv")
-lookUp <- lookUp[,c("LSOA11CD","MSOA11CD")]
-lookUp <- lookUp %>% distinct()
-
-temp <- c(rep(1,3),rep(2,5),rep(3,24),rep(4,1),rep(5,4),rep(6,3),rep(7,3),rep(8,5),rep(9,2),rep(10,6),
-          rep(11,3),rep(12,1),rep(13,7),rep(14,6),rep(15,1),rep(16,1),rep(17,3),rep(18,4),rep(19,3),rep(20,2),
-          rep(21,1))
-
-refIC <- data.frame(sic1d07 = temp, sic2d07 = c(1:3,5:9,10:33,35,36:39,41:43,45:47,49:53,55:56,58:63,64:66,68,69:75,77:82,84,85,86:88,90:93,94:96,97:98,99),
-                    sic2d07Ref = 1:88
-)
-
-
-####### Assembling the puzzle: register of business units in England
-
-busPop <- merge(msoaData,refIC,by.x="catTemp",by.y="sic2d07Ref")
-
-# 'id' field
-
-temp1 <- as.character(busPop$sic2d07)
-for(i in 1:length(temp1)){
-  if(nchar(temp1[i]) < 2){
-    temp1[i] <- paste("0",temp1[i],sep="")
-  }
-}
-
-temp2 <- as.character(busPop$refTemp)
-for(i in 1:length(temp2)){
-  if(nchar(temp2[i]) == 1){
-    temp2[i] <- paste("000",temp2[i],sep="")
-  }else if(nchar(temp2[i]) == 2){
-    temp2[i] <- paste("00",temp2[i],sep="")
-  }else if(nchar(temp2[i]) == 3){
-    temp2[i] <- paste("0",temp2[i],sep="")
-  }
-}
-
-busPop$id <- paste(busPop$MSOA11CD,busPop$band,temp1,temp2,sep="")
-
-busPop <- busPop[,c(7,2,3,5,6)]
-busPop <- busPop[order(busPop$id),]
-row.names(busPop) <- 1:nrow(busPop)
-
-# 'size' field
-
-BUsizeW <- function(n,band){
-  if(band == 1){
-    x <- 1:9
-  }else if(band == 2){
-    x <- 10:49
-  }else if(band == 3){
-    x <- 50:249
-  }else{
-    x <- 250:1500
-  }
-  return(sample(x, n, replace = T, prob = fitW$coefficients[1]*(x^fitW$coefficients[2])))
-}
-
-BUsizeS <- function(n,band){
-  if(band == 1){
-    x <- 1:9
-  }else if(band == 2){
-    x <- 10:49
-  }else if(band == 3){
-    x <- 50:249
-  }else{
-    x <- 250:1500
-  }
-  return(sample(x, n, replace = T, prob = fitS$coefficients[1]*(x^fitS$coefficients[2])))
-}
-
-idw <- grep("W",busPop$MSOA11CD)
-ids <- grep("S",busPop$MSOA11CD)
-
-length(ids) + length(idw)
-
-busPop$size[idw] <- mapply(BUsizeW,1,busPop$band[idw])
-busPop$size[ids] <- mapply(BUsizeS,1,busPop$band[ids])
-busPop <- busPop[,c(1,6,3:5)]
-
-
-
-# hist(busPop$size)
-# sum(busPop$size)
-# sum(lsoaData[2:89])
-
-# 'lsoa' field
-
-busPop2 <- merge(busPop,refIC,by.x="sic2d07",by.y="sic2d07")
-
-lsoatomsoa <- oatoOther[c(grep("W",oatoOther$MSOA11CD),grep("S",oatoOther$MSOA11CD)),c("LSOA11CD","MSOA11CD")]
-lsoatomsoa <- lsoatomsoa[!duplicated(lsoatomsoa),]
-rownames(lsoatomsoa) <- 1:nrow(lsoatomsoa)
-lsoaData2 <- merge(lsoaData,lsoatomsoa,by.x="LSOA11CD",by.y="LSOA11CD")
-
-
-busPop3 <- busPop2
-busPop2 <- busPop3
-
-msoaFilling <- function(name,busPop2){
-  lsoa <- lsoaData2 %>% filter(MSOA11CD == name)
-  for(i in 1:88){
-    ref <- which(busPop2$MSOA11CD == name & busPop2$sic2d07Ref == i)
-    weights <- lsoa[,i+1]
-    if(sum(weights > 0)){
-      busPop2$LSOA11CD[ref] <- sample(lsoa$LSOA11CD, length(ref), replace = T, prob = weights)
-    }else{
-      busPop2$LSOA11CD[ref] <- sample(lsoa$LSOA11CD, length(ref), replace = T)
-    }
-  }
-  return(busPop2)
-}
-
-busPop2$LSOA11CD <- NA
-
-for(i in unique(busPop2$MSOA11CD)){
-  busPop2 <- msoaFilling(i,busPop2)
-}
-
-# 'lng' and 'lat' fields
-
-coords <- read.dbf("/Users/hsalat/SPC_Extension/Data/businessRegistry/LSOA.dbf")
-idw <- grep("W",coords$LSOA11CD)
-coords <- coords[c(idw),c("LSOA11CD","LONG","LAT")]
-colnames(coords)[2:3] <- c("lng","lat")
-
-coords2 <- read.dbf("/Users/hsalat/SPC_Extension/Data/businessRegistry/SG_DataZone_Cent_2011.dbf")
-ukgrid = "+init=epsg:27700"
-latlong = "+init=epsg:4326"
-coords3 <- cbind(Easting = as.numeric(as.character(coords2$Easting)), Northing = as.numeric(as.character(coords2$Northing)))
-coords3 <- SpatialPointsDataFrame(coords3, data = data.frame(coords2$DataZone), proj4string = CRS("+init=epsg:27700"))
-coords3 <- spTransform(coords3, CRS(latlong))
-plot(coords3)
-coords3 <- coords3@coords
-coords3 <- data.frame(LSOA11CD = coords2$DataZone, lng = coords3[,1], lat = coords3[,2])
-
-refLSOA <- rbind(coords3,coords)
-
-busPop2 <- merge(busPop2,refLSOA,by.x = "LSOA11CD",by.y = "LSOA11CD")
-
-busPop <- busPop2[,c(3,4,5,1,9,10,6,2)]
-colnames(busPop)[7] <- "sic1d07"
-busPop <- busPop[order(busPop$id),]
-row.names(busPop) <- 1:nrow(busPop)
-
-busPop <- rbind(oldBR,busPop)
-
-write.table(busPop,"Outputs/businessRegistry.csv",sep=",",row.names = F)
+print("End of raw_to_prepared")
