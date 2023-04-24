@@ -801,7 +801,7 @@ itlRef <- itlRef[!duplicated(itlRef$LAD20CD),] # Necessary due to two ITL321 not
 ###
 
 
-download.file("https://www.arcgis.com/sharing/rest/content/items/792f7ab3a99d403ca02cc9ca1cf8af02/data",destfile = paste(folderIn,"Output_Area_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Authority_District_(December_2020)_Lookup_in_England_and_Wales.csv",sep = ""))
+download.file("https://opendata.arcgis.com/api/v3/datasets/e8fef92ac4114c249ffc1ff3ccf22e12_0/downloads/data?format=csv&spatialRefId=4326&where=1%3D1",destfile = paste(folderIn,"Output_Area_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Authority_District_(December_2020)_Lookup_in_England_and_Wales.csv",sep = ""))
 
 oatoOtherEW <- read.csv(paste(folderIn,"Output_Area_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Authority_District_(December_2020)_Lookup_in_England_and_Wales.csv",sep = ""))
 oatoOtherEW$Country <- NA
@@ -893,5 +893,28 @@ rownames(oatoOther) <- 1:nrow(oatoOther)
 # Output
 print("Writing outputs...")
 write.table(oatoOther,paste(folderOut,"lookUp-GB.csv",sep = ""),row.names = F, sep = ",")
+
+
+###
+### OA centroids
+###
+
+
+download.file("https://stg-arcgisazurecdataprod1.az.arcgis.com/exportfiles-1559-14679/Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv?sv=2018-03-28&sr=b&sig=lXtKu1VuADphReJfFvfgqHHWm4CtHnk3iusPMruCxO0%3D&se=2023-04-24T18%3A30%3A56Z&sp=r",destfile = paste(folderIn,"Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv",sep = ""))
+OACoords <- read.csv(paste(folderIn,"Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv",sep = ""))
+
+ukgrid = "+init=epsg:27700"
+latlong = "+init=epsg:4326"
+
+coords <- cbind(Easting = as.numeric(as.character(OACoords$x)), Northing = as.numeric(as.character(OACoords$y)))
+coords_SP <- SpatialPointsDataFrame(coords, data = data.frame(OACoords$OA11CD,OACoords$OBJECTID), proj4string = CRS("+init=epsg:27700"))
+
+coords2 <- spTransform(coords_SP, CRS(latlong))
+coords2 <- coords2@coords
+
+OACoordsF <- data.frame(OA11CD = OACoords$OA11CD, easting = OACoords$x, northing = OACoords$y, lng = coords2[,1], lat = coords2[,2])
+
+write.table(OACoordsF,paste(folderOut,"OACentroids.csv",sep = ""),row.names = F, sep = ",")
+
 
 print("End of raw_to_prepared")

@@ -9,6 +9,36 @@ library(foreign)
 
 print("Working on the business registry...")
 
+set.seed(14101066)
+
+######################################################################
+####### #Employees per business unit at national level (NOMIS) #######
+######################################################################
+
+
+# Based on UK Business Counts - local units by industry and employment size band (https://www.nomisweb.co.uk/datasets/idbrlu)
+
+# Data is per industry sic2017 "section" (21 categories), summing all (checks only)
+
+download.file("https://www.nomisweb.co.uk/api/v01/dataset/NM_141_1.data.csv?geography=2092957699&date=latestMINUS2&industry=150994945...150994965&employment_sizeband=1...9&legal_status=0&measures=20100&select=industry_name,employment_sizeband_name,obs_value&rows=employment_sizeband_name&cols=industry_name",destfile = paste(folderIn,"data.csv",sep=""))
+data <- read.csv(paste(folderIn,"data.csv",sep=""))
+
+data <- data[c(1,7,2,5,8,3,6,9,4),]
+row.names(data) <- 1:nrow(data)
+
+nat <- data.frame(real = rowSums(data[,2:22]))
+nat$mid <- c((4-0)/2,5+(9-5)/2,10+(19-10)/2,20+(49-20)/2,50+(99-50)/2,100+(249-100)/2,250+(499-250)/2,500+(999-500)/2,1000+(2000-1000)/2) # 2000 as upper limit is arbitrary
+
+# 1/x fit
+fit <- lm(log(nat$real) ~ log(nat$mid))
+nat$fit <-exp(fitted(fit))
+
+# Plot: real values vs 1/x fit
+ggplot(nat, aes(x=mid, y=real)) + geom_line(color="black",size=2,alpha=0.6) + 
+  geom_line(aes(x=mid, y=fit),color = 5) +
+  ylab("Number of business units") + xlab("Number of employees") +
+  ggtitle("National distribution of business unit sizes")
+
 
 ###############################################################################################################################
 ####### E & W: Business units per employee size band at MSOA level and per business sic2017 2d division (89 categories) #######
@@ -125,38 +155,51 @@ for(i in 1:4){
   }
 }
 
+msoaData <- msoaData[!is.na(msoaData$catTemp),]
+row.names(msoaData) <- 1:nrow(msoaData)
 
-################################################################################################
-#######  E & W: Employees at LSOA level per business sic2017 2d division (89 categories) #######
-################################################################################################
 
-### Based on Employment survey (https://www.nomisweb.co.uk/datasets/apsnew)
+###########################################################################################
+####### E: Employees at LSOA level per business sic2017 2d division (89 categories) #######
+###########################################################################################
 
-loadlsoa <- function(name){
-  temp <- read.csv(paste("data/England",name,".csv",sep=""),skip = 8) # <--- Employment Survey
-  temp <- temp[which(!(temp$X2011.super.output.area...lower.layer == "" | temp$X2011.super.output.area...lower.layer == "Column Total" | temp$X2011.super.output.area...lower.layer == "*")),2:ncol(temp)]
-  colnames(temp)[1] <- "LSOA11CD"
-  temp <- temp[order(temp$LSOA11CD),]
-  rownames(temp) <- 1:nrow(temp)
-  temp <- temp[,c(1,seq(2,177,by=2))]
-  return(temp)
+
+### Based on Business Register and Employment Survey (https://www.nomisweb.co.uk/datasets/newbrespub)
+
+geogrLSOA <- read.csv("LSOA_list_for_nomis.txt")
+geogrLSOA <- geogrLSOA$LSOA11CD
+
+test <- "https://www.nomisweb.co.uk/api/v01/dataset/NM_172_1.data.csv?geography=1249916561...1249916566,1249916557...1249916560,1249916569...1249916571,1249916637...1249916640,1249916625...1249916628,1249916533...1249916535,1249916572...1249916574,1249916587...1249916590,1249916567,1249916568,1249934823,1249916536...1249916540,1249934821,1249934822,1249916621...1249916624&employment_status=1&measure=1&measures=20100&select=geography_code,industry_code,obs_value&rows=geography_code&cols=industry_code"
+download.file(test,destfile = paste(folderIn,"data.csv",sep=""))
+
+downloadES <- function(geogrLSOA){
+  URLB <- "https://www.nomisweb.co.uk/api/v01/dataset/NM_172_1.data.csv?geography="
+  URLE <- paste("&date=latest&industry=146800641...146800643,146800645...146800673,146800675...146800679,146800681...146800683,146800685...146800687,146800689...146800693,146800695,146800696,146800698...146800706,146800708...146800715,146800717...146800722,146800724...146800728,146800730...146800739&employment_status=1&measure=1&measures=20100&select=geography_code,industry_code,obs_value&rows=geography_code&cols=industry_code")
+  key <- floor(length(geogrLSOA)/25) # Areas are downloaded by packs of 25
+  area <- paste(geogrLSOA[1:25],collapse=",")
+  download.file(paste(URLB,area,URLE,sep = ""),destfile = paste(folderIn,"data.csv",sep=""))
+  data <- read.csv(paste(folderIn,"data.csv",sep=""))
+  for(i in 2:(key+1)){
+    area <- paste(geogrLSOA[((i-1)*25 + 1):min((i*25),length(geogrLSOA))],collapse=",")
+    download.file(paste(URLB,area,URLE,sep = ""),destfile = paste(folderIn,"data1.csv",sep=""))
+    data1 <- read.csv(paste(folderIn,"data1.csv",sep=""))
+    data <- rbind(data,data1)
+  }
+  colnames(data)[1] <- "LSOA11CD"
+  data <- data[order(data$LSOA11CD),]
+  rownames(data) <- 1:nrow(data)
+  return(data)
 }
 
-EELlsoa <- loadlsoa("EastandLondonLSOA")
-ENlsoa <- loadlsoa("NorthLSOA")
-ESlsoa <- loadlsoa("SouthLSOA")
-EWlsoa <- loadlsoa("WestLSOA")
-
-# Merging into one dataset
-lsoaData <- rbind(EELlsoa,ENlsoa,ESlsoa,EWlsoa)
+lsoaData <- downloadES(geogrLSOA)
 
 
 #########################################################################
 ####### look up tables: MSOA/LSOA and industry sic2017 categories #######
 #########################################################################
 
-
-lookUp <- read.csv("data/Output_Area_to_Local_Authority_District_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Enterprise_Partnership__April_2020__Lookup_in_England.csv")
+download.file("https://opendata.arcgis.com/api/v3/datasets/e8fef92ac4114c249ffc1ff3ccf22e12_0/downloads/data?format=csv&spatialRefId=4326&where=1%3D1",destfile = paste(folderIn,"Output_Area_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Authority_District_(December_2020)_Lookup_in_England_and_Wales.csv",sep = ""))
+lookUp <- read.csv(paste(folderIn,"Output_Area_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Authority_District_(December_2020)_Lookup_in_England_and_Wales.csv",sep = ""))
 lookUp <- lookUp[,c("LSOA11CD","MSOA11CD")]
 lookUp <- lookUp %>% distinct()
 
@@ -223,9 +266,6 @@ busPop <- busPop[,c(1,6,3:5)]
 
 busPop2 <- merge(busPop,refIC,by.x="sic2d07",by.y="sic2d07")
 lsoaData2 <- merge(lsoaData,lookUp,by.x="LSOA11CD",by.y="LSOA11CD")
-
-busPop3 <- busPop2
-busPop2 <- busPop3
 
 msoaFilling <- function(name,busPop2){
   lsoa <- lsoaData2 %>% filter(MSOA11CD == name)
