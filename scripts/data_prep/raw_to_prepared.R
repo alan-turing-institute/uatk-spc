@@ -14,11 +14,11 @@ library(readxl)
 
 folderIn <- "Data/dl/"
 folderOut <- "Data/prepData/"
-
+APIKey <- read_file("raw_to_prepared_nomisAPIKey.txt")
+  
 set.seed(12345)
 
 source("raw_to_prepared_Income.R")
-source("raw_to_prepared_Workplaces.R")
 
 
 #######################
@@ -915,6 +915,15 @@ coords2 <- coords2@coords
 OACoordsF <- data.frame(OA11CD = OACoords$OA11CD, easting = OACoords$x, northing = OACoords$y, lng = coords2[,1], lat = coords2[,2])
 
 write.table(OACoordsF,paste(folderOut,"OACentroids.csv",sep = ""),row.names = F, sep = ",")
+
+
+######################
+##### Workplaces #####
+######################
+
+
+print("Calling raw_to_prepared_Workplaces.R")
+source("raw_to_prepared_Workplaces.R")
 
 
 print("End of raw_to_prepared")
