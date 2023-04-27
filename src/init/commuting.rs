@@ -16,6 +16,8 @@ use crate::pb::PwkStat;
 use crate::utilities::{print_count, progress_count};
 use crate::{Activity, PersonID, Population, Venue, VenueID, MSOA};
 
+type Sic1d2007 = char;
+
 #[instrument(skip_all)]
 pub fn create_commuting_flows(
     population: &mut Population,
@@ -72,11 +74,11 @@ struct Row {
     // The number of workers
     size: usize,
     #[serde(rename = "sic1d07")]
-    sic1d2007: u32,
+    sic1d2007: Sic1d2007,
 }
 
 struct Businesses {
-    venues_per_sic: HashMap<u32, Vec<VenueID>>,
+    venues_per_sic: HashMap<Sic1d2007, Vec<VenueID>>,
     available_jobs: HashMap<VenueID, usize>,
     venues: TiVec<VenueID, Venue>,
 }
@@ -127,7 +129,7 @@ impl Businesses {
 }
 
 struct JobMarket {
-    sic: Option<u32>,
+    sic: Option<Sic1d2007>,
     // workers and jobs have equal length
     workers: Vec<PersonID>,
     jobs: Vec<VenueID>,
@@ -159,7 +161,7 @@ impl JobMarket {
             // Find workers with a matching SIC
             let mut workers: Vec<PersonID> = Vec::new();
             for id in &all_workers {
-                if numeric_sic1d2007(population.people[*id].employment.sic1d2007.as_ref())
+                if convert_sic1d2007(population.people[*id].employment.sic1d2007.as_ref())
                     == Some(*sic)
                 {
                     workers.push(*id);
@@ -271,10 +273,9 @@ fn trim_jobs_or_workers(jobs: &mut Vec<VenueID>, workers: &mut Vec<PersonID>, rn
     }
 }
 
-/// Turn "A" into 1, "B" into 2, etc
-fn numeric_sic1d2007(input: Option<&String>) -> Option<u32> {
-    let x = input?.chars().next().unwrap();
-    Some(1 + x as u32 - 'A' as u32)
+/// Turn "A" into 'A', "B" into 'B', etc
+fn convert_sic1d2007(input: Option<&String>) -> Option<Sic1d2007> {
+    input?.chars().next()
 }
 
 #[cfg(test)]
@@ -283,8 +284,8 @@ mod tests {
 
     #[test]
     fn test_sic1d2007() {
-        assert_eq!(numeric_sic1d2007(None), None);
-        assert_eq!(numeric_sic1d2007(Some(&"A".to_string())), Some(1));
-        assert_eq!(numeric_sic1d2007(Some(&"F".to_string())), Some(6));
+        assert_eq!(convert_sic1d2007(None), None);
+        assert_eq!(convert_sic1d2007(Some(&"A".to_string())), Some('A'));
+        assert_eq!(convert_sic1d2007(Some(&"F".to_string())), Some('F'));
     }
 }
