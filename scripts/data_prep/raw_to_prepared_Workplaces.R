@@ -1,8 +1,6 @@
 library(dplyr)
 library(tidyr)
 library(rgdal)
-library(rgeos)
-library(raster)
 library(sp)
 library(foreign)
 library(reshape2)
@@ -186,36 +184,40 @@ busPop <- busPop[,c(1,6,2,4:5)]
 # 'lsoa' field
 print("Assigning LSOAs...")
 lsoaData <- merge(lsoaData,oatoOther,by.x="LSOA11CD",by.y="LSOA11CD")
-msoaFilling <- function(busPop,name){
+msoaFilling <- function(name,lsoaData,MSOA11CD,sic2d07){
   lsoa <- lsoaData %>% filter(MSOA11CD == name)
-  for(i in unique(busPop$sic2d07)){
-    ref <- which(busPop$MSOA11CD == name & busPop$sic2d07 == i)
-    weights <- lsoa[,paste("X",str_pad(i, 2, pad = "0"),sep = "")]
-    if(sum(weights > 0)){
-      busPop$LSOA11CD[ref] <- sample(lsoa$LSOA11CD, length(ref), replace = T, prob = weights)
-    }else{
-      busPop$LSOA11CD[ref] <- sample(lsoa$LSOA11CD, length(ref), replace = T)
-    }
+  ref <- which(MSOA11CD == name)
+  sic <- sic2d07[ref]
+  res <- rep(NA,length(ref))
+  for(i in 1:length(unique(sic))){
+    ref2 <- which(sic == unique(sic)[i])
+    weights <- lsoa[,paste("X",str_pad(unique(sic)[i], 2, pad = "0"),sep = "")]
+    potlsoa <- lsoa$LSOA11CD
+    ifelse(sum(weights) > 0, res[ref2] <- sample(potlsoa, length(ref2), prob = weights, replace = T),
+           res[ref2] <- sample(potlsoa, length(ref2), replace = T))
   }
-  return(busPop)
-}
-busPop$LSOA11CD <- NA
-for(i in unique(busPop2$MSOA11CD)){
-  if(i%%80 == 0){print(paste(round(i/length(unique(busPop2$MSOA11CD)),1),"%",sep = ""))}
-  busPop <- msoaFilling(busPop,i)
+  return(res)
 }
 
-for(i in unique(busPop2$MSOA11CD)){
-  if(i%%80 == 0){print(paste(round(i/length(unique(busPop2$MSOA11CD)),1),"%",sep = ""))}
-}
+LSOA11CD <- sapply(unique(busPop$MSOA11CD),function(x){msoaFilling(x,lsoaData,busPop$MSOA11CD,busPop$sic2d07)})
+LSOA11CD <- unname(unlist(LSOA11CD))
+
+#LSOA11CD <- msoaFilling(unique(busPop$MSOA11CD)[1],lsoaData,busPop$MSOA11CD,busPop$sic2d07)
+#for(i in 2:length(unique(busPop$MSOA11CD))){
+#  if(i%%80 == 0){print(paste(round(i/length(unique(busPop$MSOA11CD)),2)*100,"%",sep = ""))}
+#  res <- msoaFilling(unique(busPop$MSOA11CD)[i],lsoaData,busPop$MSOA11CD,busPop$sic2d07)
+#  LSOA11CD <- c(LSOA11CD,res)
+#}
+
+busPop$LSOA11CD <- LSOA11CD
 
 # 'lng' and 'lat' fields
 print("Adding coordinates...")
 
 # England and Wales
-download.file("https://stg-arcgisazurecdataprod1.az.arcgis.com/exportfiles-1559-15693/Lower_layer_Super_Output_Areas_Dec_2011_Boundaries_Full_Clipped_BFC_EW_V3_2022_3601855424856006397.csv?sv=2018-03-28&sr=b&sig=tmZTl6Eh6ryGtEsEaHWPbp0GKF2SUcejnO1DeF7csk4%3D&se=2023-04-26T15%3A58%3A01Z&sp=r",destfile = paste(folderIn,"Lower_Layer_Super_Output_Areas__December_2011__Boundaries_Full_Clipped__BFC__EW_V3.csv",sep = ""))
-shp <- read.csv(paste(folderIn,"Lower_Layer_Super_Output_Areas__December_2011__Boundaries_Full_Clipped__BFC__EW_V3.csv",sep = ""))
-coords <- data.frame(LSOA11CD = shp$LSOA11CD, lng = shp$LONG_, lat = shp$LAT)
+#download.file("https://stg-arcgisazurecdataprod1.az.arcgis.com/exportfiles-1559-15693/Lower_layer_Super_Output_Areas_Dec_2011_Boundaries_Full_Clipped_BFC_EW_V3_2022_3601855424856006397.csv?sv=2018-03-28&sr=b&sig=tmZTl6Eh6ryGtEsEaHWPbp0GKF2SUcejnO1DeF7csk4%3D&se=2023-04-26T15%3A58%3A01Z&sp=r",destfile = paste(folderIn,"Lower_Layer_Super_Output_Areas__December_2011__Boundaries_Full_Clipped__BFC__EW_V3.csv",sep = ""))
+shp <- read.csv(paste(folderIn,"LSOA_Dec_2011_PWC_in_England_and_Wales_2022_1923591000694358693.csv",sep = ""))
+coords <- data.frame(LSOA11CD = shp$LSOA11CD, lng = shp$x, lat = shp$y)
 
 # Scotland
 download.file("https://maps.gov.scot/ATOM/shapefiles/SG_DataZoneCent_2011.zip",destfile = paste(folderIn,"SG_DataZoneCent_2011.zip",sep = ""))
@@ -231,10 +233,9 @@ coords3 <- coords3@coords
 coords3 <- data.frame(LSOA11CD = coords2$DataZone, lng = coords3[,1], lat = coords3[,2])
 
 refLSOA <- rbind(coords,coords3)
-busPop2 <- merge(busPop,refLSOA,by.x = "LSOA11CD",by.y = "LSOA11CD")
+busPop <- merge(busPop,refLSOA,by.x = "LSOA11CD",by.y = "LSOA11CD")
 
-busPop <- busPop2[,c(3,4,5,1,9,10,6,2)]
-colnames(busPop)[7] <- "sic1d07"
+busPop <- busPop[,c(2:4,1,7,8,5,6)]
 busPop <- busPop[order(busPop$id),]
 row.names(busPop) <- 1:nrow(busPop)
 
