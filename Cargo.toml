@@ -41,6 +41,11 @@ typed-index-collections = { version = "3.1.0", features = ["serde-std"] }
 [build-dependencies]
 prost-build = "0.11.5"
 
+[dev-dependencies]
+base64ct={version="1.6.0", features=["alloc"]}
+sha2 = "0.10.6"
+tempfile = "3.5.0"
+
 # See https://doc.rust-lang.org/cargo/reference/profiles.html#overrides. This
 # compiles all external dependencies in release mode, yielding great runtime
 # speed, but only paying the cost of slow compilation once (since we don't

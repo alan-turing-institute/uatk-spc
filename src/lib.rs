@@ -51,6 +51,7 @@ pub struct Population {
     pub year: u32,
 }
 
+#[derive(Clone)]
 pub struct Input {
     pub year: u32,
     pub enable_commuting: bool,
