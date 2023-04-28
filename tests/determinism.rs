@@ -1,3 +1,4 @@
+use anyhow::Result;
 use base64ct::{Base64, Encoding};
 use fs_err::File;
 use rand::rngs::StdRng;
@@ -6,70 +7,54 @@ use sha2::{Digest, Sha256};
 use spc::{protobuf, Input, Population, MSOA};
 use std::collections::BTreeSet;
 use std::io::{BufRead, BufReader};
-// use tracing::{info, info_span};
+
+// Generates the file hash from a generated population protobuf output given input and seed.
+async fn population_protobuf_hash(input: &Input, dir: &str, mut seed: StdRng) -> Result<String> {
+    let (population, _) = Population::create(input.clone(), &mut seed).await?;
+    std::fs::create_dir_all(dir).unwrap();
+    let output = format!("{dir}/population.pb");
+    protobuf::convert_to_pb(&population, output.clone())?;
+    Ok(Base64::encode_string(&Sha256::digest(
+        std::fs::read(output).unwrap(),
+    )))
+}
 
 #[tokio::test]
 #[ignore = "requires data retrieval."]
-async fn test_determinism() -> anyhow::Result<()> {
-    spc::tracing_span_tree::SpanTree::new().enable();
-    let seed = 0;
-    let tmp_path = tempfile::tempdir()
+async fn test_determinism() -> Result<()> {
+    // Create tmp dir for saving output files
+    let tmp_dir = tempfile::tempdir()
         .unwrap()
         .path()
-        .as_os_str()
-        .to_str()
-        .unwrap()
-        .to_string();
-    // let mut rng = StdRng::seed_from_u64(seed);
-    let msoas = BTreeSet::new();
-    let mut input = Input {
+        .to_path_buf()
+        .into_os_string()
+        .into_string()
+        .unwrap();
+
+    // Input for a single test region
+    let input = Input {
         year: 2020,
         filter_empty_msoas: false,
         enable_commuting: true,
         sic_threshold: 0.,
-        msoas,
+        msoas: BufReader::new(File::open("config/England/rutland.txt")?)
+            .lines()
+            .fold(BTreeSet::new(), |mut acc, line| {
+                acc.insert(MSOA(line.unwrap().trim_matches('"').to_string()));
+                acc
+            }),
     };
-    let country: &str = "England";
-    let region: &str = "rutland";
-    let input_path: &str = &format!("config/{country}/{region}.txt");
-    BufReader::new(File::open(input_path)?)
-        .lines()
-        .for_each(|line| {
-            input
-                .msoas
-                .insert(MSOA(line.unwrap().trim_matches('"').to_string()));
-        });
 
-    // Run 1 with seed
-    let (population, _) =
-        Population::create(input.clone(), &mut StdRng::seed_from_u64(seed)).await?;
-    let dir = format!("{tmp_path}/data/output/{country}/{}", population.year);
-    std::fs::create_dir_all(&dir).unwrap();
-    let output = format!("{dir}/{region}{}.pb", 1);
-    protobuf::convert_to_pb(&population, output.clone())?;
-    let hash1 = Base64::encode_string(&Sha256::digest(std::fs::read(output).unwrap()));
+    // Run with specified seed
+    let hash = population_protobuf_hash(&input, &tmp_dir, StdRng::seed_from_u64(0)).await?;
 
-    // Run 2 with same seed
-    let (population, _) =
-        Population::create(input.clone(), &mut StdRng::seed_from_u64(seed)).await?;
-    let dir = format!("{tmp_path}/data/output/{country}/{}", population.year);
-    std::fs::create_dir_all(&dir).unwrap();
-    let output = format!("{dir}/{region}{}.pb", 2);
-    protobuf::convert_to_pb(&population, output.clone())?;
-    let hash2 = Base64::encode_string(&Sha256::digest(std::fs::read(output).unwrap()));
+    // Run with same seed (expected to produce same hash)
+    let hash_same = population_protobuf_hash(&input, &tmp_dir, StdRng::seed_from_u64(0)).await?;
+    assert!(hash == hash_same);
 
-    assert_eq!(hash1, hash2);
-
-    // Run 3 with different seed
-    let seed_diff = 1u64;
-    let (population, _) = Population::create(input, &mut StdRng::seed_from_u64(seed_diff)).await?;
-    let dir = format!("{tmp_path}/data/output/{country}/{}", population.year);
-    std::fs::create_dir_all(&dir).unwrap();
-    let output = format!("{dir}/{region}{}.pb", 3);
-    protobuf::convert_to_pb(&population, output.clone())?;
-    let hash3 = Base64::encode_string(&Sha256::digest(std::fs::read(output).unwrap()));
-
-    assert!(hash1 != hash3);
+    // Run with different seed (expected to produce different hash)
+    let hash_diff = population_protobuf_hash(&input, &tmp_dir, StdRng::seed_from_u64(1)).await?;
+    assert!(hash != hash_diff);
 
     Ok(())
 }
