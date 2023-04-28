@@ -8,9 +8,9 @@
 
 2. Use `raw_to_prepared_Environment.R` to install the necessary R packages and create directories.
 
-3. Download manually safeguarded/geoportal data, place those inside the `Data/dl` directory. Required: [LSOA centroids in csv format](https://geoportal.statistics.gov.uk/datasets/ons::lsoa-dec-2011-population-weighted-centroids-in-england-and-wales/explore) (adapt l. 219-220 of `raw_to_prepared_Workplaces.R` if necessary); Health and time use data (download directly from [10.5255/UKDA-SN-8860-1](http://doi.org/10.5255/UKDA-SN-8860-1), [10.5255/UKDA-SN-8090-1](http://doi.org/10.5255/UKDA-SN-8090-1), [10.5255/UKDA-SN-8737-1](http://doi.org/10.5255/UKDA-SN-8737-1) and [10.5255/UKDA-SN-8128-1](http://doi.org/10.5255/UKDA-SN-8128-1)).
+3. Download manually safeguarded/geoportal data, place those inside the `Data/dl` directory. Required: [LSOA centroids in csv format](https://geoportal.statistics.gov.uk/datasets/ons::lsoa-dec-2011-population-weighted-centroids-in-england-and-wales/explore) (adapt l. 219-220 of `raw_to_prepared_Workplaces.R` if necessary); [OA centroids in csv format](https://geoportal.statistics.gov.uk/datasets/ons::output-areas-dec-2011-pwc/explore) (adapt section OA centroids inside `raw_to_prepared.R` if necessary); Health and time use data (download directly from [10.5255/UKDA-SN-8860-1](http://doi.org/10.5255/UKDA-SN-8860-1), [10.5255/UKDA-SN-8090-1](http://doi.org/10.5255/UKDA-SN-8090-1), [10.5255/UKDA-SN-8737-1](http://doi.org/10.5255/UKDA-SN-8737-1) and [10.5255/UKDA-SN-8128-1](http://doi.org/10.5255/UKDA-SN-8128-1)).
 
-4. Run `raw_to_prepared.R`.
+4. Run `raw_to_prepared.R`. Note that a file of over 1 GB will be downloaded. The maximum allowed time for an individual download is 10 minutes (600 seconds). Adjust options(timeout=600) l. 18 if this is insufficient.
 
 This step outputs two types of files:
 - `diariesRef.csv`, `businessRegistry.csv` and `timeAtHomeIncreaseCTY.csv` should be gzipped and stored directly inside `nationaldata-v2` on Azure; and `lookUp-GB.csv` inside `referencedata`on Azure. These files are directly used by SPC.
@@ -18,7 +18,7 @@ This step outputs two types of files:
 
 Refer to the [data sources](https://alan-turing-institute.github.io/uatk-spc/data_sources.html) to learn more about the raw data and the content of the files.
 
-The script calls `raw_to_prepared_Income.R` to produce income data for the next step. Note that only the modelled coefficients for hourly salaries (averaged over all age groups) and number of hours worked are produced by the script. The age rescaling coefficients require running the entire population once without rescaling, which is not practical. The methodology is left commented out for reference. Use the content of `SAVE_SPC_required_data.zip` to obtain these coefficients. The script also calls `raw_to_prepared_Workplaces.R` to create `businessRegistry.csv` (note that this script can only be used on its own after some of the content of `raw_to_prepared.R` have been created).
+The script calls `raw_to_prepared_Income.R` to produce income data for the next step. Note that only the modelled coefficients for hourly salaries (averaged over all age groups) and number of hours worked are produced by the script. The age rescaling coefficients require running the entire population once without rescaling, which is not practical. The methodology is left commented out for reference. Use the content of `SAVE_SPC_required_data.zip` to obtain these coefficients. The script also calls `raw_to_prepared_Workplaces.R` to create `businessRegistry.csv`. Note that both these scripts can only be used on their own after some of the content of `raw_to_prepared.R` have been created.
 
 ## Step 2: Add to SPENSER
 

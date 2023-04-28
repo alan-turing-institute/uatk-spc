@@ -3,6 +3,7 @@ library(readxl)
 
 folderIn <- "Data/dl/"
 folderOut <- "Data/prepData/"
+options(timeout=600)
 
 # This needs to be downloaded from Azure (or can be found in raw_data/referencedata after the model is run once)
 lu <- read.csv(paste(folderOut,"lookUp-GB.csv",sep = ""))
@@ -16,9 +17,7 @@ set.seed(12345)
 
 
 #############################
-#############################
 ####### Sub-functions #######
-#############################
 #############################
 
 
@@ -49,14 +48,12 @@ fitted2 <- function(fit,val){
 
 
 #####################################################
-#####################################################
 ####### 1. EXTRACT COEFS OF FITS FOR EACH SOC #######
 #####################################################
-#####################################################
 
 
-print("Downloading hourly salary data")
-options(timeout=600)
+print("Downloading and cleaning hourly salary data")
+
 download.file("https://www.ons.gov.uk/file?uri=%2femploymentandlabourmarket%2fpeopleinwork%2fearningsandworkinghours%2fdatasets%2fregionbyoccupation4digitsoc2010ashetable15%2f2020revised/table152020revised.zip", 
               destfile = paste(folderIn,"incomeData.zip",sep = ""))
 unzip(paste(folderIn,"incomeData.zip",sep = ""),exdir = paste(folderIn,"incomeData",sep = ""))
@@ -195,9 +192,13 @@ coefTable <- function(table,t){ # t = max allowed p-value for fitting
   return(coefs)
 }
 
+print("Calculating coefficients for Female Full-Time")
 coefFFT <- coefTable(refFFT,0.01)
+print("Calculating coefficients for Female Part-Time")
 coefFPT <- coefTable(refFPT,0.01)
+print("Calculating coefficients for Male Full-Time")
 coefMFT <- coefTable(refMFT,0.01)
+print("Calculating coefficients for Male Part-Time")
 coefMPT <- coefTable(refMPT,0.01)
 
 print("Writing modelled coefficients")
@@ -207,114 +208,110 @@ write.table(coefMFT,paste(folderOut,"coefMFT.csv",sep = ""),row.names = F,sep = 
 write.table(coefMPT,paste(folderOut,"coefMPT.csv",sep = ""),row.names = F,sep = ",")
 
 
-###############################################
-###############################################
-####### 2. ADD TO DATA (no age rescale) #######
-###############################################
-###############################################
+#################################################
+####### (2.) ADD TO DATA (no age rescale) #######
+#################################################
 
 
 # Draw income for a specific individual; apply minimum wage rules
-drawIncome <- function(soc,sex,age,fulltime,coefFFTR,coefFPTR,coefMFTR,coefMPTR){
-  perc <- floor(runif(1,1,100))
-  if(sex == 0 & fulltime == T){ # 0 = female, 1 = male, consistent with TUS_HSE dataset
-    coefs <- as.numeric(coefFFTR[coefFFTR$soc == soc,3:8])
-  } else if(sex == 0 & fulltime == F){
-    coefs <- as.numeric(coefFPTR[coefFPTR$soc == soc,3:8])
-  } else if(sex == 1 & fulltime == T){
-    coefs <- as.numeric(coefMFTR[coefMFTR$soc == soc,3:8])
-  } else if(sex == 1 & fulltime == F){
-    coefs <- as.numeric(coefMPTR[coefMPTR$soc == soc,3:8])
-  }
-  if(perc >= coefs[6]){
-    inc <- coefs[5]
-  } else {
-    inc <- coefs[1] + coefs[2]*perc + coefs[3]*perc*perc + coefs[4]*perc*perc*perc
-  }
-  if(age < 18 & inc < 4.55){
-    inc <- 4.55
-  } else if(age < 21 & inc < 6.45){
-    inc <- 6.45
-  } else if(age < 24 & inc < 8.2){
-    inc <- 8.2
-  } else if(inc < 8.72){
-    inc <- 8.72
-  }
-  return(inc)
-}
+# drawIncome <- function(soc,sex,age,fulltime,coefFFTR,coefFPTR,coefMFTR,coefMPTR){
+#   perc <- floor(runif(1,1,100))
+#   if(sex == 0 & fulltime == T){ # 0 = female, 1 = male, consistent with TUS_HSE dataset
+#     coefs <- as.numeric(coefFFTR[coefFFTR$soc == soc,3:8])
+#   } else if(sex == 0 & fulltime == F){
+#     coefs <- as.numeric(coefFPTR[coefFPTR$soc == soc,3:8])
+#   } else if(sex == 1 & fulltime == T){
+#     coefs <- as.numeric(coefMFTR[coefMFTR$soc == soc,3:8])
+#   } else if(sex == 1 & fulltime == F){
+#     coefs <- as.numeric(coefMPTR[coefMPTR$soc == soc,3:8])
+#   }
+#   if(perc >= coefs[6]){
+#     inc <- coefs[5]
+#   } else {
+#     inc <- coefs[1] + coefs[2]*perc + coefs[3]*perc*perc + coefs[4]*perc*perc*perc
+#   }
+#   if(age < 18 & inc < 4.55){
+#     inc <- 4.55
+#   } else if(age < 21 & inc < 6.45){
+#     inc <- 6.45
+#   } else if(age < 24 & inc < 8.2){
+#     inc <- 8.2
+#   } else if(inc < 8.72){
+#     inc <- 8.72
+#   }
+#   return(inc)
+# }
 
 # Outputs four types of income (hourly, annual, self-employed as if employed)
-fillIncome <- function(idx,data,pwkstat,coefFFTR,coefFPTR,coefMFTR,coefMPTR){
-  pwkst <- as.numeric(substr(pwkstat[idx],1,2))
-  soc <- data$soc2010[idx]
-  sex <- data$sex[idx]
-  age <- data$age[idx]
-  incomeH <- NA
-  incomeHAsIf <- NA
-  incomeY <- NA
-  incomeYAsIf <- NA
-  if(!is.na(soc)){
-    if(pwkst == 1){
-      time <- (data$pwork[idx]+data$pworkhome[idx])*24*5*52
-      inc <- drawIncome(soc,sex,age,T,coefFFTR,coefFPTR,coefMFTR,coefMPTR)
-      incomeH <- inc
-      incomeHAsIf <- inc
-      incomeY <- inc * time
-      incomeYAsIf <- inc * time
-    } else if(pwkst == 2){
-      time <- (data$pwork[idx]+data$pworkhome[idx])*24*5*52
-      inc <- drawIncome(soc,sex,age,F,coefFFTR,coefFPTR,coefMFTR,coefMPTR)
-      incomeH <- inc
-      incomeHAsIf <- inc
-      incomeY <- inc * time
-      incomeYAsIf <- inc * time
-    } else if(pwkst == 3 | pwkst == 4){
-      time <- (data$pwork[idx]+data$pworkhome[idx])*24*5*52
-      inc <- drawIncome(soc,sex,age,T,coefFFTR,coefFPTR,coefMFTR,coefMPTR)
-      incomeHAsIf <- inc
-      incomeYAsIf <- inc * time
-    }
-  }
-  return(cbind(incomeH,incomeY,incomeHAsIf,incomeYAsIf))
-}
+# fillIncome <- function(idx,data,pwkstat,coefFFTR,coefFPTR,coefMFTR,coefMPTR){
+#   pwkst <- as.numeric(substr(pwkstat[idx],1,2))
+#   soc <- data$soc2010[idx]
+#   sex <- data$sex[idx]
+#   age <- data$age[idx]
+#   incomeH <- NA
+#   incomeHAsIf <- NA
+#   incomeY <- NA
+#   incomeYAsIf <- NA
+#   if(!is.na(soc)){
+#     if(pwkst == 1){
+#       time <- (data$pwork[idx]+data$pworkhome[idx])*24*5*52
+#       inc <- drawIncome(soc,sex,age,T,coefFFTR,coefFPTR,coefMFTR,coefMPTR)
+#       incomeH <- inc
+#       incomeHAsIf <- inc
+#       incomeY <- inc * time
+#       incomeYAsIf <- inc * time
+#     } else if(pwkst == 2){
+#       time <- (data$pwork[idx]+data$pworkhome[idx])*24*5*52
+#       inc <- drawIncome(soc,sex,age,F,coefFFTR,coefFPTR,coefMFTR,coefMPTR)
+#       incomeH <- inc
+#       incomeHAsIf <- inc
+#       incomeY <- inc * time
+#       incomeYAsIf <- inc * time
+#     } else if(pwkst == 3 | pwkst == 4){
+#       time <- (data$pwork[idx]+data$pworkhome[idx])*24*5*52
+#       inc <- drawIncome(soc,sex,age,T,coefFFTR,coefFPTR,coefMFTR,coefMPTR)
+#       incomeHAsIf <- inc
+#       incomeYAsIf <- inc * time
+#     }
+#   }
+#   return(cbind(incomeH,incomeY,incomeHAsIf,incomeYAsIf))
+# }
 
 # Add new columns
-addToData <- function(county,lookUp,coefFFT,coefFPT,coefMFT,coefMPT){
-  new <- read.csv(paste("/Users/hsalat/RAMP-UA_Misc/TUOutput/processed/tus_hse_",county,".csv",sep = ""))
-  ref <- unique(lookUp$OldTU[which(lookUp$NewTU == county)])
-  ref <- ref[!is.na(ref)]
-  n <- length(ref)
-  old <- read.csv(paste("/Users/hsalat/RAMP-UA_Misc/TUInput/lad_tus_hse_",ref[1],".txt",sep = ""))
-  if(n > 1){
-    for(i in 2:n){
-      old2 <- read.csv(paste("/Users/hsalat/RAMP-UA_Misc/TUInput/lad_tus_hse_",ref[i],".txt",sep = ""))
-      old <- rbind(old,old2)
-    }
-  }
-  if(nrow(new) != nrow(old)) stop('Mismatch between the two datasets')
-  old3 <- old[order(old$area,old$hid,-old$age),]
-  pwkstat <- old3$pwkstat
-  region <- unique(lookUp$ITL121NM[which(lookUp$MSOA11CD == new$MSOA11CD[1])])
-  region <- regions[sapply(regions,function(x) {grepl(x, region)})][1]
-  coefFFTR <- coefFFT[which(coefFFT$region == region),]
-  coefFPTR <- coefFPT[which(coefFFT$region == region),]
-  coefMFTR <- coefMFT[which(coefFFT$region == region),]
-  coefMPTR <- coefMPT[which(coefFFT$region == region),]
-  incs <- mcmapply(function(x){fillIncome(x,new,pwkstat,coefFFTR,coefFPTR,coefMFTR,coefMPTR)}, 1:nrow(new), mc.cores = detectCores())
-  new$pwkstat <- pwkstat
-  new$incomeH <- incs[1,]
-  new$incomeY <- incs[2,]
-  new$incomeHAsIf <- incs[3,]
-  new$incomeYAsIf <- incs[4,]
-  return(new)
-}
+# addToData <- function(county,lookUp,coefFFT,coefFPT,coefMFT,coefMPT){
+#   new <- read.csv(paste("/Users/hsalat/RAMP-UA_Misc/TUOutput/processed/tus_hse_",county,".csv",sep = ""))
+#   ref <- unique(lookUp$OldTU[which(lookUp$NewTU == county)])
+#   ref <- ref[!is.na(ref)]
+#   n <- length(ref)
+#   old <- read.csv(paste("/Users/hsalat/RAMP-UA_Misc/TUInput/lad_tus_hse_",ref[1],".txt",sep = ""))
+#   if(n > 1){
+#     for(i in 2:n){
+#       old2 <- read.csv(paste("/Users/hsalat/RAMP-UA_Misc/TUInput/lad_tus_hse_",ref[i],".txt",sep = ""))
+#       old <- rbind(old,old2)
+#     }
+#   }
+#   if(nrow(new) != nrow(old)) stop('Mismatch between the two datasets')
+#   old3 <- old[order(old$area,old$hid,-old$age),]
+#   pwkstat <- old3$pwkstat
+#   region <- unique(lookUp$ITL121NM[which(lookUp$MSOA11CD == new$MSOA11CD[1])])
+#   region <- regions[sapply(regions,function(x) {grepl(x, region)})][1]
+#   coefFFTR <- coefFFT[which(coefFFT$region == region),]
+#   coefFPTR <- coefFPT[which(coefFFT$region == region),]
+#   coefMFTR <- coefMFT[which(coefFFT$region == region),]
+#   coefMPTR <- coefMPT[which(coefFFT$region == region),]
+#   incs <- mcmapply(function(x){fillIncome(x,new,pwkstat,coefFFTR,coefFPTR,coefMFTR,coefMPTR)}, 1:nrow(new), mc.cores = detectCores())
+#   new$pwkstat <- pwkstat
+#   new$incomeH <- incs[1,]
+#   new$incomeY <- incs[2,]
+#   new$incomeHAsIf <- incs[3,]
+#   new$incomeYAsIf <- incs[4,]
+#   return(new)
+# }
 
 
-############################################################
-############################################################
-####### 3. CHECK PREDICTED VS RAW (no age rescaling) #######
-############################################################
-############################################################
+##############################################################
+####### (3.) CHECK PREDICTED VS RAW (no age rescaling) #######
+##############################################################
 
 
 # /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\
@@ -578,11 +575,9 @@ addToData <- function(county,lookUp,coefFFT,coefFPT,coefMFT,coefMPT){
 # lines(ageRef,meanRaw,col=2)
 
 
-#################################
-#################################
-####### 4. AGE RESCALING ########
-#################################
-#################################
+###################################
+####### (4.) AGE RESCALING ########
+###################################
 
 
 # /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\
@@ -590,11 +585,11 @@ addToData <- function(county,lookUp,coefFFT,coefFPT,coefMFT,coefMPT){
 # /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\ /!\
 
 # print("Producing age rescaling coefficients")
+print("Skipping age rescaling")
 
 # !!! ---> Ages above 67 are treated as 67 due to lack of data
 
 # # Read raw data from ONS
-# options(timeout=600)
 # download.file("https://www.ons.gov.uk/file?uri=%2femploymentandlabourmarket%2fpeopleinwork%2fearningsandworkinghours%2fdatasets%2fagegroupashetable6%2f2020revised/table62020revised.zip", 
 #               destfile = paste(folderIn,"incomeDataAge.zip",sep = ""))
 # unzip(paste(folderIn,"incomeDataAge.zip",sep = ""),exdir = paste(folderIn,"incomeDataAge",sep = ""))
@@ -727,9 +722,7 @@ addToData <- function(county,lookUp,coefFFT,coefFPT,coefMFT,coefMPT){
 
 
 ########################################
-########################################
 ####### 5. MODELLED WORKED HOURS #######
-########################################
 ########################################
 
 
@@ -787,18 +780,26 @@ getWorkedHoursData <- function(type){
   return(list(wh,df))
 }
 
-distribHoursMFT <- getWorkedHoursData("Male Full-Time")[[1]]
-distribHoursMPT <- getWorkedHoursData("Male Part-Time")[[1]]
-distribHoursFFT <- getWorkedHoursData("Female Full-Time")[[1]]
-distribHoursFPT <- getWorkedHoursData("Female Part-Time")[[1]]
+print("Cleaning supporting data")
+options(warn = -1)
+resMFT <- getWorkedHoursData("Male Full-Time")
+resMPT <- getWorkedHoursData("Male Part-Time")
+resFFT <- getWorkedHoursData("Female Full-Time")
+resFPT <- getWorkedHoursData("Female Part-Time")
+options(warn = 0)
 
-meanHoursMFT <- getWorkedHoursData("Male Full-Time")[[2]]
+distribHoursMFT <- resMFT[[1]]
+distribHoursMPT <- resMPT[[1]]
+distribHoursFFT <- resFFT[[1]]
+distribHoursFPT <- resFPT[[1]]
+
+meanHoursMFT <- resMFT[[2]]
 meanHoursMFT$mean <- as.numeric(meanHoursMFT$mean)
-meanHoursMPT <- getWorkedHoursData("Male Part-Time")[[2]]
+meanHoursMPT <- resMPT[[2]]
 meanHoursMPT$mean <- as.numeric(meanHoursMPT$mean)
-meanHoursFFT <- getWorkedHoursData("Female Full-Time")[[2]]
+meanHoursFFT <- resFFT[[2]]
 meanHoursFFT$mean <- as.numeric(meanHoursFFT$mean)
-meanHoursFPT <- getWorkedHoursData("Female Part-Time")[[2]]
+meanHoursFPT <- resFPT[[2]]
 meanHoursFPT$mean <- as.numeric(meanHoursFPT$mean)
 
 distribHours = data.frame(MFT = distribHoursMFT, MPT = distribHoursMPT,

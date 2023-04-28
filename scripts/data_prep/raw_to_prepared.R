@@ -15,10 +15,9 @@ library(readxl)
 folderIn <- "Data/dl/"
 folderOut <- "Data/prepData/"
 APIKey <- read_file("raw_to_prepared_nomisAPIKey.txt")
+options(timeout=600)
   
 set.seed(12345)
-
-source("raw_to_prepared_Income.R")
 
 
 #######################
@@ -609,7 +608,7 @@ write.table(indivTUS,paste(folderOut,"indivTUS.csv",sep = ""),row.names = F, sep
 ###
 
 # Load main reference file listing all sampled diaries (downloaded from UK Data Service, requires registration https://beta.ukdataservice.ac.uk/datacatalogue/studies/study?id=8128)
-TUS <- read.table(paste(folderIn,"Data/uktus15_dv_time_vars.tab",sep = ""), sep="\t", header=TRUE)
+TUS <- read.table(paste(folderIn,"uktus15_dv_time_vars.tab",sep = ""), sep="\t", header=TRUE)
 
 # Basic cleaning
 TUS <- data.frame(id_TUS_hh = TUS$serial, id_TUS_p = TUS$pnum, weekday = TUS$DiaryDay_Act, dayType = TUS$KindOfDay, month = TUS$dmonth,
@@ -629,7 +628,7 @@ TUS$uniqueID <- paste(TUS$id_TUS_hh,TUS$id_TUS_p,TUS$weekday,sep = "_")
 TUS <- TUS[!duplicated(TUS$uniqueID),]
 
 # Reference file with more details about the content of each activity to extract types of mobility used
-TUSlong <- read.table("Data/uktus15_diary_ep_long.tab", sep="\t", header=TRUE)
+TUSlong <- read.table(paste(folderIn,"uktus15_diary_ep_long.tab",sep = ""), sep="\t", header=TRUE)
 TUSlong$weekday <- sapply(TUSlong$DiaryDay_Act, changeWeekDay)
 TUSlong$uniqueID <- paste(TUSlong$serial,TUSlong$pnum,TUSlong$weekday,sep = "_")
 TUSlong <- TUSlong[,c(52,33,34,38)]
@@ -729,9 +728,9 @@ write.table(TUS,paste(folderOut,"diariesRef.csv",sep = ""),row.names = F, sep = 
 print("Outputs written")
 
 
-###########################################
-##### Google mobility and new Look-Up #####
-###########################################
+###########################
+##### Google mobility #####
+###########################
 
 
 print("Working on mobility data...")
@@ -741,7 +740,6 @@ print("Working on mobility data...")
 # Assumption: if percent value for a County is NA -> change value to national average
 
 # Download latest file from google mobility
-options(timeout=600)
 download.file("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv", 
               destfile = paste(folderIn,"Google_Global_Mobility_Report.csv",sep = ""))
 gm <- read_csv(paste(folderIn,"Google_Global_Mobility_Report.csv",sep = "")) %>% 
@@ -782,14 +780,17 @@ write.table(gm,paste(folderOut,"timeAtHomeIncreaseCTY.csv",sep = ""),row.names =
 #write.table(googleCTY_CNC,paste(folderOut,"googleCTY_CNC_list.csv",sep = ""),row.names = F,sep=",")
 
 
-### New look-up
+#########################
+##### Look-up table #####
+#########################
+
 
 print("Working on the look-up")
 
 # Old European NUTS geographies, now renamed "ITL"
-download.file("https://www.arcgis.com/sharing/rest/content/items/cdb629f13c8f4ebc86f30e8fe3cddda4/data",destfile = paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv",sep = ""))
+download.file("https://www.arcgis.com/sharing/rest/content/items/cdb629f13c8f4ebc86f30e8fe3cddda4/data",destfile = paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.xlsx",sep = ""))
 
-itlRef <- read.csv(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv",sep = ""))
+itlRef <- read_excel(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv",sep = ""), sheet = 1)
 itlRef <- itlRef[,c(1,5:10)]
 itlRef <- itlRef[!duplicated(itlRef),]
 
@@ -895,12 +896,12 @@ print("Writing outputs...")
 write.table(oatoOther,paste(folderOut,"lookUp-GB.csv",sep = ""),row.names = F, sep = ",")
 
 
-###
-### OA centroids
-###
+########################
+##### OA centroids #####
+########################
 
 
-download.file("https://stg-arcgisazurecdataprod1.az.arcgis.com/exportfiles-1559-14679/Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv?sv=2018-03-28&sr=b&sig=lXtKu1VuADphReJfFvfgqHHWm4CtHnk3iusPMruCxO0%3D&se=2023-04-24T18%3A30%3A56Z&sp=r",destfile = paste(folderIn,"Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv",sep = ""))
+#download.file("https://stg-arcgisazurecdataprod1.az.arcgis.com/exportfiles-1559-14679/Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv?sv=2018-03-28&sr=b&sig=lXtKu1VuADphReJfFvfgqHHWm4CtHnk3iusPMruCxO0%3D&se=2023-04-24T18%3A30%3A56Z&sp=r",destfile = paste(folderIn,"Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv",sep = ""))
 OACoords <- read.csv(paste(folderIn,"Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv",sep = ""))
 
 ukgrid = "+init=epsg:27700"
@@ -915,6 +916,15 @@ coords2 <- coords2@coords
 OACoordsF <- data.frame(OA11CD = OACoords$OA11CD, easting = OACoords$x, northing = OACoords$y, lng = coords2[,1], lat = coords2[,2])
 
 write.table(OACoordsF,paste(folderOut,"OACentroids.csv",sep = ""),row.names = F, sep = ",")
+
+
+##################
+##### Income #####
+##################
+
+
+print("Calling raw_to_prepared_Income.R")
+source("raw_to_prepared_Income.R")
 
 
 ######################
