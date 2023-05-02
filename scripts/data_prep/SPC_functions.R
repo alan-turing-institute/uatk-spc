@@ -98,7 +98,7 @@ findBMI <- function(age,sex,origin,dMean,varData){
     }
     res <- rgamma(1,m*m/v,m/v) # The gamma fit is scaled so that the mean is equal to the expected mean for that ethnicity, sex and age according to the global distribution and variance for ethnicity and sex only
   }
-  return(res)
+  return(res * coef)
 }
 
 # Run over dataset
