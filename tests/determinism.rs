@@ -1,5 +1,4 @@
 use anyhow::Result;
-use base64ct::{Base64, Encoding};
 use fs_err::File;
 use rand::rngs::StdRng;
 use rand::SeedableRng;
@@ -8,15 +7,13 @@ use spc::{protobuf, Input, Population, MSOA};
 use std::collections::BTreeSet;
 use std::io::{BufRead, BufReader};
 
-// Generates the file hash from a generated population protobuf output given input and seed.
-async fn population_protobuf_hash(input: &Input, dir: &str, mut seed: StdRng) -> Result<String> {
-    let (population, _) = Population::create(input.clone(), &mut seed).await?;
+// Gets the hex encoded SHA256 hash from a generated population protobuf output given input and rng.
+async fn population_protobuf_hash(input: &Input, dir: &str, mut rng: StdRng) -> Result<String> {
+    let (population, _) = Population::create(input.clone(), &mut rng).await?;
     std::fs::create_dir_all(dir).unwrap();
     let output = format!("{dir}/population.pb");
     protobuf::convert_to_pb(&population, output.clone())?;
-    Ok(Base64::encode_string(&Sha256::digest(
-        std::fs::read(output).unwrap(),
-    )))
+    Ok(hex::encode(Sha256::digest(std::fs::read(output).unwrap())))
 }
 
 #[tokio::test]
