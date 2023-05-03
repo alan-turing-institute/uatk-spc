@@ -5,7 +5,7 @@ folderIn <- "Data/dl/"
 folderOut <- "Data/prepData/"
 options(timeout=600)
 
-# This needs to be downloaded from Azure (or can be found in raw_data/referencedata after the model is run once)
+# This needs to be downloaded from Azure (or have been created by raw_to_prepared.R)
 lu <- read.csv(paste(folderOut,"lookUp-GB.csv",sep = ""))
 
 regions <- c("East Midlands","London","North East","North West","South East","South West","West Midlands","Yorkshire and The Humber","East")
@@ -54,8 +54,13 @@ fitted2 <- function(fit,val){
 
 print("Downloading and cleaning hourly salary data")
 
-download.file("https://www.ons.gov.uk/file?uri=%2femploymentandlabourmarket%2fpeopleinwork%2fearningsandworkinghours%2fdatasets%2fregionbyoccupation4digitsoc2010ashetable15%2f2020revised/table152020revised.zip", 
-              destfile = paste(folderIn,"incomeData.zip",sep = ""))
+file_name = paste(folderIn,"incomeData.zip",sep = "")
+if(!file.exists(file_name)){
+  download.file("https://www.ons.gov.uk/file?uri=%2femploymentandlabourmarket%2fpeopleinwork%2fearningsandworkinghours%2fdatasets%2fregionbyoccupation4digitsoc2010ashetable15%2f2020revised/table152020revised.zip", 
+                destfile = paste(folderIn,"incomeData.zip",sep = ""))
+} else{
+  print(paste(file_name," already exists, not downloading again",sep = ""))
+}
 unzip(paste(folderIn,"incomeData.zip",sep = ""),exdir = paste(folderIn,"incomeData",sep = ""))
 
 # Load and clean

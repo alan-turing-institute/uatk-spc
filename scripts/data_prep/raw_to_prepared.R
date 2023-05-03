@@ -440,17 +440,21 @@ downloadNSSEC <- function(age,sex){
   return(data)
 }
 
-print("Writing outputs for England and Wales...")
 writeNSSECTables <- function(age,sex){
   ref <- matrix(c("M_16-24","M_25-34","M_35-49","M_50-64","M_65p",
                   "F_16-24","F_25-34","F_35-49","F_50-64","F_65p"),
                 ncol = 2)
-  NSSEC <- downloadNSSEC(age,sex)
-  NSSEC <- spread(NSSEC, nssec8, number)
-  colnames(NSSEC) <- c("MSOA11CD","N1","N2","N3","N4","N5","N6","N7","N8","Student")
-  write.table(NSSEC,paste(folderOut,"NSSEC8_EW_",ref[age,sex],"_CLEAN.csv",sep = ""),row.names = F, sep = ",")
+  if(!file.exists(paste(folderOut,"NSSEC8_EW_",ref[age,sex],"_CLEAN.csv",sep = ""))){
+    NSSEC <- downloadNSSEC(age,sex)
+    NSSEC <- spread(NSSEC, nssec8, number)
+    colnames(NSSEC) <- c("MSOA11CD","N1","N2","N3","N4","N5","N6","N7","N8","Student")
+    write.table(NSSEC,paste(folderOut,"NSSEC8_EW_",ref[age,sex],"_CLEAN.csv",sep = ""),row.names = F, sep = ",")
+  } else{
+    print(paste(folderOut,"NSSEC8_EW_",ref[age,sex],"_CLEAN.csv"," already exists, not downloading again",sep = ""))
+  }
 }
 
+print("Preparing outputs for England and Wales...")
 for(i in 1:5){
   for(j in 1:2){
     writeNSSECTables(i,j)
@@ -460,8 +464,14 @@ for(i in 1:5){
 
 ### Scotland
 
-download.file("https://www.scotlandscensus.gov.uk/media/lewawhbl/scotland-std.zip",paste(folderIn,"scotland-std.zip",sep = ""))
-unzip(paste(folderIn,"scotland-std.zip",sep = ""),exdir=folderIn)
+print("Working on Scotland...")
+
+if(!file.exists(paste(folderIn,"DC6206SC.csv",sep = ""))){
+  download.file("https://www.scotlandscensus.gov.uk/media/lewawhbl/scotland-std.zip",paste(folderIn,"scotland-std.zip",sep = ""))
+  unzip(paste(folderIn,"scotland-std.zip",sep = ""),exdir=folderIn)
+} else{
+  print(paste(folderIn,"scotland-std.zip"," already exists, not downloading again",sep = ""))
+}
 
 NSSEC <- read.csv(paste(folderIn,"DC6206SC.csv",sep = ""),skip = 3)
 NSSEC <- NSSEC[c(62:100,112:150),2:10]
@@ -833,7 +843,11 @@ write.table(gm,paste(folderOut,"timeAtHomeIncreaseCTY.csv",sep = ""),row.names =
 print("Working on the look-up")
 
 # Old European NUTS geographies, now renamed "ITL"
-download.file("https://www.arcgis.com/sharing/rest/content/items/cdb629f13c8f4ebc86f30e8fe3cddda4/data",destfile = paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.xlsx",sep = ""))
+if(!file.exists(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv",sep = ""))){
+  download.file("https://www.arcgis.com/sharing/rest/content/items/cdb629f13c8f4ebc86f30e8fe3cddda4/data",destfile = paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.xlsx",sep = ""))
+} else{
+  print(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv"," already exists, not downloading again",sep = ""))
+}
 
 itlRef <- read_excel(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv",sep = ""), sheet = 1)
 itlRef <- itlRef[,c(1,5:10)]
@@ -846,8 +860,12 @@ itlRef <- itlRef[!duplicated(itlRef$LAD20CD),] # Necessary due to two ITL321 not
 ### England and Wales
 ###
 
-
-download.file("https://opendata.arcgis.com/api/v3/datasets/e8fef92ac4114c249ffc1ff3ccf22e12_0/downloads/data?format=csv&spatialRefId=4326&where=1%3D1",destfile = paste(folderIn,"Output_Area_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Authority_District_(December_2020)_Lookup_in_England_and_Wales.csv",sep = ""))
+file_name = paste(folderIn,"Output_Area_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Authority_District_(December_2020)_Lookup_in_England_and_Wales.csv",sep = "")
+if(!file.exists(file_name)){
+  download.file("https://opendata.arcgis.com/api/v3/datasets/e8fef92ac4114c249ffc1ff3ccf22e12_0/downloads/data?format=csv&spatialRefId=4326&where=1%3D1",destfile = paste(folderIn,"Output_Area_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Authority_District_(December_2020)_Lookup_in_England_and_Wales.csv",sep = ""))
+} else{
+  print(paste(file_name," already exists, not downloading again",sep = ""))
+}
 
 oatoOtherEW <- read.csv(paste(folderIn,"Output_Area_to_Lower_Layer_Super_Output_Area_to_Middle_Layer_Super_Output_Area_to_Local_Authority_District_(December_2020)_Lookup_in_England_and_Wales.csv",sep = ""))
 oatoOtherEW$Country <- NA
@@ -893,9 +911,20 @@ rownames(oatoOtherS) <- 1:nrow(oatoOtherS)
 
 
 # Basic look-up table
-download.file("https://www.nrscotland.gov.uk/files//geography/2011-census/OA_DZ_IZ_2011.xlsx",destfile = paste(folderIn,"OA_DZ_IZ_2011.xlsx",sep = ""))
+file_name = paste(folderIn,"OA_DZ_IZ_2011.xlsx",sep = "")
+if(!file.exists(file_name)){
+  download.file("https://www.nrscotland.gov.uk/files//geography/2011-census/OA_DZ_IZ_2011.xlsx",destfile = paste(folderIn,"OA_DZ_IZ_2011.xlsx",sep = ""))
+} else{
+  print(paste(file_name," already exists, not downloading again",sep = ""))
+}
+
 # More details (codes, names, other geographies)
-download.file("https://statistics.gov.scot/downloads/file?id=13360f3a-ca68-4f3e-8b7f-caffed8712eb%2FDataZone2011lookup_2022-05-31.csv",destfile = paste(folderIn,"DataZone2011lookup_2022-05-31.csv",sep = ""))
+file_name = paste(folderIn,"DataZone2011lookup_2022-05-31.csv",sep = "")
+if(!file.exists(file_name)){
+  download.file("https://statistics.gov.scot/downloads/file?id=13360f3a-ca68-4f3e-8b7f-caffed8712eb%2FDataZone2011lookup_2022-05-31.csv",destfile = paste(folderIn,"DataZone2011lookup_2022-05-31.csv",sep = ""))
+} else{
+  print(paste(file_name," already exists, not downloading again",sep = ""))
+}
 
 oatoOtherS1 <- read_excel(paste(folderIn,"OA_DZ_IZ_2011.xlsx",sep = ""), sheet = 1)
 oatoOtherS1 <- as.data.frame(oatoOtherS1)

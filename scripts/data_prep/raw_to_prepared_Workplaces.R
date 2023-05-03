@@ -73,7 +73,11 @@ date<- "latestMINUS2"
 downloadBR <- function(size){
   other <- paste("&industry=146800641...146800643,146800645...146800673,146800675...146800679,146800681...146800683,146800685...146800687,146800689...146800693,146800695,146800696,146800698...146800706,146800708...146800715,146800717...146800722,146800724...146800728,146800730...146800739&employment_sizeband=",size,"&legal_status=0&measures=20100&select=geography_code,industry_code,obs_value&rows=geography_code&cols=industry_code",sep="")
   url <- createURL(datasetBR,geogrMSOA,APIKey,date,other)
-  download.file(url,destfile = paste(folderIn,"data_BR_",size,".csv",sep=""))
+  if(!file.exists(paste(folderIn,"data_BR_",size,".csv",sep=""))){
+    download.file(url,destfile = paste(folderIn,"data_BR_",size,".csv",sep=""))
+  } else{
+    print(paste(paste(folderIn,"data_BR_",size,".csv",sep="")," already exists, not downloading again",sep = ""))
+  }
   data <- read.csv(paste(folderIn,"data_BR_",size,".csv",sep=""))
   colnames(data)[1] <- "MSOA11CD"
   data <- data[order(data$MSOA11CD),]
@@ -115,25 +119,32 @@ print("Downloading and preparing LSOA data...")
 length(geogrLSOA)
 
 # Download
-geogrLSOA <- read.csv("raw_to_prepared_LSOA-DZ_list_for_nomis.txt")
-geogrLSOA <- geogrLSOA$LSOA11CD
-l <- length(geogrLSOA)
-date<- "latest"
-other <- "&industry=146800641...146800643,146800645...146800673,146800675...146800679,146800681...146800683,146800685...146800687,146800689...146800693,146800695,146800696,146800698...146800706,146800708...146800715,146800717...146800722,146800724...146800728,146800730...146800739&employment_status=1&measure=1&measures=20100&select=geography_code,industry_code,obs_value&rows=geography_code&cols=industry_code"
-geogrLSOA2 <- paste(geogrLSOA[1:1000],collapse=",")
-url <- createURL(datasetES,geogrLSOA2,APIKey,date,other)
-download.file(url,destfile = paste(folderIn,"data.csv",sep=""))
-data <- read.csv(paste(folderIn,"data.csv",sep=""))
-for(i in 1:22){
-  geogrLSOA2 <- paste(geogrLSOA[(i*1000 + 1):min(i*1000 + 1000,l)],collapse=",")
+
+if(!file.exists(paste(folderOut,"lsoaData.csv",sep = ""))){
+  geogrLSOA <- read.csv("raw_to_prepared_LSOA-DZ_list_for_nomis.txt")
+  geogrLSOA <- geogrLSOA$LSOA11CD
+  l <- length(geogrLSOA)
+  date<- "latest"
+  other <- "&industry=146800641...146800643,146800645...146800673,146800675...146800679,146800681...146800683,146800685...146800687,146800689...146800693,146800695,146800696,146800698...146800706,146800708...146800715,146800717...146800722,146800724...146800728,146800730...146800739&employment_status=1&measure=1&measures=20100&select=geography_code,industry_code,obs_value&rows=geography_code&cols=industry_code"
+  geogrLSOA2 <- paste(geogrLSOA[1:1000],collapse=",")
   url <- createURL(datasetES,geogrLSOA2,APIKey,date,other)
-  download.file(url,destfile = paste(folderIn,"data1.csv",sep=""))
-  data1 <- read.csv(paste(folderIn,"data1.csv",sep=""))
-  data <- rbind(data,data1)
+  download.file(url,destfile = paste(folderIn,"data.csv",sep=""))
+  data <- read.csv(paste(folderIn,"data.csv",sep=""))
+  for(i in 1:22){
+    geogrLSOA2 <- paste(geogrLSOA[(i*1000 + 1):min(i*1000 + 1000,l)],collapse=",")
+    url <- createURL(datasetES,geogrLSOA2,APIKey,date,other)
+    download.file(url,destfile = paste(folderIn,"data1.csv",sep=""))
+    data1 <- read.csv(paste(folderIn,"data1.csv",sep=""))
+    data <- rbind(data,data1)
+  }
+  colnames(data)[1] <- "LSOA11CD"
+  lsoaData <- data[order(data$LSOA11CD),]
+  rownames(lsoaData) <- 1:nrow(lsoaData)
+  write.table(lsoaData,paste(folderOut,"lsoaData.csv",sep = ""),row.names = F,sep = ",")
+} else{
+  print(paste(paste(folderOut,"lsoaData.csv",sep = "")," already exists, loading directly",sep = ""))
+  lsoaData <- read.csv(paste(folderOut,"lsoaData.csv",sep = ""))
 }
-colnames(data)[1] <- "LSOA11CD"
-lsoaData <- data[order(data$LSOA11CD),]
-rownames(lsoaData) <- 1:nrow(lsoaData)
 
 
 #########################################################################
