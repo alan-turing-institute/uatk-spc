@@ -8,6 +8,9 @@
 #
 # If files differ, the protobuf are converted to sorted JSON to get diff.
 
+# Exit upon error
+set -e
+
 # Use given region
 REGION=$1
 
