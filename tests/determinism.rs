@@ -1,11 +1,13 @@
+use std::collections::BTreeSet;
+use std::io::{BufRead, BufReader};
+
 use anyhow::Result;
 use fs_err::File;
 use rand::rngs::StdRng;
 use rand::SeedableRng;
 use sha2::{Digest, Sha256};
+
 use spc::{protobuf, Input, Population, MSOA};
-use std::collections::BTreeSet;
-use std::io::{BufRead, BufReader};
 
 // Gets the hex encoded SHA256 hash from a generated population protobuf output given input and rng.
 async fn population_protobuf_hash(input: &Input, dir: &str, mut rng: StdRng) -> Result<String> {
