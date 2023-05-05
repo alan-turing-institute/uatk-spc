@@ -36,15 +36,22 @@ if [ $hash1 == $hash2 ]; then
     # Remove temporary outputs
     rm test1.pb test2.pb
 else
+    # Do not exit within this block upon error
+    set +e
     printf "Error: protobuf outputs differ.\n"
 
-    # Convert to JSON
-    python python/protobuf_to_json.py test1.pb > test1.json
-    python python/protobuf_to_json.py test2.pb > test2.json
-
-    # Sort JSON and get diff
-    diff <(jq --sort-keys . test1.json) <(jq --sort-keys . test2.json)
+    # Convert to JSON and sort for diff
+    python python/protobuf_to_json.py test1.pb | jq --sort-keys . > "output_${REGION}_1.json"
+    python python/protobuf_to_json.py test2.pb | jq --sort-keys . > "output_${REGION}_2.json"
 
     # Remove temporary outputs
-    rm test1.pb test2.pb test1.json test2.json
+    rm test1.pb test2.pb
+
+    # Get diff with 4 lines of unified context
+    diff -U 4 "output_${REGION}_1.json" "output_${REGION}_2.json" > "diff_${REGION}.txt"
+
+    printf "\nWrote JSON and diff outputs:\n"
+    printf "  output_${REGION}_1.json\n"
+    printf "  output_${REGION}_2.json\n"
+    printf "  diff_${REGION}.txt\n"
 fi
