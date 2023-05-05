@@ -1,4 +1,4 @@
-use std::collections::{BTreeMap, BTreeSet, HashMap};
+use std::collections::{BTreeMap, BTreeSet};
 
 use anyhow::Result;
 use fs_err::File;
@@ -76,16 +76,16 @@ struct Row {
 }
 
 struct Businesses {
-    venues_per_sic: HashMap<u32, Vec<VenueID>>,
-    available_jobs: HashMap<VenueID, usize>,
+    venues_per_sic: BTreeMap<u32, Vec<VenueID>>,
+    available_jobs: BTreeMap<VenueID, usize>,
     venues: TiVec<VenueID, Venue>,
 }
 
 impl Businesses {
     fn load(msoas: BTreeSet<MSOA>) -> Result<Businesses> {
         let mut result = Businesses {
-            venues_per_sic: HashMap::new(),
-            available_jobs: HashMap::new(),
+            venues_per_sic: BTreeMap::new(),
+            available_jobs: BTreeMap::new(),
             venues: TiVec::new(),
         };
 
