@@ -18,6 +18,7 @@ async fn population_protobuf_hash(input: &Input, dir: &str, mut rng: StdRng) -> 
     Ok(hex::encode(Sha256::digest(std::fs::read(output).unwrap())))
 }
 
+// To run: `cargo test --release -- --include-ignored`
 #[tokio::test]
 #[ignore = "requires data retrieval."]
 async fn test_determinism() -> Result<()> {
