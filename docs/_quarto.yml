@@ -13,6 +13,7 @@ book:
         - outputs.qmd
         - england_outputs.qmd
         - wales_outputs.qmd
+        - scotland_outputs.qmd
         - use_output.qmd
         - installation.qmd
         - custom_areas.qmd
