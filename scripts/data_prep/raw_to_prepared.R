@@ -980,6 +980,10 @@ write.table(oatoOther,paste(folderOut,"lookUp-GB.csv",sep = ""),row.names = F, s
 #download.file("https://stg-arcgisazurecdataprod1.az.arcgis.com/exportfiles-1559-14679/Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv?sv=2018-03-28&sr=b&sig=lXtKu1VuADphReJfFvfgqHHWm4CtHnk3iusPMruCxO0%3D&se=2023-04-24T18%3A30%3A56Z&sp=r",destfile = paste(folderIn,"Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv",sep = ""))
 OACoords <- read.csv(paste(folderIn,"Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv",sep = ""))
 
+download.file("https://www.nrscotland.gov.uk/files/geography/output-area-2011-pwc.zip",destfile = paste(folderIn,"Output_Areas_2011_Scotland.zip",sep = ""))
+unzip(paste(folderIn,"Output_Areas_2011_Scotland",sep = ""),exdir=folderIn)
+OACoords_S <- read.dbf(paste(folderIn,"OutputArea2011_PWC.dbf",sep = ""))
+
 ukgrid = "+init=epsg:27700"
 latlong = "+init=epsg:4326"
 
@@ -990,6 +994,17 @@ coords2 <- spTransform(coords_SP, CRS(latlong))
 coords2 <- coords2@coords
 
 OACoordsF <- data.frame(OA11CD = OACoords$OA11CD, easting = OACoords$x, northing = OACoords$y, lng = coords2[,1], lat = coords2[,2])
+
+# Scotland
+coords_S <- cbind(Easting = OACoords_S$easting, Northing = OACoords_S$northing)
+coords_SP_S <- SpatialPointsDataFrame(coords_S, data = data.frame(OACoords_S$code,OACoords_S$OBJECTID), proj4string = CRS("+init=epsg:27700"))
+
+coords2_S <- spTransform(coords_SP_S, CRS(latlong))
+coords2_S <- coords2_S@coords
+
+OACoordsF_S <- data.frame(OA11CD = OACoords_S$code, easting = OACoords_S$easting, northing = OACoords_S$northing, lng = coords2_S[,1], lat = coords2_S[,2])
+
+OACoordsF <- rbind(OACoordsF,OACoordsF_S)
 
 write.table(OACoordsF,paste(folderOut,"OACentroids.csv",sep = ""),row.names = F, sep = ",")
 
