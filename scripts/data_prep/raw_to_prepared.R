@@ -547,7 +547,7 @@ createsic1d <- function(sic){
     res <- "H"
   } else if(sic %in% 55:56){
     res <- "I"
-  } else if(sic %in% 58:63){
+  } else if(sic %in% 58:64){
     res <- "J"
   } else if(sic %in% 65:66){
     res <- "K"
@@ -561,7 +561,7 @@ createsic1d <- function(sic){
     res <- "O"
   } else if(sic == 85){
     res <- "P"
-  } else if(sic %in% 86:88){
+  } else if(sic %in% 86:89){
     res <- "Q"
   } else if(sic %in% 90:93){
     res <- "R"
