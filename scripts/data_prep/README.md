@@ -30,6 +30,6 @@ The script calls `raw_to_prepared_Income.R` to produce income data for the next 
 
 4. Use `SPC_testruns.R` to run a specific LAD for a specific year.
 
-## Step 3: Recut and upload to Azure (WIP)
+## Step 3: Recut and upload to Azure
 
-Step 2 outputs data at LAD level. These data must be grouped into counties, gziped and uploaded to `countydata-v2`on Azure. This can be done by using `lookUp-GB.csv` from step 1 (use fields `AzureRef` and `LAD20CD` to get all the LADs for a County and to get the name the final file should receive). A script will be provided at a later stage.
+Step 2 outputs data at LAD level. These data must be grouped into counties, gziped and uploaded to `countydata-v2`on Azure. This can be done by using `lookUp-GB.csv` from step 1 (use fields `AzureRef` and `LAD20CD` to get all the LADs for a County and to get the name the final file should receive). The script `toAzure_complete.R` can be used to perform the merging operation.
