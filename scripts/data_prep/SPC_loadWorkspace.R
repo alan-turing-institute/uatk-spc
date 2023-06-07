@@ -8,9 +8,6 @@ library(stringr)
 library(tidyverse)
 library(rgdal)
 
-folderInOT <- "Data/test/" # Link to common data
-folderOut <- "Outputs/test/"
-
 set.seed(10091989)
 
 cores <- 4
