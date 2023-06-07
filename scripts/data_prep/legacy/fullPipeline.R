@@ -103,54 +103,54 @@ merge$ethnicity <- sapply(merge$ethnicity, newEth)
 
 ###### Add HSE
 
-#transformAge <- function(a){
-  if(a == 0 | a == 1){
-    a <- 1
-  }else if(a %in% 2:4){
-    a <- 2
-  }else if(a %in% 5:7){
-    a <- 3
-  }else if(a %in% 8:10){
-    a <- 4
-  }else if(a %in% 11:12){
-    a <- 5
-  }else if(a %in% 13:15){
-    a <- 6
-  }else if(a %in% 16:19){
-    a <- 7
-  }else if(a %in% 20:24){
-    a <- 8
-  }else if(a %in% 25:29){
-    a <- 9
-  }else if(a %in% 30:34){
-    a <- 10
-  }else if(a %in% 35:39){
-    a <- 11
-  } else if(a %in% 40:44){
-    a <- 12
-  } else if(a %in% 45:49){
-    a <- 13
-  } else if(a %in% 50:54){
-    a <- 14
-  } else if(a %in% 55:59){
-    a <-15
-  } else if(a %in% 60:64){
-    a <- 16
-  } else if(a %in% 65:69){
-    a <- 17
-  } else if(a %in% 70:74){
-    a <- 18
-  } else if(a %in% 75:79){
-    a <- 19
-  } else if(a %in% 80:84){
-    a <- 20
-  } else if(a %in% 85:89){
-    a <- 21
-  }else {
-    a <- 22
-  }
-  return(a)
-}
+# transformAge <- function(a){
+#   if(a == 0 | a == 1){
+#     a <- 1
+#   }else if(a %in% 2:4){
+#     a <- 2
+#   }else if(a %in% 5:7){
+#     a <- 3
+#   }else if(a %in% 8:10){
+#     a <- 4
+#   }else if(a %in% 11:12){
+#     a <- 5
+#   }else if(a %in% 13:15){
+#     a <- 6
+#   }else if(a %in% 16:19){
+#     a <- 7
+#   }else if(a %in% 20:24){
+#     a <- 8
+#   }else if(a %in% 25:29){
+#     a <- 9
+#   }else if(a %in% 30:34){
+#     a <- 10
+#   }else if(a %in% 35:39){
+#     a <- 11
+#   } else if(a %in% 40:44){
+#     a <- 12
+#   } else if(a %in% 45:49){
+#     a <- 13
+#   } else if(a %in% 50:54){
+#     a <- 14
+#   } else if(a %in% 55:59){
+#     a <-15
+#   } else if(a %in% 60:64){
+#     a <- 16
+#   } else if(a %in% 65:69){
+#     a <- 17
+#   } else if(a %in% 70:74){
+#     a <- 18
+#   } else if(a %in% 75:79){
+#     a <- 19
+#   } else if(a %in% 80:84){
+#     a <- 20
+#   } else if(a %in% 85:89){
+#     a <- 21
+#   }else {
+#     a <- 22
+#   }
+#   return(a)
+# }
 
 transformAge <- function(a){
   if(a == 0 | a == 1){
