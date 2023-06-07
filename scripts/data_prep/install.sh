@@ -2,9 +2,15 @@
 
 # Install gdal
 # macos
-brew install gdal
+# brew install gdal
+
 # linux
 # TODO
 
 # Install R and renv
+# macos
+# TODO
+
+# linux
+# sudo apt install r-base-core
 # TODO
