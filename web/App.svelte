@@ -35,7 +35,6 @@
   <Layout>
     <div slot="left" class="base">
       <img src={logo} alt="SPC logo" width="100%" /><br />
-      <h2>Synthetic Population Catalyst</h2>
       <br />
       <FileLoader bind:pop bind:msoas bind:allMsoaData />
       &emsp;&emsp;
@@ -60,9 +59,11 @@
     </div>
   </Layout>
 {:else if import.meta.env.PROD}
+<div class="container">
   <!-- svelte-ignore a11y-img-redundant-alt -->
-  <img src={bgImage} alt="SPC logo" width="100%" />
+  <img  class="bg_image" src={bgImage} alt="bg_image"/>
   <FileLoader bind:pop bind:msoas bind:allMsoaData homepageStyle={true} />
+</div>
 {:else}
   <p>Loading file, it will take some seconds, please wait...</p>
 {/if}
@@ -85,5 +86,14 @@
     padding: 10px;
     width: 400px;
     font-family: "Poppins", sans-serif;
+  }
+  .bg_image {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+  .container {
+    position: relative;
+    width: 100%;
   }
 </style>

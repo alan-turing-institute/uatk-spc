@@ -1,10 +1,13 @@
 <script>
   import { loadArrayBuffer } from "../data.js";
+  import { onMount } from 'svelte';
 
   export let pop;
   export let msoas;
   export let allMsoaData;
+
   export let homepageStyle = false;
+  
 
   function loadFile(e) {
     const reader = new FileReader();
@@ -13,19 +16,53 @@
     };
     reader.readAsArrayBuffer(e.target.files[0]);
   }
+
+  let buttonStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '200px',
+    height: '50px',
+    fontSize: '16px',
+    zIndex: '1' // Ensure the button is on top of other elements
+  };
+
+
+  function updateButtonPosition() {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
+    // Adjust button position based on screen size
+    buttonStyle.top = `${screenHeight / 2}px`;
+    buttonStyle.left = `${screenWidth / 2}px`;
+  }
+
+  onMount(() => {
+    // Update button position when the component is mounted
+    updateButtonPosition();
+
+    // Update button position when the window is resized
+    window.addEventListener('resize', updateButtonPosition);
+
+    return () => {
+      // Cleanup event listener when the component is unmounted
+      window.removeEventListener('resize', updateButtonPosition);
+    };
+  });
+
 </script>
 
 <!-- TODO Interactive elements inside a label are apparently invalid, but this works -->
-<label>
-  <input type="file" id="load_file" on:change={loadFile} />
-  <button
-    type="button"
-    onclick="document.getElementById('load_file').click();"
-    class:homepagePosition={homepageStyle}
+<div >
+  <button class="button"
+  onclick="document.getElementById('load_file').click();"
+  class:homepagePosition={homepageStyle}
   >
-    Load region
+    Load the file here!
   </button>
-</label>
+  <input type="file" id="load_file" on:change={loadFile} />
+</div>
 
 <style>
   @font-face {
@@ -43,17 +80,14 @@
 
   input[type="file"] {
     cursor: pointer;
-
     /* Make the input type=file effectively invisible, but still let browser accessibility stuff work */
     width: 0.1px;
     height: 0.1px;
     opacity: 0;
     overflow: hidden;
-    position: absolute;
-    z-index: -1;
   }
 
-  button {
+  .button {
     background-color: #fff0;
     outline-style: auto;
     font-family: "Poppins-SemiBold", sans-serif;
@@ -61,10 +95,14 @@
 
   .homepagePosition {
     position: absolute;
-    top: 478px;
-    right: 48%;
+    top: 50%;
+    left: 50%;
     text-align: center;
-    font-size: 32px;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 50px;
+    font-size: 20px;
+    z-index: 2;
     font-family: "Poppins-SemiBold", sans-serif;
     outline-color: #fff0;
     outline-color: invert;
