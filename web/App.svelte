@@ -11,7 +11,7 @@
   import FileLoader from "./components/FileLoader.svelte";
   import { loadArrayBuffer } from "./data.js";
   import logo from "./assets/SPC_WebExplorerLogo.png";
-  import bgImage from "./assets/SPC_Explorer.png";
+  import bgImage from "./assets/Big_Image.png";
   import { onMount } from "svelte";
 
   let pop;
@@ -89,11 +89,15 @@
   }
   .bg_image {
     width: 100%;
-    height: auto;
-    display: block;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: -1;
   }
   .container {
     position: relative;
     width: 100%;
+    height: 100vh;
+    overflow: hidden;
   }
 </style>
