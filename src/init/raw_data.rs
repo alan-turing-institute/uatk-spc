@@ -31,6 +31,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     let mut osm_needed = BTreeSet::new();
     for rec in csv::Reader::from_reader(File::open(lookup_path)?).deserialize() {
         let rec: LookupRow = rec?;
+        results.oa_to_msoa.insert(rec.oa, rec.msoa.clone());
         if input.msoas.contains(&rec.msoa) {
             pop_files_needed.insert((rec.country, rec.azure_ref));
             osm_needed.insert(rec.osm);
@@ -39,7 +40,6 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
                 .entry(rec.county)
                 .or_insert_with(Vec::new)
                 .push(rec.msoa.clone());
-            results.oa_to_msoa.insert(rec.oa, rec.msoa);
         }
     }
     info!(
