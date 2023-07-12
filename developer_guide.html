@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Synthetic Population Catalyst - 12&nbsp; Developer guide</title>
+<title>Synthetic Population Catalyst - 13&nbsp; Developer guide</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -74,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./developer_guide.html">Advanced</a></li><li class="breadcrumb-item"><a href="./developer_guide.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Developer guide</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./developer_guide.html">Advanced</a></li><li class="breadcrumb-item"><a href="./developer_guide.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Developer guide</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -173,20 +173,26 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./technical_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Technical overview</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./schema.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data schema</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data schema</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./modelling_methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Modelling methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Modelling methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./data_sources.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data sources</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data sources</span></span></a>
   </div>
 </li>
       </ul>
@@ -203,19 +209,19 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./developer_guide.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Developer guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Developer guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./code_walkthrough.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Code walkthrough</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Code walkthrough</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./performance.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Performance</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Performance</span></span></a>
   </div>
 </li>
       </ul>
@@ -230,10 +236,10 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#updating-the-docs" id="toc-updating-the-docs" class="nav-link active" data-scroll-target="#updating-the-docs"><span class="header-section-number">12.1</span> Updating the docs</a></li>
-  <li><a href="#code-hygiene" id="toc-code-hygiene" class="nav-link" data-scroll-target="#code-hygiene"><span class="header-section-number">12.2</span> Code hygiene</a></li>
-  <li><a href="#some-tips-for-working-with-rust" id="toc-some-tips-for-working-with-rust" class="nav-link" data-scroll-target="#some-tips-for-working-with-rust"><span class="header-section-number">12.3</span> Some tips for working with Rust</a></li>
-  <li><a href="#docker" id="toc-docker" class="nav-link" data-scroll-target="#docker"><span class="header-section-number">12.4</span> Docker</a></li>
+  <li><a href="#updating-the-docs" id="toc-updating-the-docs" class="nav-link active" data-scroll-target="#updating-the-docs"><span class="header-section-number">13.1</span> Updating the docs</a></li>
+  <li><a href="#code-hygiene" id="toc-code-hygiene" class="nav-link" data-scroll-target="#code-hygiene"><span class="header-section-number">13.2</span> Code hygiene</a></li>
+  <li><a href="#some-tips-for-working-with-rust" id="toc-some-tips-for-working-with-rust" class="nav-link" data-scroll-target="#some-tips-for-working-with-rust"><span class="header-section-number">13.3</span> Some tips for working with Rust</a></li>
+  <li><a href="#docker" id="toc-docker" class="nav-link" data-scroll-target="#docker"><span class="header-section-number">13.4</span> Docker</a></li>
   </ul>
 </nav>
     </div>
@@ -242,7 +248,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Developer guide</span></h1>
+<h1 class="title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Developer guide</span></h1>
 </div>
 
 
@@ -257,12 +263,12 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="updating-the-docs" class="level2" data-number="12.1">
-<h2 data-number="12.1" class="anchored" data-anchor-id="updating-the-docs"><span class="header-section-number">12.1</span> Updating the docs</h2>
+<section id="updating-the-docs" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="updating-the-docs"><span class="header-section-number">13.1</span> Updating the docs</h2>
 <p>The site is built with <a href="https://quarto.org/">Quarto</a>. You can iterate on it locally: <code>cd docs; quarto preview</code></p>
 </section>
-<section id="code-hygiene" class="level2" data-number="12.2">
-<h2 data-number="12.2" class="anchored" data-anchor-id="code-hygiene"><span class="header-section-number">12.2</span> Code hygiene</h2>
+<section id="code-hygiene" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="code-hygiene"><span class="header-section-number">13.2</span> Code hygiene</h2>
 <p>We use automated tools to format the code.</p>
 <pre class="shell"><code>cargo fmt
 
@@ -271,8 +277,8 @@ prettier --write *.md
 prettier --write docs/*.qmd --parser markdown</code></pre>
 <p>Install <a href="https://prettier.io">prettier</a> for Markdown.</p>
 </section>
-<section id="some-tips-for-working-with-rust" class="level2" data-number="12.3">
-<h2 data-number="12.3" class="anchored" data-anchor-id="some-tips-for-working-with-rust"><span class="header-section-number">12.3</span> Some tips for working with Rust</h2>
+<section id="some-tips-for-working-with-rust" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="some-tips-for-working-with-rust"><span class="header-section-number">13.3</span> Some tips for working with Rust</h2>
 <p>There are two equivalent ways to rebuild and then run the code. First:</p>
 <pre class="shell"><code>cargo run --release -- devon</code></pre>
 <p>The <code>--</code> separates arguments to <code>cargo</code>, the Rust build tool, and arguments to the program itself. The second way:</p>
@@ -281,8 +287,8 @@ prettier --write docs/*.qmd --parser markdown</code></pre>
 <p>You can build the code in two ways – <strong>debug</strong> and <strong>release</strong>. There’s a simple tradeoff – debug mode is fast to build, but slow to run. Release mode is slow to build, but fast to run. For the ASPICS codebase, since the input data is so large and the codebase so small, I’d recommend always using <code>--release</code>. If you want to use debug mode, just omit the flag.</p>
 <p>If you’re working on the Rust code outside of an IDE like <a href="https://marketplace.visualstudio.com/items?itemName=rust-lang.rust">VSCode</a>, then you can check if the code compiles much faster by doing <code>cargo check</code>.</p>
 </section>
-<section id="docker" class="level2" data-number="12.4">
-<h2 data-number="12.4" class="anchored" data-anchor-id="docker"><span class="header-section-number">12.4</span> Docker</h2>
+<section id="docker" class="level2" data-number="13.4">
+<h2 data-number="13.4" class="anchored" data-anchor-id="docker"><span class="header-section-number">13.4</span> Docker</h2>
 <p>We provide a Dockerfile in case it’s helpful for running, but don’t recommend using it. If you want to, then assuming you have Docker setup:</p>
 <pre class="shell"><code>docker build -t spc .
 docker run --mount type=bind,source="$(pwd)"/data,target=/spc/data -t spc /spc/target/release/spc config/bristol.txt</code></pre>
@@ -528,12 +534,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./data_sources.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data sources</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data sources</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./code_walkthrough.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Code walkthrough</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Code walkthrough</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
