@@ -19,6 +19,7 @@ book:
         - custom_areas.qmd
     - part: "Understanding SPC"
       chapters:
+        - technical_overview.qmd
         - schema.qmd
         - modelling_methods.qmd
         - data_sources.qmd
