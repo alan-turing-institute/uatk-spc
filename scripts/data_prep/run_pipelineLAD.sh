@@ -7,6 +7,20 @@ STEP1_PATH=$1
 SPENSER_INPUT_PATH=$2
 SPENSER_ENRICHED_OUTPUT_PATH=$3
 
+# Exit if any paths missing
+if [ "$STEP1_PATH" == "" ]; then
+    echo "Missing path for step 1 data."
+    exit 1
+fi
+if [ "$SPENSER_INPUT_PATH" == "" ]; then
+    echo "Missing path for SPENSER pipeline input data."
+    exit 1
+fi
+if [ "$SPENSER_ENRICHED_OUTPUT_PATH" == "" ]; then
+    echo "Missing path for enriched SPENSER output data."
+    exit 1
+fi
+
 # Read list of all LADs for GB
 while read lad_cd lad_nm; do 
    lad_cds+=($lad_cd)
