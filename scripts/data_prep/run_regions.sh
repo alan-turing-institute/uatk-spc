@@ -7,20 +7,11 @@ OTHER_DATA=$1
 SPENSER_INPUT=$2
 OUTPUT=$3
 
-# Remaining incomplete regions
-regions=(
-    E06000028 E06000029 E06000053 E06000058 E06000059 E06000060
-    E07000004 E07000005 E07000006 E07000007 E07000048 E07000049
-    E07000050 E07000051 E07000052 E07000135 E07000190 E07000191
-    E07000201 E07000204 E07000205 E07000206 E07000244 E07000245
-    E07000246 E09000001
-    S12000005 S12000006 S12000008 S12000010 S12000011 S12000013
-    S12000014 S12000015 S12000017 S12000018 S12000019 S12000020
-    S12000021 S12000023 S12000024 S12000026 S12000027 S12000028
-    S12000029 S12000030 S12000033 S12000034 S12000035 S12000036
-    S12000038 S12000039 S12000040 S12000041 S12000042 S12000044
-    S12000045 S12000046 S12000047 S12000048 S12000049 S12000050
-)
+# Read list of all LADs for GB
+while read lad_cd lad_nm; do 
+   lad_cds+=($lad_cd)
+   lad_nms+=($lad_nm)
+done < <(tail -n +2 "2020_lad_list.csv" | sed 's/,/\t/g')
 
 # List of years to run
 years=(
@@ -30,8 +21,13 @@ years=(
     2032
     2039
 )
-for region in "${regions[@]}"; do
+for lad_cd in "${lad_cds[@]}"; do
     for year in "${years[@]}"; do
-        pueue add Rscript SPC_single_region.R $region $year $OTHER_DATA $SPENSER_INPUT $OUTPUT
+        pueue add Rscript SPC_single_region.R \
+            $lad_cd \
+            $year \
+            $OTHER_DATA \
+            $SPENSER_INPUT \ 
+            $OUTPUT
     done
 done
