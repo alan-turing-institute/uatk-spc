@@ -55,12 +55,22 @@ Rscript SPC_single_region.R \
 ```
 Or all GB LADs for each year: 2012, 2020, 2022, 2032, 2039 can be run with:
 ```bash
-./run_all_regions.sh \
+./run_pipelineLAD.sh \
+    <STEP1_PATH> \
     <SPENSER_INPUT_PATH> \
-    <SPENSER_ENRICHED_OUTPUT_PATH> \
-    <STEP1_PATH>
+    <SPENSER_ENRICHED_OUTPUT_PATH>
 ```
 
-## Step 3: Recut and upload to Azure
+## Step 3: Merge LADs to counties and upload to Azure
 
-Step 2 outputs data at LAD level. These data must be grouped into counties, gziped and uploaded to `countydata-v2`on Azure. This can be done by using `lookUp-GB.csv` from step 1 (use fields `AzureRef` and `LAD20CD` to get all the LADs for a County and to get the name the final file should receive). The script `toAzure_complete.R` can be used to perform the merging operation.
+Step 2 outputs data at LAD level. These data must be grouped into counties,
+gzipped and uploaded to Azure. This is done using `lookUp-GB.csv` from step 1
+(use fields `AzureRef` and `LAD20CD` to get all the LADs for a county and to get
+the name the final file should receive). The script `toAzure_complete.R` can be
+used to perform the merging operation and can be run for all years with:
+```bash
+./run_toAzure_complete.sh \
+    <STEP1_PATH> \
+    <SPENSER_ENRICHED_OUTPUT_PATH> \
+    <SPENSER_ENRICHED_TO_AZURE_PATH>
+```
