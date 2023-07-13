@@ -2,6 +2,13 @@
 
 ![SPC Schema](https://github.com/alan-turing-institute/uatk-spc/blob/main/docs/img/SPC_Schema_full.png)
 
+## Prerequisites
+The following steps assume the following have been installed:
+- [R](https://www.r-project.org/): for running data curation scripts
+- [renv](https://rstudio.github.io/renv/articles/renv.html): to load the R environment for reproducibility
+- [pueue](https://github.com/Nukesor/pueue): a process queue for running all
+  LADs
+
 ## Step 1: Curate public data from diverse sources (WIP)
 
 1. This step requires a nomis API key that can be obtained by registering with [nomisweb](https://www.nomisweb.co.uk/). Once registered, the API key can be found [here](https://www.nomisweb.co.uk/myaccount/webservice.asp). Replace the content of `raw_to_prepared_nomisAPIKey.txt` with this key.
@@ -21,14 +28,38 @@ Refer to the [data sources](https://alan-turing-institute.github.io/uatk-spc/dat
 The script calls `raw_to_prepared_Income.R` to produce income data for the next step. Note that only the modelled coefficients for hourly salaries (averaged over all age groups) and number of hours worked are produced by the script. The age rescaling coefficients require running the entire population once without rescaling, which is not practical. The methodology is left commented out for reference. Use the content of `SAVE_SPC_required_data.zip` to obtain these coefficients. The script also calls `raw_to_prepared_Workplaces.R` to create `businessRegistry.csv`. Note that both these scripts can only be used on their own after some of the content of `raw_to_prepared.R` have been created.
 
 ## Step 2: Add to SPENSER
+This step assumes that you have already run the complete SPENSER pipeline either
+with a [single
+machine](https://github.com/alan-turing-institute/spc-hpc-pipeline/tree/30-missing-lads)
+or using [Azure batch
+computing](https://github.com/alan-turing-institute/spc-hpc-pipeline/tree/30-missing-lads).
 
-1. Unpack `SAVE_SPC_required_data.zip` or run the previous step.
+First, unpack `SAVE_SPC_required_data.zip` or run the step 1:
+```bash
+unzip SAVE_SPC_required_data.zip
+```
+To set-up the R environment, open R from the command line:
+```bash
+R
+```
+and follow any interactive instructions.
 
-2. Get SPENSER data (link will be provided when available).
-
-3. Update the variables `folderIn`, `folderInOT` and `folderOut` inside `SPC_loadWorkspace.R` and `SPC_pipelineLAD.R` to a local folder structure.
-
-4. Use `SPC_testruns.R` to run a specific LAD for a specific year.
+Next a single LAD can be enriched by running the following R script:
+```bash
+Rscript SPC_single_region.R \
+    <LAD_CODE> \
+    <YEAR> \
+    <STEP1_PATH> \
+    <SPENSER_INPUT_PATH> \
+    <SPENSER_ENRICHED_OUTPUT_PATH>
+```
+Or all GB LADs for each year: 2012, 2020, 2022, 2032, 2039 can be run with:
+```bash
+./run_all_regions.sh \
+    <SPENSER_INPUT_PATH> \
+    <SPENSER_ENRICHED_OUTPUT_PATH> \
+    <STEP1_PATH>
+```
 
 ## Step 3: Recut and upload to Azure
 

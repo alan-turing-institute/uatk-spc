@@ -3,9 +3,9 @@
 set -e
 
 # Get data paths from positional args
-OTHER_DATA=$1
-SPENSER_INPUT=$2
-OUTPUT=$3
+STEP1_PATH=$1
+SPENSER_INPUT_PATH=$2
+SPENSER_ENRICHED_OUTPUT_PATH=$3
 
 # Read list of all LADs for GB
 while read lad_cd lad_nm; do 
@@ -26,8 +26,8 @@ for lad_cd in "${lad_cds[@]}"; do
         pueue add Rscript SPC_single_region.R \
             $lad_cd \
             $year \
-            $OTHER_DATA \
-            $SPENSER_INPUT \ 
-            $OUTPUT
+            $STEP1_PATH \
+            $SPENSER_INPUT_PATH \ 
+            $SPENSER_ENRICHED_OUTPUT_PATH
     done
 done
