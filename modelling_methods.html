@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Synthetic Population Catalyst - 11&nbsp; Modelling methods</title>
+<title>Synthetic Population Catalyst - 10&nbsp; Modelling methods</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -74,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./technical_overview.html">Understanding SPC</a></li><li class="breadcrumb-item"><a href="./modelling_methods.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Modelling methods</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./schema.html">Understanding SPC</a></li><li class="breadcrumb-item"><a href="./modelling_methods.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Modelling methods</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -173,26 +173,20 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./technical_overview.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Technical overview</span></span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./schema.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data schema</span></span></a>
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data schema</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./modelling_methods.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Modelling methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Modelling methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./data_sources.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data sources</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data sources</span></span></a>
   </div>
 </li>
       </ul>
@@ -209,19 +203,19 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./developer_guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Developer guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Developer guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./code_walkthrough.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Code walkthrough</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Code walkthrough</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./performance.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Performance</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Performance</span></span></a>
   </div>
 </li>
       </ul>
@@ -236,18 +230,14 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#spenser-and-quant" id="toc-spenser-and-quant" class="nav-link active" data-scroll-target="#spenser-and-quant"><span class="header-section-number">11.1</span> SPENSER and QUANT</a></li>
-  <li><a href="#bmi-estimation" id="toc-bmi-estimation" class="nav-link" data-scroll-target="#bmi-estimation"><span class="header-section-number">11.2</span> BMI estimation</a></li>
-  <li><a href="#income-data" id="toc-income-data" class="nav-link" data-scroll-target="#income-data"><span class="header-section-number">11.3</span> Income data</a>
+  <li><a href="#join-with-the-health-surveys-and-uk-time-used-survey" id="toc-join-with-the-health-surveys-and-uk-time-used-survey" class="nav-link active" data-scroll-target="#join-with-the-health-surveys-and-uk-time-used-survey"><span class="header-section-number">10.1</span> Join with the Health Surveys and UK Time Used Survey</a></li>
+  <li><a href="#bmi-data" id="toc-bmi-data" class="nav-link" data-scroll-target="#bmi-data"><span class="header-section-number">10.2</span> BMI data</a></li>
+  <li><a href="#income-data" id="toc-income-data" class="nav-link" data-scroll-target="#income-data"><span class="header-section-number">10.3</span> Income data</a>
   <ul class="collapse">
-  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods"><span class="header-section-number">11.3.1</span> Methods</a></li>
-  <li><a href="#comparison-to-reference-values-from-ons" id="toc-comparison-to-reference-values-from-ons" class="nav-link" data-scroll-target="#comparison-to-reference-values-from-ons"><span class="header-section-number">11.3.2</span> Comparison to reference values from ONS</a></li>
+  <li><a href="#methods" id="toc-methods" class="nav-link" data-scroll-target="#methods"><span class="header-section-number">10.3.1</span> Methods</a></li>
+  <li><a href="#comparison-to-reference-values-from-ons" id="toc-comparison-to-reference-values-from-ons" class="nav-link" data-scroll-target="#comparison-to-reference-values-from-ons"><span class="header-section-number">10.3.2</span> Comparison to reference values from ONS</a></li>
   </ul></li>
-  <li><a href="#commuting-flows" id="toc-commuting-flows" class="nav-link" data-scroll-target="#commuting-flows"><span class="header-section-number">11.4</span> Commuting flows</a>
-  <ul class="collapse">
-  <li><a href="#list-of-all-worplaces-in-gb" id="toc-list-of-all-worplaces-in-gb" class="nav-link" data-scroll-target="#list-of-all-worplaces-in-gb"><span class="header-section-number">11.4.1</span> List of all worplaces in GB</a></li>
-  <li><a href="#usage-inside-spc" id="toc-usage-inside-spc" class="nav-link" data-scroll-target="#usage-inside-spc"><span class="header-section-number">11.4.2</span> Usage inside SPC</a></li>
-  </ul></li>
+  <li><a href="#commuting-flows" id="toc-commuting-flows" class="nav-link" data-scroll-target="#commuting-flows"><span class="header-section-number">10.4</span> Commuting flows</a></li>
   </ul>
 </nav>
     </div>
@@ -256,7 +246,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Modelling methods</span></h1>
+<h1 class="title"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Modelling methods</span></h1>
 </div>
 
 
@@ -271,10 +261,7 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>We present here the theoretical principles behind the modelling done in SPC and point to the parts of the code where they are implemented.</p>
-<section id="spenser-and-quant" class="level2" data-number="11.1">
-<h2 data-number="11.1" class="anchored" data-anchor-id="spenser-and-quant"><span class="header-section-number">11.1</span> SPENSER and QUANT</h2>
-<p>The generation of the population data by <a href="https://github.com/nismod/microsimulation">SPENSER</a> and the modelling of trips to schools and retail by <a href="https://github.com/maptube/QUANT_RAMP">QUANT</a> are detailed in</p>
+<p>The principles behind the generation of <a href="https://github.com/nismod/microsimulation">SPENSER</a> population data and behind the modelling of trips to schools and retail by <a href="https://github.com/maptube/QUANT_RAMP">QUANT</a> are detailed in</p>
 <blockquote class="blockquote">
 <p>Lomax N et al.&nbsp;An Open-Source Model for Projecting Small Area Demographic and Land-Use Change. Geographical analysis, 54(3), 599-622 (2022). (<a href="https://doi.org/10.1111/gean.12320">DOI</a>)</p>
 </blockquote>
@@ -282,30 +269,38 @@ ul.task-list li input[type="checkbox"] {
 <blockquote class="blockquote">
 <p>Spooner F et al.&nbsp;A dynamic microsimulation model for epidemics. Soc Sci Med., 291:114461 (2021). (<a href="https://doi.org/10.1016/j.socscimed.2021.114461">DOI</a>)</p>
 </blockquote>
+<p>The result of SPENSER is two separate datasets and a merging key: one dataset for individuals, accurate at MSOA level and containing the <code>sex</code>, <code>age</code> and <code>ethnicity</code> <a href="https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz">fields</a>; and one for households, accurate at OA level and containing the <code>OA11CD</code>, <code>HOUSE_nssec8</code>, <code>House_type</code>, <code>HOUSE_typeCommunal</code>, <code>HOUSE_NRooms</code>, <code>HOUSE_centralHeat</code>, <code>HOUSE_tenure</code> and <code>HOUSE_NCars</code> <a href="https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz">fields</a> respectively.</p>
+<section id="join-with-the-health-surveys-and-uk-time-used-survey" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="join-with-the-health-surveys-and-uk-time-used-survey"><span class="header-section-number">10.1</span> Join with the Health Surveys and UK Time Used Survey</h2>
+<p>Once merged into one dataset according to the matching key, the SPENSER data is enriched with the Health Surveys and UK Time Used Survey.</p>
+<p>An individual among those sharing the same 5-year age group (see code for details of age groups for under 18) and sex is drawn from the participants of the Health Survey. This adds the <code>id_HS</code>, <code>HEALTH_diabetes</code>, <code>HEALTH_bloodpressure</code>, <code>HEALTH_cvd</code>, <code>HEALTH_NMedecines</code>, <code>HEALTH_selfAssessed</code> and <code>HEALTH_lifeSat</code> <a href="https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz">fields</a>. This join is not spatially differentiated and other matching criteria (ethnicity and nssec8) were retained due to a lack of representativity inside the survey. The BMI field is the result of a more comprehensive modelling detailed <a href="https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#bmi-data">below</a>.</p>
+<p>Each individual that is not a head of household is assigned an nssec8 category. This is done according to nssec8 category distributions among the general population by sex and age groups according to ONS data (<a href="https://www.nomisweb.co.uk/census/2011/dc6114ew">DC6114EW</a> and <a href="https://www.nrscotland.gov.uk/news/2014/census-2011-release-3i">DC6206SC</a> datasets).</p>
+<p>An individual among those sharing the same 5-year age group (see code for details of age groups for under 18), sex and nssec8 category is drawn from the participants of the UK Time Use Survey. This adds the <code>id_TUS_hh</code>, <code>id_TUS_p</code>, <code>pwkstat</code>, <code>soc2010</code>, <code>sic1d2007</code>, <code>sic2d2007</code>, <code>netPayWeekly</code> and <code>workedHoursWeekly</code> <a href="https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz">fields</a>. Note that the <code>netPayWeekly</code> and <code>workedHoursWeekly</code> fields have a low response rate among participants of the survey. For that reason, we have a added a much more detailed modelling of income, see <a href="https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#income-data">below</a>, that includes spatial differences at region level.</p>
 </section>
-<section id="bmi-estimation" class="level2" data-number="11.2">
-<h2 data-number="11.2" class="anchored" data-anchor-id="bmi-estimation"><span class="header-section-number">11.2</span> BMI estimation</h2>
-<p>Body Max Index (BMI) is calculated for each individual from the <a href="https://digital.nhs.uk/data-and-information/areas-of-interest/public-health/health-survey-for-england---health-social-care-and-lifestyles#top">Health Survey for England 2019</a> (access needs to be requested to the UK Data Service). This calculation is independent from the matching with the Heath Survey that happens during the data preparation step, therefore the BMI values will not match the ones that could be obtained from the Health Survey identifiers included in the output. As the BMI variable is not necessarily independent from the other health variables (diabetes etc.), the new variable should only be used for studies where all other variables are considered equal. The new variable is continuous (a float) instead of categorical.</p>
-<p>According to the HSE 2019, the distribution of BMI values should follow figure 1. The socio-economic category variable was discarded for the modelling as it is not independent from the other variables, and “mixed” and “other” ethnicities have been merged due to small sample sizes.</p>
+<section id="bmi-data" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="bmi-data"><span class="header-section-number">10.2</span> BMI data</h2>
+<p>Body Max Index (BMI) is calculated for each individual from the <a href="https://digital.nhs.uk/data-and-information/areas-of-interest/public-health/health-survey-for-england---health-social-care-and-lifestyles#top">Health Survey for England 2019</a> (access needs to be requested to the UK Data Service). This calculation is completely independent from the PSM to the HSE 2017, and therefore the new BMI values will not fit within the categories indicated by this earlier PSM. As the BMI variable is not necessarily independent from the other health variables (diabetes etc.), the new variable should only be used for studies where all other variables are considered equal. The new variable is continuous (a float).</p>
+<p>According to the HSE 2019, the distribution of BMI values should follow figure 1. Socio-economic category was discarded for the modelling as it is not independent from the other variables and “mixed” and “other” ethnicities have been merged due to small sample sizes.</p>
 <p><img src="img/BMIStart.png" align="left" width="600"> Figure 1. BMI per age. Columns represent ethnicity (White, Black, Asian, Other), and the rows sex (female, male).</p>
 <p>The distribution for each age group is a gamma distribution. See figure 2.</p>
 <p><img src="img/BMIDistrib.png" align="left" width="600"> Figure 2. Distribution of BMI values for white females aged 30-34.</p>
-<p>Due to small sample sizes, the BMI is calculated for each individual depending on their age according to a gamma distribution whose mean is the mean for the corresponding age, sex and ethnicity (thick line in figure 1), but whose variance is only determined by the total variance by sex and ethnicity. The resulting BMI values were validated for Bedfordshire, and correlations of 0.93 and 0.97 were found between the mean and variance of the modelled data compared to those for the reference HSE 2019 data. See figure 3. The distribution per age, as in figure 1, were also validated.</p>
+<p>Due to small sample sizes, the BMI is calculated for each individual depending on their age according to a gamma distribution whose mean is the mean for the corresponding age, sex and ethnicity (thick line in figure 1), but whose variance is only determined by the total variance by sex and ethnicity. The resulting BMI where validated for Bedfordshire, and correlations of 0.93 and 0.97 were found between the mean and variance of the modelled data compared to those for the reference HSE 2019 data. See figure 3. The distribution per age, as in figure 1, were also validated.</p>
 <p><img src="img/BMIControl.png" align="left" width="600"> Figure 3. Modelled mean and variance compared to the reference mean and variance from the HSE 2019 data for each of the eight categories of figure 1.</p>
-<p>The <i>R</i> code for this modelling are l. 239-406 of this <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/raw_to_prepared.R">script</a>, and the validation is included in the legacy version, <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/legacy/createBMI.R">here</a>.</p>
+<p>The <i>R</i> codes for this modelling are <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/legacy/createBMI.R">here</a>.</p>
 </section>
-<section id="income-data" class="level2" data-number="11.3">
-<h2 data-number="11.3" class="anchored" data-anchor-id="income-data"><span class="header-section-number">11.3</span> Income data</h2>
-<p>This modelling is based on the 2020 revised edition of the <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/regionbyoccupation4digitsoc2010ashetable15">Earnings and hours worked, region by occupation by four-digit SOC: ASHE Table 15</a> database from ONS. Some percentiles for employees’ gross hourly salaries are provided for each full-time and part-time job according to their four-digit SOC classification per region, and separated by sex. It is supported by this <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/raw_to_prepared_Income.R">script</a>.</p>
-<section id="methods" class="level3" data-number="11.3.1">
-<h3 data-number="11.3.1" class="anchored" data-anchor-id="methods"><span class="header-section-number">11.3.1</span> Methods</h3>
-<p>The data are far from complete (only about 15% of all possible values), especially for the highest deciles. We found that the missing values amongst the partially filled SOCs could be estimated by interpolating an order 3 polynomial to the existing values. We found that the order 3 polynomials were a good fit for most categories (93.11%). SOCs with too many missing values are given the value for the category that is immediately higher in the SOC hierarchy. For some jobs, the highest percentiles seem capped, making the polynomial fitting fail. In that case, we have replaced the unknown values with the highest known value (as there is no clear and systematic fitting for these special cases). In addition, the highest decile is never detailed in the data, which means that the highest salaries are underestimated in the model (and exceptionally high salaries are not present). The result of this phase is four tables {male full-time, male part-time, female full-time, female part-time} containing the coefficients of the fitted order 3 polynomials, with an optional cap when relevant. This step is done in section 1 of the script.</p>
-<p>A percentile is chosen randomly (uniformly) for each individual in England, and the salary is then deduced according to their full-time/part-time status, region, sex and SOC category. <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6">Age data</a> from ONS are then integrated. Part of the differences that can be observed between different age groups is already taken into account through the SOC variable, since it is expected to evolve throughout an individual’s career. To avoid counting this dependency twice, we compute the residual between the results of the initial modelling that does not take into account age and the expected results by age group according to the data. We then deduce a function that modifies a posteriori the estimated salary of an individual depending on their age, so that the salaries sum correctly by age groups. This step is done in sections 2 to 4 of the script.</p>
-<p>To get the number of hours worked per week, we also use the ASHE Table 15. Since only minimal differences are observed between SOC categories, we simply complete missing values by appoximating them by values of the category that is immediately higher within the SOC hierarchy. This step is done in section 5 of the script.</p>
-<p>When added to the SPC population data, a basic hourly salary column is added, as well as a corresponding annual salary deduced from the number of worked hours. In addition, we repeat this process for all individuals that are categorised as ‘Self-employed’ or ‘Employee unspecified’ by the Time Use Survey matching,, as if they were full time employees. These values are recorded in the columns <code>IncomeHAsIF</code> and <code>IncomeYAsIf</code>.</p>
+<section id="income-data" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="income-data"><span class="header-section-number">10.3</span> Income data</h2>
+<p>This modelling is mainly based on the 2020 revised edition of the <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/regionbyoccupation4digitsoc2010ashetable15">Earnings and hours worked, region by occupation by four-digit SOC: ASHE Table 15</a> database from ONS. Some percentiles for employees’ gross hourly salaries are provided for each full-time and part-time job according to their four-digit SOC classification per region, and separated by sex.</p>
+<section id="methods" class="level3" data-number="10.3.1">
+<h3 data-number="10.3.1" class="anchored" data-anchor-id="methods"><span class="header-section-number">10.3.1</span> Methods</h3>
+<p>The data are far from complete (only about 15% of all possible values), especially for the highest deciles. We found that an order 3 polynomial fit was satisfactory for most categories (93.11%) to complete the partially filled SOCs. SOCs with too many missing values are given the value for the category that is immediately higher in the SOC hierarchy. Some jobs appear to have a ‘ceiling’ for the highest percentiles, making the polynomial fit fail. In that case, we have replaced the unknown values by the highest known value in the raw data (as there is no clear and systemic fit for these special cases). In addition, there is no information for the highest decile in all cases, which means that the highest salaries are underestimated (and exceptionally high salaries cannot be obtained). The result of this phase is four tables {male full-time, male part-time, female full-time, female part-time} containing the coefficients of the fitted order 3 polynomial, with an optional ceiling percentile when relevant.</p>
+<p>A percentile is chosen randomly (uniformly) for each individual, and the salary is then deduced according to their full-time/part-time status, region, sex and SOC category. A basic hourly salary column is added to the unprocessed SPC data, as well as a corresponding annual salary based on their estimated hours worked per day, according to the Time Use Survey matching. In addition, we repeat this process for all individuals that are categorised as ‘Self-employed’ or ‘Employee unspecified’ by the Time Use Survey matching,, as if they were full time employees. These values are recorded in the columns <code>IncomeHAsIF</code> and <code>IncomeYAsIf</code>. We noticed that a high number of employees were given no worked hours by the Time Use Survey. We have added to the <code>IncomeYAsIf</code> column an estimation of their annual salary based on <a href="Earnings and hours worked, region by occupation by four-digit SOC: ASHE Table 15">Table 15.9a: Paid hours worked - Total 2020</a>, and also depending on the same four variables as above (full-time/part-time status, region, sex and SOC category).</p>
+<p>In addition, <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6">age data</a> are made available by ONS. Part of the differences that can be observed between different age groups are already taken into account through the fact that the SOC category can evolve during a career. To take into account that dependence, we first run the above method without weighing by age. The results are shown in the age validation section below. The residual impact of age alone is then added to the model in the following way. When the percentile is drawn for a specific individual, it is morphed to fit within the usual percentage range accessible to that age category. The function that operates this morphing is inferred beforehand and takes into account the salary distribution per age computed by the previous non-age weighted iteration of the modelling (see figure - TBA - for a more detailed description of this function).</p>
+<p>The <i>R</i> codes for this modelling are <a href="https://github.com/alan-turing-institute/uatk-spc/blob/6243fe324ca0a8bb126fda0dd28bc3717d540ffd/scripts/data_prep/raw_to_prepared_Income.R">here</a>.</p>
+<p>The methods are validated in the next section. Since it is not possible to optimise every criterion at once, this next section can also be used as a reference to re-adjust some values to match exactly the ONS estimated means for one particular criterion of interest.</p>
 </section>
-<section id="comparison-to-reference-values-from-ons" class="level3" data-number="11.3.2">
-<h3 data-number="11.3.2" class="anchored" data-anchor-id="comparison-to-reference-values-from-ons"><span class="header-section-number">11.3.2</span> Comparison to reference values from ONS</h3>
+<section id="comparison-to-reference-values-from-ons" class="level3" data-number="10.3.2">
+<h3 data-number="10.3.2" class="anchored" data-anchor-id="comparison-to-reference-values-from-ons"><span class="header-section-number">10.3.2</span> Comparison to reference values from ONS</h3>
 <p>We compare the results of the modelling to the raw datasets from ONS.</p>
 <ul>
 <li><code>Mod</code> for modelled</li>
@@ -838,15 +833,10 @@ ul.task-list li input[type="checkbox"] {
 <p>The Pearson correlations for mean and median between the modelled and raw values are 0.99 and 0.99.</p>
 </section>
 </section>
-<section id="commuting-flows" class="level2" data-number="11.4">
-<h2 data-number="11.4" class="anchored" data-anchor-id="commuting-flows"><span class="header-section-number">11.4</span> Commuting flows</h2>
-<section id="list-of-all-worplaces-in-gb" class="level3" data-number="11.4.1">
-<h3 data-number="11.4.1" class="anchored" data-anchor-id="list-of-all-worplaces-in-gb"><span class="header-section-number">11.4.1</span> List of all worplaces in GB</h3>
+<section id="commuting-flows" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="commuting-flows"><span class="header-section-number">10.4</span> Commuting flows</h2>
 <p>In order to distribute each individual of the population to a unique physical workplace, we first created a population of all individual workplaces in England, based on a combination of the Nomis UK Business Counts 2020 dataset and the Nomis Business register and Employment Survey 2015 (see <a href="./data_sources.html">Data sources</a>). The first dataset gives the number of individual workplace counts per industry, using the SIC 2007 industry classification, with imprecise size (i.e.&nbsp;number of employees) bands at MSOA level. The second dataset gives the total number of jobs available at LSOA level per SIC 2007 industry category. We found that the distribution of workplace sizes follows closely a simple 1/x distribution, allowing us to draw for each workplace a size within their band, with sum constraints given by the total number of jobs available, according to the second dataset. The <i>R</i> codes to create the list of all workplaces can be found <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/raw_to_prepared_Workplaces.R">here</a>.</p>
-</section>
-<section id="usage-inside-spc" class="level3" data-number="11.4.2">
-<h3 data-number="11.4.2" class="anchored" data-anchor-id="usage-inside-spc"><span class="header-section-number">11.4.2</span> Usage inside SPC</h3>
-<p>The workplace ‘population’ and individual population are levelled for each SIC 2007 category by removing the exceeding part of whichever dataset lists more items. This takes into account that people and business companies are likely to over-report their working availability (e.g.&nbsp;part time and seasonal contracts are not counted differently than full time contracts, jobseekers or people on maternity leave might report the SIC of their last job). This process can be controlled by a threshold in the parameter file that defines the maximal total proportion of workers or jobs that can be removed. If the two datasets cannot be levelled accordingly, the categories are dropped and the datasets are levelled globally. Tests in the West Yorkshire area have shown that when the level 1 SIC, containing 21 unique categories, is used, 90% of the volume of commuting flows were recovered compared to the Nomis commuting OD matrices at MSOA level.</p>
+<p>The workplace ‘population’ and individual population are then levelled for each SIC 2007 category by removing the exceeding part of whichever dataset lists more items. This takes into account that people and business companies are likely to over-report their working availability (e.g.&nbsp;part time and seasonal contracts are not counted differently than full time contracts, jobseekers or people on maternity leave might report the SIC of their last job). This process can be controlled by a threshold in the parameter file that defines the maximal total proportion of workers or jobs that can be removed. If the two datasets cannot be levelled accordingly, the categories are dropped and the datasets are levelled globally. Tests in the West Yorkshire area have shown that when the level 1 SIC, containing 21 unique categories, is used, 90% of the volume of commuting flows were recovered compared to the Nomis commuting OD matrices at MSOA level.</p>
 <p>The employees for each workplace are drawn according to the ‘universal law of visitation’, see</p>
 <blockquote class="blockquote">
 <p>Schläpfer M et al.&nbsp;The universal visitation law of human mobility. Nature 593, 522–527 (2021). (<a href="https://doi.org/10.1038/s41586-021-03480-9">DOI</a>)</p>
@@ -858,7 +848,6 @@ ul.task-list li input[type="checkbox"] {
 <p>distribution, where ρ(<i>r</i>,<i>f</i>) is the density of visitors coming from a distance <i>r</i> with frequency <i>f</i> and <i>K</i> is a balancing constant depending on the specific area. In the context of commuting, it can be assumed that <i>f</i> = 1. Additionally, we only need to weigh potential employees against each other, which removes the necessity to compute explicitly <i>K</i>. In the West Yorkshire test, we found a Pearson coefficient of 0.7 between the predicted flows when aggregated at MSOA level and the OD matrix at MSOA level available from Nomis.</p>
 
 
-</section>
 </section>
 
 </main> <!-- /main -->
@@ -1098,12 +1087,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./schema.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data schema</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data schema</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./data_sources.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data sources</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data sources</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
