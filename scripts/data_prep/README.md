@@ -30,9 +30,9 @@ The script calls `raw_to_prepared_Income.R` to produce income data for the next 
 ## Step 2: Add to SPENSER
 This step assumes that you have already run the complete SPENSER pipeline either
 with a [single
-machine](https://github.com/alan-turing-institute/spc-hpc-pipeline/tree/30-missing-lads)
+machine](https://github.com/alan-turing-institute/spc-hpc-pipeline/blob/main/scripts/full_pipeline/README.md)
 or using [Azure batch
-computing](https://github.com/alan-turing-institute/spc-hpc-pipeline/tree/30-missing-lads).
+computing](https://github.com/alan-turing-institute/spc-hpc-pipeline/).
 
 First, unpack `SAVE_SPC_required_data.zip` or run the step 1:
 ```bash
