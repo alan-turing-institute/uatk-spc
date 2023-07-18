@@ -11,7 +11,7 @@
   import FileLoader from "./components/FileLoader.svelte";
   import { loadArrayBuffer } from "./data.js";
   import logo from "./assets/SPC_WebExplorerLogo.png";
-  import bgImage from "./assets/SPC_Explorer.png";
+  import bgImage from "./assets/Big_Image.png";
   import { onMount } from "svelte";
 
   let pop;
@@ -35,7 +35,6 @@
   <Layout>
     <div slot="left" class="base">
       <img src={logo} alt="SPC logo" width="100%" /><br />
-      <h2>Synthetic Population Catalyst</h2>
       <br />
       <FileLoader bind:pop bind:msoas bind:allMsoaData />
       &emsp;&emsp;
@@ -60,9 +59,11 @@
     </div>
   </Layout>
 {:else if import.meta.env.PROD}
+<div class="container">
   <!-- svelte-ignore a11y-img-redundant-alt -->
-  <img src={bgImage} alt="SPC logo" width="100%" />
+  <img  class="bg_image" src={bgImage} alt="bg_image"/>
   <FileLoader bind:pop bind:msoas bind:allMsoaData homepageStyle={true} />
+</div>
 {:else}
   <p>Loading file, it will take some seconds, please wait...</p>
 {/if}
@@ -85,5 +86,18 @@
     padding: 10px;
     width: 400px;
     font-family: "Poppins", sans-serif;
+  }
+  .bg_image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: -1;
+  }
+  .container {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
   }
 </style>
