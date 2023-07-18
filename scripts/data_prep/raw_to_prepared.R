@@ -981,7 +981,7 @@ write.table(oatoOther,paste(folderOut,"lookUp-GB.csv",sep = ""),row.names = F, s
 OACoords <- read.csv(paste(folderIn,"Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv",sep = ""))
 
 download.file("https://www.nrscotland.gov.uk/files/geography/output-area-2011-pwc.zip",destfile = paste(folderIn,"Output_Areas_2011_Scotland.zip",sep = ""))
-unzip(paste(folderIn,"Output_Areas_2011_Scotland",sep = ""),exdir=folderIn)
+unzip(paste(folderIn,"Output_Areas_2011_Scotland.zip",sep = ""),exdir=folderIn)
 OACoords_S <- read.dbf(paste(folderIn,"OutputArea2011_PWC.dbf",sep = ""))
 
 ukgrid = "+init=epsg:27700"
