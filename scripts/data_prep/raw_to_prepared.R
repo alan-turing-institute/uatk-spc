@@ -772,7 +772,7 @@ TUS <- TUS[,c(22,3:5,23:39)]
 # Merge with indivTUS to get demographics
 test <- indivTUS[,1:7]
 test$uniqueID <- paste(test$id_TUS,test$pnum, sep = "_") 
-TUS$uniqueIDb <- substr(b$uniqueID,1,10)
+TUS$uniqueIDb <- substr(TUS$uniqueID,1,10)
 TUS <- merge(TUS,test, by.x = "uniqueIDb", by.y = "uniqueID", all.x = T)
 TUS <- TUS[!is.na(TUS$age),]
 row.names(TUS) <- 1:nrow(TUS)
