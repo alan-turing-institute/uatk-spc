@@ -902,7 +902,7 @@ oatoOtherEW$RGN20NM[wales] <- NA
 oatoOtherEW$RGN20NM[oatoOtherEW$RGN20NM == "East of England"] <- "East"
 
 oatoOtherEW <- oatoOtherEW[order(oatoOtherEW$LSOA11CD),c(4:6,1,7,2,8,12:20,9:11)]
-rownames(oatoOtherS) <- 1:nrow(oatoOtherS)
+rownames(oatoOtherEW) <- 1:nrow(oatoOtherEW)
 
 
 ###
