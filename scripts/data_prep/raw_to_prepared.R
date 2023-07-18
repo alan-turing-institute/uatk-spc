@@ -843,13 +843,13 @@ write.table(gm,paste(folderOut,"timeAtHomeIncreaseCTY.csv",sep = ""),row.names =
 print("Working on the look-up")
 
 # Old European NUTS geographies, now renamed "ITL"
-if(!file.exists(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv",sep = ""))){
+if(!file.exists(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.xlsx",sep = ""))){
   download.file("https://www.arcgis.com/sharing/rest/content/items/cdb629f13c8f4ebc86f30e8fe3cddda4/data",destfile = paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.xlsx",sep = ""))
 } else{
-  print(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv"," already exists, not downloading again",sep = ""))
+  print(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.xlsx"," already exists, not downloading again",sep = ""))
 }
 
-itlRef <- read_excel(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv",sep = ""), sheet = 1)
+itlRef <- read_excel(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.xlsx",sep = ""), sheet = 1)
 itlRef <- itlRef[,c(1,5:10)]
 itlRef <- itlRef[!duplicated(itlRef),]
 
