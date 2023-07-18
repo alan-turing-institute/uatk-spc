@@ -115,11 +115,7 @@ datasetES <- "NM_172_1"
 
 print("Downloading and preparing LSOA data...")
 
-
-length(geogrLSOA)
-
 # Download
-
 if(!file.exists(paste(folderOut,"lsoaData.csv",sep = ""))){
   geogrLSOA <- read.csv("raw_to_prepared_LSOA-DZ_list_for_nomis.txt")
   geogrLSOA <- geogrLSOA$LSOA11CD
