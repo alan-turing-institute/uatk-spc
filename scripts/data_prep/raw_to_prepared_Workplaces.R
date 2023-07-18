@@ -10,7 +10,7 @@ library(stringr)
 
 folderIn <- "Data/dl/"
 folderOut <- "Data/prepData/"
-APIKey <- read_file("raw_to_prepared_nomisAPIKey.txt")
+APIKey <- Sys.getenv("API_KEY")
 
 set.seed(14101066)
 
@@ -233,7 +233,7 @@ coords <- data.frame(LSOA11CD = shp$LSOA11CD, lng = shp$x, lat = shp$y)
 # Scotland
 download.file("https://maps.gov.scot/ATOM/shapefiles/SG_DataZoneCent_2011.zip",destfile = paste(folderIn,"SG_DataZoneCent_2011.zip",sep = ""))
 unzip(paste(folderIn,"SG_DataZoneCent_2011.zip",sep = ""),exdir=folderIn)
-coords2 <- read.dbf("/Users/hsalat/SPC_Extension/Data/businessRegistry/SG_DataZone_Cent_2011.dbf")
+coords2 <- read.dbf(paste(folderIn,"SG_DataZone_Cent_2011.dbf",sep = ""))
 ukgrid = "+init=epsg:27700"
 latlong = "+init=epsg:4326"
 coords3 <- cbind(Easting = as.numeric(as.character(coords2$Easting)), Northing = as.numeric(as.character(coords2$Northing)))

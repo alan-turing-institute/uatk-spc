@@ -14,7 +14,7 @@ library(readxl)
 
 folderIn <- "Data/dl/"
 folderOut <- "Data/prepData/"
-APIKey <- read_file("raw_to_prepared_nomisAPIKey.txt")
+APIKey <- Sys.getenv("API_KEY")
 options(timeout=600)
   
 set.seed(12345)
