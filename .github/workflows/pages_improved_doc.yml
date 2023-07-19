@@ -34,12 +34,12 @@ jobs:
       run: |
         cd web
         npm ci
-        npm run build --if-present -- --outDir='dist_improved_doc'
-        mv dist_improved_doc ../docs/_book_improved-doc/app
+        npm run build --if-present -- --outDir='dist_improved-doc'
+        mv dist_improved-doc ../docs/_book_improved-doc/app
 
     - name: Publish
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs/_book-improved_doc
+        publish_dir: ./docs/_book_improved-doc
         destination_dir: improved-doc
