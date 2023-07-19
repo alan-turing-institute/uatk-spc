@@ -1,12 +1,17 @@
-name: Deploy site
+name: Deploy improved_doc branch
 
-on: [push]
+on:
+  push:
+    branches:
+      improved_doc
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
+      with:
+        ref: improved_doc
 
     - name: Install quarto
       uses: quarto-dev/quarto-actions/setup@v2
@@ -16,7 +21,7 @@ jobs:
     - name: Render site
       run: |
         cd docs
-        quarto render --to all --output-dir ./_book_improved_docs
+        quarto render --to all --output-dir ./_book_improved_doc
 
     - name: Install node
       uses: actions/setup-node@v2
@@ -29,12 +34,12 @@ jobs:
       run: |
         cd web
         npm ci
-        npm run build --if-present -- --outDir='dist_improved_docs'
-        mv dist_improved_docs ../docs/_book_improved_docs/app
+        npm run build --if-present -- --outDir='dist_improved_doc'
+        mv dist_improved_doc ../docs/_book_improved_doc/app
 
     - name: Publish
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./docs/_book_improved_docs
-        destination_dir: improved_docs
+        publish_dir: ./docs/_book_improved_doc
+        destination_dir: improved_doc
