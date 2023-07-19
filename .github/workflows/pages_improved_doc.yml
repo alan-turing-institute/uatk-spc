@@ -1,17 +1,17 @@
-name: Deploy improved_doc branch
+name: Deploy improved-doc branch
 
 on:
   push:
     branches:
-      improved_doc
+      improved-doc
 
 jobs:
-  build:
+  deploy_improved_doc:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
-        ref: improved_doc
+        ref: improved-doc
 
     - name: Install quarto
       uses: quarto-dev/quarto-actions/setup@v2
