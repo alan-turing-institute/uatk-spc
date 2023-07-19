@@ -27,7 +27,7 @@ As the BMI variable is not necessarily independent from the other health variabl
 The new variable is continuous (a float) instead of categorical.
 
 According to the HSE 2019, the distribution of BMI values should follow figure 1.
-The socio-economic category variable was discarded for the modelling as it is not independent from the other variables, and "mixed" and "other" ethnicities have been merged due to small sample sizes.
+The socio-economic category variable was discarded for the modelling as it is not independent from the other variables, and "mixed" and "other" ethnicity categories have been merged due to small sample sizes.
 
 <img src="img/BMIStart.png" align="left" width="600"/>
 Figure 1. BMI per age. Columns represent ethnicity (White, Black, Asian, Other), and the rows sex (female, male).
@@ -74,7 +74,7 @@ This step is done in sections 2 to 4 of the script.
 
 To get the number of hours worked per week, we also use the ASHE Table 15.
 Since only minimal differences are observed between SOC categories,
-we simply complete missing values by appoximating them by values of the category that is immediately higher within the SOC hierarchy.
+we simply complete missing values by approximating them by values of the category that is immediately higher within the SOC hierarchy.
 This step is done in section 5 of the script.
 
 When added to the SPC population data, a basic hourly salary column is added, as well as a corresponding annual salary deduced from the number of worked hours.
@@ -191,7 +191,7 @@ The Pearson correlations for mean and median between the modelled and raw values
 
 ## Commuting flows
 
-### List of all worplaces in GB
+### List of all workplaces in GB
 
 In order to distribute each individual of the population to a unique physical workplace, we first created a population of all individual workplaces in England,
 based on a combination of the Nomis UK Business Counts 2020 dataset and the Nomis Business register and Employment Survey 2015 (see [Data sources](data_sources.qmd)).
@@ -206,7 +206,7 @@ The <i>R</i> codes to create the list of all workplaces can be found [here](http
 
 The workplace 'population' and individual population are levelled for each SIC 2007 category by removing the exceeding part of whichever dataset lists more items.
 This takes into account that people and business companies are likely to over-report their working availability
-(e.g. part time and seasonal contracts are not counted differently than full time contracts, jobseekers or people on maternity leave might report the SIC of their last job).
+(e.g. part time and seasonal contracts are not counted differently than full time contracts, job seekers or people on maternity leave might report the SIC of their last job).
 This process can be controlled by a threshold in the parameter file that defines the maximal total proportion of workers or jobs that can be removed.
 If the two datasets cannot be levelled accordingly, the categories are dropped and the datasets are levelled globally.
 Tests in the West Yorkshire area have shown that when the level 1 SIC, containing 21 unique categories,

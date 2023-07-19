@@ -45,7 +45,7 @@ The result is a set of data that will be merged with SPENSER in the next step, c
 - Coefficients to estimate the hourly salary of an employee in England depending on their home region, sex, part-time/full-time status, age and SOC category (`coefFFT.csv`, etc. & `ageRescaleFFT.csv`, etc.).
 - Coefficients to estimate the numbers of hours worked corresponding to the criteria mentioned above (`meanHoursFFT.csv`, etc. and `distribHours.csv`)
 - Centroid coordinates of Output areas in GB (`OACentroids.csv`)
-In addition, four files are outputed to be used by the second phase of the model:
+In addition, four files are outputted to be used by the second phase of the model:
 - `diariesRef.csv` contains diaries of typical days extracted from the UK Time Use Survey
 - `businessRegistry.csv` contains a list of all individual workplaces in GB
 - `timeAtHomeIncreaseCTY.csv` contains a reduction in time spent away from home during the pandemic according to Google Mobility reports 
