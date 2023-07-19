@@ -24,7 +24,7 @@ az storage blob upload-batch --account-name ramp0storage -d spc-output/$VERSION 
 # Generate URLs for docs/outputs.qmd
 cd $VERSION
 for x in */*/*; do
-	echo "- [$x](https://ramp0storage.blob.core.windows.net/spc-output/v2/$x)" >> urls
+	echo "- [$x](https://ramp0storage.blob.core.windows.net/spc-output/$VERSION/$x)" >> urls
 done
 mv urls ..
 cd ..
