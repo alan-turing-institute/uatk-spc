@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Synthetic Population Catalyst - 11&nbsp; Data sources</title>
+<title>Synthetic Population Catalyst - 12&nbsp; Data sources</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -74,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./schema.html">Understanding SPC</a></li><li class="breadcrumb-item"><a href="./data_sources.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data sources</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./technical_overview.html">Understanding SPC</a></li><li class="breadcrumb-item"><a href="./data_sources.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data sources</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -173,20 +173,26 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./technical_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Technical overview</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./schema.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Data schema</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data schema</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./modelling_methods.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Modelling methods</span></span></a>
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Modelling methods</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./data_sources.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data sources</span></span></a>
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data sources</span></span></a>
   </div>
 </li>
       </ul>
@@ -203,19 +209,19 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./developer_guide.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Developer guide</span></span></a>
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Developer guide</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./code_walkthrough.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Code walkthrough</span></span></a>
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Code walkthrough</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./performance.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Performance</span></span></a>
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Performance</span></span></a>
   </div>
 </li>
       </ul>
@@ -230,15 +236,15 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#utility-data" id="toc-utility-data" class="nav-link active" data-scroll-target="#utility-data"><span class="header-section-number">11.1</span> Utility data</a>
+  <li><a href="#utility-data" id="toc-utility-data" class="nav-link active" data-scroll-target="#utility-data"><span class="header-section-number">12.1</span> Utility data</a>
   <ul class="collapse">
   <li><a href="#lookup-gb.csv.gz" id="toc-lookup-gb.csv.gz" class="nav-link" data-scroll-target="#lookup-gb.csv.gz">lookUp-GB.csv.gz</a></li>
   </ul></li>
-  <li><a href="#county-level-data" id="toc-county-level-data" class="nav-link" data-scroll-target="#county-level-data"><span class="header-section-number">11.2</span> County level data</a>
+  <li><a href="#county-level-data" id="toc-county-level-data" class="nav-link" data-scroll-target="#county-level-data"><span class="header-section-number">12.2</span> County level data</a>
   <ul class="collapse">
   <li><a href="#pop_.csv.gz" id="toc-pop_.csv.gz" class="nav-link" data-scroll-target="#pop_.csv.gz">pop_<area_name>.csv.gz</area_name></a></li>
   </ul></li>
-  <li><a href="#national-data" id="toc-national-data" class="nav-link" data-scroll-target="#national-data"><span class="header-section-number">11.3</span> National data</a>
+  <li><a href="#national-data" id="toc-national-data" class="nav-link" data-scroll-target="#national-data"><span class="header-section-number">12.3</span> National data</a>
   <ul class="collapse">
   <li><a href="#businessregistry.csv.gz" id="toc-businessregistry.csv.gz" class="nav-link" data-scroll-target="#businessregistry.csv.gz">businessRegistry.csv.gz</a></li>
   <li><a href="#gis" id="toc-gis" class="nav-link" data-scroll-target="#gis"><code>GIS/</code></a></li>
@@ -254,7 +260,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data sources</span></h1>
+<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data sources</span></h1>
 </div>
 
 
@@ -271,8 +277,8 @@ ul.task-list li input[type="checkbox"] {
 
 <p>The original data are provided at different scales, which define their level of accuracy. For simplicity, the outputs of SPC are geolocated at Output Area (OA) level, although this scale may not be relevant to all indicators. The 2011 OAs are a geographical unit created for census collection and are designed to be relatively homogeneous, with an average size between 120 and 129 households.</p>
 <p>The data from Open Street Map (OSM) is downloaded directly from https://www.openstreetmap.org. Everything else is hosted through local copies inside one Azure repository that interacts automatically with the model. We describe below the content of this repository and indicate the raw source used for each indicator. It is divided into utilities, county level data and national data. To recreate the content of this repository from raw sources, please refer to <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/scripts/data_prep">this part of the code</a>.</p>
-<section id="utility-data" class="level2" data-number="11.1">
-<h2 data-number="11.1" class="anchored" data-anchor-id="utility-data"><span class="header-section-number">11.1</span> Utility data</h2>
+<section id="utility-data" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="utility-data"><span class="header-section-number">12.1</span> Utility data</h2>
 <section id="lookup-gb.csv.gz" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="lookup-gb.csv.gz"><a href="https://ramp0storage.blob.core.windows.net/referencedata/lookUp-GB.csv.gz">lookUp-GB.csv.gz</a></h3>
 <p>The look-up table links different geographies of Great Britain together. It is used internally by the model, but can also help the user define their own study area. The following are standard denominations, compatible with ONS fields of the same name. They are based on ONS <a href="https://geoportal.statistics.gov.uk/">lookups</a>. See ONS documentation for more details.</p>
@@ -292,8 +298,8 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 </section>
 </section>
-<section id="county-level-data" class="level2" data-number="11.2">
-<h2 data-number="11.2" class="anchored" data-anchor-id="county-level-data"><span class="header-section-number">11.2</span> County level data</h2>
+<section id="county-level-data" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="county-level-data"><span class="header-section-number">12.2</span> County level data</h2>
 <p>Files in this section are grouped by country (England, Wales and Scotland), then date (2012, 2020, 2022, 2032, 2039). The format of a path to an individual file is:</p>
 <pre><code>https://ramp0storage.blob.core.windows.net/countydata-v2/[country]/[date]/pop_[area_name].csv.gz</code></pre>
 <p>As of March 2023, England contains 5 series of 46 files (Dorset is missing), Wales 5 series of 12 files and Scotland is missing.</p>
@@ -350,8 +356,8 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 </section>
 </section>
-<section id="national-data" class="level2" data-number="11.3">
-<h2 data-number="11.3" class="anchored" data-anchor-id="national-data"><span class="header-section-number">11.3</span> National data</h2>
+<section id="national-data" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="national-data"><span class="header-section-number">12.3</span> National data</h2>
 <section id="businessregistry.csv.gz" class="level3 unnumbered">
 <h3 class="unnumbered anchored" data-anchor-id="businessregistry.csv.gz"><a href="https://ramp0storage.blob.core.windows.net/nationaldata-v2/businessRegistry.csv.gz">businessRegistry.csv.gz</a></h3>
 <p>Contains a breakdown of all business units (i.e.&nbsp;a single workplace) in Great Britain at LSOA scale, estimated by the project contributors from two nomis datasets: <a href="https://www.nomisweb.co.uk/datasets/idbrlu">UK Business Counts - local units by industry and employment size band 2020</a> and <a href="https://www.nomisweb.co.uk/datasets/newbrespub">Business Register and Employment Survey 2015</a>. Each item contains the <code>size</code> of the unit and its main <code>sic1d07</code> code in reference to standard <a href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities">Industrial Classification of Economic Activities 2007</a> (number corresponding to the letter in alphabetical order). It is used to compute commuting flows.</p>
@@ -618,12 +624,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./modelling_methods.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Modelling methods</span></span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Modelling methods</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
       <a href="./developer_guide.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Developer guide</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Developer guide</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

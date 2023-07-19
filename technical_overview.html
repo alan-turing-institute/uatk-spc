@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Synthetic Population Catalyst - 4&nbsp; Outputs for Wales (ITL regions)</title>
+<title>Synthetic Population Catalyst - 9&nbsp; Technical overview</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./scotland_outputs.html" rel="next">
-<link href="./england_outputs.html" rel="prev">
+<link href="./schema.html" rel="next">
+<link href="./custom_areas.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -74,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./outputs.html">Using SPC</a></li><li class="breadcrumb-item"><a href="./wales_outputs.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Outputs for Wales (ITL regions)</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./technical_overview.html">Understanding SPC</a></li><li class="breadcrumb-item"><a href="./technical_overview.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Technical overview</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -132,7 +132,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./wales_outputs.html" class="sidebar-item-text sidebar-link active">
+  <a href="./wales_outputs.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Outputs for Wales (ITL regions)</span></span></a>
   </div>
 </li>
@@ -173,7 +173,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./technical_overview.html" class="sidebar-item-text sidebar-link">
+  <a href="./technical_overview.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Technical overview</span></span></a>
   </div>
 </li>
@@ -236,7 +236,14 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#citing" id="toc-citing" class="nav-link active" data-scroll-target="#citing"><span class="header-section-number">4.1</span> Citing</a></li>
+  <li><a href="#phase-1-data-preparation" id="toc-phase-1-data-preparation" class="nav-link active" data-scroll-target="#phase-1-data-preparation"><span class="header-section-number">9.1</span> Phase 1: Data preparation</a>
+  <ul class="collapse">
+  <li><a href="#spenser" id="toc-spenser" class="nav-link" data-scroll-target="#spenser"><span class="header-section-number">9.1.1</span> SPENSER</a></li>
+  <li><a href="#downloading-and-preparation-of-public-data-from-various-sources" id="toc-downloading-and-preparation-of-public-data-from-various-sources" class="nav-link" data-scroll-target="#downloading-and-preparation-of-public-data-from-various-sources"><span class="header-section-number">9.1.2</span> Downloading and preparation of public data from various sources</a></li>
+  <li><a href="#enriching-spenser" id="toc-enriching-spenser" class="nav-link" data-scroll-target="#enriching-spenser"><span class="header-section-number">9.1.3</span> Enriching SPENSER</a></li>
+  <li><a href="#azure-upload" id="toc-azure-upload" class="nav-link" data-scroll-target="#azure-upload"><span class="header-section-number">9.1.4</span> Azure upload</a></li>
+  </ul></li>
+  <li><a href="#phase-2-running-spc-for-a-specific-study-area" id="toc-phase-2-running-spc-for-a-specific-study-area" class="nav-link" data-scroll-target="#phase-2-running-spc-for-a-specific-study-area"><span class="header-section-number">9.2</span> Phase 2: Running SPC for a specific study area</a></li>
   </ul>
 </nav>
     </div>
@@ -245,7 +252,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Outputs for Wales (ITL regions)</span></h1>
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Technical overview</span></h1>
 </div>
 
 
@@ -260,87 +267,35 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>International Territorial Level (ITL) regions are a post-brexit renaming of the former Nomenclature of Territorial Units for Statistics (NUTS) regions. In wales, the level 3 represents a grouping of the 22 unitary districts into 12 regions. Check the year you would like to explore and pick the corresponding file based on the region you are interested. Remember if you want to explore the data you can load the output in our <a href="https://alan-turing-institute.github.io/uatk-spc/app/">SPC explorer</a></p>
-<ul>
-<li>2012:
-<ul>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2012/bridgend-and-neath-port-talbot.pb.gz">bridgend-and-neath-port-talbot.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2012/cardiff-and-vale-of-glamorgan.pb.gz">cardiff-and-vale-of-glamorgan.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2012/central-valleys.pb.gz">central-valleys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2012/conwy-and-denbighshire.pb.gz">conwy-and-denbighshire.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2012/flintshire-and-wrexham.pb.gz">flintshire-and-wrexham.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2012/gwent-valleys.pb.gz">gwent-valleys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2012/gwynedd.pb.gz">gwynedd.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2012/isle-of-anglesey.pb.gz">isle-of-anglesey.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2012/monmouthshire-and-newport.pb.gz">monmouthshire-and-newport.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2012/powys.pb.gz">powys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2012/south-west-wales.pb.gz">south-west-wales.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2012/swansea.pb.gz">swansea.pb.gz</a></li>
-</ul></li>
-<li>2020:
-<ul>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2020/bridgend-and-neath-port-talbot.pb.gz">bridgend-and-neath-port-talbot.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2020/cardiff-and-vale-of-glamorgan.pb.gz">cardiff-and-vale-of-glamorgan.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2020/central-valleys.pb.gz">central-valleys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2020/conwy-and-denbighshire.pb.gz">conwy-and-denbighshire.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2020/flintshire-and-wrexham.pb.gz">flintshire-and-wrexham.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2020/gwent-valleys.pb.gz">gwent-valleys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2020/gwynedd.pb.gz">gwynedd.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2020/isle-of-anglesey.pb.gz">isle-of-anglesey.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2020/monmouthshire-and-newport.pb.gz">monmouthshire-and-newport.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2020/powys.pb.gz">powys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2020/south-west-wales.pb.gz">south-west-wales.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2020/swansea.pb.gz">Wales/2020/swansea.pb.gz</a></li>
-</ul></li>
-<li>2022:
-<ul>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2022/bridgend-and-neath-port-talbot.pb.gz">Wales/2022/bridgend-and-neath-port-talbot.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2022/cardiff-and-vale-of-glamorgan.pb.gz">Wales/2022/cardiff-and-vale-of-glamorgan.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2022/central-valleys.pb.gz">Wales/2022/central-valleys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2022/conwy-and-denbighshire.pb.gz">Wales/2022/conwy-and-denbighshire.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2022/flintshire-and-wrexham.pb.gz">Wales/2022/flintshire-and-wrexham.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2022/gwent-valleys.pb.gz">Wales/2022/gwent-valleys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2022/gwynedd.pb.gz">Wales/2022/gwynedd.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2022/isle-of-anglesey.pb.gz">Wales/2022/isle-of-anglesey.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2022/monmouthshire-and-newport.pb.gz">Wales/2022/monmouthshire-and-newport.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2022/powys.pb.gz">Wales/2022/powys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2022/south-west-wales.pb.gz">Wales/2022/south-west-wales.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2022/swansea.pb.gz">Wales/2022/swansea.pb.gz</a></li>
-</ul></li>
-<li>2032:
-<ul>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2032/bridgend-and-neath-port-talbot.pb.gz">bridgend-and-neath-port-talbot.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2032/cardiff-and-vale-of-glamorgan.pb.gz">cardiff-and-vale-of-glamorgan.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2032/central-valleys.pb.gz">central-valleys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2032/conwy-and-denbighshire.pb.gz">conwy-and-denbighshire.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2032/flintshire-and-wrexham.pb.gz">flintshire-and-wrexham.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2032/gwent-valleys.pb.gz">gwent-valleys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2032/gwynedd.pb.gz">gwynedd.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2032/isle-of-anglesey.pb.gz">isle-of-anglesey.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2032/monmouthshire-and-newport.pb.gz">monmouthshire-and-newport.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2032/powys.pb.gz">powys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2032/south-west-wales.pb.gz">south-west-wales.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2032/swansea.pb.gz">swansea.pb.gz</a></li>
-</ul></li>
-<li>2039:
-<ul>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2039/bridgend-and-neath-port-talbot.pb.gz">bridgend-and-neath-port-talbot.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2039/cardiff-and-vale-of-glamorgan.pb.gz">cardiff-and-vale-of-glamorgan.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2039/central-valleys.pb.gz">central-valleys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2039/conwy-and-denbighshire.pb.gz">conwy-and-denbighshire.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2039/flintshire-and-wrexham.pb.gz">flintshire-and-wrexham.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2039/gwent-valleys.pb.gz">gwent-valleys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2039/gwynedd.pb.gz">gwynedd.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2039/isle-of-anglesey.pb.gz">isle-of-anglesey.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2039/monmouthshire-and-newport.pb.gz">monmouthshire-and-newport.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2039/powys.pb.gz">powys.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2039/south-west-wales.pb.gz">south-west-wales.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/Wales/2039/swansea.pb.gz">swansea.pb.gz</a></li>
-</ul></li>
-</ul>
-<section id="citing" class="level2" data-number="4.1">
-<h2 data-number="4.1" class="anchored" data-anchor-id="citing"><span class="header-section-number">4.1</span> Citing</h2>
-<p>If you use SPC code or data in your work, please cite using the <a href="https://zenodo.org/badge/latestdoi/479038905">Zenodo DOI</a> (using the bottom-right tool to generate the citation).</p>
+<p>SPC is divided into two phases. The data preparation phase relies on scripts that only need to be run once. The outputs of this phase have been uploaded to a dedicated Azure repository so that they can be used directly during the second phase. The second phase involves the user choosing a study area and launching a simulation.</p>
+<p>The full SPC pipeline comprises the following steps. - Phase 1: Data preparation steps: - The <a href="https://github.com/nismod/microsimulation">SPENSER</a> model creates a synthetic population with basic demographic information for all of the UK. - A <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/raw_to_prepared.R">script</a> downloads and prepares data from various public sources that will be used throughout the model. - The outputs of SPENSER are enriched using some of these outputs by this <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/SPC_pipelineLAD.R">script</a>. - The resulting outputs are uploaded to a dedicated Azure repository. - Phase 2: Steps after the user has selected a study area: - All the relevant data are downloaded from Azure. - Individuals are assigned a single education destination (if relevant) and several potential retail destinations following a local version of <a href="https://github.com/maptube/QUANT_RAMP">QUANT</a>. - Individuals are assigned a single workplace destination following the method described <a href="https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#commuting-flows">here</a>. - The population (and an optional lockdown modelling) are gathered into a single protobuffer file that can be visualised by the <a href="https://alan-turing-institute.github.io/uatk-spc/app/">SPC explorer</a>.</p>
+<p>We now explain how to run each step. The theoretical principles supporting the modelling are presented <a href="https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html">here</a>.</p>
+<section id="phase-1-data-preparation" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="phase-1-data-preparation"><span class="header-section-number">9.1</span> Phase 1: Data preparation</h2>
+<p><img src="img/SPC_Schema_full.png" class="img-fluid"></p>
+<section id="spenser" class="level3" data-number="9.1.1">
+<h3 data-number="9.1.1" class="anchored" data-anchor-id="spenser"><span class="header-section-number">9.1.1</span> SPENSER</h3>
+<p>The original <a href="https://github.com/nismod/microsimulation">SPENSER</a> model is made up of 5 different GitHub repositories operating specific parts of the population simulation. We use this <a href="https://github.com/alan-turing-institute/spc-hpc-pipeline/tree/30-missing-lads">modified version</a>.</p>
+<p>The result of SPENSER is two separate datasets and a merging key: one dataset for individuals, accurate at MSOA level and containing the <code>sex</code>, <code>age</code> and <code>ethnicity</code> <a href="https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz">fields</a>; and one for households, accurate at OA level and containing the <code>OA11CD</code>, <code>HOUSE_nssec8</code>, <code>House_type</code>, <code>HOUSE_typeCommunal</code>, <code>HOUSE_NRooms</code>, <code>HOUSE_centralHeat</code>, <code>HOUSE_tenure</code> and <code>HOUSE_NCars</code> <a href="https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz">fields</a> respectively.</p>
+</section>
+<section id="downloading-and-preparation-of-public-data-from-various-sources" class="level3" data-number="9.1.2">
+<h3 data-number="9.1.2" class="anchored" data-anchor-id="downloading-and-preparation-of-public-data-from-various-sources"><span class="header-section-number">9.1.2</span> Downloading and preparation of public data from various sources</h3>
+<p>Instructions to run this step can be found under <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/scripts/data_prep">Step 1: Curate public data from diverse sources</a>. The result is a set of data that will be merged with SPENSER in the next step, containing: - NSSEC8 distributions among the population of England and Wales by age group and sex at MSOA level (<code>NSSEC8_EW_F_16to24_CLEAN.csv</code>, etc.) and among the total population of Scotland by age group, sex and ethnicity (<code>NSSECS_CLEAN.csv</code>) - A combined extract from the three latest GB Health Surveys (<code>HSComplete.csv</code>) - An extract from the UK Time Use Survey 2015 (<code>indivTUS.csv</code>) - A file containing a set of coefficients to estimate the average BMI of individuals in England depending on their age, sex and ethnicity (<code>BMIdMean.csv</code>) and a file containing coefficients to obtain the equivalent average BMI in Scotland and Wales (<code>BMIdiff.csv</code>) - Coefficients to estimate the hourly salary of an employee in England depending on their home region, sex, part-time/full-time status, age and SOC category (<code>coefFFT.csv</code>, etc. &amp; <code>ageRescaleFFT.csv</code>, etc.). - Coefficients to estimate the numbers of hours worked corresponding to the criteria mentioned above (<code>meanHoursFFT.csv</code>, etc. and <code>distribHours.csv</code>) - Centroid coordinates of Output areas in GB (<code>OACentroids.csv</code>) In addition, four files are outputed to be used by the second phase of the model: - <code>diariesRef.csv</code> contains diaries of typical days extracted from the UK Time Use Survey - <code>businessRegistry.csv</code> contains a list of all individual workplaces in GB - <code>timeAtHomeIncreaseCTY.csv</code> contains a reduction in time spent away from home during the pandemic according to Google Mobility reports - <code>lookUp-GB.csv</code> is a comprehensive lookup table between GB geographies, including name variants used by Google and OSM and local file names for storage within Azure</p>
+<p>To understand the methods supporting the creation of these files, refer to the corresponding section inside the <a href="https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html">modelling methods</a>.</p>
+</section>
+<section id="enriching-spenser" class="level3" data-number="9.1.3">
+<h3 data-number="9.1.3" class="anchored" data-anchor-id="enriching-spenser"><span class="header-section-number">9.1.3</span> Enriching SPENSER</h3>
+<p>Instructions to run this step can be found under <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/scripts/data_prep">Step 2: Add to SPENSER</a>. Lines number quoted in the following refer to this <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/SPC_pipelineLAD.R">script</a>.</p>
+<p>Once merged into one dataset according to the matching key (l. 13-49), the SPENSER data is enriched with the outputs of the previous step. An individual among those sharing the same 5-year age group (see code for details of age groups for under 18) and sex is drawn from the participants of the Health Survey (l. 56-72). This adds the <code>id_HS</code>, <code>HEALTH_diabetes</code>, <code>HEALTH_bloodpressure</code>, <code>HEALTH_cvd</code>, <code>HEALTH_NMedecines</code>, <code>HEALTH_selfAssessed</code> and <code>HEALTH_lifeSat</code> <a href="https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz">fields</a>. This join is not spatially differentiated and other matching criteria (ethnicity and nssec8) were retained due to a lack of representativity inside the survey. The BMI field is then added l. 74-89. Each individual that is not a head of household is assigned an nssec8 category (l. 96-108). This is done according to nssec8 category distributions among the general population by sex and age groups according to ONS data (<a href="https://www.nomisweb.co.uk/census/2011/dc6114ew">DC6114EW</a> and <a href="https://www.nrscotland.gov.uk/news/2014/census-2011-release-3i">DC6206SC</a> datasets). An individual among those sharing the same 5-year age group (see code for details of age groups for under 18), sex and nssec8 category is drawn from the participants of the UK Time Use Survey (l. 111-125). This adds the <code>id_TUS_hh</code>, <code>id_TUS_p</code>, <code>pwkstat</code>, <code>soc2010</code>, <code>sic1d2007</code>, <code>sic2d2007</code>, <code>netPayWeekly</code> and <code>workedHoursWeekly</code> <a href="https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz">fields</a>. Note that the <code>netPayWeekly</code> and <code>workedHoursWeekly</code> fields have a low response rate among participants of the survey. For that reason, we have added a much more detailed modelling of income, see <a href="https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#income-data">below</a>, that includes spatial differences at region level (l. 130-140). Coordinates are finally added l. 152-156.</p>
+</section>
+<section id="azure-upload" class="level3" data-number="9.1.4">
+<h3 data-number="9.1.4" class="anchored" data-anchor-id="azure-upload"><span class="header-section-number">9.1.4</span> Azure upload</h3>
+<p>Tbc.</p>
+</section>
+</section>
+<section id="phase-2-running-spc-for-a-specific-study-area" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="phase-2-running-spc-for-a-specific-study-area"><span class="header-section-number">9.2</span> Phase 2: Running SPC for a specific study area</h2>
+<p>This part is corresponding to the scripts written in Rust. Instructions can be found <a href="https://alan-turing-institute.github.io/uatk-spc/custom_areas.html">here</a>.</p>
 
 
 </section>
@@ -581,13 +536,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./england_outputs.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Outputs for England (Counties)</span></span>
+      <a href="./custom_areas.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Creating new study areas</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./scotland_outputs.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Outputs for Scotland (Police Divisions)</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./schema.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Data schema</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
