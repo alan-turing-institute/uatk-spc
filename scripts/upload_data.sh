@@ -11,6 +11,11 @@ if [ "$VERSION" == "" ]; then
 		  exit 1
 fi
 
+if [ "$SAS_TOKEN" == "" ]; then
+	  echo Get a SAS token for access authorization.
+		  exit 1
+fi
+
 # This modifies the local copy of data/output in-place, then undoes that later.
 # Feel free to copy everything before starting this script, if you have that
 # much space and are paranoid about not undoing something properly.
@@ -19,7 +24,11 @@ mv data/output $VERSION
 gzip -rv $VERSION
 
 echo Uploading
-az storage blob upload-batch --account-name ramp0storage -d spc-output/$VERSION -s $VERSION/
+az storage blob upload-batch \
+	--sas-token $SAS_TOKEN \
+	--account-name ramp0storage \
+	-d spc-output/$VERSION \
+	-s $VERSION/
 
 # Generate URLs for docs/outputs.qmd
 cd $VERSION
