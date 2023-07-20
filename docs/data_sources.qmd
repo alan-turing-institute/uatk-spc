@@ -31,9 +31,9 @@ For Wales: ITL321NM
 
 Files in this section are grouped by country (England, Wales and Scotland), then date (2012, 2020, 2022, 2032, 2039). The format of a path to an individual file is:
 ```
-https://ramp0storage.blob.core.windows.net/countydata-v2/[country]/[date]/pop_[area_name].csv.gz
+https://ramp0storage.blob.core.windows.net/countydata-v2-1/[country]/[date]/pop_[area_name].csv.gz
 ```
-As of March 2023, England contains 5 series of 46 files (Dorset is missing), Wales 5 series of 12 files and Scotland is missing.
+As of July 2023, England contains 5 series of 47 files, Wales 5 series of 12 files and Scotland 5 series of 13 files
 
 ### pop_<area_name>.csv.gz {-}
 

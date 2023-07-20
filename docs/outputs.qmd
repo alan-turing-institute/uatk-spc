@@ -51,3 +51,14 @@ update.
   - adding time-use diaries
   - expanding to Wales
   - adding multiple years of output
+- v2.1, released XX/07/2023, [schema](https://github.com/alan-turing-institute/uatk-spc/blob/f550a323afadd03bd3bfdd797b66ff2276a2a6d5/synthpop.proto)
+  - expanding to Scotland
+  - adding special areas: Birmingham, Liverpool, Manchester, Oxford, Oxford-Cambridge arc
+  - adding previously missing LADs to their counties:
+    - Greater London (E09000001)
+    - Cornwall (E06000053)
+    - Dorset (E06000058 & E06000059)
+    - Buckinghamshire (E06000060)
+    - Leicestershire (E07000135)
+    - Suffolk (E07000244 & E07000245)
+    - Somerset (E07000246)
