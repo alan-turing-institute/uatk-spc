@@ -53,11 +53,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
         results.population_files.push(gunzip(
             download_file(
                 &format!("countydata-v2-1/{country}/{}", input.year),
-                format!(
-                    "pop_{area}_{}.csv.gz{}",
-                    input.year,
-                    std::env::var("SAS_TOKEN").unwrap_or_default()
-                ),
+                format!("pop_{area}_{}.csv.gz", input.year,),
             )
             .await?,
         )?);
@@ -66,12 +62,12 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     for osm_url in osm_needed {
         let zip_path = download(
             &osm_url,
-            format!("data/raw_data/countydata-v2/OSM/{}", filename(&osm_url)),
+            format!("data/raw_data/countydata-v2-1/OSM/{}", filename(&osm_url)),
         )
         .await?;
         // TODO .shp.zip, so we have to do basename twice
         let output_dir = format!(
-            "data/raw_data/countydata-v2/OSM/{}/",
+            "data/raw_data/countydata-v2-1/OSM/{}/",
             basename(basename(&osm_url))
         );
         unzip(zip_path, &output_dir)?;
@@ -124,9 +120,7 @@ async fn download_file<P: AsRef<str>>(dir: &str, file: P) -> Result<PathBuf> {
     let file = file.as_ref();
     download(
         azure.join(dir).join(file),
-        Path::new("data/raw_data")
-            .join(dir)
-            .join(file.split('?').next().unwrap()),
+        Path::new("data/raw_data").join(dir).join(file),
     )
     .await
 }
