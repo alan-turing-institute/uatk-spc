@@ -10,7 +10,7 @@ library(rgdal)
 
 set.seed(10091989)
 
-cores <- 4
+cores <- detectCores()
 
 source("SPC_functions.R")
 
