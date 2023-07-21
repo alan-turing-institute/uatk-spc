@@ -5,20 +5,80 @@ toc: true
 
 Police divisions are a convenient grouping of unitary districts. Check the year you would like to explore and pick the corresponding file based on the region you are interested. Remember if you want to explore the data you can load the output in our [SPC explorer](https://alan-turing-institute.github.io/uatk-spc/app/)
 
-- 2012: 
-  - TBC soon
+- 2012:
+  - [argyll-and-west-dunbartonshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2012/argyll-and-west-dunbartonshire.pb.gz)
+  - [ayrshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2012/ayrshire.pb.gz)
+  - [dumfries-and-galloway.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2012/dumfries-and-galloway.pb.gz)
+  - [edinburgh.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2012/edinburgh.pb.gz)
+  - [fife.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2012/fife.pb.gz)
+  - [forth-valley.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2012/forth-valley.pb.gz)
+  - [greater-glasgow.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2012/greater-glasgow.pb.gz)
+  - [highlands-and-islands.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2012/highlands-and-islands.pb.gz)
+  - [lanarkshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2012/lanarkshire.pb.gz)
+  - [north-east.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2012/north-east.pb.gz)
+  - [renfrewshire-and-inverclyde.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2012/renfrewshire-and-inverclyde.pb.gz)
+  - [tayside.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2012/tayside.pb.gz)
+  - [the-lothians-and-scottish-borders.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2012/the-lothians-and-scottish-borders.pb.gz)
 
-- 2020: 
-  - TBC soon
+- 2020:
+  - [argyll-and-west-dunbartonshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2020/argyll-and-west-dunbartonshire.pb.gz)
+  - [ayrshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2020/ayrshire.pb.gz)
+  - [dumfries-and-galloway.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2020/dumfries-and-galloway.pb.gz)
+  - [edinburgh.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2020/edinburgh.pb.gz)
+  - [fife.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2020/fife.pb.gz)
+  - [forth-valley.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2020/forth-valley.pb.gz)
+  - [greater-glasgow.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2020/greater-glasgow.pb.gz)
+  - [highlands-and-islands.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2020/highlands-and-islands.pb.gz)
+  - [lanarkshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2020/lanarkshire.pb.gz)
+  - [north-east.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2020/north-east.pb.gz)
+  - [renfrewshire-and-inverclyde.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2020/renfrewshire-and-inverclyde.pb.gz)
+  - [tayside.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2020/tayside.pb.gz)
+  - [the-lothians-and-scottish-borders.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2020/the-lothians-and-scottish-borders.pb.gz)
 
 - 2022:
-  - TBC soon
+  - [argyll-and-west-dunbartonshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2022/argyll-and-west-dunbartonshire.pb.gz)
+  - [ayrshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2022/ayrshire.pb.gz)
+  - [dumfries-and-galloway.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2022/dumfries-and-galloway.pb.gz)
+  - [edinburgh.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2022/edinburgh.pb.gz)
+  - [fife.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2022/fife.pb.gz)
+  - [forth-valley.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2022/forth-valley.pb.gz)
+  - [greater-glasgow.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2022/greater-glasgow.pb.gz)
+  - [highlands-and-islands.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2022/highlands-and-islands.pb.gz)
+  - [lanarkshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2022/lanarkshire.pb.gz)
+  - [north-east.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2022/north-east.pb.gz)
+  - [renfrewshire-and-inverclyde.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2022/renfrewshire-and-inverclyde.pb.gz)
+  - [tayside.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2022/tayside.pb.gz)
+  - [the-lothians-and-scottish-borders.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2022/the-lothians-and-scottish-borders.pb.gz)
 
 - 2032:
-  - TBC soon
+  - [argyll-and-west-dunbartonshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2032/argyll-and-west-dunbartonshire.pb.gz)
+  - [ayrshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2032/ayrshire.pb.gz)
+  - [dumfries-and-galloway.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2032/dumfries-and-galloway.pb.gz)
+  - [edinburgh.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2032/edinburgh.pb.gz)
+  - [fife.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2032/fife.pb.gz)
+  - [forth-valley.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2032/forth-valley.pb.gz)
+  - [greater-glasgow.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2032/greater-glasgow.pb.gz)
+  - [highlands-and-islands.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2032/highlands-and-islands.pb.gz)
+  - [lanarkshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2032/lanarkshire.pb.gz)
+  - [north-east.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2032/north-east.pb.gz)
+  - [renfrewshire-and-inverclyde.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2032/renfrewshire-and-inverclyde.pb.gz)
+  - [tayside.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2032/tayside.pb.gz)
+  - [the-lothians-and-scottish-borders.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2032/the-lothians-and-scottish-borders.pb.gz)
 
 - 2039:
-  - TBC soon
+  - [argyll-and-west-dunbartonshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2039/argyll-and-west-dunbartonshire.pb.gz)
+  - [ayrshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2039/ayrshire.pb.gz)
+  - [dumfries-and-galloway.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2039/dumfries-and-galloway.pb.gz)
+  - [edinburgh.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2039/edinburgh.pb.gz)
+  - [fife.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2039/fife.pb.gz)
+  - [forth-valley.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2039/forth-valley.pb.gz)
+  - [greater-glasgow.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2039/greater-glasgow.pb.gz)
+  - [highlands-and-islands.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2039/highlands-and-islands.pb.gz)
+  - [lanarkshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2039/lanarkshire.pb.gz)
+  - [north-east.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2039/north-east.pb.gz)
+  - [renfrewshire-and-inverclyde.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2039/renfrewshire-and-inverclyde.pb.gz)
+  - [tayside.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2039/tayside.pb.gz)
+  - [the-lothians-and-scottish-borders.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2039/the-lothians-and-scottish-borders.pb.gz)
 
 ## Citing
 
