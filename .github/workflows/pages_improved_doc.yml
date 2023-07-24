@@ -43,3 +43,4 @@ jobs:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs/_book_improved-doc
         destination_dir: improved-doc
+        keep_files: true
