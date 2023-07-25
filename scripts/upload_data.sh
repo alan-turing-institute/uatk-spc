@@ -7,13 +7,13 @@ set -e
 
 VERSION=$1
 if [ "$VERSION" == "" ]; then
-	  echo Pass a version
-		  exit 1
+	echo Pass a version
+	exit 1
 fi
 
 if [ "$SAS_TOKEN" == "" ]; then
-	  echo Get a SAS token for access authorization.
-		  exit 1
+	echo Get a SAS token for access authorization.
+	exit 1
 fi
 
 # This modifies the local copy of data/output in-place, then undoes that later.
