@@ -31,7 +31,7 @@ We now explain how to run each step. The theoretical concepts supporting the mod
 ### SPENSER
 
 The original [SPENSER](https://github.com/nismod/microsimulation) model is made up of 5 different GitHub repositories, operating specific parts of the simulation of a synthetic population (gathering the data from ONS, creating individuals, creating households, assigning individuals to households and projecting the population to future years).
-We use this [modified version](https://github.com/alan-turing-institute/spc-hpc-pipeline/tree/30-missing-lads).
+We use this [modified version](https://github.com/alan-turing-institute/spc-hpc-pipeline).
 
 TBC.
 
