@@ -10,9 +10,13 @@ set -e
 manifest=data/manifest.csv
 echo 'file,bytes,checksum' > $manifest
 
-for file in `find data/raw_data/ -type f`; do
+for file in `find data/raw_data -type f`; do
 	echo $file
 	checksum=`md5sum $file | cut -d ' ' -f1`
-	bytes=`stat -c %s $file`
+	if [[ `uname -s` == 'Darwin' ]]; then
+		bytes=`stat -f %z $file`
+	else
+		bytes=`stat -c %s $file`
+	fi
 	echo "$file,$bytes,$checksum" >> $manifest
 done

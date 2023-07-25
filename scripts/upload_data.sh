@@ -7,8 +7,13 @@ set -e
 
 VERSION=$1
 if [ "$VERSION" == "" ]; then
-	  echo Pass a version
-		  exit 1
+	echo Pass a version
+	exit 1
+fi
+
+if [ "$SAS_TOKEN" == "" ]; then
+	echo Get a SAS token for access authorization.
+	exit 1
 fi
 
 # This modifies the local copy of data/output in-place, then undoes that later.
@@ -19,12 +24,16 @@ mv data/output $VERSION
 gzip -rv $VERSION
 
 echo Uploading
-az storage blob upload-batch --account-name ramp0storage -d spc-output/$VERSION -s $VERSION/
+az storage blob upload-batch \
+	--sas-token $SAS_TOKEN \
+	--account-name ramp0storage \
+	-d spc-output/$VERSION \
+	-s $VERSION/
 
 # Generate URLs for docs/outputs.qmd
 cd $VERSION
 for x in */*/*; do
-	echo "- [$x](https://ramp0storage.blob.core.windows.net/spc-output/v2/$x)" >> urls
+	echo "- [$x](https://ramp0storage.blob.core.windows.net/spc-output/$VERSION/$x)" >> urls
 done
 mv urls ..
 cd ..

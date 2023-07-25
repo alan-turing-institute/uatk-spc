@@ -10,16 +10,14 @@ different list of MSOAs, [see here](custom_areas.qmd).
 
 One of the advantages of using SPC is that help researches to mimic the population characteristics and its iterations through multiples years (see  for more details). So you can replicate what the population might look like across multiple periods of time. Initially check what country you would like to explore, then pick the year to get the outcome file. In case you want to explore it and see how does the data look like, and what attributes are included, load the output in our [SPC Explorer](https://alan-turing-institute.github.io/uatk-spc/app/) and get inspired about the potential applications you could co-create using these outcomes. 
 
-- [England](england_outputs.qmd) (Available years: 2012, 2020, 2022, 2039)
-- [Wales](wales_outputs.qmd) (Available years: 2012, 2020, 2022, 2039)
+- [England](england_outputs.qmd) (Available years: 2012, 2020, 2022, 2032 & 2039)
+- [Wales](wales_outputs.qmd) (Available years: 2012, 2020, 2022, 2032 & 2039)
+- [Scotland](scotland_outputs.qmd) (Available years: 2012, 2020, 2022, 2032 & 2039)
 
-We also included some special areas for your testing: 
+We also include two special areas for your testing:
 
-- [special/2012/northwest_transpennine.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2/special/2012/northwest_transpennine.pb.gz)
-- [special/2020/northwest_transpennine.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2/special/2020/northwest_transpennine.pb.gz)
-- [special/2022/northwest_transpennine.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2/special/2022/northwest_transpennine.pb.gz)
-- [special/2032/northwest_transpennine.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2/special/2032/northwest_transpennine.pb.gz)
-- [special/2039/northwest_transpennine.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2/special/2039/northwest_transpennine.pb.gz)
+- North West Transpennine: [2012](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2012/northwest_transpennine.pb.gz), [2020](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2020/northwest_transpennine.pb.gz), [2022](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2022/northwest_transpennine.pb.gz), [2032](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2032/northwest_transpennine.pb.gz), [2039](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2039/northwest_transpennine.pb.gz)
+- Oxford-Cambridge arc: [2012](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2012/oxford_cambridge_arc.pb.gz), [2020](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2020/oxford_cambridge_arc.pb.gz), [2022](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2022/oxford_cambridge_arc.pb.gz), [2032](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2032/oxford_cambridge_arc.pb.gz), [2039](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2039/oxford_cambridge_arc.pb.gz)
 
 ## Citing
 
@@ -51,3 +49,14 @@ update.
   - adding time-use diaries
   - expanding to Wales
   - adding multiple years of output
+- v2.1, released 25/07/2023, [schema](https://github.com/alan-turing-institute/uatk-spc/blob/f550a323afadd03bd3bfdd797b66ff2276a2a6d5/synthpop.proto)
+  - expanding to Scotland
+  - adding special area: Oxford-Cambridge arc
+  - adding previously missing LADs to their counties:
+    - Greater London (E09000001)
+    - Cornwall (E06000053)
+    - Dorset (E06000058 & E06000059)
+    - Buckinghamshire (E06000060)
+    - Leicestershire (E07000135)
+    - Suffolk (E07000244 & E07000245)
+    - Somerset (E07000246)
