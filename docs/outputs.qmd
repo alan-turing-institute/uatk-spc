@@ -49,7 +49,7 @@ update.
   - adding time-use diaries
   - expanding to Wales
   - adding multiple years of output
-- v2.1, released XX/07/2023, [schema](https://github.com/alan-turing-institute/uatk-spc/blob/f550a323afadd03bd3bfdd797b66ff2276a2a6d5/synthpop.proto)
+- v2.1, released 25/07/2023, [schema](https://github.com/alan-turing-institute/uatk-spc/blob/f550a323afadd03bd3bfdd797b66ff2276a2a6d5/synthpop.proto)
   - expanding to Scotland
   - adding special areas: Birmingham, Liverpool, Manchester, Oxford, Oxford-Cambridge arc
   - adding previously missing LADs to their counties:
