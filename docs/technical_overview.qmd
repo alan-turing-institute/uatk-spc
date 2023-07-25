@@ -31,9 +31,13 @@ We now explain how to run each step. The theoretical concepts supporting the mod
 ### SPENSER
 
 The original [SPENSER](https://github.com/nismod/microsimulation) model is made up of 5 different GitHub repositories, operating specific parts of the simulation of a synthetic population (gathering the data from ONS, creating individuals, creating households, assigning individuals to households and projecting the population to future years).
-We use this [modified version](https://github.com/alan-turing-institute/spc-hpc-pipeline).
+We use this [modified version](https://github.com/alan-turing-institute/spc-hpc-pipeline) with instructions for running the full pipeline on a [single machine](https://github.com/alan-turing-institute/spc-hpc-pipeline/blob/main/scripts/full_pipeline/README.md).
 
-TBC.
+The SPENSER microsimulation is split into three steps:
+
+1. [Household synthesis](https://github.com/alan-turing-institute/household_microsynth/tree/f10cb0db80cf9db886644413c0a971892e9a9164#overview): households are synthesised for a base year (2011) from [census data](https://github.com/alan-turing-institute/household_microsynth/tree/f10cb0db80cf9db886644413c0a971892e9a9164#input-data) at OA resolution. These households are then sequentially synthesised for subsequent years using [household forecasts](https://github.com/alan-turing-institute/microsimulation/tree/2373691bd0ff764db129e52ec78d71c58538d9af#static-microsimulation---households).
+2. [Population synthesis](https://github.com/alan-turing-institute/microsimulation/tree/2373691bd0ff764db129e52ec78d71c58538d9af#static-microsimulation---population): people are sequentially synthesised using marginal census data on gender, age and ethnicity at MSOA resolution for 2011, with population projections used to derive the marginals beyond the reference census year.
+3. [Assignment](https://github.com/alan-turing-institute/microsimulation/tree/2373691bd0ff764db129e52ec78d71c58538d9af#running-the-assignment-algorithm): for a given year, the synthesised population (from step 2) can be assigned to a synthesised household (from step 1), while a ["household representative person"](https://github.com/alan-turing-institute/microsimulation/tree/2373691bd0ff764db129e52ec78d71c58538d9af#methodology) from the synthesised population (step 2) is assigned to each synthesised household (from step 1).
 
 The result of SPENSER is two separate datasets and a merging key: one dataset for individuals, accurate at MSOA level and containing the `sex`, `age` and `ethnicity` [fields](https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz); and one for households, accurate at OA level and containing the `OA11CD`, `HOUSE_nssec8`, `House_type`, `HOUSE_typeCommunal`, `HOUSE_NRooms`, `HOUSE_centralHeat`, `HOUSE_tenure` and `HOUSE_NCars` [fields](https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz) respectively.
 
