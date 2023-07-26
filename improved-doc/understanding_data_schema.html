@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Synthetic Population Catalyst</title>
+<title>Synthetic Population Catalyst - 12&nbsp; Data schema</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./using_getting_started.html" rel="next">
+<link href="./understanding_data_sources.html" rel="next">
+<link href="./understanding_modelling_methods.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -73,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Introduction</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./understanding_introduction.html">Understanding SPC</a></li><li class="breadcrumb-item"><a href="./understanding_data_schema.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data schema</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -104,7 +105,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Introduction</span></a>
   </div>
 </li>
@@ -196,7 +197,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./understanding_data_schema.html" class="sidebar-item-text sidebar-link">
+  <a href="./understanding_data_schema.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data schema</span></span></a>
   </div>
 </li>
@@ -247,7 +248,9 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#understanding-the-schema" id="toc-understanding-the-schema" class="nav-link active" data-scroll-target="#understanding-the-schema"><span class="header-section-number">12.1</span> Understanding the schema</a></li>
+  <li><a href="#flows-modelling-daily-activites" id="toc-flows-modelling-daily-activites" class="nav-link" data-scroll-target="#flows-modelling-daily-activites"><span class="header-section-number">12.2</span> Flows: modelling daily activites</a></li>
+  <li><a href="#flow-weights" id="toc-flow-weights" class="nav-link" data-scroll-target="#flow-weights"><span class="header-section-number">12.3</span> Flow weights</a></li>
   </ul>
 </nav>
     </div>
@@ -256,7 +259,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Synthetic Population Catalyst</h1>
+<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data schema</span></h1>
 </div>
 
 
@@ -271,15 +274,25 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="introduction" class="level1 unnumbered">
-<h1 class="unnumbered">Introduction</h1>
-<p><img src="img/SPC_Schema.png" class="img-fluid"></p>
-<p>The Synthetic Population Catalyst (SPC) makes it easier for researchers to work with synthetic population data in Great Britain. It combines a variety of <a href="./understanding_data_sources.html">data sources</a> and outputs a single file in <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto">protocol buffer format</a>, describing the population and its activities in a given study area. The data include socio-demographic, health, salary and daily activity data per person, and information about the venues where people conduct those activities.</p>
-<p>SPC outputs can be used to catalyze other projects. Rather than join together many <a href="./understanding_data_sources.html">raw data sources</a> yourself and deal with missing and messy data, you can leverage SPC’s effort and well-documented schema.</p>
-<p>You can download this site as <a href="https://alan-turing-institute.github.io/uatk-spc/Synthetic-Population-Catalyst.pdf">a PDF</a> and find all code <a href="https://github.com/alan-turing-institute/uatk-spc">on Github</a>.</p>
-<p><br></p>
-<hr>
-<p>This work was supported by Wave 1 of The UKRI Strategic Priorities Fund under the EPSRC Grant EP/W006022/1, particularly the “Ecosystem of Digital Twins” and “Shocks and Resilience” themes within that grant &amp; The Alan Turing Institute</p>
+<section id="understanding-the-schema" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="understanding-the-schema"><span class="header-section-number">12.1</span> Understanding the schema</h2>
+<p>Here are some helpful tips for understanding the <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto">schema</a>.</p>
+<p>Each .pb file contains exactly one <code>Population</code> message. In contrast to datasets consisting of multiple <code>.csv</code> files, just a single file contains everything. Some of the fields in <code>Population</code> are lists (of people and households) or maps (of venues keyed by activity, or of MSOAs). Unlike a flat <code>.csv</code> table, there may be more lists embedded later. Each <code>Household</code> has a list of <code>members</code>, for example.</p>
+<p>The different objects refer to each other, forming a graph structure. The protobuf uses <code>uint64</code> IDs to index into other lists. For example, if some household has <code>members = [3, 10]</code>, then those two people can be found at <code>population.people[3]</code> and <code>population.people[10]</code>. Each of them will have the same <code>household</code> ID, pointing back to something in the <code>population.households</code> list.</p>
+</section>
+<section id="flows-modelling-daily-activites" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="flows-modelling-daily-activites"><span class="header-section-number">12.2</span> Flows: modelling daily activites</h2>
+<p>SPC models daily travel behavior of people as “flows.” Flows are broken down by by an <a href="https://github.com/alan-turing-institute/uatk-spc/blob/feffb857c6fbbd7c2b3dd1f3cb46e67677185897/synthpop.proto#L196">activity</a> – shopping/retail, attending primary or secondary school, working, or staying at home. For each activity type, a person has a list of venues where they may do that activity, weighted by a probability of going to that particular venue.</p>
+<p>Note that <code>flows_per_activity</code> is stored in <code>InfoPerMSOA</code>, not <code>Person</code>. The flows for retail and school are only known at the MSOA level, not individually. So given a particular <code>Person</code> object, you first look up their household’s MSOA – <code>msoa = population.households[ person.household ].msoa</code> and then look up flows for that MSOA – <code>population.info_per_msoa[msoa].flows_per_activity</code>.</p>
+<p>Each person has exactly 1 flow for home – it’s just <code>person.household</code> with probability 1. A person has 0 or 1 flows to work, based on the value of <code>person.workplace</code>.</p>
+<p>This doesn’t mean that all people in the same MSOA share the same travel behavior. Each person has their own <code>activity_durations</code> field, based on time-use survey data. Even if two people share the same set of places where they may go shopping, one person may spend much more time on that activity than another.</p>
+<p>See the <a href="https://github.com/alan-turing-institute/uatk-aspics/blob/c8ad47cb01b084028b2f8ca90fcf078470efbee0/convert_snapshot.py#L166">ASPICS conversion script</a> for all of this in action – it has a function to collapse a person’s flows down into a single weighted list.</p>
+<p>Note that per MSOA, very few venues are represented as destinations – 10 for retail and 5 for school. Only the most likely venues from QUANT are used.</p>
+</section>
+<section id="flow-weights" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="flow-weights"><span class="header-section-number">12.3</span> Flow weights</h2>
+<p>How do you interpret the probabilities/weights for flows? If your model needs people to visit specific places each day, you could randomly sample a venue from the flows, weighting them appropriately. For retail, you may want to repeat this sampling every day of the simulation, so they visit different venues. For primary and secondary school, it may be more appropriate to sample once and store that for the simulation – a student probably doesn’t switch schools daily.</p>
+<p>Alternatively, you can follow what ASPICS does. Every day, each person logically visits all possible venues, but their interaction there (possibly receiving or transmitting COVID) is weighted by the probability of each venue.</p>
 
 
 </section>
@@ -520,10 +533,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./understanding_modelling_methods.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Modelling methods</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./using_getting_started.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Getting started</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./understanding_data_sources.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Data sources</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

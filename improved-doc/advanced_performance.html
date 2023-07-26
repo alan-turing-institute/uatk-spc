@@ -1,0 +1,3793 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Synthetic Population Catalyst - 16&nbsp; Performance</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./advanced_code_walkthrough.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./advanced_developer_guide.html">Advanced</a></li><li class="breadcrumb-item"><a href="./advanced_performance.html"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Performance</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Synthetic Population Catalyst</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/docs" rel="" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <a href="./Synthetic-Population-Catalyst.pdf" rel="" title="Download PDF" class="quarto-navigation-tool px-1" aria-label="Download PDF"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Introduction</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text">Using SPC</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_getting_started.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Getting started</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_outputs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">SPC Outputs</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_england_outputs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Outputs for England (Counties)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_wales_outputs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Outputs for Wales (ITL regions)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_scotland_outputs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Outputs for Scotland (Police Divisions)</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_use_output.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Using the SPC output file</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_installation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Installation</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./using_custom_areas.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Creating new study areas</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text">Understanding SPC</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./understanding_introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./understanding_technical_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Technical overview</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./understanding_modelling_methods.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Modelling methods</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./understanding_data_schema.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data schema</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./understanding_data_sources.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Data sources</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text">Advanced</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./advanced_developer_guide.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Developer guide</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./advanced_code_walkthrough.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Code walkthrough</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./advanced_performance.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Performance</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Performance</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>The following tables summarizes the resources SPC needs to run in different areas.</p>
+<table class="table">
+<colgroup>
+<col style="width: 3%">
+<col style="width: 29%">
+<col style="width: 7%">
+<col style="width: 11%">
+<col style="width: 8%">
+<col style="width: 9%">
+<col style="width: 8%">
+<col style="width: 13%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>year</th>
+<th>study_area</th>
+<th>num_msoas</th>
+<th>num_households</th>
+<th>num_people</th>
+<th>pb_file_size</th>
+<th>runtime</th>
+<th>commuting_runtime</th>
+<th>memory_usage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2012</td>
+<td>England/bedfordshire</td>
+<td>74</td>
+<td>245,166</td>
+<td>647,272</td>
+<td>256.83 MiB</td>
+<td>10 seconds</td>
+<td>3 seconds</td>
+<td>849.02 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/bedfordshire</td>
+<td>74</td>
+<td>272,875</td>
+<td>674,044</td>
+<td>271.65 MiB</td>
+<td>9 seconds</td>
+<td>3 seconds</td>
+<td>922.88 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/bedfordshire</td>
+<td>74</td>
+<td>309,706</td>
+<td>703,582</td>
+<td>277.74 MiB</td>
+<td>9 seconds</td>
+<td>3 seconds</td>
+<td>929.80 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/bedfordshire</td>
+<td>74</td>
+<td>309,706</td>
+<td>703,582</td>
+<td>277.74 MiB</td>
+<td>9 seconds</td>
+<td>3 seconds</td>
+<td>929.80 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/bedfordshire</td>
+<td>74</td>
+<td>329,061</td>
+<td>715,797</td>
+<td>278.39 MiB</td>
+<td>11 seconds</td>
+<td>3 seconds</td>
+<td>927.77 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/berkshire</td>
+<td>107</td>
+<td>342,167</td>
+<td>890,543</td>
+<td>356.04 MiB</td>
+<td>14 seconds</td>
+<td>7 seconds</td>
+<td>1.06 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/berkshire</td>
+<td>107</td>
+<td>365,905</td>
+<td>918,258</td>
+<td>373.35 MiB</td>
+<td>14 seconds</td>
+<td>7 seconds</td>
+<td>1.10 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/berkshire</td>
+<td>107</td>
+<td>394,446</td>
+<td>941,655</td>
+<td>368.37 MiB</td>
+<td>14 seconds</td>
+<td>7 seconds</td>
+<td>1.08 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/berkshire</td>
+<td>107</td>
+<td>394,446</td>
+<td>941,655</td>
+<td>368.37 MiB</td>
+<td>14 seconds</td>
+<td>7 seconds</td>
+<td>1.08 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/berkshire</td>
+<td>107</td>
+<td>408,604</td>
+<td>949,986</td>
+<td>367.21 MiB</td>
+<td>14 seconds</td>
+<td>7 seconds</td>
+<td>1.08 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/bristol</td>
+<td>55</td>
+<td>182,299</td>
+<td>448,233</td>
+<td>173.74 MiB</td>
+<td>6 seconds</td>
+<td>2 seconds</td>
+<td>527.23 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/bristol</td>
+<td>55</td>
+<td>196,940</td>
+<td>470,039</td>
+<td>183.99 MiB</td>
+<td>6 seconds</td>
+<td>2 seconds</td>
+<td>547.49 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/bristol</td>
+<td>55</td>
+<td>216,197</td>
+<td>503,014</td>
+<td>192.51 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>559.78 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/bristol</td>
+<td>55</td>
+<td>216,197</td>
+<td>503,014</td>
+<td>192.51 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>559.78 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/bristol</td>
+<td>55</td>
+<td>227,770</td>
+<td>521,371</td>
+<td>199.72 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>573.40 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/buckinghamshire</td>
+<td>99</td>
+<td>99,235</td>
+<td>261,340</td>
+<td>108.30 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>310.38 MiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/buckinghamshire</td>
+<td>99</td>
+<td>108,999</td>
+<td>271,050</td>
+<td>114.31 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>400.87 MiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/buckinghamshire</td>
+<td>99</td>
+<td>123,578</td>
+<td>278,548</td>
+<td>112.39 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>393.64 MiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/buckinghamshire</td>
+<td>99</td>
+<td>123,578</td>
+<td>278,548</td>
+<td>112.39 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>393.64 MiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/buckinghamshire</td>
+<td>99</td>
+<td>130,393</td>
+<td>281,773</td>
+<td>112.14 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>391.52 MiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/cambridgeshire</td>
+<td>98</td>
+<td>327,257</td>
+<td>832,980</td>
+<td>323.35 MiB</td>
+<td>11 seconds</td>
+<td>5 seconds</td>
+<td>1013.16 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/cambridgeshire</td>
+<td>98</td>
+<td>348,522</td>
+<td>863,250</td>
+<td>341.16 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1.03 GiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/cambridgeshire</td>
+<td>98</td>
+<td>377,634</td>
+<td>907,166</td>
+<td>348.75 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1.03 GiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/cambridgeshire</td>
+<td>98</td>
+<td>377,634</td>
+<td>907,166</td>
+<td>348.75 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1.03 GiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/cambridgeshire</td>
+<td>98</td>
+<td>392,478</td>
+<td>924,170</td>
+<td>351.39 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1.04 GiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/cheshire</td>
+<td>139</td>
+<td>441,084</td>
+<td>1,042,065</td>
+<td>402.14 MiB</td>
+<td>16 seconds</td>
+<td>7 seconds</td>
+<td>1.13 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/cheshire</td>
+<td>139</td>
+<td>464,134</td>
+<td>1,070,597</td>
+<td>416.35 MiB</td>
+<td>16 seconds</td>
+<td>7 seconds</td>
+<td>1.46 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/cheshire</td>
+<td>139</td>
+<td>489,476</td>
+<td>1,125,198</td>
+<td>425.27 MiB</td>
+<td>16 seconds</td>
+<td>7 seconds</td>
+<td>1.47 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/cheshire</td>
+<td>139</td>
+<td>489,476</td>
+<td>1,125,198</td>
+<td>425.27 MiB</td>
+<td>16 seconds</td>
+<td>7 seconds</td>
+<td>1.47 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/cheshire</td>
+<td>139</td>
+<td>501,501</td>
+<td>1,149,515</td>
+<td>431.10 MiB</td>
+<td>16 seconds</td>
+<td>7 seconds</td>
+<td>1.48 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/cornwall</td>
+<td>74</td>
+<td>232,659</td>
+<td>549,616</td>
+<td>208.07 MiB</td>
+<td>8 seconds</td>
+<td>2 seconds</td>
+<td>742.92 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/cornwall</td>
+<td>74</td>
+<td>247,105</td>
+<td>577,414</td>
+<td>219.74 MiB</td>
+<td>8 seconds</td>
+<td>3 seconds</td>
+<td>764.95 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/cornwall</td>
+<td>74</td>
+<td>270,134</td>
+<td>634,940</td>
+<td>233.36 MiB</td>
+<td>8 seconds</td>
+<td>3 seconds</td>
+<td>828.45 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/cornwall</td>
+<td>74</td>
+<td>270,134</td>
+<td>634,940</td>
+<td>233.36 MiB</td>
+<td>8 seconds</td>
+<td>3 seconds</td>
+<td>828.45 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/cornwall</td>
+<td>74</td>
+<td>280,546</td>
+<td>658,610</td>
+<td>239.72 MiB</td>
+<td>8 seconds</td>
+<td>3 seconds</td>
+<td>838.14 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/cumbria</td>
+<td>64</td>
+<td>222,586</td>
+<td>498,624</td>
+<td>188.03 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>547.33 MiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/cumbria</td>
+<td>64</td>
+<td>226,893</td>
+<td>499,873</td>
+<td>188.73 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>548.52 MiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/cumbria</td>
+<td>64</td>
+<td>230,206</td>
+<td>499,840</td>
+<td>183.18 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>533.99 MiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/cumbria</td>
+<td>64</td>
+<td>230,206</td>
+<td>499,840</td>
+<td>183.18 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>533.99 MiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/cumbria</td>
+<td>64</td>
+<td>231,202</td>
+<td>498,475</td>
+<td>181.58 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>530.96 MiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/derbyshire</td>
+<td>131</td>
+<td>436,276</td>
+<td>1,035,356</td>
+<td>397.75 MiB</td>
+<td>15 seconds</td>
+<td>7 seconds</td>
+<td>1.12 GiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/derbyshire</td>
+<td>131</td>
+<td>459,743</td>
+<td>1,064,406</td>
+<td>409.76 MiB</td>
+<td>16 seconds</td>
+<td>8 seconds</td>
+<td>1.44 GiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/derbyshire</td>
+<td>131</td>
+<td>489,764</td>
+<td>1,122,078</td>
+<td>419.52 MiB</td>
+<td>16 seconds</td>
+<td>7 seconds</td>
+<td>1.45 GiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/derbyshire</td>
+<td>131</td>
+<td>489,764</td>
+<td>1,122,078</td>
+<td>419.52 MiB</td>
+<td>16 seconds</td>
+<td>7 seconds</td>
+<td>1.45 GiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/derbyshire</td>
+<td>131</td>
+<td>505,314</td>
+<td>1,152,518</td>
+<td>429.01 MiB</td>
+<td>16 seconds</td>
+<td>8 seconds</td>
+<td>1.47 GiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/devon</td>
+<td>156</td>
+<td>494,106</td>
+<td>1,165,952</td>
+<td>438.60 MiB</td>
+<td>18 seconds</td>
+<td>8 seconds</td>
+<td>1.49 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/devon</td>
+<td>156</td>
+<td>523,033</td>
+<td>1,212,387</td>
+<td>459.44 MiB</td>
+<td>18 seconds</td>
+<td>8 seconds</td>
+<td>1.53 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/devon</td>
+<td>156</td>
+<td>567,011</td>
+<td>1,304,874</td>
+<td>478.71 MiB</td>
+<td>19 seconds</td>
+<td>9 seconds</td>
+<td>1.64 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/devon</td>
+<td>156</td>
+<td>567,011</td>
+<td>1,304,874</td>
+<td>478.71 MiB</td>
+<td>19 seconds</td>
+<td>9 seconds</td>
+<td>1.64 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/devon</td>
+<td>156</td>
+<td>589,178</td>
+<td>1,342,775</td>
+<td>488.23 MiB</td>
+<td>19 seconds</td>
+<td>9 seconds</td>
+<td>1.66 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/durham</td>
+<td>117</td>
+<td>390,472</td>
+<td>911,601</td>
+<td>349.78 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1.03 GiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/durham</td>
+<td>117</td>
+<td>407,828</td>
+<td>930,184</td>
+<td>359.59 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1.05 GiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/durham</td>
+<td>117</td>
+<td>425,611</td>
+<td>952,801</td>
+<td>356.63 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1.04 GiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/durham</td>
+<td>117</td>
+<td>425,611</td>
+<td>952,801</td>
+<td>356.63 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1.04 GiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/durham</td>
+<td>117</td>
+<td>434,593</td>
+<td>959,555</td>
+<td>357.66 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1.04 GiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/east-sussex</td>
+<td>102</td>
+<td>355,257</td>
+<td>827,703</td>
+<td>313.71 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>987.31 MiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/east-sussex</td>
+<td>102</td>
+<td>380,894</td>
+<td>853,970</td>
+<td>324.02 MiB</td>
+<td>12 seconds</td>
+<td>6 seconds</td>
+<td>1006.13 MiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/east-sussex</td>
+<td>102</td>
+<td>423,181</td>
+<td>895,907</td>
+<td>329.56 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1008.58 MiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/east-sussex</td>
+<td>102</td>
+<td>423,181</td>
+<td>895,907</td>
+<td>329.56 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1008.58 MiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/east-sussex</td>
+<td>102</td>
+<td>446,000</td>
+<td>915,014</td>
+<td>335.45 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1020.75 MiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/east-yorkshire-with-hull</td>
+<td>75</td>
+<td>255,848</td>
+<td>593,271</td>
+<td>227.49 MiB</td>
+<td>8 seconds</td>
+<td>3 seconds</td>
+<td>778.75 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/east-yorkshire-with-hull</td>
+<td>75</td>
+<td>262,609</td>
+<td>602,286</td>
+<td>233.14 MiB</td>
+<td>8 seconds</td>
+<td>3 seconds</td>
+<td>835.04 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/east-yorkshire-with-hull</td>
+<td>75</td>
+<td>272,805</td>
+<td>613,721</td>
+<td>230.34 MiB</td>
+<td>8 seconds</td>
+<td>3 seconds</td>
+<td>824.50 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/east-yorkshire-with-hull</td>
+<td>75</td>
+<td>272,805</td>
+<td>613,721</td>
+<td>230.34 MiB</td>
+<td>8 seconds</td>
+<td>3 seconds</td>
+<td>824.50 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/east-yorkshire-with-hull</td>
+<td>75</td>
+<td>277,770</td>
+<td>617,357</td>
+<td>230.45 MiB</td>
+<td>8 seconds</td>
+<td>3 seconds</td>
+<td>825.00 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/essex</td>
+<td>211</td>
+<td>722,974</td>
+<td>1,786,310</td>
+<td>690.77 MiB</td>
+<td>30 seconds</td>
+<td>19 seconds</td>
+<td>2.06 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/essex</td>
+<td>211</td>
+<td>773,454</td>
+<td>1,857,205</td>
+<td>726.02 MiB</td>
+<td>32 seconds</td>
+<td>20 seconds</td>
+<td>2.13 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/essex</td>
+<td>211</td>
+<td>858,552</td>
+<td>1,981,994</td>
+<td>761.40 MiB</td>
+<td>33 seconds</td>
+<td>20 seconds</td>
+<td>2.19 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/essex</td>
+<td>211</td>
+<td>858,552</td>
+<td>1,981,994</td>
+<td>761.40 MiB</td>
+<td>33 seconds</td>
+<td>20 seconds</td>
+<td>2.19 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/essex</td>
+<td>211</td>
+<td>906,640</td>
+<td>2,042,404</td>
+<td>777.71 MiB</td>
+<td>33 seconds</td>
+<td>21 seconds</td>
+<td>2.21 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/gloucestershire</td>
+<td>107</td>
+<td>365,240</td>
+<td>889,836</td>
+<td>344.16 MiB</td>
+<td>13 seconds</td>
+<td>5 seconds</td>
+<td>1.02 GiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/gloucestershire</td>
+<td>107</td>
+<td>392,643</td>
+<td>933,909</td>
+<td>362.90 MiB</td>
+<td>13 seconds</td>
+<td>6 seconds</td>
+<td>1.06 GiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/gloucestershire</td>
+<td>107</td>
+<td>432,216</td>
+<td>1,025,077</td>
+<td>389.56 MiB</td>
+<td>14 seconds</td>
+<td>6 seconds</td>
+<td>1.10 GiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/gloucestershire</td>
+<td>107</td>
+<td>432,216</td>
+<td>1,025,077</td>
+<td>389.56 MiB</td>
+<td>14 seconds</td>
+<td>6 seconds</td>
+<td>1.10 GiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/gloucestershire</td>
+<td>107</td>
+<td>453,383</td>
+<td>1,068,484</td>
+<td>403.87 MiB</td>
+<td>14 seconds</td>
+<td>6 seconds</td>
+<td>1.43 GiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/greater-london</td>
+<td>983</td>
+<td>3,283,305</td>
+<td>8,581,245</td>
+<td>3.27 GiB</td>
+<td>12 minutes</td>
+<td>11 minutes</td>
+<td>11.80 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/greater-london</td>
+<td>983</td>
+<td>3,574,266</td>
+<td>8,983,777</td>
+<td>3.48 GiB</td>
+<td>12 minutes</td>
+<td>11 minutes</td>
+<td>12.22 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/greater-london</td>
+<td>983</td>
+<td>3,997,548</td>
+<td>9,452,049</td>
+<td>3.55 GiB</td>
+<td>12 minutes</td>
+<td>11 minutes</td>
+<td>12.25 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/greater-london</td>
+<td>983</td>
+<td>3,997,548</td>
+<td>9,452,049</td>
+<td>3.55 GiB</td>
+<td>12 minutes</td>
+<td>11 minutes</td>
+<td>12.25 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/greater-london</td>
+<td>983</td>
+<td>4,229,017</td>
+<td>9,688,506</td>
+<td>3.58 GiB</td>
+<td>12 minutes</td>
+<td>11 minutes</td>
+<td>12.95 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/greater-manchester</td>
+<td>346</td>
+<td>1,128,371</td>
+<td>2,745,455</td>
+<td>1.05 GiB</td>
+<td>70 seconds</td>
+<td>53 seconds</td>
+<td>3.56 GiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/greater-manchester</td>
+<td>346</td>
+<td>1,192,547</td>
+<td>2,840,431</td>
+<td>1.10 GiB</td>
+<td>71 seconds</td>
+<td>54 seconds</td>
+<td>3.66 GiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/greater-manchester</td>
+<td>346</td>
+<td>1,272,689</td>
+<td>2,974,954</td>
+<td>1.13 GiB</td>
+<td>73 seconds</td>
+<td>55 seconds</td>
+<td>3.69 GiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/greater-manchester</td>
+<td>346</td>
+<td>1,272,689</td>
+<td>2,974,954</td>
+<td>1.13 GiB</td>
+<td>74 seconds</td>
+<td>56 seconds</td>
+<td>3.69 GiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/greater-manchester</td>
+<td>346</td>
+<td>1,319,090</td>
+<td>3,049,727</td>
+<td>1.15 GiB</td>
+<td>76 seconds</td>
+<td>58 seconds</td>
+<td>3.73 GiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/hampshire</td>
+<td>225</td>
+<td>733,611</td>
+<td>1,810,518</td>
+<td>698.03 MiB</td>
+<td>32 seconds</td>
+<td>20 seconds</td>
+<td>2.07 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/hampshire</td>
+<td>225</td>
+<td>777,116</td>
+<td>1,861,250</td>
+<td>721.62 MiB</td>
+<td>32 seconds</td>
+<td>20 seconds</td>
+<td>2.12 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/hampshire</td>
+<td>225</td>
+<td>836,451</td>
+<td>1,931,669</td>
+<td>728.97 MiB</td>
+<td>32 seconds</td>
+<td>20 seconds</td>
+<td>2.12 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/hampshire</td>
+<td>225</td>
+<td>836,451</td>
+<td>1,931,669</td>
+<td>728.97 MiB</td>
+<td>33 seconds</td>
+<td>20 seconds</td>
+<td>2.12 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/hampshire</td>
+<td>225</td>
+<td>867,417</td>
+<td>1,960,190</td>
+<td>735.50 MiB</td>
+<td>33 seconds</td>
+<td>20 seconds</td>
+<td>2.13 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/herefordshire</td>
+<td>23</td>
+<td>79,083</td>
+<td>188,362</td>
+<td>72.21 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>234.89 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/herefordshire</td>
+<td>23</td>
+<td>83,238</td>
+<td>195,194</td>
+<td>74.71 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>239.36 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/herefordshire</td>
+<td>23</td>
+<td>89,574</td>
+<td>209,784</td>
+<td>77.63 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>242.83 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/herefordshire</td>
+<td>23</td>
+<td>89,574</td>
+<td>209,784</td>
+<td>77.63 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>242.83 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/herefordshire</td>
+<td>23</td>
+<td>92,605</td>
+<td>216,508</td>
+<td>79.43 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>245.69 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/hertfordshire</td>
+<td>153</td>
+<td>457,276</td>
+<td>1,160,155</td>
+<td>458.65 MiB</td>
+<td>19 seconds</td>
+<td>11 seconds</td>
+<td>1.56 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/hertfordshire</td>
+<td>153</td>
+<td>494,661</td>
+<td>1,190,043</td>
+<td>477.18 MiB</td>
+<td>19 seconds</td>
+<td>11 seconds</td>
+<td>1.59 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/hertfordshire</td>
+<td>153</td>
+<td>546,573</td>
+<td>1,219,124</td>
+<td>476.55 MiB</td>
+<td>19 seconds</td>
+<td>11 seconds</td>
+<td>1.67 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/hertfordshire</td>
+<td>153</td>
+<td>546,573</td>
+<td>1,219,124</td>
+<td>476.55 MiB</td>
+<td>19 seconds</td>
+<td>11 seconds</td>
+<td>1.67 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/hertfordshire</td>
+<td>153</td>
+<td>575,179</td>
+<td>1,233,573</td>
+<td>476.97 MiB</td>
+<td>19 seconds</td>
+<td>11 seconds</td>
+<td>1.67 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/isle-of-wight</td>
+<td>18</td>
+<td>61,636</td>
+<td>139,732</td>
+<td>53.88 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>188.79 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/isle-of-wight</td>
+<td>18</td>
+<td>65,140</td>
+<td>143,268</td>
+<td>54.99 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>190.45 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/isle-of-wight</td>
+<td>18</td>
+<td>70,496</td>
+<td>151,582</td>
+<td>55.55 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>200.99 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/isle-of-wight</td>
+<td>18</td>
+<td>70,496</td>
+<td>151,582</td>
+<td>55.55 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>200.99 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/isle-of-wight</td>
+<td>18</td>
+<td>72,968</td>
+<td>154,841</td>
+<td>56.14 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>202.13 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/kent</td>
+<td>220</td>
+<td>718,544</td>
+<td>1,793,702</td>
+<td>700.10 MiB</td>
+<td>29 seconds</td>
+<td>17 seconds</td>
+<td>2.08 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/kent</td>
+<td>220</td>
+<td>781,933</td>
+<td>1,873,451</td>
+<td>737.20 MiB</td>
+<td>30 seconds</td>
+<td>18 seconds</td>
+<td>2.15 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/kent</td>
+<td>220</td>
+<td>875,515</td>
+<td>2,008,857</td>
+<td>773.24 MiB</td>
+<td>31 seconds</td>
+<td>19 seconds</td>
+<td>2.21 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/kent</td>
+<td>220</td>
+<td>875,515</td>
+<td>2,008,857</td>
+<td>773.24 MiB</td>
+<td>32 seconds</td>
+<td>19 seconds</td>
+<td>2.21 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/kent</td>
+<td>220</td>
+<td>926,571</td>
+<td>2,069,087</td>
+<td>788.47 MiB</td>
+<td>35 seconds</td>
+<td>19 seconds</td>
+<td>2.23 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/lancashire</td>
+<td>191</td>
+<td>619,861</td>
+<td>1,476,469</td>
+<td>571.94 MiB</td>
+<td>24 seconds</td>
+<td>14 seconds</td>
+<td>1.83 GiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/lancashire</td>
+<td>191</td>
+<td>640,196</td>
+<td>1,511,896</td>
+<td>589.78 MiB</td>
+<td>24 seconds</td>
+<td>14 seconds</td>
+<td>1.87 GiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/lancashire</td>
+<td>191</td>
+<td>663,637</td>
+<td>1,567,390</td>
+<td>594.49 MiB</td>
+<td>24 seconds</td>
+<td>14 seconds</td>
+<td>1.87 GiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/lancashire</td>
+<td>191</td>
+<td>663,637</td>
+<td>1,567,390</td>
+<td>594.49 MiB</td>
+<td>24 seconds</td>
+<td>14 seconds</td>
+<td>1.87 GiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/lancashire</td>
+<td>191</td>
+<td>674,387</td>
+<td>1,591,908</td>
+<td>600.02 MiB</td>
+<td>25 seconds</td>
+<td>14 seconds</td>
+<td>1.88 GiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/leicestershire</td>
+<td>120</td>
+<td>370,305</td>
+<td>958,470</td>
+<td>373.02 MiB</td>
+<td>14 seconds</td>
+<td>7 seconds</td>
+<td>1.08 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/leicestershire</td>
+<td>120</td>
+<td>397,467</td>
+<td>1,016,632</td>
+<td>397.28 MiB</td>
+<td>14 seconds</td>
+<td>7 seconds</td>
+<td>1.13 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/leicestershire</td>
+<td>120</td>
+<td>438,413</td>
+<td>1,118,737</td>
+<td>426.12 MiB</td>
+<td>15 seconds</td>
+<td>8 seconds</td>
+<td>1.48 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/leicestershire</td>
+<td>120</td>
+<td>438,413</td>
+<td>1,118,737</td>
+<td>426.12 MiB</td>
+<td>15 seconds</td>
+<td>8 seconds</td>
+<td>1.48 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/leicestershire</td>
+<td>120</td>
+<td>459,655</td>
+<td>1,164,678</td>
+<td>440.87 MiB</td>
+<td>16 seconds</td>
+<td>8 seconds</td>
+<td>1.50 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/lincolnshire</td>
+<td>134</td>
+<td>449,394</td>
+<td>1,064,403</td>
+<td>403.05 MiB</td>
+<td>15 seconds</td>
+<td>7 seconds</td>
+<td>1.43 GiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/lincolnshire</td>
+<td>134</td>
+<td>475,646</td>
+<td>1,098,403</td>
+<td>419.31 MiB</td>
+<td>15 seconds</td>
+<td>7 seconds</td>
+<td>1.46 GiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/lincolnshire</td>
+<td>134</td>
+<td>507,295</td>
+<td>1,152,299</td>
+<td>427.55 MiB</td>
+<td>15 seconds</td>
+<td>7 seconds</td>
+<td>1.47 GiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/lincolnshire</td>
+<td>134</td>
+<td>507,295</td>
+<td>1,152,299</td>
+<td>427.55 MiB</td>
+<td>16 seconds</td>
+<td>7 seconds</td>
+<td>1.47 GiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/lincolnshire</td>
+<td>134</td>
+<td>523,548</td>
+<td>1,172,923</td>
+<td>430.83 MiB</td>
+<td>16 seconds</td>
+<td>7 seconds</td>
+<td>1.47 GiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/merseyside</td>
+<td>184</td>
+<td>603,483</td>
+<td>1,399,209</td>
+<td>533.96 MiB</td>
+<td>20 seconds</td>
+<td>11 seconds</td>
+<td>1.75 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/merseyside</td>
+<td>184</td>
+<td>632,617</td>
+<td>1,435,755</td>
+<td>553.33 MiB</td>
+<td>20 seconds</td>
+<td>11 seconds</td>
+<td>1.79 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/merseyside</td>
+<td>184</td>
+<td>665,766</td>
+<td>1,498,518</td>
+<td>570.21 MiB</td>
+<td>20 seconds</td>
+<td>10 seconds</td>
+<td>1.82 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/merseyside</td>
+<td>184</td>
+<td>665,766</td>
+<td>1,498,518</td>
+<td>570.21 MiB</td>
+<td>21 seconds</td>
+<td>11 seconds</td>
+<td>1.82 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/merseyside</td>
+<td>184</td>
+<td>685,165</td>
+<td>1,528,037</td>
+<td>577.48 MiB</td>
+<td>21 seconds</td>
+<td>11 seconds</td>
+<td>1.83 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/norfolk</td>
+<td>110</td>
+<td>374,491</td>
+<td>882,793</td>
+<td>333.07 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1017.16 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/norfolk</td>
+<td>110</td>
+<td>397,770</td>
+<td>916,799</td>
+<td>348.41 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1.02 GiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/norfolk</td>
+<td>110</td>
+<td>432,187</td>
+<td>982,755</td>
+<td>362.27 MiB</td>
+<td>13 seconds</td>
+<td>5 seconds</td>
+<td>1.04 GiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/norfolk</td>
+<td>110</td>
+<td>432,187</td>
+<td>982,755</td>
+<td>362.27 MiB</td>
+<td>13 seconds</td>
+<td>5 seconds</td>
+<td>1.04 GiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/norfolk</td>
+<td>110</td>
+<td>450,068</td>
+<td>1,013,214</td>
+<td>371.39 MiB</td>
+<td>13 seconds</td>
+<td>5 seconds</td>
+<td>1.06 GiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/northamptonshire</td>
+<td>91</td>
+<td>289,575</td>
+<td>720,263</td>
+<td>284.39 MiB</td>
+<td>10 seconds</td>
+<td>4 seconds</td>
+<td>941.33 MiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/northamptonshire</td>
+<td>91</td>
+<td>316,553</td>
+<td>762,382</td>
+<td>304.36 MiB</td>
+<td>10 seconds</td>
+<td>4 seconds</td>
+<td>981.14 MiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/northamptonshire</td>
+<td>91</td>
+<td>352,529</td>
+<td>828,003</td>
+<td>320.81 MiB</td>
+<td>11 seconds</td>
+<td>5 seconds</td>
+<td>1005.64 MiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/northamptonshire</td>
+<td>91</td>
+<td>352,529</td>
+<td>828,003</td>
+<td>320.81 MiB</td>
+<td>11 seconds</td>
+<td>5 seconds</td>
+<td>1005.64 MiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/northamptonshire</td>
+<td>91</td>
+<td>370,555</td>
+<td>855,812</td>
+<td>328.03 MiB</td>
+<td>11 seconds</td>
+<td>5 seconds</td>
+<td>1016.86 MiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/northumberland</td>
+<td>40</td>
+<td>138,928</td>
+<td>315,894</td>
+<td>120.66 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>423.11 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/northumberland</td>
+<td>40</td>
+<td>143,516</td>
+<td>322,616</td>
+<td>121.94 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>423.87 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/northumberland</td>
+<td>40</td>
+<td>148,792</td>
+<td>333,456</td>
+<td>122.06 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>421.48 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/northumberland</td>
+<td>40</td>
+<td>148,792</td>
+<td>333,456</td>
+<td>122.06 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>421.48 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/northumberland</td>
+<td>40</td>
+<td>150,259</td>
+<td>337,186</td>
+<td>122.24 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>421.48 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/north-yorkshire</td>
+<td>138</td>
+<td>460,050</td>
+<td>1,085,067</td>
+<td>413.05 MiB</td>
+<td>16 seconds</td>
+<td>7 seconds</td>
+<td>1.45 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/north-yorkshire</td>
+<td>138</td>
+<td>478,639</td>
+<td>1,107,928</td>
+<td>423.18 MiB</td>
+<td>16 seconds</td>
+<td>7 seconds</td>
+<td>1.47 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/north-yorkshire</td>
+<td>138</td>
+<td>499,392</td>
+<td>1,134,723</td>
+<td>420.60 MiB</td>
+<td>16 seconds</td>
+<td>7 seconds</td>
+<td>1.45 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/north-yorkshire</td>
+<td>138</td>
+<td>499,392</td>
+<td>1,134,723</td>
+<td>420.60 MiB</td>
+<td>16 seconds</td>
+<td>7 seconds</td>
+<td>1.45 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/north-yorkshire</td>
+<td>138</td>
+<td>509,099</td>
+<td>1,143,895</td>
+<td>421.52 MiB</td>
+<td>16 seconds</td>
+<td>7 seconds</td>
+<td>1.46 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/nottinghamshire</td>
+<td>138</td>
+<td>460,022</td>
+<td>1,123,005</td>
+<td>432.35 MiB</td>
+<td>16 seconds</td>
+<td>8 seconds</td>
+<td>1.49 GiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/nottinghamshire</td>
+<td>138</td>
+<td>486,163</td>
+<td>1,169,489</td>
+<td>453.68 MiB</td>
+<td>16 seconds</td>
+<td>8 seconds</td>
+<td>1.53 GiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/nottinghamshire</td>
+<td>138</td>
+<td>522,944</td>
+<td>1,248,804</td>
+<td>473.35 MiB</td>
+<td>17 seconds</td>
+<td>8 seconds</td>
+<td>1.56 GiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/nottinghamshire</td>
+<td>138</td>
+<td>522,944</td>
+<td>1,248,804</td>
+<td>473.35 MiB</td>
+<td>17 seconds</td>
+<td>8 seconds</td>
+<td>1.56 GiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/nottinghamshire</td>
+<td>138</td>
+<td>543,291</td>
+<td>1,281,812</td>
+<td>482.21 MiB</td>
+<td>18 seconds</td>
+<td>9 seconds</td>
+<td>1.66 GiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/oxfordshire</td>
+<td>86</td>
+<td>261,235</td>
+<td>671,997</td>
+<td>260.43 MiB</td>
+<td>9 seconds</td>
+<td>3 seconds</td>
+<td>852.84 MiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/oxfordshire</td>
+<td>86</td>
+<td>274,908</td>
+<td>695,490</td>
+<td>271.62 MiB</td>
+<td>10 seconds</td>
+<td>4 seconds</td>
+<td>918.90 MiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/oxfordshire</td>
+<td>86</td>
+<td>293,368</td>
+<td>729,866</td>
+<td>275.40 MiB</td>
+<td>10 seconds</td>
+<td>4 seconds</td>
+<td>919.34 MiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/oxfordshire</td>
+<td>86</td>
+<td>293,368</td>
+<td>729,866</td>
+<td>275.40 MiB</td>
+<td>10 seconds</td>
+<td>4 seconds</td>
+<td>919.34 MiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/oxfordshire</td>
+<td>86</td>
+<td>303,035</td>
+<td>743,227</td>
+<td>277.51 MiB</td>
+<td>10 seconds</td>
+<td>4 seconds</td>
+<td>922.19 MiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/rutland</td>
+<td>5</td>
+<td>14,912</td>
+<td>38,314</td>
+<td>16.37 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>54.07 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/rutland</td>
+<td>5</td>
+<td>16,698</td>
+<td>40,381</td>
+<td>17.09 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>57.95 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/rutland</td>
+<td>5</td>
+<td>18,198</td>
+<td>44,193</td>
+<td>18.26 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>60.08 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/rutland</td>
+<td>5</td>
+<td>18,198</td>
+<td>44,193</td>
+<td>18.26 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>60.08 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/rutland</td>
+<td>5</td>
+<td>18,914</td>
+<td>45,659</td>
+<td>18.71 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>61.20 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/shropshire</td>
+<td>62</td>
+<td>197,768</td>
+<td>483,414</td>
+<td>186.29 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>550.97 MiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/shropshire</td>
+<td>62</td>
+<td>211,035</td>
+<td>508,233</td>
+<td>195.76 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>568.62 MiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/shropshire</td>
+<td>62</td>
+<td>228,285</td>
+<td>558,755</td>
+<td>207.29 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>740.58 MiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/shropshire</td>
+<td>62</td>
+<td>228,285</td>
+<td>558,755</td>
+<td>207.29 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>740.58 MiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/shropshire</td>
+<td>62</td>
+<td>236,015</td>
+<td>581,476</td>
+<td>213.23 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>749.82 MiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/somerset</td>
+<td>124</td>
+<td>329,040</td>
+<td>790,346</td>
+<td>303.62 MiB</td>
+<td>11 seconds</td>
+<td>4 seconds</td>
+<td>970.03 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/somerset</td>
+<td>124</td>
+<td>353,976</td>
+<td>822,271</td>
+<td>317.43 MiB</td>
+<td>11 seconds</td>
+<td>4 seconds</td>
+<td>996.71 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/somerset</td>
+<td>124</td>
+<td>388,675</td>
+<td>880,441</td>
+<td>331.61 MiB</td>
+<td>12 seconds</td>
+<td>4 seconds</td>
+<td>1018.53 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/somerset</td>
+<td>124</td>
+<td>388,675</td>
+<td>880,441</td>
+<td>331.61 MiB</td>
+<td>12 seconds</td>
+<td>4 seconds</td>
+<td>1018.53 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/somerset</td>
+<td>124</td>
+<td>406,157</td>
+<td>906,545</td>
+<td>339.87 MiB</td>
+<td>12 seconds</td>
+<td>4 seconds</td>
+<td>1.01 GiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/south-yorkshire</td>
+<td>172</td>
+<td>566,664</td>
+<td>1,372,435</td>
+<td>528.11 MiB</td>
+<td>20 seconds</td>
+<td>11 seconds</td>
+<td>1.75 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/south-yorkshire</td>
+<td>172</td>
+<td>597,694</td>
+<td>1,418,840</td>
+<td>548.59 MiB</td>
+<td>21 seconds</td>
+<td>11 seconds</td>
+<td>1.79 GiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/south-yorkshire</td>
+<td>172</td>
+<td>637,411</td>
+<td>1,493,544</td>
+<td>563.91 MiB</td>
+<td>21 seconds</td>
+<td>11 seconds</td>
+<td>1.81 GiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/south-yorkshire</td>
+<td>172</td>
+<td>659,843</td>
+<td>1,531,313</td>
+<td>575.31 MiB</td>
+<td>22 seconds</td>
+<td>12 seconds</td>
+<td>1.83 GiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/staffordshire</td>
+<td>143</td>
+<td>464,441</td>
+<td>1,111,144</td>
+<td>425.27 MiB</td>
+<td>16 seconds</td>
+<td>8 seconds</td>
+<td>1.47 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/staffordshire</td>
+<td>143</td>
+<td>486,645</td>
+<td>1,139,752</td>
+<td>437.51 MiB</td>
+<td>16 seconds</td>
+<td>8 seconds</td>
+<td>1.49 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/staffordshire</td>
+<td>143</td>
+<td>510,634</td>
+<td>1,188,857</td>
+<td>444.87 MiB</td>
+<td>17 seconds</td>
+<td>8 seconds</td>
+<td>1.50 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/staffordshire</td>
+<td>143</td>
+<td>510,634</td>
+<td>1,188,857</td>
+<td>444.87 MiB</td>
+<td>17 seconds</td>
+<td>8 seconds</td>
+<td>1.50 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/staffordshire</td>
+<td>143</td>
+<td>522,882</td>
+<td>1,215,006</td>
+<td>452.94 MiB</td>
+<td>17 seconds</td>
+<td>8 seconds</td>
+<td>1.52 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/suffolk</td>
+<td>90</td>
+<td>136,142</td>
+<td>327,349</td>
+<td>128.13 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>440.37 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/suffolk</td>
+<td>90</td>
+<td>146,277</td>
+<td>333,781</td>
+<td>130.90 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>445.14 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/suffolk</td>
+<td>90</td>
+<td>159,882</td>
+<td>344,534</td>
+<td>130.76 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>442.14 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/suffolk</td>
+<td>90</td>
+<td>159,882</td>
+<td>344,534</td>
+<td>130.76 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>442.14 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/suffolk</td>
+<td>90</td>
+<td>166,718</td>
+<td>350,358</td>
+<td>132.54 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>446.24 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/surrey</td>
+<td>151</td>
+<td>458,108</td>
+<td>1,168,112</td>
+<td>456.50 MiB</td>
+<td>21 seconds</td>
+<td>13 seconds</td>
+<td>1.55 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/surrey</td>
+<td>151</td>
+<td>480,930</td>
+<td>1,195,509</td>
+<td>472.89 MiB</td>
+<td>21 seconds</td>
+<td>13 seconds</td>
+<td>1.58 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/surrey</td>
+<td>151</td>
+<td>518,720</td>
+<td>1,214,557</td>
+<td>467.03 MiB</td>
+<td>21 seconds</td>
+<td>13 seconds</td>
+<td>1.56 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/surrey</td>
+<td>151</td>
+<td>518,720</td>
+<td>1,214,557</td>
+<td>467.03 MiB</td>
+<td>21 seconds</td>
+<td>13 seconds</td>
+<td>1.56 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/surrey</td>
+<td>151</td>
+<td>538,941</td>
+<td>1,221,227</td>
+<td>464.71 MiB</td>
+<td>21 seconds</td>
+<td>13 seconds</td>
+<td>1.64 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/tyne-and-wear</td>
+<td>145</td>
+<td>483,909</td>
+<td>1,119,030</td>
+<td>427.35 MiB</td>
+<td>15 seconds</td>
+<td>7 seconds</td>
+<td>1.47 GiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/tyne-and-wear</td>
+<td>145</td>
+<td>501,383</td>
+<td>1,143,194</td>
+<td>439.09 MiB</td>
+<td>15 seconds</td>
+<td>7 seconds</td>
+<td>1.50 GiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/tyne-and-wear</td>
+<td>145</td>
+<td>521,777</td>
+<td>1,168,078</td>
+<td>440.03 MiB</td>
+<td>15 seconds</td>
+<td>7 seconds</td>
+<td>1.49 GiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/tyne-and-wear</td>
+<td>145</td>
+<td>521,777</td>
+<td>1,168,078</td>
+<td>440.03 MiB</td>
+<td>14 seconds</td>
+<td>6 seconds</td>
+<td>1.49 GiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/tyne-and-wear</td>
+<td>145</td>
+<td>532,652</td>
+<td>1,177,340</td>
+<td>441.36 MiB</td>
+<td>15 seconds</td>
+<td>7 seconds</td>
+<td>1.58 GiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/warwickshire</td>
+<td>108</td>
+<td>361,467</td>
+<td>896,673</td>
+<td>347.44 MiB</td>
+<td>13 seconds</td>
+<td>6 seconds</td>
+<td>1.03 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/warwickshire</td>
+<td>108</td>
+<td>392,639</td>
+<td>958,833</td>
+<td>373.63 MiB</td>
+<td>14 seconds</td>
+<td>6 seconds</td>
+<td>1.08 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/warwickshire</td>
+<td>108</td>
+<td>432,682</td>
+<td>1,061,955</td>
+<td>405.95 MiB</td>
+<td>15 seconds</td>
+<td>7 seconds</td>
+<td>1.44 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/warwickshire</td>
+<td>108</td>
+<td>432,682</td>
+<td>1,061,955</td>
+<td>405.95 MiB</td>
+<td>14 seconds</td>
+<td>7 seconds</td>
+<td>1.44 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/warwickshire</td>
+<td>108</td>
+<td>454,732</td>
+<td>1,112,230</td>
+<td>424.10 MiB</td>
+<td>15 seconds</td>
+<td>7 seconds</td>
+<td>1.47 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/west-midlands</td>
+<td>314</td>
+<td>958,034</td>
+<td>2,477,391</td>
+<td>990.27 MiB</td>
+<td>56 seconds</td>
+<td>38 seconds</td>
+<td>3.24 GiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/west-midlands</td>
+<td>314</td>
+<td>1,002,273</td>
+<td>2,572,395</td>
+<td>1.01 GiB</td>
+<td>58 seconds</td>
+<td>40 seconds</td>
+<td>3.33 GiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/west-midlands</td>
+<td>314</td>
+<td>1,046,146</td>
+<td>2,664,228</td>
+<td>1.04 GiB</td>
+<td>60 seconds</td>
+<td>41 seconds</td>
+<td>3.37 GiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/west-midlands</td>
+<td>314</td>
+<td>1,079,612</td>
+<td>2,706,242</td>
+<td>1.04 GiB</td>
+<td>61 seconds</td>
+<td>41 seconds</td>
+<td>3.55 GiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/west-midlands</td>
+<td>314</td>
+<td>1,128,890</td>
+<td>2,787,990</td>
+<td>1.07 GiB</td>
+<td>62 seconds</td>
+<td>42 seconds</td>
+<td>3.59 GiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/west-sussex</td>
+<td>100</td>
+<td>348,766</td>
+<td>836,646</td>
+<td>321.17 MiB</td>
+<td>11 seconds</td>
+<td>5 seconds</td>
+<td>1004.45 MiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/west-sussex</td>
+<td>100</td>
+<td>375,837</td>
+<td>871,029</td>
+<td>337.76 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1.01 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/west-sussex</td>
+<td>100</td>
+<td>419,347</td>
+<td>931,573</td>
+<td>350.11 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1.03 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/west-sussex</td>
+<td>100</td>
+<td>419,347</td>
+<td>931,573</td>
+<td>350.11 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1.03 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/west-sussex</td>
+<td>100</td>
+<td>442,292</td>
+<td>958,567</td>
+<td>356.77 MiB</td>
+<td>12 seconds</td>
+<td>5 seconds</td>
+<td>1.04 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/west-yorkshire</td>
+<td>299</td>
+<td>921,242</td>
+<td>2,271,833</td>
+<td>893.87 MiB</td>
+<td>46 seconds</td>
+<td>31 seconds</td>
+<td>3.05 GiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/west-yorkshire</td>
+<td>299</td>
+<td>963,460</td>
+<td>2,339,931</td>
+<td>930.47 MiB</td>
+<td>48 seconds</td>
+<td>33 seconds</td>
+<td>3.12 GiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/west-yorkshire</td>
+<td>299</td>
+<td>1,021,830</td>
+<td>2,434,902</td>
+<td>945.77 MiB</td>
+<td>48 seconds</td>
+<td>33 seconds</td>
+<td>3.13 GiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/west-yorkshire</td>
+<td>299</td>
+<td>1,021,830</td>
+<td>2,434,902</td>
+<td>945.77 MiB</td>
+<td>49 seconds</td>
+<td>33 seconds</td>
+<td>3.13 GiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/west-yorkshire</td>
+<td>299</td>
+<td>1,053,859</td>
+<td>2,481,358</td>
+<td>957.40 MiB</td>
+<td>49 seconds</td>
+<td>33 seconds</td>
+<td>3.32 GiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>England/wiltshire</td>
+<td>89</td>
+<td>285,600</td>
+<td>704,491</td>
+<td>274.58 MiB</td>
+<td>9 seconds</td>
+<td>3 seconds</td>
+<td>921.08 MiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>England/wiltshire</td>
+<td>89</td>
+<td>309,159</td>
+<td>735,088</td>
+<td>288.20 MiB</td>
+<td>9 seconds</td>
+<td>3 seconds</td>
+<td>947.43 MiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>England/wiltshire</td>
+<td>89</td>
+<td>335,400</td>
+<td>774,105</td>
+<td>292.69 MiB</td>
+<td>10 seconds</td>
+<td>3 seconds</td>
+<td>949.16 MiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>England/wiltshire</td>
+<td>89</td>
+<td>335,400</td>
+<td>774,105</td>
+<td>292.69 MiB</td>
+<td>10 seconds</td>
+<td>3 seconds</td>
+<td>949.16 MiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>England/wiltshire</td>
+<td>89</td>
+<td>348,866</td>
+<td>792,075</td>
+<td>296.40 MiB</td>
+<td>10 seconds</td>
+<td>3 seconds</td>
+<td>955.08 MiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>England/worcestershire</td>
+<td>85</td>
+<td>240,958</td>
+<td>578,628</td>
+<td>221.47 MiB</td>
+<td>8 seconds</td>
+<td>3 seconds</td>
+<td>770.62 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>England/worcestershire</td>
+<td>85</td>
+<td>255,594</td>
+<td>601,116</td>
+<td>231.59 MiB</td>
+<td>8 seconds</td>
+<td>3 seconds</td>
+<td>790.42 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>England/worcestershire</td>
+<td>85</td>
+<td>274,309</td>
+<td>644,922</td>
+<td>241.99 MiB</td>
+<td>8 seconds</td>
+<td>3 seconds</td>
+<td>849.84 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>England/worcestershire</td>
+<td>85</td>
+<td>274,309</td>
+<td>644,922</td>
+<td>241.99 MiB</td>
+<td>8 seconds</td>
+<td>3 seconds</td>
+<td>849.84 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>England/worcestershire</td>
+<td>85</td>
+<td>283,275</td>
+<td>666,303</td>
+<td>248.38 MiB</td>
+<td>8 seconds</td>
+<td>3 seconds</td>
+<td>861.38 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>special/northwest_transpennine</td>
+<td>829</td>
+<td>2,653,096</td>
+<td>6,416,497</td>
+<td>2.45 GiB</td>
+<td>5 minutes</td>
+<td>4 minutes</td>
+<td>7.74 GiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>special/northwest_transpennine</td>
+<td>829</td>
+<td>2,788,624</td>
+<td>6,616,117</td>
+<td>2.56 GiB</td>
+<td>5 minutes</td>
+<td>4 minutes</td>
+<td>7.95 GiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>special/northwest_transpennine</td>
+<td>829</td>
+<td>2,960,285</td>
+<td>6,908,374</td>
+<td>2.62 GiB</td>
+<td>5 minutes</td>
+<td>4 minutes</td>
+<td>8.02 GiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>special/northwest_transpennine</td>
+<td>829</td>
+<td>2,960,285</td>
+<td>6,908,374</td>
+<td>2.62 GiB</td>
+<td>5 minutes</td>
+<td>5 minutes</td>
+<td>8.02 GiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>special/northwest_transpennine</td>
+<td>829</td>
+<td>3,058,114</td>
+<td>7,059,122</td>
+<td>2.66 GiB</td>
+<td>5 minutes</td>
+<td>5 minutes</td>
+<td>8.08 GiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>Wales/bridgend-and-neath-port-talbot</td>
+<td>38</td>
+<td>119,725</td>
+<td>283,159</td>
+<td>108.21 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>382.24 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>Wales/bridgend-and-neath-port-talbot</td>
+<td>38</td>
+<td>123,909</td>
+<td>289,896</td>
+<td>111.10 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>387.45 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>Wales/bridgend-and-neath-port-talbot</td>
+<td>38</td>
+<td>124,921</td>
+<td>292,227</td>
+<td>111.51 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>387.72 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>Wales/bridgend-and-neath-port-talbot</td>
+<td>38</td>
+<td>128,601</td>
+<td>301,529</td>
+<td>113.58 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>390.82 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>Wales/bridgend-and-neath-port-talbot</td>
+<td>38</td>
+<td>129,740</td>
+<td>307,260</td>
+<td>114.33 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>391.29 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>Wales/cardiff-and-vale-of-glamorgan</td>
+<td>63</td>
+<td>199,208</td>
+<td>484,182</td>
+<td>187.17 MiB</td>
+<td>6 seconds</td>
+<td>2 seconds</td>
+<td>558.19 MiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>Wales/cardiff-and-vale-of-glamorgan</td>
+<td>63</td>
+<td>214,676</td>
+<td>499,272</td>
+<td>194.70 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>572.89 MiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>Wales/cardiff-and-vale-of-glamorgan</td>
+<td>63</td>
+<td>218,981</td>
+<td>502,763</td>
+<td>196.11 MiB</td>
+<td>6 seconds</td>
+<td>2 seconds</td>
+<td>576.04 MiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>Wales/cardiff-and-vale-of-glamorgan</td>
+<td>63</td>
+<td>240,112</td>
+<td>522,526</td>
+<td>199.42 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>577.84 MiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>Wales/cardiff-and-vale-of-glamorgan</td>
+<td>63</td>
+<td>254,162</td>
+<td>531,549</td>
+<td>201.82 MiB</td>
+<td>7 seconds</td>
+<td>2 seconds</td>
+<td>737.29 MiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>Wales/central-valleys</td>
+<td>38</td>
+<td>124,691</td>
+<td>296,581</td>
+<td>115.15 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>396.20 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>Wales/central-valleys</td>
+<td>38</td>
+<td>130,072</td>
+<td>301,907</td>
+<td>117.77 MiB</td>
+<td>18 seconds</td>
+<td>1 second</td>
+<td>400.97 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>Wales/central-valleys</td>
+<td>38</td>
+<td>131,383</td>
+<td>303,557</td>
+<td>118.40 MiB</td>
+<td>8 seconds</td>
+<td>1 second</td>
+<td>424.47 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>Wales/central-valleys</td>
+<td>38</td>
+<td>136,404</td>
+<td>310,032</td>
+<td>118.04 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>421.13 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>Wales/central-valleys</td>
+<td>38</td>
+<td>138,735</td>
+<td>314,703</td>
+<td>119.17 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>423.02 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>Wales/conwy-and-denbighshire</td>
+<td>30</td>
+<td>92,732</td>
+<td>211,205</td>
+<td>80.50 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>251.47 MiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>Wales/conwy-and-denbighshire</td>
+<td>30</td>
+<td>95,314</td>
+<td>213,302</td>
+<td>81.56 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>253.63 MiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>Wales/conwy-and-denbighshire</td>
+<td>30</td>
+<td>95,881</td>
+<td>214,182</td>
+<td>81.85 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>254.21 MiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>Wales/conwy-and-denbighshire</td>
+<td>30</td>
+<td>97,683</td>
+<td>218,122</td>
+<td>81.11 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>251.17 MiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>Wales/conwy-and-denbighshire</td>
+<td>30</td>
+<td>97,687</td>
+<td>220,933</td>
+<td>80.92 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>249.76 MiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>Wales/flintshire-and-wrexham</td>
+<td>38</td>
+<td>122,180</td>
+<td>288,696</td>
+<td>113.32 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>393.63 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>Wales/flintshire-and-wrexham</td>
+<td>38</td>
+<td>127,660</td>
+<td>292,056</td>
+<td>114.58 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>395.27 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>Wales/flintshire-and-wrexham</td>
+<td>38</td>
+<td>129,007</td>
+<td>292,644</td>
+<td>115.03 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>396.56 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>Wales/flintshire-and-wrexham</td>
+<td>38</td>
+<td>134,527</td>
+<td>292,817</td>
+<td>112.37 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>410.92 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>Wales/flintshire-and-wrexham</td>
+<td>38</td>
+<td>136,425</td>
+<td>293,540</td>
+<td>112.22 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>410.77 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>Wales/gwent-valleys</td>
+<td>46</td>
+<td>144,178</td>
+<td>341,543</td>
+<td>132.17 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>451.03 MiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>Wales/gwent-valleys</td>
+<td>46</td>
+<td>148,386</td>
+<td>344,566</td>
+<td>132.83 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>450.89 MiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>Wales/gwent-valleys</td>
+<td>46</td>
+<td>149,374</td>
+<td>345,498</td>
+<td>132.72 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>450.23 MiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>Wales/gwent-valleys</td>
+<td>46</td>
+<td>151,842</td>
+<td>347,976</td>
+<td>130.50 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>442.86 MiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>Wales/gwent-valleys</td>
+<td>46</td>
+<td>151,729</td>
+<td>350,397</td>
+<td>130.58 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>443.03 MiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>Wales/gwynedd</td>
+<td>17</td>
+<td>52,926</td>
+<td>122,595</td>
+<td>48.28 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>141.47 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>Wales/gwynedd</td>
+<td>17</td>
+<td>55,064</td>
+<td>124,569</td>
+<td>49.28 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>143.70 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>Wales/gwynedd</td>
+<td>17</td>
+<td>55,683</td>
+<td>125,030</td>
+<td>49.20 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>143.45 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>Wales/gwynedd</td>
+<td>17</td>
+<td>58,372</td>
+<td>128,844</td>
+<td>49.81 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>143.80 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>Wales/gwynedd</td>
+<td>17</td>
+<td>59,746</td>
+<td>130,948</td>
+<td>50.64 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>145.62 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>Wales/isle-of-anglesey</td>
+<td>9</td>
+<td>30,797</td>
+<td>69,919</td>
+<td>27.65 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>96.81 MiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>Wales/isle-of-anglesey</td>
+<td>9</td>
+<td>31,366</td>
+<td>69,845</td>
+<td>27.85 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>97.39 MiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>Wales/isle-of-anglesey</td>
+<td>9</td>
+<td>31,488</td>
+<td>69,864</td>
+<td>27.91 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>97.71 MiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>Wales/isle-of-anglesey</td>
+<td>9</td>
+<td>31,601</td>
+<td>69,502</td>
+<td>27.09 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>95.51 MiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>Wales/isle-of-anglesey</td>
+<td>9</td>
+<td>31,337</td>
+<td>69,423</td>
+<td>26.91 MiB</td>
+<td>3 seconds</td>
+<td>1 second</td>
+<td>95.37 MiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>Wales/monmouthshire-and-newport</td>
+<td>31</td>
+<td>100,402</td>
+<td>240,491</td>
+<td>94.44 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>280.40 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>Wales/monmouthshire-and-newport</td>
+<td>31</td>
+<td>104,394</td>
+<td>250,185</td>
+<td>98.11 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>286.97 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>Wales/monmouthshire-and-newport</td>
+<td>31</td>
+<td>105,481</td>
+<td>253,282</td>
+<td>99.27 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>289.03 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>Wales/monmouthshire-and-newport</td>
+<td>31</td>
+<td>109,752</td>
+<td>265,785</td>
+<td>102.21 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>371.39 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>Wales/monmouthshire-and-newport</td>
+<td>31</td>
+<td>111,246</td>
+<td>273,319</td>
+<td>103.90 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>373.82 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>Wales/powys</td>
+<td>19</td>
+<td>59,028</td>
+<td>132,725</td>
+<td>51.21 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>185.06 MiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>Wales/powys</td>
+<td>19</td>
+<td>59,972</td>
+<td>132,328</td>
+<td>50.60 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>183.38 MiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>Wales/powys</td>
+<td>19</td>
+<td>60,190</td>
+<td>132,467</td>
+<td>50.46 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>182.88 MiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>Wales/powys</td>
+<td>19</td>
+<td>59,586</td>
+<td>133,010</td>
+<td>49.63 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>180.64 MiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>Wales/powys</td>
+<td>19</td>
+<td>57,969</td>
+<td>133,514</td>
+<td>49.35 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>179.80 MiB</td>
+</tr>
+<tr class="odd">
+<td>2012</td>
+<td>Wales/south-west-wales</td>
+<td>50</td>
+<td>165,004</td>
+<td>383,260</td>
+<td>145.79 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>474.32 MiB</td>
+</tr>
+<tr class="even">
+<td>2020</td>
+<td>Wales/south-west-wales</td>
+<td>50</td>
+<td>170,327</td>
+<td>385,937</td>
+<td>146.53 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>474.47 MiB</td>
+</tr>
+<tr class="odd">
+<td>2022</td>
+<td>Wales/south-west-wales</td>
+<td>50</td>
+<td>171,623</td>
+<td>386,901</td>
+<td>147.00 MiB</td>
+<td>5 seconds</td>
+<td>1 second</td>
+<td>476.10 MiB</td>
+</tr>
+<tr class="even">
+<td>2032</td>
+<td>Wales/south-west-wales</td>
+<td>50</td>
+<td>175,897</td>
+<td>392,107</td>
+<td>145.19 MiB</td>
+<td>6 seconds</td>
+<td>1 second</td>
+<td>469.31 MiB</td>
+</tr>
+<tr class="odd">
+<td>2039</td>
+<td>Wales/south-west-wales</td>
+<td>50</td>
+<td>176,482</td>
+<td>394,303</td>
+<td>144.53 MiB</td>
+<td>6 seconds</td>
+<td>1 second</td>
+<td>467.47 MiB</td>
+</tr>
+<tr class="even">
+<td>2012</td>
+<td>Wales/swansea</td>
+<td>31</td>
+<td>104,423</td>
+<td>242,128</td>
+<td>93.10 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>276.14 MiB</td>
+</tr>
+<tr class="odd">
+<td>2020</td>
+<td>Wales/swansea</td>
+<td>31</td>
+<td>110,304</td>
+<td>247,820</td>
+<td>95.72 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>281.38 MiB</td>
+</tr>
+<tr class="even">
+<td>2022</td>
+<td>Wales/swansea</td>
+<td>31</td>
+<td>111,940</td>
+<td>249,098</td>
+<td>96.10 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>282.16 MiB</td>
+</tr>
+<tr class="odd">
+<td>2032</td>
+<td>Wales/swansea</td>
+<td>31</td>
+<td>119,141</td>
+<td>257,653</td>
+<td>98.28 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>285.53 MiB</td>
+</tr>
+<tr class="even">
+<td>2039</td>
+<td>Wales/swansea</td>
+<td>31</td>
+<td>123,450</td>
+<td>262,306</td>
+<td>99.93 MiB</td>
+<td>4 seconds</td>
+<td>1 second</td>
+<td>366.61 MiB</td>
+</tr>
+</tbody>
+</table>
+<p>Notes:</p>
+<ul>
+<li><code>pb_file_size</code> refers to the size of the uncompressed protobuf file in <code>data/output/</code></li>
+<li>The total <code>runtime</code> is usually dominated by matching workers to businesses, so <code>commuting_runtime</code> gives a breakdown</li>
+<li>Measuring memory usage of Linux processes isn’t straightforward, so <code>memory_usage</code> should just be a guide</li>
+<li>These measurements were all taken on one developer’s laptop, and they don’t represent multiple runs. This table just aims to give a general sense of how long running takes.
+<ul>
+<li>That machine has 24 cores, which matters for the parallelized commuting calculation.</li>
+</ul></li>
+<li>The time <em>usually</em> doesn’t include downloading or decompressing raw data. For some areas, it might!</li>
+<li><code>scripts/collect_stats.py</code> produces the table above</li>
+</ul>
+
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./advanced_code_walkthrough.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Code walkthrough</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
