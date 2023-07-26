@@ -1,5 +1,5 @@
 ---
-title: "Creating new study areas"
+title: "Running a custom area"
 toc: true
 ---
 

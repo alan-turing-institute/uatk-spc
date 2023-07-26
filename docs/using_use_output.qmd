@@ -1,5 +1,5 @@
 ---
-title: "Using the SPC output file"
+title: "How to use the output file"
 toc: true
 ---
 

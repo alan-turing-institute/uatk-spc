@@ -3,7 +3,7 @@ title: "Outputs for England (Counties)"
 toc: true
 ---
 
-The counties of England are in this context the lieutenancy areas, often referred to as ceremonial counties. There are officially 48 of them, although we have chosen to include the City of London within Greater London in our release. Check the year you would like to explore and pick the corresponding file based on the region you are interested. Remember if you want to explore the data you can load the output in our [SPC explorer](https://alan-turing-institute.github.io/uatk-spc/app/)
+The counties of England are in this context the lieutenancy areas, often referred to as ceremonial counties. There are officially 48 of them, although we have chosen to include the City of London within Greater London in our release. Check the year you would like to explore and pick the corresponding file based on the region you are interested. Remember if you want to explore the data you can load the output in our [SPC explorer](https://alan-turing-institute.github.io/uatk-spc/app/).
 
 - 2012:
   - [bedfordshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/England/2012/bedfordshire.pb.gz)

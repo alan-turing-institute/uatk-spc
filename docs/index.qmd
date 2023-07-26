@@ -10,7 +10,7 @@ describing the population and its activities in a given study area. The data inc
 health, salary and daily activity data per person, and information about the venues
 where people conduct those activities.
 
-SPC outputs can be used to catalyze other projects. Rather than join together
+SPC outputs can be used to catalyse other projects. Rather than join together
 many [raw data sources](understanding_data_sources.qmd) yourself and deal with missing and
 messy data, you can leverage SPC's effort and well-documented schema.
 
