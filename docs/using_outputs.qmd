@@ -6,12 +6,12 @@ toc: true
 You don't need to run SPC yourself. See
 [config/](https://github.com/alan-turing-institute/uatk-spc/tree/main/config)
 for the list of MSOAs covered by each study area. If you want to run SPC for a
-different list of MSOAs, [see here](custom_areas.qmd).
+different list of MSOAs, [see here](using_custom_areas.qmd).
 
 One of the advantages of using SPC is that help researches to mimic the population characteristics and its iterations through multiples years (see  for more details). So you can replicate what the population might look like across multiple periods of time. Initially check what country you would like to explore, then pick the year to get the outcome file. In case you want to explore it and see how does the data look like, and what attributes are included, load the output in our [SPC Explorer](https://alan-turing-institute.github.io/uatk-spc/app/) and get inspired about the potential applications you could co-create using these outcomes. 
 
-- [England](england_outputs.qmd) (Available years: 2012, 2020, 2022, 2039)
-- [Wales](wales_outputs.qmd) (Available years: 2012, 2020, 2022, 2039)
+- [England](using_england_outputs.qmd) (Available years: 2012, 2020, 2022, 2039)
+- [Wales](using_wales_outputs.qmd) (Available years: 2012, 2020, 2022, 2039)
 
 We also included some special areas for your testing: 
 

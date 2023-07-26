@@ -3,13 +3,13 @@ title: "Using the SPC output file"
 toc: true
 ---
 
-Once you [download](outputs.qmd) or [generate](custom_areas.qmd) an SPC output
+Once you [download](using_outputs.qmd) or [generate](using_custom_areas.qmd) an SPC output
 file for your study area, how do you use it? Each study area consists of one
 `.pb` or [protocol buffer
 file](https://developers.google.com/protocol-buffers/docs/overview). This file
 efficiently encodes data following this
 [schema](https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto).
-[Read more](schema.qmd) about what data is contained in the output.
+[Read more](understanding_data_schema.qmd) about what data is contained in the output.
 
 You can read the "protobuf" (shorthand for a protocol buffer file) in any
 [supported
@@ -39,7 +39,7 @@ To work with SPC protobufs in Python, you need two dependencies setup:
 
 ### Converting to Pandas data-frames and CSV
 
-The [schema](schema.qmd) expresses relationships between people, households,
+The [schema](understanding_data_schema.qmd) expresses relationships between people, households,
 and venues that can't all be captured by a simple 2D table. Nevertheless, you
 can extract per-person information and express as a dataframe or CSV file. See
 [this example Python

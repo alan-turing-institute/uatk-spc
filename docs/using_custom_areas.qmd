@@ -3,9 +3,8 @@ title: "Creating new study areas"
 toc: true
 ---
 
-If the area you want to model isn't [already generated](outputs.qmd), then you
-can follow this guide to run SPC on a custom area. You must first [compile
-SPC](installation.qmd).
+If the area you want to model isn't [already generated](using_outputs.qmd), then you
+can follow this guide to run SPC on a custom area. You must first [compile SPC](using_installation.qmd).
 
 ## Specifying the area
 
@@ -36,7 +35,7 @@ for file in config/*.csv; do cargo run --release -- config/$file; done
 
 ## Using the output
 
-After you generate the files, see [here](use_output.qmd) for how to use them in your project.
+After you generate the files, see [here](using_use_output.qmd) for how to use them in your project.
 
 If you use SPC code or data in your work, please cite using the [Zenodo
 DOI](https://zenodo.org/badge/latestdoi/479038905) (using the bottom-right tool

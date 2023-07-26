@@ -194,7 +194,7 @@ The Pearson correlations for mean and median between the modelled and raw values
 ### List of all workplaces in GB
 
 In order to distribute each individual of the population to a unique physical workplace, we first created a population of all individual workplaces in England,
-based on a combination of the Nomis UK Business Counts 2020 dataset and the Nomis Business register and Employment Survey 2015 (see [Data sources](data_sources.qmd)).
+based on a combination of the Nomis UK Business Counts 2020 dataset and the Nomis Business register and Employment Survey 2015 (see [Data sources](understanding_data_sources.qmd)).
 The first dataset gives the number of individual workplace counts per industry, using the SIC 2007 industry classification, with imprecise size (i.e. number of employees) bands at MSOA level.
 The second dataset gives the total number of jobs available at LSOA level per SIC 2007 industry category.
 We found that the distribution of workplace sizes follows closely a simple 1/x distribution, allowing us to draw for each workplace a size within their band,
