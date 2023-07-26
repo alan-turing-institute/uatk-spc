@@ -86,7 +86,7 @@ Coordinates of the OA where the household's home is located are finally added l.
 
 ### Azure upload
 
-TBC.
+Following enrichment, a final step involves [grouping LADs into counties](https://github.com/alan-turing-institute/uatk-spc/tree/main/scripts/data_prep#step-3-merge-lads-to-counties-and-upload-to-azure) and [uploading to an Azure container](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/upload_toAzure.sh) for use as input for Phase 2 below.
 
 
 ## Phase 2: Running SPC for a specific study area
