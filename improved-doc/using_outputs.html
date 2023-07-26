@@ -276,16 +276,14 @@ ul.task-list li input[type="checkbox"] {
 <p>You don’t need to run SPC yourself. See <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/config">config/</a> for the list of MSOAs covered by each study area. If you want to run SPC for a different list of MSOAs, <a href="./using_custom_areas.html">see here</a>.</p>
 <p>One of the advantages of using SPC is that help researches to mimic the population characteristics and its iterations through multiples years (see for more details). So you can replicate what the population might look like across multiple periods of time. Initially check what country you would like to explore, then pick the year to get the outcome file. In case you want to explore it and see how does the data look like, and what attributes are included, load the output in our <a href="https://alan-turing-institute.github.io/uatk-spc/app/">SPC Explorer</a> and get inspired about the potential applications you could co-create using these outcomes.</p>
 <ul>
-<li><a href="./using_england_outputs.html">England</a> (Available years: 2012, 2020, 2022, 2039)</li>
-<li><a href="./using_wales_outputs.html">Wales</a> (Available years: 2012, 2020, 2022, 2039)</li>
+<li><a href="england_outputs.qmd">England</a> (Available years: 2012, 2020, 2022, 2032 &amp; 2039)</li>
+<li><a href="wales_outputs.qmd">Wales</a> (Available years: 2012, 2020, 2022, 2032 &amp; 2039)</li>
+<li><a href="scotland_outputs.qmd">Scotland</a> (Available years: 2012, 2020, 2022, 2032 &amp; 2039)</li>
 </ul>
-<p>We also included some special areas for your testing:</p>
+<p>We also include two special areas for your testing:</p>
 <ul>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/special/2012/northwest_transpennine.pb.gz">special/2012/northwest_transpennine.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/special/2020/northwest_transpennine.pb.gz">special/2020/northwest_transpennine.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/special/2022/northwest_transpennine.pb.gz">special/2022/northwest_transpennine.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/special/2032/northwest_transpennine.pb.gz">special/2032/northwest_transpennine.pb.gz</a></li>
-<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2/special/2039/northwest_transpennine.pb.gz">special/2039/northwest_transpennine.pb.gz</a></li>
+<li>North West Transpennine: <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2012/northwest_transpennine.pb.gz">2012</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2020/northwest_transpennine.pb.gz">2020</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2022/northwest_transpennine.pb.gz">2022</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2032/northwest_transpennine.pb.gz">2032</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2039/northwest_transpennine.pb.gz">2039</a></li>
+<li>Oxford-Cambridge arc: <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2012/oxford_cambridge_arc.pb.gz">2012</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2020/oxford_cambridge_arc.pb.gz">2020</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2022/oxford_cambridge_arc.pb.gz">2022</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2032/oxford_cambridge_arc.pb.gz">2032</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2039/oxford_cambridge_arc.pb.gz">2039</a></li>
 </ul>
 <section id="citing" class="level2" data-number="2.1">
 <h2 data-number="2.1" class="anchored" data-anchor-id="citing"><span class="header-section-number">2.1</span> Citing</h2>
@@ -314,6 +312,21 @@ ul.task-list li input[type="checkbox"] {
 <li>adding time-use diaries</li>
 <li>expanding to Wales</li>
 <li>adding multiple years of output</li>
+</ul></li>
+<li>v2.1, released 25/07/2023, <a href="https://github.com/alan-turing-institute/uatk-spc/blob/f550a323afadd03bd3bfdd797b66ff2276a2a6d5/synthpop.proto">schema</a>
+<ul>
+<li>expanding to Scotland</li>
+<li>adding special area: Oxford-Cambridge arc</li>
+<li>adding previously missing LADs to their counties:
+<ul>
+<li>Greater London (E09000001)</li>
+<li>Cornwall (E06000053)</li>
+<li>Dorset (E06000058 &amp; E06000059)</li>
+<li>Buckinghamshire (E06000060)</li>
+<li>Leicestershire (E07000135)</li>
+<li>Suffolk (E07000244 &amp; E07000245)</li>
+<li>Somerset (E07000246)</li>
+</ul></li>
 </ul></li>
 </ul>
 
