@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Synthetic Population Catalyst - 1&nbsp; Getting started</title>
+<title>Synthetic Population Catalyst - Validation</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,8 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./using_outputs.html" rel="next">
-<link href="./index.html" rel="prev">
+<link href="./advanced_developer_guide.html" rel="next">
+<link href="./understanding_data_sources.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -74,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./using_getting_started.html">Using SPC</a></li><li class="breadcrumb-item"><a href="./using_getting_started.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Getting started</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./validation.html">Validation</a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -120,7 +120,7 @@ ul.task-list li input[type="checkbox"] {
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./using_getting_started.html" class="sidebar-item-text sidebar-link active">
+  <a href="./using_getting_started.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Getting started</span></span></a>
   </div>
 </li>
@@ -211,7 +211,7 @@ ul.task-list li input[type="checkbox"] {
   </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./validation.html" class="sidebar-item-text sidebar-link">
+  <a href="./validation.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">Validation</span></a>
   </div>
 </li>
@@ -250,21 +250,14 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        <nav id="TOC" role="doc-toc" class="toc-active">
-    <h2 id="toc-title">Table of contents</h2>
-   
-  <ul>
-  <li><a href="#what-spc-does" id="toc-what-spc-does" class="nav-link active" data-scroll-target="#what-spc-does"><span class="header-section-number">1.1</span> What SPC does</a></li>
-  <li><a href="#what-spc-outputs" id="toc-what-spc-outputs" class="nav-link" data-scroll-target="#what-spc-outputs"><span class="header-section-number">1.2</span> What SPC outputs</a></li>
-  </ul>
-</nav>
+        
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Getting started</span></h1>
+<h1 class="title">Validation</h1>
 </div>
 
 
@@ -279,26 +272,10 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p>We suggest to start by exploring one of the pre-compiled areas we have made readily available:</p>
-<ol type="1">
-<li>Download <a href="./using_outputs.html">sample data</a> for an area in Great Britain</li>
-<li>Unpack it and open it with the <a href="https://alan-turing-institute.github.io/uatk-spc/app/">web explorer</a></li>
-</ol>
-<p>Possible next steps:</p>
-<ol start="3" type="1">
-<li>Learn more on <a href="./using_use_output.html">how to use the data</a></li>
-<li>If you need a custom area, <a href="./using_installation.html">build</a> and then <a href="./using_custom_areas.html">run</a> SPC</li>
-</ol>
-<section id="what-spc-does" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="what-spc-does"><span class="header-section-number">1.1</span> What SPC does</h2>
-<p>SPC generates spatially enriched synthetic population outputs for any area that is comprised of one or more Middle-Layer Output Areas (MSOAs) in England and Wales and/or one or more Intermediary Zones (IZ) in Scotland, including Local Authority Districts - LADs. The output file generated by SPC has a granularity of Output Area (150 ±100 households). This file is structured to help other researchers or urban analysts to feed dynamic models, such as ABMs, for multiple purposes where an enriched synthetic population file is required. SPC includes a comprehensive set of variables that include sociodemographic characteristics, daily activities, and other extra data to help you model the complexity of British society.</p>
-</section>
-<section id="what-spc-outputs" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="what-spc-outputs"><span class="header-section-number">1.2</span> What SPC outputs</h2>
-<p>You can see all of the per-person, household, and OA information SPC provides in the <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto">schema</a> and <a href="./understanding_data_sources.html">data sources</a>. We use <a href="https://developers.google.com/protocol-buffers/docs/overview">protocol buffers</a> to efficiently encode the data and describe its shape.</p>
+<p>Currently, the validation of each element of the methods is mentioned (or referenced) inside the <a href="./understanding_modelling_methods.html">modelling methods section</a>.</p>
+<p>A <a href="https://github.com/alan-turing-institute/uatk-spc/issues/57">sytematic validation</a> of the model is under construction. Approximative ETA: September 2023.</p>
 
 
-</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -536,13 +513,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./index.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Introduction</span>
+      <a href="./understanding_data_sources.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Data sources</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./using_outputs.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">SPC Outputs</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./advanced_developer_guide.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Developer guide</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

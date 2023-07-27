@@ -186,7 +186,7 @@ ul.task-list li input[type="checkbox"] {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./understanding_technical_overview.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Technical overview</span></span></a>
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">The SPC pipeline</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -209,6 +209,12 @@ ul.task-list li input[type="checkbox"] {
 </li>
       </ul>
   </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./validation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Validation</span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-expanded="true">
@@ -282,7 +288,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="flows-modelling-daily-activites" class="level2" data-number="12.2">
 <h2 data-number="12.2" class="anchored" data-anchor-id="flows-modelling-daily-activites"><span class="header-section-number">12.2</span> Flows: modelling daily activites</h2>
-<p>SPC models daily travel behavior of people as “flows.” Flows are broken down by by an <a href="https://github.com/alan-turing-institute/uatk-spc/blob/feffb857c6fbbd7c2b3dd1f3cb46e67677185897/synthpop.proto#L196">activity</a> – shopping/retail, attending primary or secondary school, working, or staying at home. For each activity type, a person has a list of venues where they may do that activity, weighted by a probability of going to that particular venue.</p>
+<p>SPC models daily travel behavior of people as “flows.” Flows are broken down by an <a href="https://github.com/alan-turing-institute/uatk-spc/blob/feffb857c6fbbd7c2b3dd1f3cb46e67677185897/synthpop.proto#L196">activity</a> – shopping/retail, attending primary or secondary school, working, or staying at home. For each activity type, a person has a list of venues where they may do that activity, weighted by a probability of going to that particular venue.</p>
 <p>Note that <code>flows_per_activity</code> is stored in <code>InfoPerMSOA</code>, not <code>Person</code>. The flows for retail and school are only known at the MSOA level, not individually. So given a particular <code>Person</code> object, you first look up their household’s MSOA – <code>msoa = population.households[ person.household ].msoa</code> and then look up flows for that MSOA – <code>population.info_per_msoa[msoa].flows_per_activity</code>.</p>
 <p>Each person has exactly 1 flow for home – it’s just <code>person.household</code> with probability 1. A person has 0 or 1 flows to work, based on the value of <code>person.workplace</code>.</p>
 <p>This doesn’t mean that all people in the same MSOA share the same travel behavior. Each person has their own <code>activity_durations</code> field, based on time-use survey data. Even if two people share the same set of places where they may go shopping, one person may spend much more time on that activity than another.</p>
