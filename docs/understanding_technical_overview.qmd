@@ -18,7 +18,7 @@ We provide in this document a step by step approach to running the entire SPC pi
     4. The population, its activities and an optional lockdown modelling are gathered into a single `.pb` file that can be visualised with the [SPC explorer](https://alan-turing-institute.github.io/uatk-spc/app/).
 
 
-![](img/SPC_Schema_full.png)
+![](img/SPC_Schema_full_new.png)
 
 We now explain how to run each step. The theoretical concepts supporting the modelling are presented [here](understanding_modelling_methods.qmd).
 
