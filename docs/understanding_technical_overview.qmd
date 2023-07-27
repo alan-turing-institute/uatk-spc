@@ -1,35 +1,32 @@
 ---
-title: "Technical overview"
+title: "The SPC pipeline"
 toc: true
 ---
 
-SPC is divided into two phases. The data preparation phase relies on scripts that only need to be run once. It is meant to output a postprocessed version of all the raw data sources that allows the model to run smoothly on custom areas. The second phase involves the user choosing a custom area and launching a simulation. It pulls the relevant datasets among the data prepared by the first phase, calculates the different daily activities and formats the results into a single protobuffer file.
+We provide in this document a step by step approach to running the entire SPC pipeline. This pipeline comprises the following steps.
 
-We provide in this document a step by step description of running the entire SPC pipeline. For 
-
-The full SPC pipeline comprises the following steps.
-
-- **Phase 1** - Data preparation steps:
-    1. The [SPENSER](https://github.com/nismod/microsimulation) model creates a synthetic population with basic demographic information for all of GB.
+- **Phase 1 - Data preparation**
+    1. The [SPENSER](https://github.com/alan-turing-institute/spc-hpc-pipeline) model creates a synthetic population with basic demographic information for all of GB.
     2. A [script](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/raw_to_prepared.R) downloads and prepares data from various public sources that will be used throughout the model.
-    3. The outputs of SPENSER are enriched using some of the outputs from step 2.
-    4. The resulting outputs are uploaded as `.csv` files to a dedicated Azure repository.
+    3. The outputs of SPENSER are [enriched](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/run_pipelineLAD.sh) using some of the outputs from step 2.
+    4. The resulting outputs are [uploaded](https://github.com/alan-turing-institute/uatk-spc/tree/main/scripts/data_prep#step-3-merge-lads-to-counties-and-upload-to-azure) as `.csv` files to a dedicated Azure repository.
 
-- **Phase 2** - Steps after the user has selected a study area:
+- **Phase 2 - The user has selected a study area and started a simulation**
     1. All the data relevant to the study area are pulled from Azure.
-    2. Individuals are assigned a single education destination (if under 16) and several potential retail destinations, according to a local version of the [QUANT](https://github.com/maptube/QUANT_RAMP) model.
-    3. Individuals are assigned a single workplace destination (if above 16), according to the method described [here](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#commuting-flows).
-    4. The population, its activities and an optional lockdown modelling are gathered into a single `.pb` file that can be visualised by the [SPC explorer](https://alan-turing-institute.github.io/uatk-spc/app/).
+    2. Individuals are assigned a single education destination (if under 16 y.o.) and several potential retail destinations, according to a local version of the [QUANT](https://github.com/maptube/QUANT_RAMP) model.
+    3. Individuals are assigned a single workplace destination (if above 16 y.o), according to the method described [here](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#commuting-flows).
+    4. The population, its activities and an optional lockdown modelling are gathered into a single `.pb` file that can be visualised with the [SPC explorer](https://alan-turing-institute.github.io/uatk-spc/app/).
 
-We now explain how to run each step. The theoretical concepts supporting the modelling are presented [here](understanding_modelling_methods.qmd).
 
 ![](img/SPC_Schema_full.png)
+
+We now explain how to run each step. The theoretical concepts supporting the modelling are presented [here](understanding_modelling_methods.qmd).
 
 ## Phase 1: Data preparation
 
 ### SPENSER
 
-The original [SPENSER](https://github.com/nismod/microsimulation) model is made up of 5 different GitHub repositories, operating specific parts of the simulation of a synthetic population (gathering the data from ONS, creating individuals, creating households, assigning individuals to households and projecting the population to future years).
+The original [SPENSER](https://github.com/nismod/microsimulation) (Synthetic Population Estimation and Scenario Projection) model is made up of 5 different GitHub repositories, operating specific parts of the simulation of a synthetic population (gathering the data from ONS, creating individuals, creating households, assigning individuals to households and projecting the population to future years).
 We use this [modified version](https://github.com/alan-turing-institute/spc-hpc-pipeline) with instructions for running the full pipeline on a [single machine](https://github.com/alan-turing-institute/spc-hpc-pipeline/blob/main/scripts/full_pipeline/README.md).
 
 The SPENSER microsimulation is split into three steps:
@@ -38,7 +35,7 @@ The SPENSER microsimulation is split into three steps:
 2. [Population synthesis](https://github.com/alan-turing-institute/microsimulation/tree/2373691bd0ff764db129e52ec78d71c58538d9af#static-microsimulation---population): people are sequentially synthesised using marginal census data on gender, age and ethnicity at MSOA resolution for 2011, with population projections used to derive the marginals beyond the reference census year.
 3. [Assignment](https://github.com/alan-turing-institute/microsimulation/tree/2373691bd0ff764db129e52ec78d71c58538d9af#running-the-assignment-algorithm): for a given year, the synthesised population (from step 2) can be assigned to a synthesised household (from step 1), while a ["household representative person"](https://github.com/alan-turing-institute/microsimulation/tree/2373691bd0ff764db129e52ec78d71c58538d9af#methodology) from the synthesised population (step 2) is assigned to each synthesised household (from step 1).
 
-The result of SPENSER is two separate datasets and a merging key: one dataset for individuals, accurate at MSOA level and containing the `sex`, `age` and `ethnicity` [fields](https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz); and one for households, accurate at OA level and containing the `OA11CD`, `HOUSE_nssec8`, `House_type`, `HOUSE_typeCommunal`, `HOUSE_NRooms`, `HOUSE_centralHeat`, `HOUSE_tenure` and `HOUSE_NCars` [fields](https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz) respectively.
+The result of SPENSER is two separate datasets and a merging key: one dataset for individuals, accurate at MSOA level and containing the `sex`, `age` and `ethnicity` [fields](https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz); and one for households, accurate at OA level and containing the `OA11CD`, `HOUSE_nssec8`, `House_type`, `HOUSE_typeCommunal`, `HOUSE_NRooms`, `HOUSE_centralHeat`, `HOUSE_tenure` and `HOUSE_NCars` [fields](https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz).
 
 
 
@@ -51,18 +48,18 @@ The result is a set of data files, some of which will be merged with the outputs
 - A combined extract from the three latest GB Health Surveys (`HSComplete.csv`)
 - An extract from the UK Time Use Survey 2015 (`indivTUS.csv`)
 - A file containing a set of coefficients to estimate the average BMI of individuals in England depending on their age, sex and ethnicity (`BMIdMean.csv`) and a file containing coefficients to obtain the equivalent average BMI in Scotland and Wales (`BMIdiff.csv`)
-- Coefficients to estimate the hourly salary of an employee in England depending on their home region, sex, part-time/full-time status, age and SOC category (`coefFFT.csv`, etc. & `ageRescaleFFT.csv`, etc.).
+- Coefficients to estimate the hourly salary of an employee in England depending on their home region, sex, part-time/full-time status, age and SOC category (`coefFFT.csv`, etc. and `ageRescaleFFT.csv`, etc.).
 - Coefficients to estimate the numbers of hours worked corresponding to the criteria mentioned above (`meanHoursFFT.csv`, etc. and `distribHours.csv`)
 - Centroid coordinates of Output areas in GB (`OACentroids.csv`)
 
-In addition, four files to be used by the second phase of the model are outputted:
+In addition, four files to be used by the second phase of the model are created:
 
 - `diariesRef.csv` contains diaries of typical days extracted from the UK Time Use Survey
 - `businessRegistry.csv` contains a list of all individual workplaces in GB
 - `timeAtHomeIncreaseCTY.csv` contains a reduction in time spent away from home during the pandemic according to Google Mobility reports 
 - `lookUp-GB.csv` is a comprehensive lookup table between GB geographies, including name variants used by Google and OSM and local file names for storage within Azure
 
-To understand the methods supporting the creation of these files, we refer the reader to the corresponding section inside the [modelling methods](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html) section.
+To understand the methods supporting the creation of these files, we refer the reader to the [modelling methods section](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html).
 
 ### Enriching SPENSER
 
@@ -70,18 +67,18 @@ Instructions to run this step can be found under [Step 2: Add to SPENSER](https:
 Line numbers quoted in the following refer to this [script](https://github.com/alan-turing-institute/uatk-spc/blob/main/scripts/data_prep/SPC_pipelineLAD.R).
 
 Once merged into one dataset according to the matching key (l. 13-49), the SPENSER data is enriched with the outputs of the previous step.
-An individual among those sharing the same 5-year age group (extra details for under 18) and sex is drawn from the participants of the Health Survey (l. 56-72).
+An individual among those sharing the same 5-year age group (extra details for under 18) and sex is drawn (uniform distribution) from the participants of the Health Survey (l. 56-72).
 This adds the `id_HS`, `HEALTH_diabetes`, `HEALTH_bloodpressure`, `HEALTH_cvd`, `HEALTH_NMedecines`, `HEALTH_selfAssessed` and `HEALTH_lifeSat` [fields](https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz).
-This join is not spatially differentiated and other matching criteria (ethnicity and nssec8) were retained due to a lack of representativity inside the survey. The BMI field is then added l. 74-89, according to [this method](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#bmi-estimation).
+This join is not spatially differentiated and other potential matching criteria (such as ethnicity and nssec8) were not retained due to a lack of representativity for some groupds inside the survey. The BMI field is then added l. 74-89, according to [this method](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#bmi-estimation).
 
 Each individual that is not a head of household is assigned an nssec8 category (l. 96-108).
-This is done according to nssec8 category distributions among the general population by sex and age groups according to ONS data ([DC6114EW](https://www.nomisweb.co.uk/census/2011/dc6114ew) and [DC6206SC](https://www.nrscotland.gov.uk/news/2014/census-2011-release-3i) datasets).
-An individual among those sharing the same 5-year age group, sex and nssec8 category is drawn from the participants of the UK Time Use Survey (l. 111-125).
+The probability distribution is given by nssec8 category distributions among the general population by sex and age groups according to ONS data ([DC6114EW](https://www.nomisweb.co.uk/census/2011/dc6114ew) and [DC6206SC](https://www.nrscotland.gov.uk/news/2014/census-2011-release-3i) datasets).
+An individual among those sharing the same 5-year age group, sex and nssec8 category is drawn (uniform distribution) from the participants of the UK Time Use Survey (l. 111-125).
 This adds the `id_TUS_hh`, `id_TUS_p`, `pwkstat`, `soc2010`, `sic1d2007`, `sic2d2007`, `netPayWeekly` and `workedHoursWeekly` [fields](https://alan-turing-institute.github.io/uatk-spc/data_sources.html#pop_.csv.gz).
-Note that the `netPayWeekly` and `workedHoursWeekly` fields have a low response rate among participants of the survey.
+Note that the `netPayWeekly` and `workedHoursWeekly` fields had a low response rate among participants of the survey.
 For that reason, we have added a [much more detailed modelling of income](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#income-data), that includes spatial differences at region level (l. 130-140).
 
-Coordinates of the OA where the household's home is located are finally added l. 152-156.
+Coordinates of the centroids of the OAs where the household's home is located are finally added l. 152-156.
 
 ### Azure upload
 

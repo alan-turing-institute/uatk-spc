@@ -25,6 +25,7 @@ book:
         - understanding_modelling_methods.qmd
         - understanding_data_schema.qmd
         - understanding_data_sources.qmd
+    - validation.qmd
     - part: "Advanced"
       chapters:
         - advanced_developer_guide.qmd

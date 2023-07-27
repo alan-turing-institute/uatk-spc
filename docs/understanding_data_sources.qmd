@@ -23,9 +23,9 @@ The look-up table links different geographies of Great Britain together. It is u
 
 In addition,
 
-- "AzureRef": Name of the geographical unit for the County level data folder inside Azure (Lieutenancy Areas -- a.k.a. Ceremonial Counties -- for England, Scottish Police Divisions and ITL321NM for Wales)
+- `AzureRef`: Name of the geographical unit for the County level data folder inside Azure (Lieutenancy Areas -- a.k.a. Ceremonial Counties -- for England, Scottish Police Divisions and ITL321NM for Wales)
 For Wales: ITL321NM
-- "GoogleMob" & "OSM" are alternate spellings used by Google and OSM for their data releases.
+- `GoogleMob` & `OSM` are alternate spellings used by Google and OSM for their data releases.
 
 ## County level data
 
@@ -33,13 +33,14 @@ Files in this section are grouped by country (England, Wales and Scotland), then
 ```
 https://ramp0storage.blob.core.windows.net/countydata-v2-1/[country]/[date]/pop_[area_name].csv.gz
 ```
+where [country], [date] and [area_name] must be replaced accordingly.
 As of July 2023, England contains 5 series of 47 files, Wales 5 series of 12 files and Scotland 5 series of 13 files
 
-### pop_<area_name>.csv.gz {-}
+### pop_[area_name].csv.gz {-}
 
-The data is mainly based on the [2011 UK census](http://dx.doi.org/10.5257/census/aggregate-2011-1), the UK [Time Use Survey 2014-15](http://dx.doi.org/10.5255/UKDA-SN-8128-1) and the health surveys of GB ([England](http://dx.doi.org/10.5255/UKDA-SN-8488-2), [Wales](http://dx.doi.org/10.5255/UKDA-SN-8090-1), [Scotland](http://dx.doi.org/10.5255/UKDA-SN-8737-1)). The SPENSER (Synthetic Population Estimation and Scenario Projection) microsimulation model ([ref](http://dx.doi.org/10.1111/gean.12320)) distributes individuals from the census with MSOA scale constraints into synthetic households with OA constraints. It is able to project this synthetic population in the future according to estimates from the Office for National Statistics (ONS). These data were enriched with some of the content of the other datasets mentioned (the rest of which can be added _a posteriori_ from the identifiers provided). The data have also been complented with a modelling of BMI and salaries. The methods used to join the different datasets are explained in the [methods](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html).
+The data is mainly based on the [2011 UK census](http://dx.doi.org/10.5257/census/aggregate-2011-1), the UK [Time Use Survey 2014-15](http://dx.doi.org/10.5255/UKDA-SN-8128-1) and the health surveys of GB ([England](http://dx.doi.org/10.5255/UKDA-SN-8488-2), [Wales](http://dx.doi.org/10.5255/UKDA-SN-8090-1), [Scotland](http://dx.doi.org/10.5255/UKDA-SN-8737-1)). The SPENSER microsimulation model is used to distribute and project individuals from the census with MSOA scale constraints into synthetic households with OA constraints. These data are enriched with some of the content of the other datasets mentioned (the rest of which can be added _a posteriori_ from the identifiers provided). The data have also been complemented with a modelling of BMI and salaries.
 
-The fields currently contained are detailed [here](https://ramp0storage.blob.core.windows.net/referencedata/pop_Definitions.txt). They are:
+The fields currently contained are detailed in [this `.txt` document](https://ramp0storage.blob.core.windows.net/referencedata/pop_Definitions.txt). They are:
 
 - `pid`: Unique person identifier at GB level within SPC
 - `hid`: Unique household identifier at GB level within SPC
@@ -95,7 +96,7 @@ Contains a breakdown of all business units (i.e. a single workplace) in Great Br
 
 ### `GIS/` {-}
 
-Contains three GIS datasets of GB in GeoJson format taken from [ONS boundaries](https://geoportal.statistics.gov.uk/):
+This directory contains three GIS datasets of GB in GeoJson format taken from [ONS boundaries](https://geoportal.statistics.gov.uk/):
 
 - [OA_2011_Pop20.geojson](https://ramp0storage.blob.core.windows.net/nationaldata-v2/GIS/OA_2011_Pop20.geojson) at OA level
 - [LSOA_2011_Pop20.geojson](https://ramp0storage.blob.core.windows.net/nationaldata-v2/GIS/LSOA_2011_Pop20.geojson) at LSOA level

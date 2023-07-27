@@ -9,7 +9,7 @@ We present here the theoretical principles behind the modelling done in SPC and 
 
 ## SPENSER and QUANT
 
-The generation of the population data by [SPENSER](https://github.com/nismod/microsimulation) and the modelling of trips to schools and retail by [QUANT](https://github.com/maptube/QUANT_RAMP) are detailed in
+The generation of the population data by [SPENSER](https://github.com/nismod/microsimulation) (Synthetic Population Estimation and Scenario Projection) model and the modelling of trips to schools and retail by [QUANT](https://github.com/maptube/QUANT_RAMP) are detailed in
 
 > Lomax N et al. An Open-Source Model for Projecting Small Area Demographic and Land-Use Change. Geographical analysis, 54(3), 599-622 (2022). ([DOI](https://doi.org/10.1111/gean.12320))
 
