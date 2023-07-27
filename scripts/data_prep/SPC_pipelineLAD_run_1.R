@@ -56,38 +56,6 @@ print("adding Health data")
 
 age35g <- sapply(merge$age, createAge35g)
 
-### HSs
-age35gH <- age35g
-if(countryR == "Wales"){
-  age35gH[age35gH > 19] <- 19
-}
-ind <- mcmapply(function(x){findHSEMatch(x,merge$sex,age35gH,HS)},1:nrow(merge), mc.cores = cores)
-merge$id_HS <- HS$id_HS[ind]
-merge$HEALTH_diabetes <- HS$diabetes[ind]
-merge$HEALTH_bloodpressure <- HS$bloodpressure[ind]
-merge$HEALTH_cvd <- HS$cvd[ind]
-merge$HEALTH_NMedicines <- HS$NMedicines[ind]
-merge$HEALTH_selfAssessed <- HS$selfAssessed[ind]
-merge$HEALTH_lifeSat <- HS$lifeSat[ind]
-
-### BMI
-if(countryR == "England"){
-  coefF <- BMIdiff$EnglandF
-  coefM <- BMIdiff$EnglandM
-  minBMI <- 9.72
-} else if(countryR == "Wales"){
-  coefF <- BMIdiff$WalesF
-  coefM <- BMIdiff$WalesM
-  minBMI <- 12.40
-} else{
-  coefF <- BMIdiff$ScotlandF
-  coefM <- BMIdiff$ScotlandM
-  minBMI <- 14.71
-}
-merge$HEALTH_bmi <- mcmapply(function(x){applyBMI(x,merge,dMean,varData)}, 1:nrow(merge), mc.cores = cores)
-merge$HEALTH_bmi[which(merge$HEALTH_bmi < minBMI)] <- minBMI
-
-
 ### TUS
 
 print("adding time use data")
@@ -137,22 +105,6 @@ if(countryR == "England"){
   merge$incomeHAsIf <- NA
   merge$incomeYAsIf <- NA
 }
-
-
-### Events
-
-print("adding events proba")
-
-merge <- addSport(merge)
-merge <- addConcert(merge)
-merge <- addMuseum(merge)
-
-
-### Coordinates
-
-print("adding coordinates")
-
-merge <- merge(merge,OACoords,by.x = "OA11CD",by.y = "OA11CD")
 
 
 ###################
