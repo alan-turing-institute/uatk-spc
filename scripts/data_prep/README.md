@@ -1,6 +1,6 @@
 # Scripts to prepare the input data for SPC
 
-![SPC Schema](https://github.com/alan-turing-institute/uatk-spc/blob/main/docs/img/SPC_Schema_full.png)
+![SPC Schema](https://github.com/alan-turing-institute/uatk-spc/blob/main/docs/img/SPC_Schema_full_new.png)
 
 ## Prerequisites
 The following steps assume the following have been installed:
