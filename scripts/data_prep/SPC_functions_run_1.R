@@ -210,46 +210,18 @@ findTUSMatch <- function(i,merge,indivTUS){
   return(ind)
 }
 
-### Income
+### Income: updated functions given: step 3 of https://github.com/alan-turing-institute/uatk-spc/issues/63#issue-1812350776
 
-drawTime <- function(soc,sex,fulltime,region){
+# Draw income for a specific individual; apply minimum wage rules
+drawIncome <- function(soc,sex,age,fulltime,coefFFTR,coefFPTR,coefMFTR,coefMPTR){
   perc <- floor(runif(1,1,100))
-  if(sex == 2 & fulltime == T){
-    base <- distribHoursFFT[perc + 1]
-    coef <- meanHoursFFT$mean[which(meanHoursFFT$soc == soc & meanHoursFFT$region == region)] / distribHoursFFT[1]
-    res <- base * coef
-  } else if(sex == 2 & fulltime == F){
-    base <- distribHoursFPT[perc + 1]
-    coef <- meanHoursFPT$mean[which(meanHoursFPT$soc == soc & meanHoursFPT$region == region)] / distribHoursFPT[1]
-    res <- base * coef
-  } else if(sex == 1 & fulltime == T){
-    base <- distribHoursMFT[perc + 1]
-    coef <- meanHoursMFT$mean[which(meanHoursMFT$soc == soc & meanHoursMFT$region == region)] / distribHoursMFT[1]
-    res <- base * coef
-  } else if(sex == 1 & fulltime == F){
-    base <- distribHoursMPT[perc + 1]
-    coef <- meanHoursMPT$mean[which(meanHoursMPT$soc == soc & meanHoursMPT$region == region)] / distribHoursMPT[1]
-    res <- base * coef
-  }
-  return(res)
-}
-drawIncome2 <- function(soc,sex,age,fulltime,coefFFTR,coefFPTR,coefMFTR,coefMPTR){
-  perc <- floor(runif(1,1,100))
-  if(sex == 2 & fulltime == T){
-    age2 <- min(max(1,age - 15),71)
-    perc <- ageRescaleFFT[perc,age2]
+  if(sex == 0 & fulltime == T){ # 0 = female, 1 = male, consistent with TUS_HSE dataset
     coefs <- as.numeric(coefFFTR[coefFFTR$soc == soc,3:8])
-  } else if(sex == 2 & fulltime == F){
-    age2 <- min(max(1,age - 15),71)
-    perc <- ageRescaleFPT[perc,age2]
+  } else if(sex == 0 & fulltime == F){
     coefs <- as.numeric(coefFPTR[coefFPTR$soc == soc,3:8])
   } else if(sex == 1 & fulltime == T){
-    age2 <- min(max(1,age - 15),71)
-    perc <- ageRescaleMFT[perc,age2]
     coefs <- as.numeric(coefMFTR[coefMFTR$soc == soc,3:8])
   } else if(sex == 1 & fulltime == F){
-    age2 <- min(max(1,age - 15),71)
-    perc <- ageRescaleMPT[perc,age2]
     coefs <- as.numeric(coefMPTR[coefMPTR$soc == soc,3:8])
   }
   if(perc >= coefs[6]){
@@ -268,8 +240,10 @@ drawIncome2 <- function(soc,sex,age,fulltime,coefFFTR,coefFPTR,coefMFTR,coefMPTR
   }
   return(inc)
 }
-fillIncome2 <- function(idx,data,pwkstat,coefFFTR,coefFPTR,coefMFTR,coefMPTR,region){
-  pwkst <- pwkstat[idx]
+
+# Outputs four types of income (hourly, annual, self-employed as if employed)
+fillIncome <- function(idx,data,pwkstat,coefFFTR,coefFPTR,coefMFTR,coefMPTR){
+  pwkst <- as.numeric(substr(pwkstat[idx],1,2))
   soc <- data$soc2010[idx]
   sex <- data$sex[idx]
   age <- data$age[idx]
@@ -277,58 +251,59 @@ fillIncome2 <- function(idx,data,pwkstat,coefFFTR,coefFPTR,coefMFTR,coefMPTR,reg
   incomeHAsIf <- NA
   incomeY <- NA
   incomeYAsIf <- NA
-  if(soc > 0){
+  if(!is.na(soc)){
     if(pwkst == 1){
-      time <- data$workedHoursWeekly[idx]*52
-      time2 <- 0
-      if(time <= 0){
-        time <- NA
-        time2 <- drawTime(soc,sex,T,region)*52
-      }
-      inc <- drawIncome2(soc,sex,age,T,coefFFTR,coefFPTR,coefMFTR,coefMPTR)
+      time <- (data$pwork[idx]+data$pworkhome[idx])*24*5*52
+      inc <- drawIncome(soc,sex,age,T,coefFFTR,coefFPTR,coefMFTR,coefMPTR)
       incomeH <- inc
       incomeHAsIf <- inc
       incomeY <- inc * time
-      incomeYAsIf <- inc * (time + time2)
+      incomeYAsIf <- inc * time
     } else if(pwkst == 2){
-      time <- data$workedHoursWeekly[idx]*52
-      time2 <- 0
-      if(time <= 0){
-        time <- NA
-        time2 <- drawTime(soc,sex,F,region)*52
-      }
-      inc <- drawIncome2(soc,sex,age,F,coefFFTR,coefFPTR,coefMFTR,coefMPTR)
+      time <- (data$pwork[idx]+data$pworkhome[idx])*24*5*52
+      inc <- drawIncome(soc,sex,age,F,coefFFTR,coefFPTR,coefMFTR,coefMPTR)
       incomeH <- inc
       incomeHAsIf <- inc
       incomeY <- inc * time
-      incomeYAsIf <- inc * (time + time2)
+      incomeYAsIf <- inc * time
     } else if(pwkst == 3 | pwkst == 4){
-      time <- data$workedHoursWeekly[idx]*52
-      time2 <- 0
-      if(time <= 0){
-        time <- 0
-        time2 <- drawTime(soc,sex,T,region)*52
-      }
-      inc <- drawIncome2(soc,sex,age,T,coefFFTR,coefFPTR,coefMFTR,coefMPTR)
+      time <- (data$pwork[idx]+data$pworkhome[idx])*24*5*52
+      inc <- drawIncome(soc,sex,age,T,coefFFTR,coefFPTR,coefMFTR,coefMPTR)
       incomeHAsIf <- inc
-      incomeYAsIf <- inc * (time + time2)
+      incomeYAsIf <- inc * time
     }
   }
   return(cbind(incomeH,incomeY,incomeHAsIf,incomeYAsIf))
 }
-addToData2 <- function(data,region,coefFFT,coefFPT,coefMFT,coefMPT){
-  old <- data
-  pwkstat <- data$pwkstat
+# TODO: fix paths, check dependents
+addToData <- function(county,lookUp,coefFFT,coefFPT,coefMFT,coefMPT){
+  new <- read.csv(paste("/Users/hsalat/RAMP-UA_Misc/TUOutput/processed/tus_hse_",county,".csv",sep = ""))
+  ref <- unique(lookUp$OldTU[which(lookUp$NewTU == county)])
+  ref <- ref[!is.na(ref)]
+  n <- length(ref)
+  old <- read.csv(paste("/Users/hsalat/RAMP-UA_Misc/TUInput/lad_tus_hse_",ref[1],".txt",sep = ""))
+  if(n > 1){
+    for(i in 2:n){
+      old2 <- read.csv(paste("/Users/hsalat/RAMP-UA_Misc/TUInput/lad_tus_hse_",ref[i],".txt",sep = ""))
+      old <- rbind(old,old2)
+    }
+  }
+  if(nrow(new) != nrow(old)) stop('Mismatch between the two datasets')
+  old3 <- old[order(old$area,old$hid,-old$age),]
+  pwkstat <- old3$pwkstat
+  region <- unique(lookUp$ITL121NM[which(lookUp$MSOA11CD == new$MSOA11CD[1])])
+  region <- regions[sapply(regions,function(x) {grepl(x, region)})][1]
   coefFFTR <- coefFFT[which(coefFFT$region == region),]
   coefFPTR <- coefFPT[which(coefFFT$region == region),]
   coefMFTR <- coefMFT[which(coefFFT$region == region),]
   coefMPTR <- coefMPT[which(coefFFT$region == region),]
-  incs <- mcmapply(function(x){fillIncome2(x,old,pwkstat,coefFFTR,coefFPTR,coefMFTR,coefMPTR,region)}, 1:nrow(old), mc.cores = detectCores())
-  old$incomeH <- incs[1,]
-  old$incomeY <- incs[2,]
-  old$incomeHAsIf <- incs[3,]
-  old$incomeYAsIf <- incs[4,]
-  return(old)
+  incs <- mcmapply(function(x){fillIncome(x,new,pwkstat,coefFFTR,coefFPTR,coefMFTR,coefMPTR)}, 1:nrow(new), mc.cores = detectCores())
+  new$pwkstat <- pwkstat
+  new$incomeH <- incs[1,]
+  new$incomeY <- incs[2,]
+  new$incomeHAsIf <- incs[3,]
+  new$incomeYAsIf <- incs[4,]
+  return(new)
 }
 
 ### Events
