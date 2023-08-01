@@ -5,8 +5,7 @@
 
 countryR <- ifelse(grepl("E",lad),"England",ifelse(grepl("W",lad),"Wales","Scotland"))
 
-folderIn <- paste("/mnt/vmfileshare/SCP_Outputs/input/", countryR, "/", date, "/", sep = "") # Link to SPENSER data
-
+folderIn <- paste(spenserInput, countryR, "/", date, "/", sep = "") # Link to SPENSER data
 HS <- HST %>% filter(country == countryR)
 
 
@@ -165,6 +164,8 @@ merge <- merge[order(merge$pid),c(2:3,1,5:46)]
 row.names(merge) <- 1:nrow(merge)
 
 print("... and writing output")
-
-write.table(merge,paste(folderOut, countryR,"/", date,"/",lad,".csv",sep=""),sep = ",",row.names = F)
+outpath <- paste(folderOut, countryR, "/", date, "/", sep="")
+outfile <- paste(outpath, lad, ".csv",sep="")
+dir.create(outpath, recursive = TRUE)
+write.table(merge, outfile, sep = ",", row.names = F)
 

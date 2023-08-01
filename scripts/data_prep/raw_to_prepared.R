@@ -14,7 +14,7 @@ library(readxl)
 
 folderIn <- "Data/dl/"
 folderOut <- "Data/prepData/"
-APIKey <- read_file("raw_to_prepared_nomisAPIKey.txt")
+APIKey <- Sys.getenv("API_KEY")
 options(timeout=600)
   
 set.seed(12345)
@@ -772,7 +772,7 @@ TUS <- TUS[,c(22,3:5,23:39)]
 # Merge with indivTUS to get demographics
 test <- indivTUS[,1:7]
 test$uniqueID <- paste(test$id_TUS,test$pnum, sep = "_") 
-TUS$uniqueIDb <- substr(b$uniqueID,1,10)
+TUS$uniqueIDb <- substr(TUS$uniqueID,1,10)
 TUS <- merge(TUS,test, by.x = "uniqueIDb", by.y = "uniqueID", all.x = T)
 TUS <- TUS[!is.na(TUS$age),]
 row.names(TUS) <- 1:nrow(TUS)
@@ -843,13 +843,13 @@ write.table(gm,paste(folderOut,"timeAtHomeIncreaseCTY.csv",sep = ""),row.names =
 print("Working on the look-up")
 
 # Old European NUTS geographies, now renamed "ITL"
-if(!file.exists(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv",sep = ""))){
+if(!file.exists(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.xlsx",sep = ""))){
   download.file("https://www.arcgis.com/sharing/rest/content/items/cdb629f13c8f4ebc86f30e8fe3cddda4/data",destfile = paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.xlsx",sep = ""))
 } else{
-  print(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv"," already exists, not downloading again",sep = ""))
+  print(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.xlsx"," already exists, not downloading again",sep = ""))
 }
 
-itlRef <- read_excel(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.csv",sep = ""), sheet = 1)
+itlRef <- read_excel(paste(folderIn,"LAD20_LAU121_ITL321_ITL221_ITL121_UK_LU_v2.xlsx",sep = ""), sheet = 1)
 itlRef <- itlRef[,c(1,5:10)]
 itlRef <- itlRef[!duplicated(itlRef),]
 
@@ -902,7 +902,7 @@ oatoOtherEW$RGN20NM[wales] <- NA
 oatoOtherEW$RGN20NM[oatoOtherEW$RGN20NM == "East of England"] <- "East"
 
 oatoOtherEW <- oatoOtherEW[order(oatoOtherEW$LSOA11CD),c(4:6,1,7,2,8,12:20,9:11)]
-rownames(oatoOtherS) <- 1:nrow(oatoOtherS)
+rownames(oatoOtherEW) <- 1:nrow(oatoOtherEW)
 
 
 ###
@@ -981,7 +981,7 @@ write.table(oatoOther,paste(folderOut,"lookUp-GB.csv",sep = ""),row.names = F, s
 OACoords <- read.csv(paste(folderIn,"Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv",sep = ""))
 
 download.file("https://www.nrscotland.gov.uk/files/geography/output-area-2011-pwc.zip",destfile = paste(folderIn,"Output_Areas_2011_Scotland.zip",sep = ""))
-unzip(paste(folderIn,"Output_Areas_2011_Scotland",sep = ""),exdir=folderIn)
+unzip(paste(folderIn,"Output_Areas_2011_Scotland.zip",sep = ""),exdir=folderIn)
 OACoords_S <- read.dbf(paste(folderIn,"OutputArea2011_PWC.dbf",sep = ""))
 
 ukgrid = "+init=epsg:27700"

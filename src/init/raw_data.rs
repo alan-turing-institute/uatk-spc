@@ -31,6 +31,7 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     let mut osm_needed = BTreeSet::new();
     for rec in csv::Reader::from_reader(File::open(lookup_path)?).deserialize() {
         let rec: LookupRow = rec?;
+        results.oa_to_msoa.insert(rec.oa, rec.msoa.clone());
         if input.msoas.contains(&rec.msoa) {
             pop_files_needed.insert((rec.country, rec.azure_ref));
             osm_needed.insert(rec.osm);
@@ -39,7 +40,6 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
                 .entry(rec.county)
                 .or_insert_with(Vec::new)
                 .push(rec.msoa.clone());
-            results.oa_to_msoa.insert(rec.oa, rec.msoa);
         }
     }
     info!(
@@ -52,8 +52,8 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     for (country, area) in pop_files_needed {
         results.population_files.push(gunzip(
             download_file(
-                &format!("countydata-v2/{country}/{}", input.year),
-                format!("pop_{area}_{}.csv.gz", input.year),
+                &format!("countydata-v2-1/{country}/{}", input.year),
+                format!("pop_{area}_{}.csv.gz", input.year,),
             )
             .await?,
         )?);
@@ -62,13 +62,13 @@ pub async fn grab_raw_data(input: &Input) -> Result<RawDataResults> {
     for osm_url in osm_needed {
         let zip_path = download(
             &osm_url,
-            format!("data/raw_data/countydata-v2/OSM/{}", filename(&osm_url)),
+            format!("data/raw_data/countydata-v2-1/OSM/{}", filename(&osm_url)),
         )
         .await?;
         // TODO .shp.zip, so we have to do basename twice
         let output_dir = format!(
-            "data/raw_data/countydata-v2/OSM/{}/",
-            basename(&basename(&osm_url))
+            "data/raw_data/countydata-v2-1/OSM/{}/",
+            basename(basename(&osm_url))
         );
         unzip(zip_path, &output_dir)?;
         results.osm_directories.push(output_dir);

@@ -63,7 +63,8 @@ fitted3 <- function(x,a0,a1,a2,a3){
 # Find BMI depending on age, sex and ethnicity
 findBMI <- function(age,sex,origin,dMean,varData){
   if(age < 16){
-    res <- NA
+    # Return NA and do not calculate further
+    return(NA)
   }else{
     if(sex == 2){
       coef <- coefF[createAge35g(age)]
