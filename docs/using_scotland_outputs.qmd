@@ -3,7 +3,7 @@ title: "Outputs for Scotland (Police Divisions)"
 toc: true
 ---
 
-Police divisions are a convenient grouping of unitary districts. Check the year you would like to explore and pick the corresponding file based on the region you are interested. Remember if you want to explore the data you can load the output in our [SPC explorer](https://alan-turing-institute.github.io/uatk-spc/app/)
+Police divisions are a convenient grouping of unitary districts. Check the year you would like to explore and pick the corresponding file based on the region you are interested. Remember if you want to explore the data you can load the output in our [SPC explorer](https://alan-turing-institute.github.io/uatk-spc/app/).
 
 - 2012:
   - [argyll-and-west-dunbartonshire.pb.gz](https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Scotland/2012/argyll-and-west-dunbartonshire.pb.gz)

@@ -1,0 +1,409 @@
+---
+title: "Performance"
+toc: true
+---
+
+The following table summarizes the resources SPC needs to run in different areas.
+
+|Year|                Area                      |MSOAs    |  Households  |Individuals| Pb_file_size  |Runtime|(Commute)|Memory_use|
+|----|------------------------------------------|:-------:|--------------|-----------|------------|-------|-----------|----------|
+|2012|           England/bedfordshire           |    74   |    245,166   |  647,272 | 256.91 MiB | 7 sec|    2 sec    | 848.99 MiB |
+|2020|           England/bedfordshire           |    74   |    272,875   |  674,044 | 271.73 MiB | 7 sec|    2 sec    | 922.86 MiB |
+|2022|           England/bedfordshire           |    74   |    309,706   |  703,582 | 277.82 MiB | 7 sec|    2 sec    | 929.78 MiB |
+|2032|           England/bedfordshire           |    74   |    309,706   |  703,582 | 277.82 MiB | 7 sec|    2 sec    | 929.78 MiB |
+|2039|           England/bedfordshire           |    74   |    329,061   |  715,797 | 278.47 MiB | 7 sec|    2 sec    | 927.74 MiB |
+|2012|             England/berkshire            |   107   |    342,167   |  890,543 | 356.08 MiB |10 sec|    4 sec    |  1.06 GiB  |
+|2020|             England/berkshire            |   107   |    365,905   |  918,258 | 373.39 MiB |10 sec|    4 sec    |  1.10 GiB  |
+|2022|             England/berkshire            |   107   |    394,446   |  941,655 | 368.41 MiB |10 sec|    4 sec    |  1.08 GiB  |
+|2032|             England/berkshire            |   107   |    394,446   |  941,655 | 368.41 MiB |10 sec|    4 sec    |  1.08 GiB  |
+|2039|             England/berkshire            |   107   |    408,604   |  949,986 | 367.25 MiB |10 sec|    4 sec    |  1.07 GiB  |
+|2012|              England/bristol             |    55   |    182,299   |  448,233 | 173.75 MiB | 5 sec|    1 sec    | 527.15 MiB |
+|2020|              England/bristol             |    55   |    196,940   |  470,039 | 184.00 MiB | 5 sec|    1 sec    | 547.40 MiB |
+|2022|              England/bristol             |    55   |    216,197   |  503,014 | 192.51 MiB | 5 sec|    1 sec    | 559.70 MiB |
+|2032|              England/bristol             |    55   |    216,197   |  503,014 | 192.51 MiB | 6 sec|    1 sec    | 559.70 MiB |
+|2039|              England/bristol             |    55   |    227,770   |  521,371 | 199.73 MiB | 6 sec|    1 sec    | 573.32 MiB |
+|2012|          England/buckinghamshire         |    99   |    301,486   |  786,221 | 314.40 MiB | 9 sec|    3 sec    | 1007.27 MiB|
+|2020|          England/buckinghamshire         |    99   |    327,554   |  816,518 | 331.16 MiB | 9 sec|    3 sec    |  1.02 GiB  |
+|2022|          England/buckinghamshire         |    99   |    333,801   |  824,863 | 334.87 MiB | 9 sec|    3 sec    |  1.03 GiB  |
+|2032|          England/buckinghamshire         |    99   |    363,840   |  844,684 | 331.67 MiB | 9 sec|    3 sec    |  1.01 GiB  |
+|2039|          England/buckinghamshire         |    99   |    381,583   |  855,739 | 332.20 MiB | 9 sec|    3 sec    |  1.01 GiB  |
+|2012|          England/cambridgeshire          |    98   |    327,257   |  832,980 | 323.39 MiB | 9 sec|    3 sec    | 1013.07 MiB|
+|2020|          England/cambridgeshire          |    98   |    348,522   |  863,250 | 341.20 MiB | 9 sec|    3 sec    |  1.03 GiB  |
+|2022|          England/cambridgeshire          |    98   |    377,634   |  907,166 | 348.79 MiB | 9 sec|    3 sec    |  1.03 GiB  |
+|2032|          England/cambridgeshire          |    98   |    377,634   |  907,166 | 348.79 MiB | 9 sec|    3 sec    |  1.03 GiB  |
+|2039|          England/cambridgeshire          |    98   |    392,478   |  924,170 | 351.43 MiB | 9 sec|    3 sec    |  1.04 GiB  |
+|2012|             England/cheshire             |   139   |    441,084   | 1,042,065| 402.31 MiB |12 sec|    4 sec    |  1.13 GiB  |
+|2020|             England/cheshire             |   139   |    464,134   | 1,070,597| 416.52 MiB |12 sec|    4 sec    |  1.46 GiB  |
+|2022|             England/cheshire             |   139   |    489,476   | 1,125,198| 425.44 MiB |12 sec|    4 sec    |  1.47 GiB  |
+|2032|             England/cheshire             |   139   |    489,476   | 1,125,198| 425.44 MiB |12 sec|    4 sec    |  1.47 GiB  |
+|2039|             England/cheshire             |   139   |    501,501   | 1,149,515| 431.28 MiB |12 sec|    4 sec    |  1.48 GiB  |
+|2012|             England/cornwall             |    74   |    233,710   |  551,951 | 208.93 MiB | 7 sec|    2 sec    | 744.32 MiB |
+|2020|             England/cornwall             |    74   |    248,145   |  579,460 | 220.51 MiB | 7 sec|    2 sec    | 766.20 MiB |
+|2022|             England/cornwall             |    74   |    251,934   |  590,365 | 224.28 MiB | 7 sec|    2 sec    | 773.13 MiB |
+|2032|             England/cornwall             |    74   |    271,147   |  636,573 | 234.01 MiB | 7 sec|    2 sec    | 829.51 MiB |
+|2039|             England/cornwall             |    74   |    281,563   |  660,164 | 240.35 MiB | 7 sec|    2 sec    | 839.16 MiB |
+|2012|              England/cumbria             |    64   |    222,586   |  498,624 | 188.07 MiB | 6 sec|    1 sec    | 547.25 MiB |
+|2020|              England/cumbria             |    64   |    226,893   |  499,873 | 188.76 MiB | 6 sec|    1 sec    | 548.43 MiB |
+|2022|              England/cumbria             |    64   |    230,206   |  499,840 | 183.22 MiB | 6 sec|    1 sec    | 533.91 MiB |
+|2032|              England/cumbria             |    64   |    230,206   |  499,840 | 183.22 MiB | 6 sec|    1 sec    | 533.91 MiB |
+|2039|              England/cumbria             |    64   |    231,202   |  498,475 | 181.62 MiB | 6 sec|    1 sec    | 530.88 MiB |
+|2012|            England/derbyshire            |   131   |    436,276   | 1,035,356| 397.76 MiB |11 sec|    4 sec    |  1.12 GiB  |
+|2020|            England/derbyshire            |   131   |    459,743   | 1,064,406| 409.77 MiB |11 sec|    4 sec    |  1.44 GiB  |
+|2022|            England/derbyshire            |   131   |    489,764   | 1,122,078| 419.53 MiB |12 sec|    4 sec    |  1.45 GiB  |
+|2032|            England/derbyshire            |   131   |    489,764   | 1,122,078| 419.53 MiB |12 sec|    4 sec    |  1.45 GiB  |
+|2039|            England/derbyshire            |   131   |    505,314   | 1,152,518| 429.02 MiB |12 sec|    4 sec    |  1.47 GiB  |
+|2012|               England/devon              |   156   |    494,106   | 1,165,952| 438.76 MiB |13 sec|    4 sec    |  1.49 GiB  |
+|2020|               England/devon              |   156   |    523,033   | 1,212,387| 459.60 MiB |13 sec|    4 sec    |  1.53 GiB  |
+|2022|               England/devon              |   156   |    567,011   | 1,304,874| 478.87 MiB |14 sec|    4 sec    |  1.64 GiB  |
+|2032|               England/devon              |   156   |    567,011   | 1,304,874| 478.87 MiB |14 sec|    5 sec    |  1.64 GiB  |
+|2039|               England/devon              |   156   |    589,178   | 1,342,775| 488.39 MiB |14 sec|    5 sec    |  1.66 GiB  |
+|2012|              England/dorset              |    95   |    328,906   |  761,766 | 285.99 MiB | 8 sec|    2 sec    | 931.64 MiB |
+|2020|              England/dorset              |    95   |    345,862   |  777,887 | 295.20 MiB | 8 sec|    2 sec    | 951.30 MiB |
+|2022|              England/dorset              |    95   |    350,392   |  782,725 | 296.83 MiB | 8 sec|    2 sec    | 955.86 MiB |
+|2032|              England/dorset              |    95   |    375,160   |  802,953 | 294.92 MiB | 8 sec|    2 sec    | 945.43 MiB |
+|2039|              England/dorset              |    95   |    389,694   |  810,856 | 294.90 MiB | 8 sec|    2 sec    | 945.59 MiB |
+|2012|              England/durham              |   117   |    390,472   |  911,601 | 349.81 MiB | 9 sec|    3 sec    |  1.03 GiB  |
+|2020|              England/durham              |   117   |    407,828   |  930,184 | 359.62 MiB | 9 sec|    3 sec    |  1.05 GiB  |
+|2022|              England/durham              |   117   |    425,611   |  952,801 | 356.65 MiB | 9 sec|    3 sec    |  1.03 GiB  |
+|2032|              England/durham              |   117   |    425,611   |  952,801 | 356.65 MiB | 9 sec|    3 sec    |  1.03 GiB  |
+|2039|              England/durham              |   117   |    434,593   |  959,555 | 357.69 MiB | 9 sec|    3 sec    |  1.04 GiB  |
+|2012|            England/east-sussex           |   102   |    355,257   |  827,703 | 313.77 MiB | 9 sec|    3 sec    | 987.24 MiB |
+|2020|            England/east-sussex           |   102   |    380,894   |  853,970 | 324.07 MiB | 9 sec|    3 sec    | 1006.06 MiB|
+|2022|            England/east-sussex           |   102   |    423,181   |  895,907 | 329.61 MiB | 9 sec|    3 sec    | 1008.52 MiB|
+|2032|            England/east-sussex           |   102   |    423,181   |  895,907 | 329.61 MiB | 9 sec|    3 sec    | 1008.52 MiB|
+|2039|            England/east-sussex           |   102   |    446,000   |  915,014 | 335.50 MiB | 9 sec|    3 sec    | 1020.68 MiB|
+|2012|     England/east-yorkshire-with-hull     |    75   |    255,848   |  593,271 | 227.51 MiB | 7 sec|    2 sec    | 778.67 MiB |
+|2020|     England/east-yorkshire-with-hull     |    75   |    262,609   |  602,286 | 233.16 MiB | 7 sec|    2 sec    | 834.96 MiB |
+|2022|     England/east-yorkshire-with-hull     |    75   |    272,805   |  613,721 | 230.36 MiB | 7 sec|    2 sec    | 824.41 MiB |
+|2032|     England/east-yorkshire-with-hull     |    75   |    272,805   |  613,721 | 230.36 MiB | 7 sec|    2 sec    | 824.42 MiB |
+|2039|     England/east-yorkshire-with-hull     |    75   |    277,770   |  617,357 | 230.47 MiB | 7 sec|    2 sec    | 824.92 MiB |
+|2012|               England/essex              |   211   |    722,974   | 1,786,310| 690.86 MiB |19 sec|    9 sec    |  2.06 GiB  |
+|2020|               England/essex              |   211   |    773,454   | 1,857,205| 726.11 MiB |20 sec|    9 sec    |  2.13 GiB  |
+|2022|               England/essex              |   211   |    858,552   | 1,981,994| 761.49 MiB |21 sec|    9 sec    |  2.19 GiB  |
+|2032|               England/essex              |   211   |    858,552   | 1,981,994| 761.49 MiB |21 sec|    10 sec   |  2.19 GiB  |
+|2039|               England/essex              |   211   |    906,640   | 2,042,404| 777.80 MiB |22 sec|    10 sec   |  2.21 GiB  |
+|2012|          England/gloucestershire         |   107   |    365,240   |  889,836 | 344.21 MiB |10 sec|    3 sec    |  1.02 GiB  |
+|2020|          England/gloucestershire         |   107   |    392,643   |  933,909 | 362.94 MiB |11 sec|    3 sec    |  1.06 GiB  |
+|2022|          England/gloucestershire         |   107   |    432,216   | 1,025,077| 389.60 MiB |11 sec|    3 sec    |  1.10 GiB  |
+|2032|          England/gloucestershire         |   107   |    432,216   | 1,025,077| 389.60 MiB |11 sec|    3 sec    |  1.10 GiB  |
+|2039|          England/gloucestershire         |   107   |    453,383   | 1,068,484| 403.92 MiB |11 sec|    3 sec    |  1.43 GiB  |
+|2012|          England/greater-london          |   983   |   3,287,651  | 8,587,955|  3.28 GiB  | 5 min|    4 min    |  11.80 GiB |
+|2020|          England/greater-london          |   983   |   3,578,616  | 8,992,494|  3.48 GiB  | 5 min|    4 min    |  12.22 GiB |
+|2022|          England/greater-london          |   983   |   3,645,459  | 9,105,919|  3.53 GiB  | 5 min|    4 min    |  12.31 GiB |
+|2032|          England/greater-london          |   983   |   4,001,897  | 9,461,273|  3.55 GiB  | 5 min|    5 min    |  12.26 GiB |
+|2039|          England/greater-london          |   983   |   4,233,367  | 9,697,960|  3.59 GiB  | 6 min|    5 min    |  12.96 GiB |
+|2012|        England/greater-manchester        |   346   |   1,128,371  | 2,745,455|  1.05 GiB  |40 sec|    26 sec   |  3.56 GiB  |
+|2020|        England/greater-manchester        |   346   |   1,192,547  | 2,840,431|  1.10 GiB  |41 sec|    27 sec   |  3.66 GiB  |
+|2022|        England/greater-manchester        |   346   |   1,272,689  | 2,974,954|  1.13 GiB  |43 sec|    27 sec   |  3.69 GiB  |
+|2032|        England/greater-manchester        |   346   |   1,272,689  | 2,974,954|  1.13 GiB  |43 sec|    28 sec   |  3.69 GiB  |
+|2039|        England/greater-manchester        |   346   |   1,319,090  | 3,049,727|  1.15 GiB  |45 sec|    29 sec   |  3.73 GiB  |
+|2012|             England/hampshire            |   225   |    733,611   | 1,810,518| 698.19 MiB |21 sec|    10 sec   |  2.07 GiB  |
+|2020|             England/hampshire            |   225   |    777,116   | 1,861,250| 721.78 MiB |21 sec|    10 sec   |  2.12 GiB  |
+|2022|             England/hampshire            |   225   |    836,451   | 1,931,669| 729.13 MiB |21 sec|    10 sec   |  2.12 GiB  |
+|2032|             England/hampshire            |   225   |    836,451   | 1,931,669| 729.13 MiB |21 sec|    10 sec   |  2.12 GiB  |
+|2039|             England/hampshire            |   225   |    867,417   | 1,960,190| 735.66 MiB |22 sec|    10 sec   |  2.13 GiB  |
+|2012|           England/herefordshire          |    23   |    79,083    |  188,362 |  72.22 MiB | 3 sec|    1 sec    | 234.79 MiB |
+|2020|           England/herefordshire          |    23   |    83,238    |  195,194 |  74.72 MiB | 3 sec|    1 sec    | 239.26 MiB |
+|2022|           England/herefordshire          |    23   |    89,574    |  209,784 |  77.64 MiB | 3 sec|    1 sec    | 242.72 MiB |
+|2032|           England/herefordshire          |    23   |    89,574    |  209,784 |  77.64 MiB | 3 sec|    1 sec    | 242.72 MiB |
+|2039|           England/herefordshire          |    23   |    92,605    |  216,508 |  79.44 MiB | 3 sec|    1 sec    | 245.59 MiB |
+|2012|           England/hertfordshire          |   153   |    457,276   | 1,160,155| 458.74 MiB |13 sec|    5 sec    |  1.56 GiB  |
+|2020|           England/hertfordshire          |   153   |    494,661   | 1,190,043| 477.27 MiB |13 sec|    5 sec    |  1.59 GiB  |
+|2022|           England/hertfordshire          |   153   |    546,573   | 1,219,124| 476.65 MiB |13 sec|    5 sec    |  1.67 GiB  |
+|2032|           England/hertfordshire          |   153   |    546,573   | 1,219,124| 476.65 MiB |13 sec|    5 sec    |  1.67 GiB  |
+|2039|           England/hertfordshire          |   153   |    575,179   | 1,233,573| 477.07 MiB |13 sec|    5 sec    |  1.67 GiB  |
+|2012|           England/isle-of-wight          |    18   |    61,636    |  139,732 |  53.88 MiB | 3 sec|    1 sec    | 188.67 MiB |
+|2020|           England/isle-of-wight          |    18   |    65,140    |  143,268 |  54.99 MiB | 3 sec|    1 sec    | 190.34 MiB |
+|2022|           England/isle-of-wight          |    18   |    70,496    |  151,582 |  55.55 MiB | 3 sec|    1 sec    | 200.88 MiB |
+|2032|           England/isle-of-wight          |    18   |    70,496    |  151,582 |  55.55 MiB | 3 sec|    1 sec    | 200.88 MiB |
+|2039|           England/isle-of-wight          |    18   |    72,968    |  154,841 |  56.14 MiB | 3 sec|    1 sec    | 202.02 MiB |
+|2012|               England/kent               |   220   |    718,544   | 1,793,702| 700.26 MiB |19 sec|    8 sec    |  2.08 GiB  |
+|2020|               England/kent               |   220   |    781,933   | 1,873,451| 737.36 MiB |20 sec|    9 sec    |  2.15 GiB  |
+|2022|               England/kent               |   220   |    875,515   | 2,008,857| 773.40 MiB |20 sec|    9 sec    |  2.21 GiB  |
+|2032|               England/kent               |   220   |    875,515   | 2,008,857| 773.40 MiB |20 sec|    9 sec    |  2.21 GiB  |
+|2039|               England/kent               |   220   |    926,571   | 2,069,087| 788.63 MiB |21 sec|    9 sec    |  2.23 GiB  |
+|2012|            England/lancashire            |   191   |    619,861   | 1,476,469| 572.04 MiB |16 sec|    7 sec    |  1.83 GiB  |
+|2020|            England/lancashire            |   191   |    640,196   | 1,511,896| 589.88 MiB |16 sec|    7 sec    |  1.87 GiB  |
+|2022|            England/lancashire            |   191   |    663,637   | 1,567,390| 594.59 MiB |16 sec|    7 sec    |  1.87 GiB  |
+|2032|            England/lancashire            |   191   |    663,637   | 1,567,390| 594.59 MiB |16 sec|    7 sec    |  1.87 GiB  |
+|2039|            England/lancashire            |   191   |    674,387   | 1,591,908| 600.12 MiB |17 sec|    7 sec    |  1.88 GiB  |
+|2012|          England/leicestershire          |   120   |    391,605   | 1,014,485| 394.46 MiB |10 sec|    4 sec    |  1.12 GiB  |
+|2020|          England/leicestershire          |   120   |    418,618   | 1,073,842| 419.67 MiB |11 sec|    4 sec    |  1.47 GiB  |
+|2022|          England/leicestershire          |   120   |    424,923   | 1,092,677| 426.66 MiB |11 sec|    4 sec    |  1.49 GiB  |
+|2032|          England/leicestershire          |   120   |    460,335   | 1,178,746| 449.47 MiB |12 sec|    5 sec    |  1.52 GiB  |
+|2039|          England/leicestershire          |   120   |    482,373   | 1,225,824| 464.68 MiB |12 sec|    4 sec    |  1.55 GiB  |
+|2012|           England/lincolnshire           |   134   |    449,394   | 1,064,403| 403.11 MiB |11 sec|    4 sec    |  1.43 GiB  |
+|2020|           England/lincolnshire           |   134   |    475,646   | 1,098,403| 419.38 MiB |11 sec|    4 sec    |  1.46 GiB  |
+|2022|           England/lincolnshire           |   134   |    507,295   | 1,152,299| 427.62 MiB |11 sec|    4 sec    |  1.47 GiB  |
+|2032|           England/lincolnshire           |   134   |    507,295   | 1,152,299| 427.62 MiB |11 sec|    4 sec    |  1.47 GiB  |
+|2039|           England/lincolnshire           |   134   |    523,548   | 1,172,923| 430.89 MiB |11 sec|    4 sec    |  1.47 GiB  |
+|2012|            England/merseyside            |   184   |    603,483   | 1,399,209| 533.99 MiB |14 sec|    6 sec    |  1.75 GiB  |
+|2020|            England/merseyside            |   184   |    632,617   | 1,435,755| 553.36 MiB |14 sec|    6 sec    |  1.79 GiB  |
+|2022|            England/merseyside            |   184   |    665,766   | 1,498,518| 570.24 MiB |14 sec|    6 sec    |  1.82 GiB  |
+|2032|            England/merseyside            |   184   |    665,766   | 1,498,518| 570.24 MiB |14 sec|    6 sec    |  1.82 GiB  |
+|2039|            England/merseyside            |   184   |    685,165   | 1,528,037| 577.51 MiB |15 sec|    6 sec    |  1.83 GiB  |
+|2012|              England/norfolk             |   110   |    374,491   |  882,793 | 333.12 MiB |10 sec|    3 sec    | 1017.08 MiB|
+|2020|              England/norfolk             |   110   |    397,770   |  916,799 | 348.46 MiB |10 sec|    3 sec    |  1.02 GiB  |
+|2022|              England/norfolk             |   110   |    432,187   |  982,755 | 362.33 MiB |10 sec|    3 sec    |  1.04 GiB  |
+|2032|              England/norfolk             |   110   |    432,187   |  982,755 | 362.33 MiB |10 sec|    3 sec    |  1.04 GiB  |
+|2039|              England/norfolk             |   110   |    450,068   | 1,013,214| 371.44 MiB |10 sec|    3 sec    |  1.06 GiB  |
+|2012|          England/north-yorkshire         |   138   |    460,050   | 1,085,067| 413.12 MiB |12 sec|    4 sec    |  1.45 GiB  |
+|2020|          England/north-yorkshire         |   138   |    478,639   | 1,107,928| 423.25 MiB |12 sec|    4 sec    |  1.47 GiB  |
+|2022|          England/north-yorkshire         |   138   |    499,392   | 1,134,723| 420.66 MiB |12 sec|    4 sec    |  1.45 GiB  |
+|2032|          England/north-yorkshire         |   138   |    499,392   | 1,134,723| 420.66 MiB |12 sec|    4 sec    |  1.45 GiB  |
+|2039|          England/north-yorkshire         |   138   |    509,099   | 1,143,895| 421.58 MiB |12 sec|    4 sec    |  1.46 GiB  |
+|2012|         England/northamptonshire         |    91   |    289,575   |  720,263 | 284.41 MiB | 8 sec|    2 sec    | 941.24 MiB |
+|2020|         England/northamptonshire         |    91   |    316,553   |  762,382 | 304.38 MiB | 8 sec|    2 sec    | 981.06 MiB |
+|2022|         England/northamptonshire         |    91   |    352,529   |  828,003 | 320.83 MiB | 9 sec|    3 sec    | 1005.56 MiB|
+|2032|         England/northamptonshire         |    91   |    352,529   |  828,003 | 320.83 MiB | 9 sec|    3 sec    | 1005.56 MiB|
+|2039|         England/northamptonshire         |    91   |    370,555   |  855,812 | 328.05 MiB | 9 sec|    3 sec    | 1016.77 MiB|
+|2012|          England/northumberland          |    40   |    138,928   |  315,894 | 120.67 MiB | 5 sec|    1 sec    | 423.02 MiB |
+|2020|          England/northumberland          |    40   |    143,516   |  322,616 | 121.95 MiB | 5 sec|    1 sec    | 423.78 MiB |
+|2022|          England/northumberland          |    40   |    148,792   |  333,456 | 122.08 MiB | 5 sec|    1 sec    | 421.39 MiB |
+|2032|          England/northumberland          |    40   |    148,792   |  333,456 | 122.08 MiB | 5 sec|    1 sec    | 421.39 MiB |
+|2039|          England/northumberland          |    40   |    150,259   |  337,186 | 122.26 MiB | 5 sec|    1 sec    | 421.38 MiB |
+|2012|          England/nottinghamshire         |   138   |    460,022   | 1,123,005| 432.55 MiB |12 sec|    4 sec    |  1.49 GiB  |
+|2020|          England/nottinghamshire         |   138   |    486,163   | 1,169,489| 453.88 MiB |12 sec|    4 sec    |  1.53 GiB  |
+|2022|          England/nottinghamshire         |   138   |    522,944   | 1,248,804| 473.55 MiB |12 sec|    5 sec    |  1.56 GiB  |
+|2032|          England/nottinghamshire         |   138   |    522,944   | 1,248,804| 473.55 MiB |12 sec|    5 sec    |  1.56 GiB  |
+|2039|          England/nottinghamshire         |   138   |    543,291   | 1,281,812| 482.41 MiB |13 sec|    5 sec    |  1.66 GiB  |
+|2012|            England/oxfordshire           |    86   |    261,235   |  671,997 | 260.47 MiB | 7 sec|    2 sec    | 852.78 MiB |
+|2020|            England/oxfordshire           |    86   |    274,908   |  695,490 | 271.66 MiB | 7 sec|    2 sec    | 918.84 MiB |
+|2022|            England/oxfordshire           |    86   |    293,368   |  729,866 | 275.44 MiB | 7 sec|    2 sec    | 919.28 MiB |
+|2032|            England/oxfordshire           |    86   |    293,368   |  729,866 | 275.44 MiB | 8 sec|    2 sec    | 919.28 MiB |
+|2039|            England/oxfordshire           |    86   |    303,035   |  743,227 | 277.55 MiB | 8 sec|    2 sec    | 922.13 MiB |
+|2012|              England/rutland             |    5    |    14,912    |  38,314  |  16.37 MiB | 2 sec|    1 sec    |  53.95 MiB |
+|2020|              England/rutland             |    5    |    16,698    |  40,381  |  17.09 MiB | 2 sec|    1 sec    |  57.84 MiB |
+|2022|              England/rutland             |    5    |    18,198    |  44,193  |  18.26 MiB | 2 sec|     1 sec    |  59.97 MiB |
+|2032|              England/rutland             |    5    |    18,198    |  44,193  |  18.26 MiB | 2 sec|     1 sec    |  59.97 MiB |
+|2039|              England/rutland             |    5    |    18,914    |  45,659  |  18.71 MiB | 2 sec|     1 sec    |  61.09 MiB |
+|2012|            England/shropshire            |    62   |    197,768   |  483,414 | 186.37 MiB | 6 sec|     1 sec    | 550.90 MiB |
+|2020|            England/shropshire            |    62   |    211,035   |  508,233 | 195.85 MiB | 6 sec|     1 sec    | 568.56 MiB |
+|2022|            England/shropshire            |    62   |    228,285   |  558,755 | 207.37 MiB | 6 sec|     1 sec    | 740.52 MiB |
+|2032|            England/shropshire            |    62   |    228,285   |  558,755 | 207.37 MiB | 6 sec|     1 sec    | 740.52 MiB |
+|2039|            England/shropshire            |    62   |    236,015   |  581,476 | 213.31 MiB | 6 sec|     1 sec    | 749.75 MiB |
+|2012|             England/somerset             |   124   |    392,224   |  938,968 | 359.26 MiB |10 sec|    3 sec    |  1.05 GiB  |
+|2020|             England/somerset             |   124   |    421,693   |  979,526 | 376.56 MiB |10 sec|    3 sec    |  1.08 GiB  |
+|2022|             England/somerset             |   124   |    428,543   |  993,364 | 381.41 MiB |10 sec|    3 sec    |  1.09 GiB  |
+|2032|             England/somerset             |   124   |    463,526   | 1,054,161| 394.38 MiB |11 sec|    3 sec    |  1.41 GiB  |
+|2039|             England/somerset             |   124   |    484,587   | 1,087,596| 404.50 MiB |11 sec|    3 sec    |  1.43 GiB  |
+|2012|          England/south-yorkshire         |   172   |    566,664   | 1,372,435| 528.13 MiB |14 sec|    6 sec    |  1.75 GiB  |
+|2020|          England/south-yorkshire         |   172   |    597,694   | 1,418,840| 548.61 MiB |15 sec|    6 sec    |  1.79 GiB  |
+|2022|          England/south-yorkshire         |   172   |    637,411   | 1,493,544| 563.93 MiB |15 sec|    6 sec    |  1.81 GiB  |
+|2032|          England/south-yorkshire         |   172   |    637,411   | 1,493,544| 563.93 MiB |15 sec|    6 sec    |  1.81 GiB  |
+|2039|          England/south-yorkshire         |   172   |    659,843   | 1,531,313| 575.33 MiB |15 sec|    6 sec    |  1.83 GiB  |
+|2012|           England/staffordshire          |   143   |    464,441   | 1,111,144| 425.33 MiB |12 sec|    4 sec    |  1.47 GiB  |
+|2020|           England/staffordshire          |   143   |    486,645   | 1,139,752| 437.56 MiB |12 sec|    4 sec    |  1.49 GiB  |
+|2022|           England/staffordshire          |   143   |    510,634   | 1,188,857| 444.92 MiB |12 sec|    4 sec    |  1.50 GiB  |
+|2032|           England/staffordshire          |   143   |    510,634   | 1,188,857| 444.92 MiB |12 sec|    4 sec    |  1.50 GiB  |
+|2039|           England/staffordshire          |   143   |    522,882   | 1,215,006| 453.00 MiB |12 sec|    4 sec    |  1.52 GiB  |
+|2012|              England/suffolk             |    90   |    312,178   |  746,863 | 285.39 MiB | 8 sec|    2 sec    | 933.65 MiB |
+|2020|              England/suffolk             |    90   |    331,778   |  766,023 | 294.07 MiB | 8 sec|    2 sec    | 950.73 MiB |
+|2022|              England/suffolk             |    90   |    336,599   |  773,019 | 296.48 MiB | 8 sec|    2 sec    | 956.16 MiB |
+|2032|              England/suffolk             |    90   |    360,555   |  800,189 | 298.09 MiB | 8 sec|    2 sec    | 952.75 MiB |
+|2039|              England/suffolk             |    90   |    375,536   |  817,179 | 302.95 MiB | 8 sec|    2 sec    | 963.06 MiB |
+|2012|              England/surrey              |   151   |    458,108   | 1,168,112| 456.56 MiB |14 sec|    7 sec    |  1.55 GiB  |
+|2020|              England/surrey              |   151   |    480,930   | 1,195,509| 472.95 MiB |14 sec|    6 sec    |  1.58 GiB  |
+|2022|              England/surrey              |   151   |    518,720   | 1,214,557| 467.08 MiB |14 sec|    6 sec    |  1.56 GiB  |
+|2032|              England/surrey              |   151   |    518,720   | 1,214,557| 467.08 MiB |14 sec|    6 sec    |  1.56 GiB  |
+|2039|              England/surrey              |   151   |    538,941   | 1,221,227| 464.76 MiB |14 sec|    6 sec    |  1.64 GiB  |
+|2012|           England/tyne-and-wear          |   145   |    483,909   | 1,119,030| 427.37 MiB |11 sec|    4 sec    |  1.47 GiB  |
+|2020|           England/tyne-and-wear          |   145   |    501,383   | 1,143,194| 439.11 MiB |11 sec|    4 sec    |  1.50 GiB  |
+|2022|           England/tyne-and-wear          |   145   |    521,777   | 1,168,078| 440.06 MiB |11 sec|    4 sec    |  1.49 GiB  |
+|2032|           England/tyne-and-wear          |   145   |    521,777   | 1,168,078| 440.06 MiB |11 sec|    4 sec    |  1.49 GiB  |
+|2039|           England/tyne-and-wear          |   145   |    532,652   | 1,177,340| 441.39 MiB |11 sec|    4 sec    |  1.58 GiB  |
+|2012|           England/warwickshire           |   108   |    361,467   |  896,673 | 347.46 MiB |10 sec|    3 sec    |  1.03 GiB  |
+|2020|           England/warwickshire           |   108   |    392,639   |  958,833 | 373.64 MiB |10 sec|    3 sec    |  1.08 GiB  |
+|2022|           England/warwickshire           |   108   |    432,682   | 1,061,955| 405.97 MiB |11 sec|    4 sec    |  1.44 GiB  |
+|2032|           England/warwickshire           |   108   |    432,682   | 1,061,955| 405.97 MiB |11 sec|    4 sec    |  1.44 GiB  |
+|2039|           England/warwickshire           |   108   |    454,732   | 1,112,230| 424.11 MiB |11 sec|    4 sec    |  1.47 GiB  |
+|2012|           England/west-midlands          |   314   |    958,034   | 2,477,391| 990.28 MiB |33 sec|    19 sec   |  3.24 GiB  |
+|2020|           England/west-midlands          |   314   |   1,002,273  | 2,572,395|  1.01 GiB  |34 sec|    19 sec   |  3.33 GiB  |
+|2022|           England/west-midlands          |   314   |   1,046,146  | 2,664,228|  1.04 GiB  |35 sec|    20 sec   |  3.37 GiB  |
+|2032|           England/west-midlands          |   314   |   1,079,612  | 2,706,242|  1.04 GiB  |36 sec|    21 sec   |  3.55 GiB  |
+|2039|           England/west-midlands          |   314   |   1,128,890  | 2,787,990|  1.07 GiB  |38 sec|    22 sec   |  3.59 GiB  |
+|2012|            England/west-sussex           |   100   |    348,766   |  836,646 | 321.38 MiB | 9 sec|    3 sec    | 1004.51 MiB|
+|2020|            England/west-sussex           |   100   |    375,837   |  871,029 | 337.97 MiB | 9 sec|    3 sec    |  1.01 GiB  |
+|2022|            England/west-sussex           |   100   |    419,347   |  931,573 | 350.32 MiB | 9 sec|    3 sec    |  1.03 GiB  |
+|2032|            England/west-sussex           |   100   |    419,347   |  931,573 | 350.32 MiB | 9 sec|    3 sec    |  1.03 GiB  |
+|2039|            England/west-sussex           |   100   |    442,292   |  958,567 | 356.98 MiB | 9 sec|    3 sec    |  1.04 GiB  |
+|2012|          England/west-yorkshire          |   299   |    921,242   | 2,271,833| 893.92 MiB |29 sec|    15 sec   |  3.05 GiB  |
+|2020|          England/west-yorkshire          |   299   |    963,460   | 2,339,931| 930.52 MiB |29 sec|    16 sec   |  3.12 GiB  |
+|2022|          England/west-yorkshire          |   299   |   1,021,830  | 2,434,902| 945.81 MiB |30 sec|    16 sec   |  3.13 GiB  |
+|2032|          England/west-yorkshire          |   299   |   1,021,830  | 2,434,902| 945.81 MiB |30 sec|    16 sec   |  3.13 GiB  |
+|2039|          England/west-yorkshire          |   299   |   1,053,859  | 2,481,358| 957.44 MiB |31 sec|    16 sec   |  3.32 GiB  |
+|2012|             England/wiltshire            |    89   |    285,600   |  704,491 | 274.63 MiB | 7 sec|    2 sec    | 921.03 MiB |
+|2020|             England/wiltshire            |    89   |    309,159   |  735,088 | 288.25 MiB | 8 sec|    2 sec    | 947.38 MiB |
+|2022|             England/wiltshire            |    89   |    335,400   |  774,105 | 292.74 MiB | 8 sec|    2 sec    | 949.12 MiB |
+|2032|             England/wiltshire            |    89   |    335,400   |  774,105 | 292.74 MiB | 8 sec|    2 sec    | 949.12 MiB |
+|2039|             England/wiltshire            |    89   |    348,866   |  792,075 | 296.45 MiB | 8 sec|    2 sec    | 955.03 MiB |
+|2012|          England/worcestershire          |    85   |    240,958   |  578,628 | 221.50 MiB | 6 sec|    2 sec    | 770.52 MiB |
+|2020|          England/worcestershire          |    85   |    255,594   |  601,116 | 231.62 MiB | 7 sec|    2 sec    | 790.33 MiB |
+|2022|          England/worcestershire          |    85   |    274,309   |  644,922 | 242.01 MiB | 7 sec|    2 sec    | 849.75 MiB |
+|2032|          England/worcestershire          |    85   |    274,309   |  644,922 | 242.01 MiB | 7 sec|    2 sec    | 849.75 MiB |
+|2039|          England/worcestershire          |    85   |    283,275   |  666,303 | 248.40 MiB | 7 sec|    2 sec    | 861.28 MiB |
+|2012|  Scotland/argyll-and-west-dunbartonshire |    41   |    82,845    |  176,560 |  74.08 MiB |11 sec|     1 sec    | 238.90 MiB |
+|2020|  Scotland/argyll-and-west-dunbartonshire |    41   |    85,066    |  174,197 |  73.18 MiB |11 sec|     1 sec    | 236.56 MiB |
+|2022|  Scotland/argyll-and-west-dunbartonshire |    41   |    85,263    |  172,737 |  72.59 MiB |11 sec|     1 sec    | 235.57 MiB |
+|2032|  Scotland/argyll-and-west-dunbartonshire |    41   |    85,398    |  165,068 |  67.76 MiB |11 sec|     1 sec    | 224.69 MiB |
+|2039|  Scotland/argyll-and-west-dunbartonshire |    41   |    84,758    |  159,196 |  65.25 MiB |11 sec|     1 sec    | 219.77 MiB |
+|2012|             Scotland/ayrshire            |    93   |    168,387   |  370,588 | 146.33 MiB | 9 sec|     1 sec    | 483.77 MiB |
+|2020|             Scotland/ayrshire            |    93   |    133,922   |  283,894 | 112.46 MiB | 8 sec|     1 sec    | 416.08 MiB |
+|2022|             Scotland/ayrshire            |    93   |    173,199   |  367,016 | 143.70 MiB | 9 sec|     1 sec    | 476.04 MiB |
+|2032|             Scotland/ayrshire            |    93   |    174,290   |  356,750 | 137.29 MiB | 9 sec|     1 sec    | 462.30 MiB |
+|2039|             Scotland/ayrshire            |    93   |    173,349   |  347,174 | 133.28 MiB | 9 sec|     1 sec    | 455.01 MiB |
+|2012|      Scotland/dumfries-and-galloway      |    40   |    68,416    |  149,648 |  61.42 MiB | 6 sec|     1 sec    | 217.04 MiB |
+|2020|      Scotland/dumfries-and-galloway      |    40   |    70,212    |  148,123 |  60.21 MiB | 6 sec|     1 sec    | 213.17 MiB |
+|2022|      Scotland/dumfries-and-galloway      |    40   |    70,455    |  147,351 |  59.47 MiB | 6 sec|     1 sec    | 211.49 MiB |
+|2032|      Scotland/dumfries-and-galloway      |    40   |    70,840    |  142,418 |  56.10 MiB | 6 sec|     1 sec    | 204.07 MiB |
+|2039|      Scotland/dumfries-and-galloway      |    40   |    70,668    |  138,573 |  54.77 MiB | 6 sec|     1 sec    | 202.05 MiB |
+|2012|            Scotland/edinburgh            |   111   |    225,093   |  497,378 | 186.98 MiB | 7 sec|    2 sec    | 555.70 MiB |
+|2020|            Scotland/edinburgh            |   111   |    242,994   |  525,476 | 198.41 MiB | 8 sec|    2 sec    | 732.84 MiB |
+|2022|            Scotland/edinburgh            |   111   |    248,491   |  532,384 | 200.96 MiB | 8 sec|    2 sec    | 738.35 MiB |
+|2032|            Scotland/edinburgh            |   111   |    273,234   |  562,902 | 207.62 MiB | 8 sec|    2 sec    | 791.61 MiB |
+|2039|            Scotland/edinburgh            |   111   |    288,360   |  578,847 | 210.49 MiB | 8 sec|    2 sec    | 793.17 MiB |
+|2012|               Scotland/fife              |   104   |    162,121   |  368,038 | 145.78 MiB | 6 sec|     1 sec    | 484.35 MiB |
+|2020|               Scotland/fife              |   104   |    159,563   |  371,896 | 147.05 MiB | 6 sec|     1 sec    | 486.65 MiB |
+|2022|               Scotland/fife              |   104   |    159,580   |  371,743 | 146.38 MiB | 6 sec|     1 sec    | 485.15 MiB |
+|2032|               Scotland/fife              |   104   |    166,255   |  370,447 | 141.66 MiB | 6 sec|     1 sec    | 472.29 MiB |
+|2039|               Scotland/fife              |   104   |    169,335   |  366,438 | 138.24 MiB | 6 sec|     1 sec    | 463.01 MiB |
+|2012|           Scotland/forth-valley          |    78   |    130,141   |  302,504 | 121.15 MiB | 8 sec|     1 sec    | 414.67 MiB |
+|2020|           Scotland/forth-valley          |    78   |    136,735   |  308,153 | 122.32 MiB | 8 sec|     1 sec    | 436.38 MiB |
+|2022|           Scotland/forth-valley          |    78   |    138,447   |  310,297 | 122.89 MiB | 8 sec|     1 sec    | 437.80 MiB |
+|2032|           Scotland/forth-valley          |    78   |    146,138   |  318,438 | 122.93 MiB | 8 sec|     1 sec    | 435.84 MiB |
+|2039|           Scotland/forth-valley          |    78   |    150,069   |  322,395 | 123.80 MiB | 8 sec|     1 sec    | 436.43 MiB |
+|2012|         Scotland/greater-glasgow         |   184   |    368,013   |  805,502 | 306.63 MiB |11 sec|    4 sec    | 985.47 MiB |
+|2020|         Scotland/greater-glasgow         |   184   |    382,846   |  836,875 | 320.55 MiB |11 sec|    4 sec    | 1013.11 MiB|
+|2022|         Scotland/greater-glasgow         |   184   |    388,050   |  842,636 | 322.55 MiB |11 sec|    4 sec    | 1017.20 MiB|
+|2032|         Scotland/greater-glasgow         |   184   |    411,534   |  866,464 | 327.49 MiB |11 sec|    4 sec    |  1.00 GiB  |
+|2039|         Scotland/greater-glasgow         |   184   |    427,529   |  880,981 | 329.51 MiB |11 sec|    4 sec    | 1023.96 MiB|
+|2012|      Scotland/highlands-and-islands      |    78   |    136,249   |  305,988 | 140.72 MiB |56 sec|     1 sec    | 451.01 MiB |
+|2020|      Scotland/highlands-and-islands      |    78   |    144,639   |  307,886 | 140.39 MiB |57 sec|     1 sec    | 447.70 MiB |
+|2022|      Scotland/highlands-and-islands      |    78   |    145,837   |  307,923 | 139.70 MiB |57 sec|     1 sec    | 445.96 MiB |
+|2032|      Scotland/highlands-and-islands      |    78   |    149,761   |  305,422 | 135.12 MiB |56 sec|     1 sec    | 434.37 MiB |
+|2039|      Scotland/highlands-and-islands      |    78   |    150,652   |  301,591 | 133.25 MiB |56 sec|     1 sec    | 430.68 MiB |
+|2012|           Scotland/lanarkshire           |   160   |    287,147   |  654,563 | 258.58 MiB |11 sec|    2 sec    | 903.22 MiB |
+|2020|           Scotland/lanarkshire           |   160   |    302,111   |  661,042 | 261.24 MiB |11 sec|    2 sec    | 906.74 MiB |
+|2022|           Scotland/lanarkshire           |   160   |    305,554   |  662,692 | 261.37 MiB |11 sec|    2 sec    | 907.35 MiB |
+|2032|           Scotland/lanarkshire           |   160   |    318,581   |  667,589 | 257.31 MiB |11 sec|    2 sec    | 895.50 MiB |
+|2039|           Scotland/lanarkshire           |   160   |    324,614   |  666,795 | 254.59 MiB |11 sec|    2 sec    | 887.40 MiB |
+|2012|            Scotland/north-east           |   132   |    250,789   |  587,273 | 228.59 MiB |14 sec|    2 sec    | 795.80 MiB |
+|2020|            Scotland/north-east           |   132   |    267,964   |  586,245 | 230.01 MiB |14 sec|    2 sec    | 841.08 MiB |
+|2022|            Scotland/north-east           |   132   |    271,745   |  587,957 | 230.81 MiB |14 sec|    2 sec    | 842.86 MiB |
+|2032|            Scotland/north-east           |   132   |    287,988   |  594,876 | 228.56 MiB |14 sec|    2 sec    | 836.51 MiB |
+|2039|            Scotland/north-east           |   132   |    297,440   |  594,445 | 226.47 MiB |14 sec|    2 sec    | 830.82 MiB |
+|2012|   Scotland/renfrewshire-and-inverclyde   |    55   |    119,057   |  254,125 |  99.98 MiB | 5 sec|     1 sec    | 293.66 MiB |
+|2020|   Scotland/renfrewshire-and-inverclyde   |    55   |    124,460   |  256,040 | 100.44 MiB | 5 sec|     1 sec    | 293.33 MiB |
+|2022|   Scotland/renfrewshire-and-inverclyde   |    55   |    125,450   |  256,087 | 100.34 MiB | 5 sec|     1 sec    | 293.55 MiB |
+|2032|   Scotland/renfrewshire-and-inverclyde   |    55   |    129,185   |  255,008 |  97.93 MiB | 5 sec|     1 sec    | 287.17 MiB |
+|2039|   Scotland/renfrewshire-and-inverclyde   |    55   |    131,507   |  252,677 |  96.59 MiB | 5 sec|     1 sec    | 306.43 MiB |
+|2012|             Scotland/tayside             |    92   |    186,890   |  414,921 | 162.38 MiB |10 sec|     1 sec    | 513.43 MiB |
+|2020|             Scotland/tayside             |    92   |    195,140   |  416,793 | 162.39 MiB |10 sec|     1 sec    | 510.25 MiB |
+|2022|             Scotland/tayside             |    92   |    197,192   |  416,846 | 162.22 MiB |10 sec|     1 sec    | 510.05 MiB |
+|2032|             Scotland/tayside             |    92   |    205,693   |  415,175 | 158.45 MiB |10 sec|     1 sec    | 501.29 MiB |
+|2039|             Scotland/tayside             |    92   |    210,290   |  411,445 | 156.35 MiB |10 sec|     1 sec    | 497.39 MiB |
+|2012|Scotland/the-lothians-and-scottish-borders|   111   |    205,879   |  482,896 | 194.90 MiB |12 sec|    2 sec    | 580.86 MiB |
+|2020|Scotland/the-lothians-and-scottish-borders|   111   |    223,446   |  501,223 | 201.50 MiB |12 sec|    2 sec    | 590.52 MiB |
+|2022|Scotland/the-lothians-and-scottish-borders|   111   |    227,783   |  507,880 | 203.76 MiB |12 sec|    2 sec    | 595.27 MiB |
+|2032|Scotland/the-lothians-and-scottish-borders|   111   |    246,603   |  537,145 | 210.28 MiB |12 sec|    2 sec    | 761.01 MiB |
+|2039|Scotland/the-lothians-and-scottish-borders|   111   |    257,299   |  552,545 | 214.47 MiB |12 sec|    2 sec    | 767.17 MiB |
+|2012|   Wales/bridgend-and-neath-port-talbot   |    38   |    119,725   |  283,159 | 108.22 MiB | 4 sec|     1 sec    | 382.14 MiB |
+|2020|   Wales/bridgend-and-neath-port-talbot   |    38   |    123,909   |  289,896 | 111.11 MiB | 4 sec|     1 sec    | 387.34 MiB |
+|2022|   Wales/bridgend-and-neath-port-talbot   |    38   |    124,921   |  292,227 | 111.51 MiB | 4 sec|     1 sec    | 387.62 MiB |
+|2032|   Wales/bridgend-and-neath-port-talbot   |    38   |    128,601   |  301,529 | 113.58 MiB | 4 sec|     1 sec    | 390.72 MiB |
+|2039|   Wales/bridgend-and-neath-port-talbot   |    38   |    129,740   |  307,260 | 114.33 MiB | 4 sec|     1 sec    | 391.18 MiB |
+|2012|    Wales/cardiff-and-vale-of-glamorgan   |    63   |    199,208   |  484,182 | 187.22 MiB | 5 sec|     1 sec    | 558.11 MiB |
+|2020|    Wales/cardiff-and-vale-of-glamorgan   |    63   |    214,676   |  499,272 | 194.75 MiB | 5 sec|     1 sec    | 572.81 MiB |
+|2022|    Wales/cardiff-and-vale-of-glamorgan   |    63   |    218,981   |  502,763 | 196.15 MiB | 5 sec|     1 sec    | 575.96 MiB |
+|2032|    Wales/cardiff-and-vale-of-glamorgan   |    63   |    240,112   |  522,526 | 199.47 MiB | 5 sec|     1 sec    | 577.76 MiB |
+|2039|    Wales/cardiff-and-vale-of-glamorgan   |    63   |    254,162   |  531,549 | 201.86 MiB | 6 sec|     1 sec    | 737.22 MiB |
+|2012|           Wales/central-valleys          |    38   |    124,691   |  296,581 | 115.15 MiB | 4 sec|     1 sec    | 396.09 MiB |
+|2020|           Wales/central-valleys          |    38   |    130,072   |  301,907 | 117.77 MiB | 4 sec|     1 sec    | 400.86 MiB |
+|2022|           Wales/central-valleys          |    38   |    131,383   |  303,557 | 118.40 MiB | 4 sec|     1 sec    | 424.36 MiB |
+|2032|           Wales/central-valleys          |    38   |    136,404   |  310,032 | 118.04 MiB | 4 sec|     1 sec    | 421.02 MiB |
+|2039|           Wales/central-valleys          |    38   |    138,735   |  314,703 | 119.17 MiB | 4 sec|     1 sec    | 422.91 MiB |
+|2012|       Wales/conwy-and-denbighshire       |    30   |    92,732    |  211,205 |  80.51 MiB | 4 sec|     1 sec    | 251.37 MiB |
+|2020|       Wales/conwy-and-denbighshire       |    30   |    95,314    |  213,302 |  81.57 MiB | 4 sec|     1 sec    | 253.52 MiB |
+|2022|       Wales/conwy-and-denbighshire       |    30   |    95,881    |  214,182 |  81.86 MiB | 4 sec|     1 sec    | 254.11 MiB |
+|2032|       Wales/conwy-and-denbighshire       |    30   |    97,683    |  218,122 |  81.12 MiB | 4 sec|     1 sec    | 251.06 MiB |
+|2039|       Wales/conwy-and-denbighshire       |    30   |    97,687    |  220,933 |  80.93 MiB | 4 sec|     1 sec    | 249.66 MiB |
+|2012|       Wales/flintshire-and-wrexham       |    38   |    122,180   |  288,696 | 113.33 MiB | 4 sec|     1 sec    | 393.53 MiB |
+|2020|       Wales/flintshire-and-wrexham       |    38   |    127,660   |  292,056 | 114.59 MiB | 4 sec|     1 sec    | 395.17 MiB |
+|2022|       Wales/flintshire-and-wrexham       |    38   |    129,007   |  292,644 | 115.04 MiB | 4 sec|     1 sec    | 396.45 MiB |
+|2032|       Wales/flintshire-and-wrexham       |    38   |    134,527   |  292,817 | 112.38 MiB | 4 sec|     1 sec    | 410.81 MiB |
+|2039|       Wales/flintshire-and-wrexham       |    38   |    136,425   |  293,540 | 112.23 MiB | 4 sec|     1 sec    | 410.67 MiB |
+|2012|            Wales/gwent-valleys           |    46   |    144,178   |  341,543 | 132.18 MiB | 4 sec|     1 sec    | 450.92 MiB |
+|2020|            Wales/gwent-valleys           |    46   |    148,386   |  344,566 | 132.84 MiB | 4 sec|     1 sec    | 450.78 MiB |
+|2022|            Wales/gwent-valleys           |    46   |    149,374   |  345,498 | 132.73 MiB | 4 sec|     1 sec    | 450.12 MiB |
+|2032|            Wales/gwent-valleys           |    46   |    151,842   |  347,976 | 130.51 MiB | 4 sec|     1 sec    | 442.75 MiB |
+|2039|            Wales/gwent-valleys           |    46   |    151,729   |  350,397 | 130.60 MiB | 4 sec|     1 sec    | 442.92 MiB |
+|2012|               Wales/gwynedd              |    17   |    52,926    |  122,595 |  48.30 MiB | 3 sec|     1 sec    | 141.40 MiB |
+|2020|               Wales/gwynedd              |    17   |    55,064    |  124,569 |  49.30 MiB | 3 sec|     1 sec    | 143.64 MiB |
+|2022|               Wales/gwynedd              |    17   |    55,683    |  125,030 |  49.22 MiB | 3 sec|     1 sec    | 143.38 MiB |
+|2032|               Wales/gwynedd              |    17   |    58,372    |  128,844 |  49.83 MiB | 3 sec|     1 sec    | 143.73 MiB |
+|2039|               Wales/gwynedd              |    17   |    59,746    |  130,948 |  50.66 MiB | 3 sec|     1 sec    | 145.55 MiB |
+|2012|          Wales/isle-of-anglesey          |    9    |    30,797    |  69,919  |  27.65 MiB | 3 sec|     1 sec    |  96.69 MiB |
+|2020|          Wales/isle-of-anglesey          |    9    |    31,366    |  69,845  |  27.85 MiB | 3 sec|     1 sec    |  97.28 MiB |
+|2022|          Wales/isle-of-anglesey          |    9    |    31,488    |  69,864  |  27.91 MiB | 3 sec|     1 sec    |  97.60 MiB |
+|2032|          Wales/isle-of-anglesey          |    9    |    31,601    |  69,502  |  27.10 MiB | 3 sec|     1 sec    |  95.40 MiB |
+|2039|          Wales/isle-of-anglesey          |    9    |    31,337    |  69,423  |  26.91 MiB | 3 sec|     1 sec    |  95.26 MiB |
+|2012|      Wales/monmouthshire-and-newport     |    31   |    100,402   |  240,491 |  94.45 MiB | 4 sec|     1 sec    | 280.30 MiB |
+|2020|      Wales/monmouthshire-and-newport     |    31   |    104,394   |  250,185 |  98.12 MiB | 4 sec|     1 sec    | 286.88 MiB |
+|2022|      Wales/monmouthshire-and-newport     |    31   |    105,481   |  253,282 |  99.28 MiB | 4 sec|     1 sec    | 288.93 MiB |
+|2032|      Wales/monmouthshire-and-newport     |    31   |    109,752   |  265,785 | 102.22 MiB | 4 sec|     1 sec    | 371.30 MiB |
+|2039|      Wales/monmouthshire-and-newport     |    31   |    111,246   |  273,319 | 103.91 MiB | 4 sec|     1 sec    | 373.72 MiB |
+|2012|                Wales/powys               |    19   |    59,028    |  132,725 |  51.23 MiB | 4 sec|     1 sec    | 184.96 MiB |
+|2020|                Wales/powys               |    19   |    59,972    |  132,328 |  50.62 MiB | 4 sec|     1 sec    | 183.27 MiB |
+|2022|                Wales/powys               |    19   |    60,190    |  132,467 |  50.48 MiB | 4 sec|     1 sec    | 182.78 MiB |
+|2032|                Wales/powys               |    19   |    59,586    |  133,010 |  49.65 MiB | 4 sec|     1 sec    | 180.54 MiB |
+|2039|                Wales/powys               |    19   |    57,969    |  133,514 |  49.37 MiB | 4 sec|     1 sec    | 179.70 MiB |
+|2012|          Wales/south-west-wales          |    50   |    165,004   |  383,260 | 145.80 MiB | 5 sec|     1 sec    | 474.24 MiB |
+|2020|          Wales/south-west-wales          |    50   |    170,327   |  385,937 | 146.54 MiB | 5 sec|     1 sec    | 474.39 MiB |
+|2022|          Wales/south-west-wales          |    50   |    171,623   |  386,901 | 147.01 MiB | 5 sec|     1 sec    | 476.02 MiB |
+|2032|          Wales/south-west-wales          |    50   |    175,897   |  392,107 | 145.21 MiB | 5 sec|     1 sec    | 469.23 MiB |
+|2039|          Wales/south-west-wales          |    50   |    176,482   |  394,303 | 144.54 MiB | 5 sec|     1 sec    | 467.40 MiB |
+|2012|               Wales/swansea              |    31   |    104,423   |  242,128 |  93.14 MiB | 4 sec|     1 sec    | 276.08 MiB |
+|2020|               Wales/swansea              |    31   |    110,304   |  247,820 |  95.76 MiB | 4 sec|     1 sec    | 281.31 MiB |
+|2022|               Wales/swansea              |    31   |    111,940   |  249,098 |  96.15 MiB | 4 sec|     1 sec    | 282.09 MiB |
+|2032|               Wales/swansea              |    31   |    119,141   |  257,653 |  98.32 MiB | 4 sec|     1 sec    | 285.46 MiB |
+|2039|               Wales/swansea              |    31   |    123,450   |  262,306 |  99.97 MiB | 4 sec|     1 sec    | 366.54 MiB |
+|2012|            special/birmingham            |   132   |    410,243   | 1,104,216| 450.75 MiB |14 sec|    5 sec    |  1.55 GiB  |
+|2020|            special/birmingham            |   132   |    429,124   | 1,148,426| 470.60 MiB |14 sec|    5 sec    |  1.59 GiB  |
+|2022|            special/birmingham            |   132   |    434,527   | 1,156,702| 473.72 MiB |15 sec|    5 sec    |  1.59 GiB  |
+|2032|            special/birmingham            |   132   |    467,993   | 1,198,716| 479.63 MiB |15 sec|    5 sec    |  1.59 GiB  |
+|2039|            special/birmingham            |   132   |    492,029   | 1,230,211| 489.58 MiB |16 sec|    5 sec    |  1.61 GiB  |
+|2012|             special/liverpool            |    61   |    207,217   |  479,774 | 182.06 MiB | 7 sec|     1 sec    | 538.83 MiB |
+|2020|             special/liverpool            |    61   |    224,431   |  503,264 | 193.74 MiB | 7 sec|     1 sec    | 562.01 MiB |
+|2022|             special/liverpool            |    61   |    241,366   |  536,264 | 206.67 MiB | 7 sec|     1 sec    | 742.97 MiB |
+|2032|             special/liverpool            |    61   |    241,366   |  536,264 | 206.67 MiB | 7 sec|     1 sec    | 742.97 MiB |
+|2039|             special/liverpool            |    61   |    251,435   |  549,857 | 211.22 MiB | 7 sec|     1 sec    | 751.45 MiB |
+|2012|            special/manchester            |    57   |    204,775   |  525,548 | 207.38 MiB |10 sec|    2 sec    | 752.26 MiB |
+|2020|            special/manchester            |    57   |    220,664   |  551,613 | 221.09 MiB |10 sec|    2 sec    | 780.27 MiB |
+|2022|            special/manchester            |    57   |    241,262   |  576,313 | 226.35 MiB |10 sec|    2 sec    | 785.85 MiB |
+|2032|            special/manchester            |    57   |    241,262   |  576,313 | 226.35 MiB |10 sec|    2 sec    | 785.84 MiB |
+|2039|            special/manchester            |    57   |    253,464   |  589,904 | 230.46 MiB |11 sec|    2 sec    | 793.05 MiB |
+|2012|      special/northwest_transpennine      |   829   |   2,653,096  | 6,416,497|  2.45 GiB  | 3 min|    2 min    |  7.74 GiB  |
+|2020|      special/northwest_transpennine      |   829   |   2,788,624  | 6,616,117|  2.56 GiB  | 3 min|    2 min    |  7.95 GiB  |
+|2022|      special/northwest_transpennine      |   829   |   2,960,285  | 6,908,374|  2.62 GiB  | 3 min|    2 min    |  8.02 GiB  |
+|2032|      special/northwest_transpennine      |   829   |   2,960,285  | 6,908,374|  2.62 GiB  | 3 min|    2 min    |  8.02 GiB  |
+|2039|      special/northwest_transpennine      |   829   |   3,058,114  | 7,059,122|  2.66 GiB  | 3 min|    2 min    |  8.09 GiB  |
+|2012|              special/oxford              |    18   |    55,081    |  154,065 |  61.14 MiB | 4 sec|     1 sec    | 207.79 MiB |
+|2020|              special/oxford              |    18   |    55,235    |  153,045 |  61.53 MiB | 4 sec|     1 sec    | 208.41 MiB |
+|2022|              special/oxford              |    18   |    56,840    |  149,534 |  58.11 MiB | 4 sec|     1 sec    | 199.69 MiB |
+|2032|              special/oxford              |    18   |    56,840    |  149,534 |  58.11 MiB | 4 sec|     1 sec    | 199.69 MiB |
+|2039|              special/oxford              |    18   |    58,038    |  147,239 |  56.67 MiB | 4 sec|     1 sec    | 196.62 MiB |
+|2012|       special/oxford_cambridge_arc       |   353   |   1,112,235  | 2,828,466|  1.08 GiB  |40 sec|    21 sec   |  3.61 GiB  |
+|2020|       special/oxford_cambridge_arc       |   353   |   1,199,021  | 2,950,743|  1.14 GiB  |41 sec|    21 sec   |  3.73 GiB  |
+|2022|       special/oxford_cambridge_arc       |   353   |   1,296,471  | 3,107,289|  1.17 GiB  |43 sec|    22 sec   |  3.77 GiB  |
+|2032|       special/oxford_cambridge_arc       |   353   |   1,314,402  | 3,122,071|  1.17 GiB  |43 sec|    22 sec   |  3.76 GiB  |
+|2039|       special/oxford_cambridge_arc       |   353   |   1,372,547  | 3,189,664|  1.18 GiB  |44 sec|    23 sec   |  3.78 GiB  |
+
+Notes:
+
+- `pb_file_size` refers to the size of the uncompressed protobuf file in `data/output/`
+- The total `runtime` is usually dominated by matching workers to businesses, so `commuting_runtime` gives a breakdown
+- Measuring memory usage of Linux processes isn't straightforward, so `memory_usage` should just be a guide
+- These measurements were all taken on one developer's laptop, and they don't represent multiple runs. This table just aims to give a general sense of how long running takes.
+  - That machine has 10 cores, which matters for the parallelized commuting calculation.
+- The time *usually* doesn't include downloading or decompressing raw data. For some areas, it might!
+- `scripts/collect_stats.py` produces the table above

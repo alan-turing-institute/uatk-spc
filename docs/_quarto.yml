@@ -10,23 +10,27 @@ book:
     - index.qmd
     - part: "Using SPC"
       chapters:
-        - outputs.qmd
-        - england_outputs.qmd
-        - wales_outputs.qmd
-        - scotland_outputs.qmd
-        - use_output.qmd
-        - installation.qmd
-        - custom_areas.qmd
+        - using_getting_started.qmd
+        - using_outputs.qmd
+        - using_england_outputs.qmd
+        - using_wales_outputs.qmd
+        - using_scotland_outputs.qmd
+        - using_use_output.qmd
+        - using_installation.qmd
+        - using_custom_areas.qmd
     - part: "Understanding SPC"
       chapters:
-        - schema.qmd
-        - modelling_methods.qmd
-        - data_sources.qmd
+        - understanding_introduction.qmd
+        - understanding_technical_overview.qmd
+        - understanding_modelling_methods.qmd
+        - understanding_data_schema.qmd
+        - understanding_data_sources.qmd
+    - validation.qmd
     - part: "Advanced"
       chapters:
-        - developer_guide.qmd
-        - code_walkthrough.qmd
-        - performance.qmd
+        - advanced_developer_guide.qmd
+        - advanced_code_walkthrough.qmd
+        - advanced_performance.qmd
 
 format:
   html:

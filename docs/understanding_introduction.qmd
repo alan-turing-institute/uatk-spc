@@ -1,0 +1,15 @@
+---
+title: "Introduction"
+toc: true
+---
+
+SPC is divided into two phases. The data preparation phase relies on scripts that only need to be run once. It outputs a postprocessed version of all the raw data sources that allows the model to run smoothly on custom areas. The second phase involves the user choosing a custom area and launching a simulation. It pulls the relevant datasets among the data prepared by the first phase, calculates the different daily activities and formats the results into a single protocol buffer file.
+
+In this section, you can find:
+
+- A [step by step description](understanding_technical_overview.qmd) of each element of the SPC pipeline
+- The [concepts](understanding_modelling_methods.qmd) supporting the modelling methods
+- A [description of the schema](understanding_data_schema.qmd) of the protocol buffer
+- A [list of the data sources](understanding_data_sources.qmd) used to create each data field
+
+Note that due to the large impact each section has on the choices made in other sections, it may be necessary to frequently segue between sections to get a precise understanding of the model.
