@@ -12,7 +12,7 @@ set.seed(10091989)
 
 cores <- detectCores()
 
-source("SPC_functions.R")
+source("SPC_functions_run_1.R")
 
 # Lookup
 lu <- read.csv(paste(folderInOT,"lookUp-GB.csv", sep = ""))
