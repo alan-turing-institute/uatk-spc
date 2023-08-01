@@ -3,10 +3,10 @@ title: "SPC Outputs"
 toc: true
 ---
 
-We provide outputs in protobuffer format for all lieutenancy areas (more commonly known as ceremonial counties) of England, all ITL regions of Wales (international divisions based on the former unified European territorial division system) and all police divisions of Scotland for five reference years. These regions represent coherent territorial units whose scale is particularly well suited to the [modelling methods](understanding_modelling_methods.qmd) used by SPC. In addition, we have included two interesting areas: the Liverpool-Manchester-Leeds arc and the Cambridge to Oxford arc. See [config/](https://github.com/alan-turing-institute/uatk-spc/tree/main/config)
+We provide outputs in protocol buffer format for all lieutenancy areas (more commonly known as ceremonial counties) of England, all ITL regions of Wales (international divisions based on the former unified European territorial division system) and all police divisions of Scotland for five reference years. These regions represent coherent territorial units whose scale is particularly well suited to the [modelling methods](understanding_modelling_methods.qmd) used by SPC. In addition, we have included two interesting areas: the Liverpool-Manchester-Leeds arc and the Cambridge to Oxford arc. See [config/](https://github.com/alan-turing-institute/uatk-spc/tree/main/config)
 for the full list of MSOAs covered by each area.
 
-The [SPC Explorer](https://alan-turing-institute.github.io/uatk-spc/app/) can be used to visualise the data, understand what attributes can be obtained form SPC and get inspired about potential applications that could steem from using these outputs. 
+The [SPC Explorer](https://alan-turing-institute.github.io/uatk-spc/app/) can be used to visualise the data, understand what attributes can be obtained form SPC and get inspired about potential applications that could stem from using these outputs.
 
 If you want to run SPC for a different list of MSOAs, [see here](using_custom_areas.qmd).
 
