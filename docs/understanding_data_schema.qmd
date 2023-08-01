@@ -22,9 +22,9 @@ household has `members = [3, 10]`, then those two people can be found at
 same `household` ID, pointing back to something in the `population.households`
 list.
 
-## Flows: modelling daily activites
+## Flows: modelling daily activities
 
-SPC models daily travel behavior of people as "flows." Flows are broken down by an
+SPC models daily travel behaviour of people as "flows." Flows are broken down by an
 [activity](https://github.com/alan-turing-institute/uatk-spc/blob/feffb857c6fbbd7c2b3dd1f3cb46e67677185897/synthpop.proto#L196)
 -- shopping/retail, attending primary or secondary school, working, or staying
 at home. For each activity type, a person has a list of venues where they may
@@ -41,7 +41,7 @@ probability 1. A person has 0 or 1 flows to work, based on the value of
 `person.workplace`.
 
 This doesn't mean that all people in the same MSOA share the same travel
-behavior. Each person has their own `activity_durations` field, based on
+behaviour. Each person has their own `activity_durations` field, based on
 time-use survey data. Even if two people share the same set of places where
 they may go shopping, one person may spend much more time on that activity than
 another.
