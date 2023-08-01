@@ -60,7 +60,7 @@ The fields currently contained are detailed in [this `.txt` document](https://ra
 - `HEALTH_diabetes`: for Scotland and England, has doctor diagnosed diabetes; for Wales, diabetes currently treated (derived from HSE, HSW, SHS)
 - `HEALTH_bloodpressure`: for Scotland and England, Doctor diagnosed high blood pressure; for Wales, high blood pressure currently treated (derived from HSE, HSW, SHS)
 - `HEALTH_cvd`: for England, cardiovascular medication taken in the last 7 days; for Scotland, had cardiovascular condition excluding diabetes / blood pressure; for Wales, any heart condition excluding high blood pressure (derived from HSE, HSW, SHS)
-- `HEALTH_NMedecines`: Number of prescribed medications (derived from HSE, HSW, SHS)
+- `HEALTH_NMedicines`: Number of prescribed medications (derived from HSE, HSW, SHS)
 - `HEALTH_selfAssessed`: Self assessed general health (derived from HSE, HSW, SHS)
 - `HEALTH_lifeSat`: how satisfied with life nowadays? (derived from HSE, HSW, SHS)
 - `HEALTH_bmi`: BMI (see methods)
