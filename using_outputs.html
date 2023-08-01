@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Synthetic Population Catalyst</title>
+<title>Synthetic Population Catalyst - 2&nbsp; SPC Outputs</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./using_getting_started.html" rel="next">
+<link href="./using_england_outputs.html" rel="next">
+<link href="./using_getting_started.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -73,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Introduction</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./using_getting_started.html">Using SPC</a></li><li class="breadcrumb-item"><a href="./using_outputs.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">SPC Outputs</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -104,7 +105,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Introduction</span></a>
   </div>
 </li>
@@ -125,7 +126,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./using_outputs.html" class="sidebar-item-text sidebar-link">
+  <a href="./using_outputs.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">SPC Outputs</span></span></a>
   </div>
 </li>
@@ -253,7 +254,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#citing" id="toc-citing" class="nav-link active" data-scroll-target="#citing"><span class="header-section-number">2.1</span> Citing</a></li>
+  <li><a href="#versioning" id="toc-versioning" class="nav-link" data-scroll-target="#versioning"><span class="header-section-number">2.2</span> Versioning</a></li>
   </ul>
 </nav>
     </div>
@@ -262,7 +264,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Synthetic Population Catalyst</h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">SPC Outputs</span></h1>
 </div>
 
 
@@ -277,15 +279,61 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="introduction" class="level1 unnumbered">
-<h1 class="unnumbered">Introduction</h1>
-<p><img src="img/SPC_Schema.png" class="img-fluid"></p>
-<p>The Synthetic Population Catalyst (SPC) makes it easier for researchers to work with synthetic population data in Great Britain. It combines a variety of <a href="./understanding_data_sources.html">data sources</a> and outputs a single file in <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto">protocol buffer format</a>, describing the population and its activities in a given study area. The data include socio-demographic, health, salary and daily activity data per person, and information about the venues where people conduct those activities.</p>
-<p>SPC outputs can be used to catalyse other projects. Rather than join together many <a href="./understanding_data_sources.html">raw data sources</a> yourself and deal with missing and messy data, you can leverage SPC’s effort and well-documented schema.</p>
-<p>You can download this site as <a href="https://alan-turing-institute.github.io/uatk-spc/Synthetic-Population-Catalyst.pdf">a PDF</a> and find all code <a href="https://github.com/alan-turing-institute/uatk-spc">on Github</a>.</p>
-<p><br></p>
-<hr>
-<p>This work was supported by Wave 1 of The UKRI Strategic Priorities Fund under the EPSRC Grant EP/W006022/1, particularly the “Ecosystem of Digital Twins” and “Shocks and Resilience” themes within that grant &amp; The Alan Turing Institute</p>
+<p>We provide outputs in protocol buffer format for all lieutenancy areas (more commonly known as ceremonial counties) of England, all ITL regions of Wales (international divisions based on the former unified European territorial division system) and all police divisions of Scotland for five reference years. These regions represent coherent territorial units whose scale is particularly well suited to the <a href="./understanding_modelling_methods.html">modelling methods</a> used by SPC. In addition, we have included two interesting areas: the Liverpool-Manchester-Leeds arc and the Cambridge to Oxford arc. See <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/config">config/</a> for the full list of MSOAs covered by each area.</p>
+<p>The <a href="https://alan-turing-institute.github.io/uatk-spc/app/">SPC Explorer</a> can be used to visualise the data, understand what attributes can be obtained form SPC and get inspired about potential applications that could stem from using these outputs.</p>
+<p>If you want to run SPC for a different list of MSOAs, <a href="./using_custom_areas.html">see here</a>.</p>
+<p>The data for 2012, 2020, 2022, 2032 &amp; 2039 are available here:</p>
+<ul>
+<li><a href="./using_england_outputs.html">England</a></li>
+<li><a href="./using_wales_outputs.html">Wales</a></li>
+<li><a href="./using_scotland_outputs.html">Scotland</a></li>
+<li>North West Transpennine (<a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2012/northwest_transpennine.pb.gz">2012</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2020/northwest_transpennine.pb.gz">2020</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2022/northwest_transpennine.pb.gz">2022</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2032/northwest_transpennine.pb.gz">2032</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2039/northwest_transpennine.pb.gz">2039</a>)</li>
+<li>Oxford-Cambridge arc (<a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2012/oxford_cambridge_arc.pb.gz">2012</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2020/oxford_cambridge_arc.pb.gz">2020</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2022/oxford_cambridge_arc.pb.gz">2022</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2032/oxford_cambridge_arc.pb.gz">2032</a>, <a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/special/2039/oxford_cambridge_arc.pb.gz">2039</a>)</li>
+</ul>
+<section id="citing" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="citing"><span class="header-section-number">2.1</span> Citing</h2>
+<p>If you use SPC code or data in your work, please cite using the <a href="https://zenodo.org/badge/latestdoi/479038905">Zenodo DOI</a> (using the bottom-right tool to generate the citation).</p>
+</section>
+<section id="versioning" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="versioning"><span class="header-section-number">2.2</span> Versioning</h2>
+<p>Over time, we may add more data to SPC or change the schema. Protocol buffers are designed to let combinations of new/old code and data files work together, but we don’t intend to use this feature. We may make breaking changes, like deleting fields. We’ll release a new version of the schema and output data every time and document it here. You should depend on a specific version of the data output in your code, so new releases don’t affect you until you decide to update.</p>
+<ul>
+<li>v1: released 25/04/2022, <a href="https://github.com/alan-turing-institute/uatk-spc/blob/a9e8b361e942ba67a93f9b5b6a7d66b7ff8b0239/synthpop.proto">schema</a></li>
+<li>v1.1, released 27/05/2022, <a href="https://github.com/alan-turing-institute/uatk-spc/blob/570b65962d0595c0b28e0cf3554d1dd668b3932b/synthpop.proto">schema</a>
+<ul>
+<li>added <code>pwkstat</code>, <code>salary_hourly</code>, <code>salary_yearly</code>, and <code>idp</code></li>
+<li>reorganized <code>Identifiers</code> and <code>Employment</code> attributes</li>
+<li>non-breaking change added 02/08/2022: added <code>bmi_new</code> field</li>
+</ul></li>
+<li>v1.2, released 29/12/2022, <a href="https://github.com/alan-turing-institute/uatk-spc/blob/86c550e738a4f9cde052a8e33f0f9d5dcdf6000d/synthpop.proto">schema</a>
+<ul>
+<li>switched to proto2 and made some fields optional</li>
+<li>adjusted some numeric enum values to match ONS</li>
+</ul></li>
+<li>v2, released 09/03/2023, <a href="https://github.com/alan-turing-institute/uatk-spc/blob/f550a323afadd03bd3bfdd797b66ff2276a2a6d5/synthpop.proto">schema</a>
+<ul>
+<li>new per-person and per-household fields</li>
+<li>various changes to existing fields (adjusting enum number, removing the BMI enum, etc)</li>
+<li>adding time-use diaries</li>
+<li>expanding to Wales</li>
+<li>adding multiple years of output</li>
+</ul></li>
+<li>v2.1, released 25/07/2023, <a href="https://github.com/alan-turing-institute/uatk-spc/blob/f550a323afadd03bd3bfdd797b66ff2276a2a6d5/synthpop.proto">schema</a>
+<ul>
+<li>expanding to Scotland</li>
+<li>adding special area: Oxford-Cambridge arc</li>
+<li>adding previously missing LADs to their counties:
+<ul>
+<li>Greater London (E09000001)</li>
+<li>Cornwall (E06000053)</li>
+<li>Dorset (E06000058 &amp; E06000059)</li>
+<li>Buckinghamshire (E06000060)</li>
+<li>Leicestershire (E07000135)</li>
+<li>Suffolk (E07000244 &amp; E07000245)</li>
+<li>Somerset (E07000246)</li>
+</ul></li>
+</ul></li>
+</ul>
 
 
 </section>
@@ -526,10 +574,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./using_getting_started.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Getting started</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./using_getting_started.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Getting started</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./using_england_outputs.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Outputs for England (Counties)</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

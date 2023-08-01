@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Synthetic Population Catalyst</title>
+<title>Synthetic Population Catalyst - 13&nbsp; Data sources</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./using_getting_started.html" rel="next">
+<link href="./validation.html" rel="next">
+<link href="./understanding_data_schema.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -73,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Introduction</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./understanding_introduction.html">Understanding SPC</a></li><li class="breadcrumb-item"><a href="./understanding_data_sources.html"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Data sources</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -104,7 +105,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Introduction</span></a>
   </div>
 </li>
@@ -202,7 +203,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./understanding_data_sources.html" class="sidebar-item-text sidebar-link">
+  <a href="./understanding_data_sources.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Data sources</span></span></a>
   </div>
 </li>
@@ -253,7 +254,22 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#utility-data" id="toc-utility-data" class="nav-link active" data-scroll-target="#utility-data"><span class="header-section-number">13.1</span> Utility data</a>
+  <ul class="collapse">
+  <li><a href="#lookup-gb.csv.gz" id="toc-lookup-gb.csv.gz" class="nav-link" data-scroll-target="#lookup-gb.csv.gz">lookUp-GB.csv.gz</a></li>
+  </ul></li>
+  <li><a href="#county-level-data" id="toc-county-level-data" class="nav-link" data-scroll-target="#county-level-data"><span class="header-section-number">13.2</span> County level data</a>
+  <ul class="collapse">
+  <li><a href="#pop_area_name.csv.gz" id="toc-pop_area_name.csv.gz" class="nav-link" data-scroll-target="#pop_area_name.csv.gz">pop_[area_name].csv.gz</a></li>
+  </ul></li>
+  <li><a href="#national-data" id="toc-national-data" class="nav-link" data-scroll-target="#national-data"><span class="header-section-number">13.3</span> National data</a>
+  <ul class="collapse">
+  <li><a href="#businessregistry.csv.gz" id="toc-businessregistry.csv.gz" class="nav-link" data-scroll-target="#businessregistry.csv.gz">businessRegistry.csv.gz</a></li>
+  <li><a href="#gis" id="toc-gis" class="nav-link" data-scroll-target="#gis"><code>GIS/</code></a></li>
+  <li><a href="#quant_ramp_spc.tar.gz" id="toc-quant_ramp_spc.tar.gz" class="nav-link" data-scroll-target="#quant_ramp_spc.tar.gz">QUANT_RAMP_spc.tar.gz</a></li>
+  <li><a href="#timeathomeincreasecty.csv.gz" id="toc-timeathomeincreasecty.csv.gz" class="nav-link" data-scroll-target="#timeathomeincreasecty.csv.gz">timeAtHomeIncreaseCTY.csv.gz</a></li>
+  <li><a href="#diariesref.csv.gz" id="toc-diariesref.csv.gz" class="nav-link" data-scroll-target="#diariesref.csv.gz">diariesRef.csv.gz</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -262,7 +278,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Synthetic Population Catalyst</h1>
+<h1 class="title"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Data sources</span></h1>
 </div>
 
 
@@ -277,17 +293,116 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<section id="introduction" class="level1 unnumbered">
-<h1 class="unnumbered">Introduction</h1>
-<p><img src="img/SPC_Schema.png" class="img-fluid"></p>
-<p>The Synthetic Population Catalyst (SPC) makes it easier for researchers to work with synthetic population data in Great Britain. It combines a variety of <a href="./understanding_data_sources.html">data sources</a> and outputs a single file in <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto">protocol buffer format</a>, describing the population and its activities in a given study area. The data include socio-demographic, health, salary and daily activity data per person, and information about the venues where people conduct those activities.</p>
-<p>SPC outputs can be used to catalyse other projects. Rather than join together many <a href="./understanding_data_sources.html">raw data sources</a> yourself and deal with missing and messy data, you can leverage SPC’s effort and well-documented schema.</p>
-<p>You can download this site as <a href="https://alan-turing-institute.github.io/uatk-spc/Synthetic-Population-Catalyst.pdf">a PDF</a> and find all code <a href="https://github.com/alan-turing-institute/uatk-spc">on Github</a>.</p>
-<p><br></p>
-<hr>
-<p>This work was supported by Wave 1 of The UKRI Strategic Priorities Fund under the EPSRC Grant EP/W006022/1, particularly the “Ecosystem of Digital Twins” and “Shocks and Resilience” themes within that grant &amp; The Alan Turing Institute</p>
+<p>The original data are provided at different scales, which define their level of accuracy. For simplicity, the outputs of SPC are geolocated at Output Area (OA) level, although this scale may not be relevant to all indicators. The 2011 OAs are a geographical unit created for census collection and are designed to be relatively homogeneous, with an average size between 120 and 129 households.</p>
+<p>The data from Open Street Map (OSM) is downloaded directly from https://www.openstreetmap.org. Everything else is hosted through local copies inside one Azure repository that interacts automatically with the model. We describe below the content of this repository and indicate the raw source used for each indicator. It is divided into utilities, county level data and national data. To recreate the content of this repository from raw sources, please refer to <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/scripts/data_prep">this part of the code</a>.</p>
+<section id="utility-data" class="level2" data-number="13.1">
+<h2 data-number="13.1" class="anchored" data-anchor-id="utility-data"><span class="header-section-number">13.1</span> Utility data</h2>
+<section id="lookup-gb.csv.gz" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="lookup-gb.csv.gz"><a href="https://ramp0storage.blob.core.windows.net/referencedata/lookUp-GB.csv.gz">lookUp-GB.csv.gz</a></h3>
+<p>The look-up table links different geographies of Great Britain together. It is used internally by the model, but can also help the user define their own study area. The following are standard denominations, compatible with ONS fields of the same name. They are based on ONS <a href="https://geoportal.statistics.gov.uk/">lookups</a>. See ONS documentation for more details.</p>
+<ul>
+<li><code>OA11CD</code>: Output area codes for the 2011 census (120 to 129 households)</li>
+<li><code>LSOA11CD</code> &amp; <code>LSOA11NM</code>: Lower-layer Super Output Areas (about 2000 individuals), replaced by Intermediary Zones for Scotland</li>
+<li><code>MSOA11CD</code>,<code>MSOA11NM</code>: Middle-layer Super Output Areas (about 8000 individuals), replaced by Data Zones for Scotland</li>
+<li><code>LAD20CD</code>, <code>LAD20NM</code>: Local Authority Districts (314 for England, 22 for Wales and 32 for Scotland)</li>
+<li><code>ITL321CD</code>, <code>ITL321NM</code>, <code>ITL221CD</code>, <code>ITL221NM</code>, <code>ITL121CD</code> &amp; <code>ITL121NM</code>: International Territorial Level, replacing pre-Brexit NUTS European divisions.</li>
+<li><code>RGN20CD</code> &amp; <code>RGN20NM</code>: Regions of England (NA for other Wales and Scotland)</li>
+<li><code>Country</code>: England, Wales or Scotland</li>
+</ul>
+<p>In addition,</p>
+<ul>
+<li><code>AzureRef</code>: Name of the geographical unit for the County level data folder inside Azure (Lieutenancy Areas – a.k.a. Ceremonial Counties – for England, Scottish Police Divisions and ITL321NM for Wales) For Wales: ITL321NM</li>
+<li><code>GoogleMob</code> &amp; <code>OSM</code> are alternate spellings used by Google and OSM for their data releases.</li>
+</ul>
+</section>
+</section>
+<section id="county-level-data" class="level2" data-number="13.2">
+<h2 data-number="13.2" class="anchored" data-anchor-id="county-level-data"><span class="header-section-number">13.2</span> County level data</h2>
+<p>Files in this section are grouped by country (England, Wales and Scotland), then date (2012, 2020, 2022, 2032, 2039). The format of a path to an individual file is:</p>
+<pre><code>https://ramp0storage.blob.core.windows.net/countydata-v2-1/[country]/[date]/pop_[area_name].csv.gz</code></pre>
+<p>where [country], [date] and [area_name] must be replaced accordingly. As of July 2023, England contains 5 series of 47 files, Wales 5 series of 12 files and Scotland 5 series of 13 files</p>
+<section id="pop_area_name.csv.gz" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="pop_area_name.csv.gz">pop_[area_name].csv.gz</h3>
+<p>The data is mainly based on the <a href="http://dx.doi.org/10.5257/census/aggregate-2011-1">2011 UK census</a>, the UK <a href="http://dx.doi.org/10.5255/UKDA-SN-8128-1">Time Use Survey 2014-15</a> and the health surveys of GB (<a href="http://dx.doi.org/10.5255/UKDA-SN-8488-2">England</a>, <a href="http://dx.doi.org/10.5255/UKDA-SN-8090-1">Wales</a>, <a href="http://dx.doi.org/10.5255/UKDA-SN-8737-1">Scotland</a>). The SPENSER microsimulation model is used to distribute and project individuals from the census with MSOA scale constraints into synthetic households with OA constraints. These data are enriched with some of the content of the other datasets mentioned (the rest of which can be added <em>a posteriori</em> from the identifiers provided). The data have also been complemented with a modelling of BMI and salaries.</p>
+<p>The fields currently contained are detailed in <a href="https://ramp0storage.blob.core.windows.net/referencedata/pop_Definitions.txt">this <code>.txt</code> document</a>. They are:</p>
+<ul>
+<li><code>pid</code>: Unique person identifier at GB level within SPC</li>
+<li><code>hid</code>: Unique household identifier at GB level within SPC</li>
+<li><code>OA11CD</code>: Output Area code of the individual’s home (ONS, 2011 boundaries)</li>
+<li><code>sex</code>: Sex assigned at birth (DC1117EW, census 2011)</li>
+<li><code>age</code>: Age in years (DC1117EW, census 2011)</li>
+<li><code>ethnicity</code>: Based on self-report (aggregated from DC2101EW, census 2011)</li>
+<li><code>nssec8</code>: National Statistics Socio-economic classification (see methods)</li>
+<li><code>HOUSE_nssec8</code>: National Statistics Socio-economic classification of the reference person of the household (LC4605, census 2011)</li>
+<li><code>House_type</code>: Type of accommodation (based on LC4402EW, census 2011)</li>
+<li><code>HOUSE_typeCommunal</code>: Type of communal establishment (based on QS420, census 2011)</li>
+<li><code>HOUSE_NRooms</code>: Number of rooms in the accommodation (LC4404EW, census 2011)</li>
+<li><code>HOUSE_centralHeat</code>: Presence of central heating (based on LC4402EW, census 2011)</li>
+<li><code>HOUSE_tenure</code>: Tenure (based on LC4402EW, census 2011)</li>
+<li><code>HOUSE_NCars</code>: Number of cars (derived from LC4202EW by SPENSER team, census 2011)</li>
+<li><code>id_HS</code>: unique identifier within the Health Survey (aggregated from the Health surveys from England, Wales and Scotland)</li>
+<li><code>HEALTH_diabetes</code>: for Scotland and England, has doctor diagnosed diabetes; for Wales, diabetes currently treated (derived from HSE, HSW, SHS)</li>
+<li><code>HEALTH_bloodpressure</code>: for Scotland and England, Doctor diagnosed high blood pressure; for Wales, high blood pressure currently treated (derived from HSE, HSW, SHS)</li>
+<li><code>HEALTH_cvd</code>: for England, cardiovascular medication taken in the last 7 days; for Scotland, had cardiovascular condition excluding diabetes / blood pressure; for Wales, any heart condition excluding high blood pressure (derived from HSE, HSW, SHS)</li>
+<li><code>HEALTH_NMedicines</code>: Number of prescribed medications (derived from HSE, HSW, SHS)</li>
+<li><code>HEALTH_selfAssessed</code>: Self assessed general health (derived from HSE, HSW, SHS)</li>
+<li><code>HEALTH_lifeSat</code>: how satisfied with life nowadays? (derived from HSE, HSW, SHS)</li>
+<li><code>HEALTH_bmi</code>: BMI (see methods)</li>
+<li><code>id_TUS_hh</code>: serial household identifier field in the UK Time Use Survey 2015</li>
+<li><code>id_TUS_p</code>: pnum person identifier field in the UK Time Use Survey 2015</li>
+<li><code>pwkstat</code>: Employment status (derived from UK TUS 2015)</li>
+<li><code>soc2010</code>: Standard Occupational Classification (derived from UK TUS 2015)</li>
+<li><code>sic1d2007</code>: Standard Industry Classification of economic activities 2007, 1st level (derived from UK TUS 2015)</li>
+<li><code>sic2d2007</code>: Standard Industry Classification of economic activities 2007, 2nd level (derived from UK TUS 2015)</li>
+<li><code>netPayWeekly</code>: Weekly take home pay after all deductions (derived from UK TUS 2015)</li>
+<li><code>workedHoursWeekly</code>: Number of hours per week usually worked in main job or business (derived from UK TUS 2015)</li>
+<li><code>incomeH</code>: Hourly gross salary for full-time and part-time employees (see methods)</li>
+<li><code>incomeY</code>: Yearly gross salary for full-time and part-time employees (see methods)</li>
+<li><code>incomeHAsIf</code>: Hourly gross salary for employees with self employed/other employees as employees of the same industry and with mean hourly worked for the industry when the number of hours is missing (see methods)</li>
+<li><code>incomeYAsIf</code>: Yearly gross salary for employees with self employed/other employees as employees of the same industry and with mean hourly worked for the industry when the number of hours is missing (see methods)</li>
+<li><code>ESport</code>: Relative probability weight to attend a sport fixture (Experimental, WIP)</li>
+<li><code>ERugby</code>: Relative probability weight to attend a Rugby fixture (Experimental, WIP)</li>
+<li><code>EConcertM</code>: Relative probability weight to attend a concert primarily targeting young males (Experimental, WIP)</li>
+<li><code>EConcertF</code>: Relative probability weight to attend a concert primarily targeting young females (Experimental, WIP)</li>
+<li><code>EConcertMS</code>: Relative probability weight to attend a concert primarily targeting middle-aged males (Experimental, WIP)</li>
+<li><code>EConcertMS</code>: Relative probability weight to attend a concert primarily targeting middle-aged females (Experimental, WIP)</li>
+<li><code>EMuseum</code>: Relative probability weight to visit a museum (Experimental, WIP)</li>
+<li><code>easting</code>: X coordinate of the OA centroid in the British National Grid coordinate system (epsg:27700, source: ONS)</li>
+<li><code>northing</code>: Y coordinate of the OA centroid in the British National Grid coordinate system (epsg:27700, source: ONS)</li>
+<li><code>lng</code>: X coordinate of the OA centroid in the Longitude/Latitude coordinate system (epsg:4326, derived from ONS)</li>
+<li><code>lat</code>: Y coordinate of the OA centroid in the Longitude/Latitude coordinate system (epsg:4326, derived from ONS)</li>
+</ul>
+</section>
+</section>
+<section id="national-data" class="level2" data-number="13.3">
+<h2 data-number="13.3" class="anchored" data-anchor-id="national-data"><span class="header-section-number">13.3</span> National data</h2>
+<section id="businessregistry.csv.gz" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="businessregistry.csv.gz"><a href="https://ramp0storage.blob.core.windows.net/nationaldata-v2/businessRegistry.csv.gz">businessRegistry.csv.gz</a></h3>
+<p>Contains a breakdown of all business units (i.e.&nbsp;a single workplace) in Great Britain at LSOA scale, estimated by the project contributors from two nomis datasets: <a href="https://www.nomisweb.co.uk/datasets/idbrlu">UK Business Counts - local units by industry and employment size band 2020</a> and <a href="https://www.nomisweb.co.uk/datasets/newbrespub">Business Register and Employment Survey 2015</a>. Each item contains the <code>size</code> of the unit and its main <code>sic1d07</code> code in reference to standard <a href="https://www.ons.gov.uk/methodology/classificationsandstandards/ukstandardindustrialclassificationofeconomicactivities">Industrial Classification of Economic Activities 2007</a> (number corresponding to the letter in alphabetical order). It is used to compute commuting flows.</p>
+</section>
+<section id="gis" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="gis"><code>GIS/</code></h3>
+<p>This directory contains three GIS datasets of GB in GeoJson format taken from <a href="https://geoportal.statistics.gov.uk/">ONS boundaries</a>:</p>
+<ul>
+<li><a href="https://ramp0storage.blob.core.windows.net/nationaldata-v2/GIS/OA_2011_Pop20.geojson">OA_2011_Pop20.geojson</a> at OA level</li>
+<li><a href="https://ramp0storage.blob.core.windows.net/nationaldata-v2/GIS/LSOA_2011_Pop20.geojson">LSOA_2011_Pop20.geojson</a> at LSOA level</li>
+<li><a href="https://ramp0storage.blob.core.windows.net/nationaldata-v2/GIS/MSOA_2011_Pop20.geojson">MSOA_2011_Pop20.geojson</a> at MSOA level</li>
+</ul>
+</section>
+<section id="quant_ramp_spc.tar.gz" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="quant_ramp_spc.tar.gz"><a href="https://ramp0storage.blob.core.windows.net/nationaldata-v2/QUANT_RAMP_spc.tar.gz">QUANT_RAMP_spc.tar.gz</a></h3>
+<p>See: Milton R, Batty M, Dennett A, dedicated <a href="https://github.com/maptube/QUANT_RAMP">RAMP Spatial Interaction Model GitHub repository</a>. It is used to compute the flows towards schools and retail.</p>
+</section>
+<section id="timeathomeincreasecty.csv.gz" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="timeathomeincreasecty.csv.gz"><a href="https://ramp0storage.blob.core.windows.net/nationaldata-v2/timeAtHomeIncreaseCTY.csv.gz">timeAtHomeIncreaseCTY.csv.gz</a></h3>
+<p>This file is a subset from <a href="https://www.google.com/covid19/mobility/">Google COVID-19 Community Mobility Reports</a>, cropped to GB. It describes the daily reduction in mobility, averaged at county level, due to lockdown and other COVID-19 restrictions between the 15<sup>th</sup> of February 2020 and 15<sup>th</sup> of October 2022. Missing values have been replaced by the national average. These values can be used directly to reduce <code>pnothome</code> and increase <code>phometot</code> (and their sub-categories) to simulate more accurately the period.</p>
+</section>
+<section id="diariesref.csv.gz" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="diariesref.csv.gz"><a href="https://ramp0storage.blob.core.windows.net/nationaldata-v2/diariesRef.csv.gz">diariesRef.csv.gz</a></h3>
+<p>Contains diaries taken from the UK TUS that can be distributed to the population on a daily basis. They contain weekend days and weekday days. A full description of the fields can be found <a href="https://ramp0storage.blob.core.windows.net/nationaldata-v2/diariesRef_Definitions.txt">here</a>.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -526,10 +641,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./understanding_data_schema.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Data schema</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./using_getting_started.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Getting started</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./validation.html" class="pagination-link">
+        <span class="nav-page-text">Validation</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
