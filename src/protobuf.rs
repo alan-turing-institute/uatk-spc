@@ -83,7 +83,7 @@ pub fn convert_to_pb(input: &Population, output_path: String) -> Result<usize> {
     Ok(buf.len())
 }
 
-fn convert_point(pt: &Point<f32>) -> pb::Point {
+pub(crate) fn convert_point(pt: &Point<f32>) -> pb::Point {
     pb::Point {
         longitude: pt.x(),
         latitude: pt.y(),
