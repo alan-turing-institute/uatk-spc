@@ -9,3 +9,4 @@ node_modules
 web/dist
 web/*pb
 /.luarc.json
+poetry.lock
