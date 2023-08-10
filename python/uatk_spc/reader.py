@@ -1,10 +1,10 @@
-from google.protobuf.json_format import MessageToJson, MessageToDict
+from google.protobuf.json_format import MessageToDict
 import polars as pl
 import uatk_spc.synthpop_pb2 as synthpop_pb2
 import json
 
 
-class SPCReader:
+class SPCReaderProto:
     pop: synthpop_pb2.Population()
     people: pl.DataFrame
     households: pl.DataFrame
@@ -13,7 +13,7 @@ class SPCReader:
     info_per_msoa: dict
 
     def __init__(self, path: str):
-        self.pop = SPCReader.read_pop(path)
+        self.pop = SPCReaderProto.read_pop(path)
         pop_as_dict = MessageToDict(self.pop, including_default_value_fields=True)
         self.households = pl.from_records(pop_as_dict["households"])
         self.people = pl.from_records(pop_as_dict["people"])
@@ -30,7 +30,7 @@ class SPCReader:
         return pop
 
 
-class SPCReaderSplit:
+class SPCReaderParquet:
     people: pl.DataFrame
     households: pl.DataFrame
     time_use_diaries: pl.DataFrame
