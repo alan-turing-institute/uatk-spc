@@ -4,6 +4,12 @@ import uatk_spc.synthpop_pb2 as synthpop_pb2
 import json
 
 
+# TODO:
+# - Add flexible dataframe backend (e.g. pandas, polars)
+# - Add graph data structure reading for flows (e.g. into networkx)
+# - Add functionality for simplified merging of the different tables (e.g. people with time use diaries)
+
+
 class SPCReaderProto:
     pop: synthpop_pb2.Population()
     people: pl.DataFrame
