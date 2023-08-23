@@ -247,4 +247,4 @@ busPop <- busPop[order(busPop$id),]
 row.names(busPop) <- 1:nrow(busPop)
 
 print("Writing outputs...")
-write.table(busPop,"Outputs/businessRegistry.csv",sep=",",row.names = F)
+write.table(busPop,paste(folderOut,"businessRegistry.csv", sep=""), sep=",",row.names = F)

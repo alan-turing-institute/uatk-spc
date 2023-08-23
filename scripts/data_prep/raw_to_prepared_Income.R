@@ -811,11 +811,11 @@ distribHours = data.frame(MFT = distribHoursMFT, MPT = distribHoursMPT,
                           FFT = distribHoursFFT, FPT = distribHoursFPT)
 
 print("Writing outputs...")
-write.table(distribHours,"distribHours.csv",row.names = F,sep = ",")
+write.table(distribHours,paste(folderOut,"distribHours.csv",sep = ""),row.names = F,sep = ",")
 
-write.table(meanHoursMFT,"meanHoursMFT.csv",row.names = F,sep = ",")
-write.table(meanHoursMPT,"meanHoursMPT.csv",row.names = F,sep = ",")
-write.table(meanHoursFFT,"meanHoursFFT.csv",row.names = F,sep = ",")
-write.table(meanHoursFPT,"meanHoursFPT.csv",row.names = F,sep = ",")
+write.table(meanHoursMFT,paste(folderOut,"meanHoursMFT.csv",sep = ""),row.names = F,sep = ",")
+write.table(meanHoursMPT,paste(folderOut,"meanHoursMPT.csv",sep = ""),row.names = F,sep = ",")
+write.table(meanHoursFFT,paste(folderOut,"meanHoursFFT.csv",sep = ""),row.names = F,sep = ",")
+write.table(meanHoursFPT,paste(folderOut,"meanHoursFPT.csv",sep = ""),row.names = F,sep = ",")
 
 print("End of raw_to_prepared_Income")
