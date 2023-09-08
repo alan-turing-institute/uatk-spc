@@ -441,8 +441,8 @@ downloadNSSEC <- function(age,sex){
 }
 
 writeNSSECTables <- function(age,sex){
-  ref <- matrix(c("M_16-24","M_25-34","M_35-49","M_50-64","M_65p",
-                  "F_16-24","F_25-34","F_35-49","F_50-64","F_65p"),
+  ref <- matrix(c("M_16to24","M_25to34","M_35to49","M_50to64","M_65to74",
+                  "F_16to24","F_25to34","F_35to49","F_50to64","F_65to74"),
                 ncol = 2)
   if(!file.exists(paste(folderOut,"NSSEC8_EW_",ref[age,sex],"_CLEAN.csv",sep = ""))){
     NSSEC <- downloadNSSEC(age,sex)
@@ -795,9 +795,14 @@ print("Working on mobility data...")
 # Assumption: if percent value for a County is NA -> change value to national average
 
 # Download latest file from google mobility
+global_mobility_report <- paste(folderIn,"Google_Global_Mobility_Report.csv",sep = "")
+if(!file.exists(global_mobility_report)){
 download.file("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv", 
-              destfile = paste(folderIn,"Google_Global_Mobility_Report.csv",sep = ""))
-gm <- read_csv(paste(folderIn,"Google_Global_Mobility_Report.csv",sep = "")) %>% 
+              destfile = global_mobility_report)
+} else {
+  print("'Google_Global_Mobility_Report.csv' already exists, not downloading again")
+}
+gm <- read_csv(global_mobility_report) %>%
   filter(country_region == "United Kingdom" & !is.na(sub_region_1))
 gm <- gm %>% dplyr::select( c(sub_region_1,date,residential_percent_change_from_baseline))
 colnames(gm) <- c("GoogleCTY_CNC","date","change")

@@ -1,3 +1,5 @@
+options(error = traceback)
+
 # Positional args
 args <- commandArgs(TRUE)
 
@@ -16,4 +18,3 @@ folderOut <- args[5]
 # Run
 source("SPC_loadWorkspace_run_1.R")
 source("SPC_pipelineLAD_run_1.R")
-

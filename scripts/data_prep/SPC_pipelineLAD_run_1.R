@@ -89,8 +89,10 @@ merge$workedHoursWeekly <- indivTUS$workedHoursWeekly[ind]
 
 merge$nssec8[merge$nssec8 == 9] <- -1
 
-merge <- merge[,c(1:7,23,8:22,24:31)]
-
+# TODO: fix indices missing here, is it the same dataframe at this point as the one that ran?
+# A: no, BMI is removed so the indices do not line up anymore, check!
+# merge <- merge[,c(1:7,23,8:22,24:31)]
+merge <- merge[,c(1:7,23,8:22)]
 
 ### Income
 
@@ -98,7 +100,7 @@ print("adding income data")
 
 region <- unique(lu$RGN20NM[lu$LAD20CD == lad])
 if(countryR == "England"){
-  merge <- addToData2(merge,region,coefFFT,coefFPT,coefMFT,coefMPT)
+  merge <- addToData(merge,region,coefFFT,coefFPT,coefMFT,coefMPT)
 } else {
   merge$incomeH <- NA
   merge$incomeY <- NA
@@ -111,8 +113,9 @@ if(countryR == "England"){
 ##### Outputs #####
 ###################
 
-
-merge <- merge[order(merge$pid),c(2:3,1,5:46)]
+merge$region <- region
+out_cols <- c("pid", "hid", "MSOA11CD", "region", "sex", "age", "ethnicity", "soc2010", "pwkstat", "incomeH")
+merge <- merge %>% select(all_of(out_cols))
 row.names(merge) <- 1:nrow(merge)
 
 print("... and writing output")
