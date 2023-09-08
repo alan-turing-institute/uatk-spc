@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Synthetic Population Catalyst</title>
+<title>Synthetic Population Catalyst - 4&nbsp; Outputs for Wales (ITL regions)</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -30,7 +30,8 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./outputs.html" rel="next">
+<link href="./scotland_outputs.html" rel="next">
+<link href="./england_outputs.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -64,7 +65,7 @@ ul.task-list li input[type="checkbox"] {
 
 </head>
 
-<body class="nav-sidebar floating fullcontent">
+<body class="nav-sidebar floating">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -73,7 +74,7 @@ ul.task-list li input[type="checkbox"] {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Getting started</span></a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./outputs.html">Using SPC</a></li><li class="breadcrumb-item"><a href="./wales_outputs.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Outputs for Wales (ITL regions)</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -104,7 +105,7 @@ ul.task-list li input[type="checkbox"] {
     <ul class="list-unstyled mt-1">
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Getting started</span></span></a>
   </div>
 </li>
@@ -131,7 +132,7 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./wales_outputs.html" class="sidebar-item-text sidebar-link">
+  <a href="./wales_outputs.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Outputs for Wales (ITL regions)</span></span></a>
   </div>
 </li>
@@ -224,13 +225,21 @@ ul.task-list li input[type="checkbox"] {
 </nav>
 <div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#citing" id="toc-citing" class="nav-link active" data-scroll-target="#citing"><span class="header-section-number">4.1</span> Citing</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Synthetic Population Catalyst</h1>
+<h1 class="title"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Outputs for Wales (ITL regions)</span></h1>
 </div>
 
 
@@ -245,20 +254,90 @@ ul.task-list li input[type="checkbox"] {
 
 </header>
 
-<p><img src="img/SPC_Schema.png" class="img-fluid"></p>
-<p>The Synthetic Population Catalyst (SPC) makes it easier for researchers to work with synthetic population data in England. It combines a variety of <a href="./data_sources.html">data sources</a> and outputs a single file in <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto">protocol buffer format</a>, describing the population in a given study area. The data includes demographic, health, and daily activity data per person, and information about the venues where people conduct activities.</p>
-<p>You can use SPC output to catalyze your own project. Rather than join together many <a href="./data_sources.html">raw data sources</a> yourself and deal with missing and messy data, you can leverage SPC’s effort and well-documented schema.</p>
-<p>To get started:</p>
-<ol type="1">
-<li><a href="./outputs.html">Download sample data for a county in England</a></li>
-<li><a href="./use_output.html">Explore how to use the data</a></li>
-<li>If you need a different study area, <a href="./installation.html">build</a> and then <a href="./custom_areas.html">run</a> SPC</li>
-</ol>
-<p>You can also download this site as <a href="https://alan-turing-institute.github.io/uatk-spc/Synthetic-Population-Catalyst.pdf">a PDF</a> and find all code <a href="https://github.com/alan-turing-institute/uatk-spc">on Github</a>.</p>
-<p>This work was supported by Wave 1 of The UKRI Strategic Priorities Fund under the EPSRC Grant EP/W006022/1, particularly the “Ecosystem of Digital Twins”<br>
-and “Shocks and Resilience” themes within that grant &amp; The Alan Turing Institute</p>
+<p>International Territorial Level (ITL) regions are a post-brexit renaming of the former Nomenclature of Territorial Units for Statistics (NUTS) regions. In wales, the level 3 represents a grouping of the 22 unitary districts into 12 regions. Check the year you would like to explore and pick the corresponding file based on the region you are interested. Remember if you want to explore the data you can load the output in our <a href="https://alan-turing-institute.github.io/uatk-spc/app/">SPC explorer</a></p>
+<ul>
+<li>2012:
+<ul>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2012/bridgend-and-neath-port-talbot.pb.gz">bridgend-and-neath-port-talbot.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2012/cardiff-and-vale-of-glamorgan.pb.gz">cardiff-and-vale-of-glamorgan.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2012/central-valleys.pb.gz">central-valleys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2012/conwy-and-denbighshire.pb.gz">conwy-and-denbighshire.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2012/flintshire-and-wrexham.pb.gz">flintshire-and-wrexham.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2012/gwent-valleys.pb.gz">gwent-valleys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2012/gwynedd.pb.gz">gwynedd.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2012/isle-of-anglesey.pb.gz">isle-of-anglesey.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2012/monmouthshire-and-newport.pb.gz">monmouthshire-and-newport.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2012/powys.pb.gz">powys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2012/south-west-wales.pb.gz">south-west-wales.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2012/swansea.pb.gz">swansea.pb.gz</a></li>
+</ul></li>
+<li>2020:
+<ul>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2020/bridgend-and-neath-port-talbot.pb.gz">bridgend-and-neath-port-talbot.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2020/cardiff-and-vale-of-glamorgan.pb.gz">cardiff-and-vale-of-glamorgan.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2020/central-valleys.pb.gz">central-valleys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2020/conwy-and-denbighshire.pb.gz">conwy-and-denbighshire.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2020/flintshire-and-wrexham.pb.gz">flintshire-and-wrexham.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2020/gwent-valleys.pb.gz">gwent-valleys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2020/gwynedd.pb.gz">gwynedd.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2020/isle-of-anglesey.pb.gz">isle-of-anglesey.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2020/monmouthshire-and-newport.pb.gz">monmouthshire-and-newport.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2020/powys.pb.gz">powys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2020/south-west-wales.pb.gz">south-west-wales.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2020/swansea.pb.gz">swansea.pb.gz</a></li>
+</ul></li>
+<li>2022:
+<ul>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2022/bridgend-and-neath-port-talbot.pb.gz">bridgend-and-neath-port-talbot.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2022/cardiff-and-vale-of-glamorgan.pb.gz">cardiff-and-vale-of-glamorgan.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2022/central-valleys.pb.gz">central-valleys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2022/conwy-and-denbighshire.pb.gz">conwy-and-denbighshire.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2022/flintshire-and-wrexham.pb.gz">flintshire-and-wrexham.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2022/gwent-valleys.pb.gz">gwent-valleys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2022/gwynedd.pb.gz">gwynedd.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2022/isle-of-anglesey.pb.gz">isle-of-anglesey.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2022/monmouthshire-and-newport.pb.gz">monmouthshire-and-newport.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2022/powys.pb.gz">powys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2022/south-west-wales.pb.gz">south-west-wales.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2022/swansea.pb.gz">swansea.pb.gz</a></li>
+</ul></li>
+<li>2032:
+<ul>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2032/bridgend-and-neath-port-talbot.pb.gz">bridgend-and-neath-port-talbot.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2032/cardiff-and-vale-of-glamorgan.pb.gz">cardiff-and-vale-of-glamorgan.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2032/central-valleys.pb.gz">central-valleys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2032/conwy-and-denbighshire.pb.gz">conwy-and-denbighshire.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2032/flintshire-and-wrexham.pb.gz">flintshire-and-wrexham.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2032/gwent-valleys.pb.gz">gwent-valleys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2032/gwynedd.pb.gz">gwynedd.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2032/isle-of-anglesey.pb.gz">isle-of-anglesey.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2032/monmouthshire-and-newport.pb.gz">monmouthshire-and-newport.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2032/powys.pb.gz">powys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2032/south-west-wales.pb.gz">south-west-wales.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2032/swansea.pb.gz">swansea.pb.gz</a></li>
+</ul></li>
+<li>2039:
+<ul>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2039/bridgend-and-neath-port-talbot.pb.gz">bridgend-and-neath-port-talbot.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2039/cardiff-and-vale-of-glamorgan.pb.gz">cardiff-and-vale-of-glamorgan.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2039/central-valleys.pb.gz">central-valleys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2039/conwy-and-denbighshire.pb.gz">conwy-and-denbighshire.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2039/flintshire-and-wrexham.pb.gz">flintshire-and-wrexham.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2039/gwent-valleys.pb.gz">gwent-valleys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2039/gwynedd.pb.gz">gwynedd.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2039/isle-of-anglesey.pb.gz">isle-of-anglesey.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2039/monmouthshire-and-newport.pb.gz">monmouthshire-and-newport.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2039/powys.pb.gz">powys.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2039/south-west-wales.pb.gz">south-west-wales.pb.gz</a></li>
+<li><a href="https://ramp0storage.blob.core.windows.net/spc-output/v2.1/Wales/2039/swansea.pb.gz">swansea.pb.gz</a></li>
+</ul></li>
+</ul>
+<section id="citing" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="citing"><span class="header-section-number">4.1</span> Citing</h2>
+<p>If you use SPC code or data in your work, please cite using the <a href="https://zenodo.org/badge/latestdoi/479038905">Zenodo DOI</a> (using the bottom-right tool to generate the citation).</p>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -496,10 +575,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
+      <a href="./england_outputs.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Outputs for England (Counties)</span></span>
+      </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./outputs.html" class="pagination-link">
-        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">SPC Outputs</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./scotland_outputs.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Outputs for Scotland (Police Divisions)</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
