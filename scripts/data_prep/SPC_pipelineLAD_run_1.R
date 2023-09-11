@@ -76,7 +76,7 @@ if(countryR == "England" | countryR == "Wales"){
 
 
 # Match with TUS
-ind <- unlist(mcmapply(function(x){findTUSMatch(x,merge,indivTUS)}, 1:nrow(merge), mc.cores = cores))
+ind <- unlist(mcmapply(function(x){findTUSMatch(x,merge,indivTUS)}, 1:nrow(merge), mc.cores = cores, mc.set.seed = FALSE))
 
 merge$id_TUS_hh <- indivTUS$id_TUS[ind]
 merge$id_TUS_p <- indivTUS$pnum[ind]

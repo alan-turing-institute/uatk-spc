@@ -283,7 +283,7 @@ addToData <- function(new,region,coefFFT,coefFPT,coefMFT,coefMPT){
   coefFPTR <- coefFPT[which(coefFFT$region == region),]
   coefMFTR <- coefMFT[which(coefFFT$region == region),]
   coefMPTR <- coefMPT[which(coefFFT$region == region),]
-  incs <- mcmapply(function(x){fillIncome(x,new,coefFFTR,coefFPTR,coefMFTR,coefMPTR)}, 1:nrow(new), mc.cores = detectCores())
+  incs <- mcmapply(function(x){fillIncome(x,new,coefFFTR,coefFPTR,coefMFTR,coefMPTR)}, 1:nrow(new), mc.cores = detectCores(), mc.set.seed = FALSE)
   # print(head(incs))
   new$incomeH <- incs
   # new$incomeH <- incs[1,]
