@@ -108,7 +108,7 @@ print("adding income data")
 
 region <- unique(lu$RGN20NM[lu$LAD20CD == lad])
 if (countryR == "England") {
-  merge <- addToData(merge, region, coefFFT, coefFPT, coefMFT, coefMPT)
+  merge <- addToData(merge, region, coefFFT, coefFPT, coefMFT, coefMPT, cores)
 } else {
   merge$incomeH <- NA
   merge$incomeY <- NA
