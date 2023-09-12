@@ -124,7 +124,7 @@ print("... and writing output")
 merge$region <- region
 out_cols <- c(
   "pid", "hid", "MSOA11CD", "region", "sex", "age",
-  "ethnicity", "soc2010", "pwkstat", "incomeH"
+  "soc2010", "pwkstat", "incomeH"
 )
 merge <- merge %>% select(all_of(out_cols))
 outpath <- paste(folderOut, countryR, "/", date, "/", sep = "")
