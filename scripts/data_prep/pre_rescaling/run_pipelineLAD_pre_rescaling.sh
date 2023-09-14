@@ -39,3 +39,8 @@ for lad_cd in "${lad_cds[@]}"; do
             $OUTPUT_PATH
     done
 done
+
+# Run rescaling
+pueue add -- Rscript pre_rescaling/age_rescaling.R \
+    $STEP1_PATH \
+    $OUTPUT_PATH
