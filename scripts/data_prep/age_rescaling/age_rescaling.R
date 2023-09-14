@@ -17,13 +17,15 @@ args <- commandArgs(TRUE)
 print(args)
 
 # Single run args
-date <- as.integer(args[2])
-folderInOT <- args[3]
-spenserInput <- args[4]
-folderOut <- args[5]
+folderInOT <- args[1]
+folderOut <- args[2]
 
 # Alias
 folderIn <- folderInOT
+
+# Cores
+cores <- detectCores()
+
 
 # Age ref
 # Mid-points of Age categories in:
@@ -49,7 +51,7 @@ lad_files <- (
 )
 
 # TODO: For testing, just two LADs, comment out when complete
-lad_files <- lad_files %>% filter(LAD20CD %in% c("E09000001", "E06000001"))
+# lad_files <- lad_files %>% filter(LAD20CD %in% c("E09000001", "E06000001"))
 check_res <- do.call(rbind, lapply(lad_files$file_name, read.csv))
 
 # Filter for only Full time (1) and part time (2)
@@ -157,6 +159,78 @@ fitted2 <- function(fit, val) {
     return(ret)
 }
 
+# Gets global incomes for a given Male/Female, Full-Time/Part-Time combination.
+get_global_incomes <- function(data) {
+    as.numeric(data[1, c(7:11, 3, 12:16)])
+}
+
+# Given age and modelled coefficients for quantile to income, return quantiles
+# for all, quantiles given age and quantiles given age in modelled data.
+get_true_and_modelled <- function(modelled, age, coef) {
+    if (age > 66) {
+        temp <- modelled$incomeH[modelled$age > 66]
+        true <- readCoefAgeData(67, coef)
+    } else {
+        temp <- modelled$incomeH[modelled$age == age]
+        true <- readCoefAgeData(age, coef)
+    }
+    modelled <- quantile(
+        temp,
+        c(.10, .20, .25, .30, .40, .50, .60, .70, .75, .80, .90),
+        na.rm = TRUE
+    )
+    rbind(true, modelled)
+}
+
+
+# Build percentile shrinking / expansion reference table depending on age
+make_age_row_new <- function(age, sex, fullTime) {
+    # fetch correct global distribution, distribution for specific age and
+    # previously modelled distribution
+    global_true_mod <- if (sex == 1 && fullTime == TRUE) {
+        rbind(
+            get_global_incomes(ageMFT),
+            get_true_and_modelled(checkResMFT, age, coefAgeMFT)
+        )
+    } else if (sex == 1 && fullTime == FALSE) {
+        rbind(
+            get_global_incomes(ageMPT),
+            get_true_and_modelled(checkResMPT, age, coefAgeMPT)
+        )
+    } else if (sex == 2 && fullTime == TRUE) {
+        rbind(
+            get_global_incomes(ageFFT),
+            get_true_and_modelled(checkResFFT, age, coefAgeFFT)
+        )
+    } else {
+        rbind(
+            get_global_incomes(ageFPT),
+            get_true_and_modelled(checkResFPT, age, coefAgeFPT)
+        )
+    }
+    # destructure
+    true_global <- global_true_mod[1, ]
+    true <- global_true_mod[2, ]
+    mod <- global_true_mod[3, ]
+    # deduce relevant fittings
+    ref_perc <- c(10, 20, 25, 30, 40, 50, 60, 70, 75, 80, 90)
+    fit_true_global <- lm(true_global ~ poly(ref_perc, 3, raw = TRUE))
+    fit_ref_perc <- lm(ref_perc ~ poly(mod, 3, raw = TRUE))
+    fit_true <- lm(true ~ poly(ref_perc, 3, raw = TRUE))
+    fit_ref_perc_true_global <- lm(ref_perc ~ poly(true_global, 3, raw = TRUE))
+    # deduce new percentile value (see methods)
+    do.call(cbind, lapply(seq_len(100), function(perc) {
+        a <- fitted2(fit_true_global, perc)
+        b <- fitted2(fit_ref_perc, a)
+        c <- fitted2(fit_true, b)
+        min(
+            max(
+                1, as.numeric(round(fitted2(fit_ref_perc_true_global, c)))
+            ),
+            100
+        )
+    }))
+}
 
 # Build percentile shrinking / expansion reference table depending on age
 makeAgeRow <- function(age, sex, fullTime) {
@@ -205,43 +279,56 @@ makeAgeRow <- function(age, sex, fullTime) {
     }
     # deduce relevant fittings
     fitTrueGlob <- lm(trueGlob ~ poly(xAx, 3, raw = TRUE))
+    fitXAxMod <- lm(xAx ~ poly(mod, 3, raw = TRUE))
     fitTrue <- lm(true ~ poly(xAx, 3, raw = TRUE))
     fitXAxTrueGlob <- lm(xAx ~ poly(trueGlob, 3, raw = TRUE))
-    fitXAxMod <- lm(xAx ~ poly(mod, 3, raw = TRUE))
     # deduce new percentile value (see methods)
-    a <- fitted2(fitTrueGlob, 1)
-    b <- fitted2(fitXAxMod, a)
-    c <- fitted2(fitTrue, b)
-    newPerc <- min(max(1, as.numeric(round(fitted2(fitXAxTrueGlob, c)))), 100)
-    for (i in 2:100) {
-        a <- fitted2(fitTrueGlob, i)
+    return(do.call(cbind, lapply(seq_len(100), function(perc) {
+        a <- fitted2(fitTrueGlob, perc)
         b <- fitted2(fitXAxMod, a)
         c <- fitted2(fitTrue, b)
-        newPerc <- c(newPerc, min(max(1, as.numeric(round(fitted2(fitXAxTrueGlob, c)))), 100))
-    }
-    return(newPerc)
+        return(min(max(1, as.numeric(round(fitted2(fitXAxTrueGlob, c)))), 100))
+    })))
 }
 
 ageRescaleMFT <- mcmapply(function(x) {
-    makeAgeRow(x, 1, T)
-}, 16:86, mc.cores = detectCores(), mc.set.seed = FALSE)
-ageRescaleMPT <- mcmapply(function(x) {
-    makeAgeRow(x, 1, F)
-}, 16:86, mc.cores = detectCores(), mc.set.seed = FALSE)
-ageRescaleFFT <- mcmapply(function(x) {
-    makeAgeRow(x, 0, T)
-}, 16:86, mc.cores = detectCores(), mc.set.seed = FALSE)
-ageRescaleFPT <- mcmapply(function(x) {
-    makeAgeRow(x, 0, F)
-}, 16:86, mc.cores = detectCores(), mc.set.seed = FALSE)
+    makeAgeRow(x, 1, TRUE)
+}, 16:86, mc.cores = cores, mc.set.seed = FALSE)
+ageRescaleMFTNew <- mcmapply(function(x) {
+    make_age_row_new(x, 1, TRUE)
+}, 16:86, mc.cores = cores, mc.set.seed = FALSE)
+sum(abs(ageRescaleMFT - ageRescaleMFTNew))
 
+ageRescaleMPT <- mcmapply(function(x) {
+    makeAgeRow(x, 1, FALSE)
+}, 16:86, mc.cores = cores, mc.set.seed = FALSE)
+ageRescaleMPTNew <- mcmapply(function(x) {
+    make_age_row_new(x, 1, FALSE)
+}, 16:86, mc.cores = cores, mc.set.seed = FALSE)
+sum(abs(ageRescaleMPT - ageRescaleMPTNew))
+
+ageRescaleFFT <- mcmapply(function(x) {
+    makeAgeRow(x, 0, TRUE)
+}, 16:86, mc.cores = cores, mc.set.seed = FALSE)
+ageRescaleFFTNew <- mcmapply(function(x) {
+    make_age_row_new(x, 0, TRUE)
+}, 16:86, mc.cores = cores, mc.set.seed = FALSE)
+sum(abs(ageRescaleFFT - ageRescaleFFTNew))
+
+ageRescaleFPT <- mcmapply(function(x) {
+    makeAgeRow(x, 0, FALSE)
+}, 16:86, mc.cores = cores, mc.set.seed = FALSE)
+ageRescaleFPTNew <- mcmapply(function(x) {
+    make_age_row_new(x, 0, FALSE)
+}, 16:86, mc.cores = cores, mc.set.seed = FALSE)
+sum(abs(ageRescaleFPT - ageRescaleFPTNew))
 
 ## Note: mean of the Income distributions for each feature (groupby) should be the same after rescaling
 ## "~Exactly" same: pwkstat, sex
 ##  - similar: SOC, Region
 
 print("Writing modelled coefficients")
-write.table(ageRescaleMFT, paste(folderOut, "ageRescaleMFT.csv", sep = ""), row.names = F, sep = ",")
-write.table(ageRescaleMPT, paste(folderOut, "ageRescaleMPT.csv", sep = ""), row.names = F, sep = ",")
-write.table(ageRescaleFFT, paste(folderOut, "ageRescaleFFT.csv", sep = ""), row.names = F, sep = ",")
-write.table(ageRescaleFPT, paste(folderOut, "ageRescaleFPT.csv", sep = ""), row.names = F, sep = ",")
+write.table(ageRescaleMFT, paste(folderInOT, "ageRescaleMFT.csv", sep = ""), row.names = F, sep = ",")
+write.table(ageRescaleMPT, paste(folderInOT, "ageRescaleMPT.csv", sep = ""), row.names = F, sep = ",")
+write.table(ageRescaleFFT, paste(folderInOT, "ageRescaleFFT.csv", sep = ""), row.names = F, sep = ",")
+write.table(ageRescaleFPT, paste(folderInOT, "ageRescaleFPT.csv", sep = ""), row.names = F, sep = ",")
