@@ -28,6 +28,7 @@ cores <- detectCores()
 #    16-17b, 18-21, 22-29, 30-39, 40-49, 50-59, 60+
 age_midpoints <- c(16.5, 19.5, 25.5, 34.5, 44.5, 54.5, 63)
 
+print("Read modelled data")
 # Read data outputted at LAD20CD resolution
 lookup <- read.csv(paste(folder_step_1, "lookUp-GB.csv", sep = ""))
 lad_files <- (
@@ -50,7 +51,6 @@ check_res_f <- check_res %>% filter(pwkstat == 1 | pwkstat == 2)
 
 
 print("Producing age rescaling coefficients")
-
 # Read raw data from ONS
 download.file("https://www.ons.gov.uk/file?uri=%2femploymentandlabourmarket%2fpeopleinwork%2fearningsandworkinghours%2fdatasets%2fagegroupashetable6%2f2020revised/table62020revised.zip", # nolint
     destfile = paste(folder_step_1, "incomeDataAge.zip", sep = ""),
@@ -176,7 +176,7 @@ get_true_and_modelled <- function(modelled, age, coef) {
 
 
 # Build percentile shrinking / expansion reference table depending on age
-make_age_row_new <- function(age, sex, full_time) {
+make_age_row <- function(age, sex, full_time) {
     # fetch correct global distribution, distribution for specific age and
     # previously modelled distribution
     global_true_mod <- if (sex == 1 && full_time == TRUE) {
@@ -226,16 +226,16 @@ make_age_row_new <- function(age, sex, full_time) {
 
 # Get rescaling
 age_rescale_mft <- mcmapply(function(x) {
-    make_age_row_new(x, 1, TRUE)
+    make_age_row(x, 1, TRUE)
 }, 16:86, mc.cores = cores, mc.set.seed = FALSE)
 age_rescale_mpt <- mcmapply(function(x) {
-    make_age_row_new(x, 1, FALSE)
+    make_age_row(x, 1, FALSE)
 }, 16:86, mc.cores = cores, mc.set.seed = FALSE)
 age_rescale_fft <- mcmapply(function(x) {
-    make_age_row_new(x, 2, TRUE)
+    make_age_row(x, 2, TRUE)
 }, 16:86, mc.cores = cores, mc.set.seed = FALSE)
 age_rescale_fpt <- mcmapply(function(x) {
-    make_age_row_new(x, 2, FALSE)
+    make_age_row(x, 2, FALSE)
 }, 16:86, mc.cores = cores, mc.set.seed = FALSE)
 
 # Note: mean of the Income distributions for each feature (groupby) should
