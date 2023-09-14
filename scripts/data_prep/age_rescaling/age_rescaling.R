@@ -82,11 +82,10 @@ age_fft <- get_income_data("Female Full-Time")
 age_fpt <- get_income_data("Female Part-Time")
 
 # Prepare data to read results of the previous modelling
-# TODO: fix coding
-check_res_mft <- check_res_f[check_res_f$sex == 2 & check_res_f$pwkstat == 1, ]
-check_res_mpt <- check_res_f[check_res_f$sex == 2 & check_res_f$pwkstat == 2, ]
-check_res_fft <- check_res_f[check_res_f$sex == 1 & check_res_f$pwkstat == 1, ]
-check_res_fpt <- check_res_f[check_res_f$sex == 1 & check_res_f$pwkstat == 2, ]
+check_res_mft <- check_res_f %>% filter(sex == 1 & pwkstat == 1)
+check_res_mpt <- check_res_f %>% filter(sex == 1 & pwkstat == 2)
+check_res_fft <- check_res_f %>% filter(sex == 2 & pwkstat == 1)
+check_res_fpt <- check_res_f %>% filter(sex == 2 & pwkstat == 2)
 
 # Ready data to be able to model ONS data for any age
 fit_col <- function(col, row, modelled, ord = 4) {
@@ -226,7 +225,6 @@ make_age_row_new <- function(age, sex, full_time) {
 }
 
 # Get rescaling
-# TODO: fix coding
 age_rescale_mft <- mcmapply(function(x) {
     make_age_row_new(x, 1, TRUE)
 }, 16:86, mc.cores = cores, mc.set.seed = FALSE)
@@ -234,10 +232,10 @@ age_rescale_mpt <- mcmapply(function(x) {
     make_age_row_new(x, 1, FALSE)
 }, 16:86, mc.cores = cores, mc.set.seed = FALSE)
 age_rescale_fft <- mcmapply(function(x) {
-    make_age_row_new(x, 0, TRUE)
+    make_age_row_new(x, 2, TRUE)
 }, 16:86, mc.cores = cores, mc.set.seed = FALSE)
 age_rescale_fpt <- mcmapply(function(x) {
-    make_age_row_new(x, 0, FALSE)
+    make_age_row_new(x, 2, FALSE)
 }, 16:86, mc.cores = cores, mc.set.seed = FALSE)
 
 # Note: mean of the Income distributions for each feature (groupby) should
