@@ -14,6 +14,6 @@ spenserInput <- args[4]
 folderOut <- args[5]
 
 # Run
-source("SPC_loadWorkspace_run_2.R")
-source("SPC_pipelineLAD_run_2.R")
+source("SPC_loadWorkspace.R")
+source("SPC_pipelineLAD.R")
 
