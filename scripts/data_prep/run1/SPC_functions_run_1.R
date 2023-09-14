@@ -251,7 +251,7 @@ drawIncome <- function(soc, sex, age, fulltime, coefFFTR, coefFPTR, coefMFTR, co
   } else if (inc < 8.72) {
     inc <- 8.72
   }
-  return(inc)
+  return(round(inc, 2))
 }
 
 # Outputs four types of income (hourly, annual, self-employed as if employed)
