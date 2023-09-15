@@ -43,9 +43,11 @@ or using [Azure batch
 computing](https://github.com/alan-turing-institute/spc-hpc-pipeline/))_
 
 The final data preparation step is to generate age rescaling coefficients:
-1. Run entire population is run once without rescaling to add an income for each
-   person (single region (LAD) script [age_rescaling/SPC_single_region_rescaling.R](age_rescaling/SPC_single_region_age_rescaling.R)).
-1. Run [age_rescaling/age_rescaling.R](age_rescaling/age_rescaling.R) to produce
+1. Run entire population is once for 2020 (since the income data is from 2020)
+   without rescaling to add an income for each person (single region (LAD)
+   script
+   [age_rescaling/SPC_single_region_rescaling.R](age_rescaling/SPC_single_region_age_rescaling.R)).
+2. Run [age_rescaling/age_rescaling.R](age_rescaling/age_rescaling.R) to produce
    the rescaling coefficients.
 
 A bash script can be executed to perform the above two steps with:
