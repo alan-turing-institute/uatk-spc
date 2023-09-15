@@ -41,8 +41,7 @@ lad_files <- (
             )
         )
 )
-# TODO: For testing, just two LADs, comment out when complete
-# lad_files <- lad_files |> filter(LAD20CD %in% c("E09000001", "E06000001")) # nolint
+# Load data pre-rescaling
 check_res <- do.call(rbind, lapply(lad_files$file_name, read.csv))
 
 # Filter for only Full time (1) and part time (2)
