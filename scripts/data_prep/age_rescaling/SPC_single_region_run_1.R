@@ -16,5 +16,5 @@ spenserInput <- args[4]
 folderOut <- args[5]
 
 # Run
-source("pre_rescaling/SPC_loadWorkspace_run_1.R")
-source("pre_rescaling/SPC_pipelineLAD_run_1.R")
+source("age_rescaling/SPC_loadWorkspace_run_1.R")
+source("age_rescaling/SPC_pipelineLAD_run_1.R")
