@@ -33,15 +33,30 @@ This step outputs two types of files:
 
 Refer to the [data sources](https://alan-turing-institute.github.io/uatk-spc/data_sources.html) to learn more about the raw data and the content of the files.
 
-The script calls `raw_to_prepared_Income.R` to produce income data for the next step. Note that only the modelled coefficients for hourly salaries (averaged over all age groups) and number of hours worked are produced by the script. The age rescaling coefficients require running the entire population once without rescaling, which is not practical. The methodology is left commented out for reference. Use the content of `SAVE_SPC_required_data.zip` to obtain these coefficients. The script also calls `raw_to_prepared_Workplaces.R` to create `businessRegistry.csv`. Note that both these scripts can only be used on their own after some of the content of `raw_to_prepared.R` have been created.
+The script calls `raw_to_prepared_Income.R` to produce income data for the next step.
 
-## Step 2: Add to SPENSER
-This step assumes that you have already run the complete SPENSER pipeline either
-with a [single
+### Age rescaling coefficients
+_(Note: Data preparation from here on assumes that you have already run the
+complete SPENSER pipeline either with a [single
 machine](https://github.com/alan-turing-institute/spc-hpc-pipeline/blob/main/scripts/full_pipeline/README.md)
 or using [Azure batch
-computing](https://github.com/alan-turing-institute/spc-hpc-pipeline/).
+computing](https://github.com/alan-turing-institute/spc-hpc-pipeline/))_
 
+The final data preparation step is to generate age rescaling coefficients:
+1. Run entire population is run once without rescaling to add an income for each
+   person (single region (LAD) script [age_rescaling/SPC_single_region_rescaling.R](age_rescaling/SPC_single_region_age_rescaling.R)).
+1. Run [age_rescaling/age_rescaling.R](age_rescaling/age_rescaling.R) to produce
+   the rescaling coefficients.
+
+A bash script can be executed to perform the above two steps with:
+```bash
+./run_pipelineLAD_age_rescaling.sh \
+    <STEP1_PATH> \
+    <SPENSER_INPUT_PATH> \
+    <A_TMP_OUTPUT_PATH>
+```
+
+## Step 2: Add to SPENSER
 First, unpack `SAVE_SPC_required_data.zip` or run the step 1:
 ```bash
 unzip SAVE_SPC_required_data.zip

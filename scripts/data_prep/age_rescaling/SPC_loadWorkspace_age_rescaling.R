@@ -7,7 +7,7 @@ set.seed(10091989)
 
 cores <- detectCores()
 
-source("age_rescaling/SPC_functions_run_1.R")
+source("age_rescaling/SPC_functions_age_rescaling.R")
 
 # Lookup
 lu <- read.csv(paste(folderInOT, "lookUp-GB.csv", sep = ""))

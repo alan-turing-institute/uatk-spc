@@ -31,7 +31,7 @@ done < <(tail -n +2 "2020_lad_list.csv" | sed 's/,/\t/g' | grep "^E.*")
 years=(2020)
 for lad_cd in "${lad_cds[@]}"; do
     for year in "${years[@]}"; do
-        pueue add -- Rscript pre_rescaling/SPC_single_region_run_1.R \
+        pueue add -- Rscript age_rescaling/SPC_single_region_age_rescaling.R \
             $lad_cd \
             $year \
             $STEP1_PATH \
@@ -41,6 +41,6 @@ for lad_cd in "${lad_cds[@]}"; do
 done
 
 # Run rescaling
-pueue add -- Rscript pre_rescaling/age_rescaling.R \
+pueue add -- Rscript age_rescaling/age_rescaling.R \
     $STEP1_PATH \
     $OUTPUT_PATH
