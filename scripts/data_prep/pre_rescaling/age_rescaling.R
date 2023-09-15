@@ -32,22 +32,21 @@ print("Read modelled data")
 # Read data outputted at LAD20CD resolution
 lookup <- read.csv(paste(folder_step_1, "lookUp-GB.csv", sep = ""))
 lad_files <- (
-    lookup %>% filter(Country == "England")
-        %>% select(LAD20CD)
-        %>% unique()
-        %>% mutate(
+    lookup |> filter(Country == "England")
+        |> select(LAD20CD)
+        |> unique()
+        |> mutate(
             file_name = str_replace(
                 LAD20CD, LAD20CD, paste0(folder_pre_rescaling, LAD20CD, ".csv")
             )
         )
 )
-
 # TODO: For testing, just two LADs, comment out when complete
-# lad_files <- lad_files %>% filter(LAD20CD %in% c("E09000001", "E06000001")) # nolint
+# lad_files <- lad_files |> filter(LAD20CD %in% c("E09000001", "E06000001")) # nolint
 check_res <- do.call(rbind, lapply(lad_files$file_name, read.csv))
 
 # Filter for only Full time (1) and part time (2)
-check_res_f <- check_res %>% filter(pwkstat == 1 | pwkstat == 2)
+check_res_f <- check_res |> filter(pwkstat == 1 | pwkstat == 2)
 
 
 print("Producing age rescaling coefficients")
@@ -61,7 +60,8 @@ unzip(
     exdir = paste(folder_step_1, "incomeDataAge", sep = "")
 )
 
-get_income_data <- function(sheet_name) {
+# Reads the income percentile data by age for a given category
+read_income_data_by_category <- function(sheet_name) {
     data <- read_excel(
         paste(
             folder_step_1,
@@ -76,20 +76,20 @@ get_income_data <- function(sheet_name) {
 }
 
 # Income data by age, sex and pwkstat
-age_mft <- get_income_data("Male Full-Time")
-age_mpt <- get_income_data("Male Part-Time")
-age_fft <- get_income_data("Female Full-Time")
-age_fpt <- get_income_data("Female Part-Time")
+age_mft <- read_income_data_by_category("Male Full-Time")
+age_mpt <- read_income_data_by_category("Male Part-Time")
+age_fft <- read_income_data_by_category("Female Full-Time")
+age_fpt <- read_income_data_by_category("Female Part-Time")
 
 # Prepare data to read results of the previous modelling
-check_res_mft <- check_res_f %>% filter(sex == 1 & pwkstat == 1)
-check_res_mpt <- check_res_f %>% filter(sex == 1 & pwkstat == 2)
-check_res_fft <- check_res_f %>% filter(sex == 2 & pwkstat == 1)
-check_res_fpt <- check_res_f %>% filter(sex == 2 & pwkstat == 2)
+check_res_mft <- check_res_f |> filter(sex == 1 & pwkstat == 1)
+check_res_mpt <- check_res_f |> filter(sex == 1 & pwkstat == 2)
+check_res_fft <- check_res_f |> filter(sex == 2 & pwkstat == 1)
+check_res_fpt <- check_res_f |> filter(sex == 2 & pwkstat == 2)
 
-# Ready data to be able to model ONS data for any age
-fit_col <- function(col, row, modelled, ord = 4) {
-    fit <- lm(modelled[, col] ~ poly(row, ord, raw = TRUE))
+# Fits a column (quantile) of income data by age given ages (age midpoints)
+fit_col <- function(col, ages, age_data, ord = 4) {
+    fit <- lm(age_data[, col] ~ poly(ages, ord, raw = TRUE))
     as.numeric(c(
         fit$coefficients[1],
         fit$coefficients[2],
@@ -99,21 +99,24 @@ fit_col <- function(col, row, modelled, ord = 4) {
     ))
 }
 
+# Gets fitted coefficients (rows) for income percentiles (columns)
 output_ref_age <- function(age_data) {
     age_data <- as.matrix(age_data[2:8, c(7:11, 3, 12:16)])
     age_data <- matrix(as.numeric(as.matrix(age_data)), ncol = ncol(age_data))
-    coef_age_data <- sapply(seq_len(ncol(age_data)), function(x) {
-        fit_col(x, age_midpoints, age_data, 4)
+    coef_age_data <- sapply(seq_len(ncol(age_data)), function(col) {
+        fit_col(col, age_midpoints, age_data, 4)
     })
     return(coef_age_data)
 }
 
+# Get coefs matrix for each category
 coef_age_mft <- output_ref_age(age_mft)
 coef_age_mpt <- output_ref_age(age_mpt)
 coef_age_fft <- output_ref_age(age_fft)
 coef_age_fpt <- output_ref_age(age_fpt)
 
-read_coef_age_data <- function(age, coef_age_data) {
+# Gets the predicted income from fitted quartic model for each percentile
+get_coef_age_data <- function(age, coef_age_data) {
     ref_val <- rep(NA, ncol(coef_age_data))
     for (i in seq_len(ncol(coef_age_data))) {
         ref_val[i] <- (
@@ -128,26 +131,15 @@ read_coef_age_data <- function(age, coef_age_data) {
 }
 
 # Returns fitted values from cubic lm fit for vector of values
-fitted2 <- function(fit, val) {
-    i <- val[1]
-    ret <- (
-        fit$coefficients[1]
-        + fit$coefficients[2] * i
-            + fit$coefficients[3] * i^2
-            + fit$coefficients[4] * i^3
-    )
-    if (length(val) > 1) {
-        for (i in val[2:length(val)]) {
-            ret <- c(
-                ret,
-                fit$coefficients[1]
-                + fit$coefficients[2] * i
-                    + fit$coefficients[3] * i^2
-                    + fit$coefficients[4] * i^3
-            )
-        }
-    }
-    ret
+fitted_cubic <- function(fit, vals) {
+    unlist(lapply(vals, function(x) {
+        (
+            fit$coefficients[1]
+            + fit$coefficients[2] * x
+                + fit$coefficients[3] * x^2
+                + fit$coefficients[4] * x^3
+        )
+    }))
 }
 
 # Gets global incomes for a given Male/Female, Full-Time/Part-Time combination.
@@ -161,10 +153,10 @@ get_true_and_modelled <- function(modelled, age, coef) {
     # Ages above 67 are treated as 67 due to lack of data
     if (age > 66) {
         temp <- modelled$incomeH[modelled$age > 66]
-        true <- read_coef_age_data(67, coef)
+        true <- get_coef_age_data(67, coef)
     } else {
         temp <- modelled$incomeH[modelled$age == age]
-        true <- read_coef_age_data(age, coef)
+        true <- get_coef_age_data(age, coef)
     }
     modelled <- quantile(
         temp,
@@ -212,19 +204,19 @@ make_age_row <- function(age, sex, full_time) {
     fit_ref_perc_true_global <- lm(ref_perc ~ poly(true_global, 3, raw = TRUE))
     # deduce new percentile value (see methods)
     do.call(cbind, lapply(seq_len(100), function(perc) {
-        a <- fitted2(fit_true_global, perc)
-        b <- fitted2(fit_ref_perc, a)
-        c <- fitted2(fit_true, b)
+        a <- fitted_cubic(fit_true_global, perc)
+        b <- fitted_cubic(fit_ref_perc, a)
+        c <- fitted_cubic(fit_true, b)
         min(
             max(
-                1, as.numeric(round(fitted2(fit_ref_perc_true_global, c)))
+                1, as.numeric(round(fitted_cubic(fit_ref_perc_true_global, c)))
             ),
             100
         )
     }))
 }
 
-# Get rescaling
+# Perform rescaling for each percentile (row) and age (column)
 age_rescale_mft <- mcmapply(function(x) {
     make_age_row(x, 1, TRUE)
 }, 16:86, mc.cores = cores, mc.set.seed = FALSE)
@@ -237,11 +229,6 @@ age_rescale_fft <- mcmapply(function(x) {
 age_rescale_fpt <- mcmapply(function(x) {
     make_age_row(x, 2, FALSE)
 }, 16:86, mc.cores = cores, mc.set.seed = FALSE)
-
-# Note: mean of the Income distributions for each feature (groupby) should
-# be the same after rescaling
-#  "~Exactly" same: pwkstat, sex
-#        - similar: SOC, Region
 
 print("Writing modelled coefficients")
 write.table(
