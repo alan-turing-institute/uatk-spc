@@ -36,10 +36,14 @@ def main():
     df_oas = get_flattened_df(OA_URL)
     print("Getting LSOA data...")
     df_lsoas = get_flattened_df(LSOA_URL)
-    df_oas.round(8).to_csv("Data/dl/Output_Areas_Dec_2011_PWC_2022.csv", index=None)
-    df_lsoas.round(8).rename(
+    outpath = "Data/dl"
+    rounding = 9
+    df_oas.round(rounding).to_csv(
+        f"{outpath}/Output_Areas_Dec_2011_PWC_2022.csv", index=None
+    )
+    df_lsoas.round(rounding).rename(
         columns={"lsoa11nm": "LSOA11NM", "lsoa11cd": "LSOA11CD"}
-    ).to_csv("Data/dl/LSOA_Dec_2011_PWC_in_England_and_Wales_2022.csv", index=None)
+    ).to_csv(f"{outpath}/LSOA_Dec_2011_PWC_in_England_and_Wales_2022.csv", index=None)
 
 
 if __name__ == "__main__":
