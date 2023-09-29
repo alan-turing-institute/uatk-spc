@@ -4,7 +4,7 @@
 
 ## Prerequisites
 The following steps assume the following have been installed:
-- [R](https://www.r-project.org/): for running data curation scripts
+- [R](https://www.r-project.org/) and [Python3](https://www.python.org/): for running data curation scripts
 - [renv](https://rstudio.github.io/renv/articles/renv.html): to load the R environment for reproducibility
 - [GDAL](https://gdal.org/): Geospatial Data Abstraction Library, also installable with [brew](https://formulae.brew.sh/formula/gdal)
 - [pueue](https://github.com/Nukesor/pueue): a process queue for running all
@@ -14,18 +14,27 @@ The following steps assume the following have been installed:
 
 1. This step requires a nomis API key that can be obtained by registering with [nomisweb](https://www.nomisweb.co.uk/). Once registered, the API key can be found [here](https://www.nomisweb.co.uk/myaccount/webservice.asp). Replace the content of `raw_to_prepared_nomisAPIKey.txt` with this key.
 
-2. Use `raw_to_prepared_Environment.R` to install the necessary R packages and create directories.
+1. Make a path for the UK Data Service datasets in the next step:
+    ```bash
+    mkdir -p Data/dl/zip
+    ```
 
-3. Download manually safeguarded/geoportal data, place those inside the `Data/dl` directory. Required:
-   1. [LSOA centroids in csv format](https://geoportal.statistics.gov.uk/datasets/ons::lsoa-dec-2011-population-weighted-centroids-in-england-and-wales/explore) (adapt l. 219-220 of `raw_to_prepared_Workplaces.R` if necessary)
-   2. [OA centroids in csv format](https://geoportal.statistics.gov.uk/datasets/ons::output-areas-dec-2011-pwc/explore) (adapt section OA centroids inside `raw_to_prepared.R` if necessary)
-   3. Health and time use data, download directly from:
-      1. [10.5255/UKDA-SN-8860-1](http://doi.org/10.5255/UKDA-SN-8860-1)
-      2. [10.5255/UKDA-SN-8090-1](http://doi.org/10.5255/UKDA-SN-8090-1)
-      3. [10.5255/UKDA-SN-8737-1](http://doi.org/10.5255/UKDA-SN-8737-1)
-      4. [10.5255/UKDA-SN-8128-1](http://doi.org/10.5255/UKDA-SN-8128-1)
+2. Manually dowload the following tab-separated datasets from the UK Data Service, moving the downloaded `.zip` files to the path `./Data/dl/zip/`. The required datasets are:
+   1. [10.5255/UKDA-SN-8860-1](http://doi.org/10.5255/UKDA-SN-8860-1)
+   2. [10.5255/UKDA-SN-8090-1](http://doi.org/10.5255/UKDA-SN-8090-1)
+   3. [10.5255/UKDA-SN-8737-1](http://doi.org/10.5255/UKDA-SN-8737-1)
+   4. [10.5255/UKDA-SN-8128-1](http://doi.org/10.5255/UKDA-SN-8128-1)
 
-4. Run `raw_to_prepared.R`. Note that a file of over 1 GB will be downloaded. The maximum allowed time for an individual download is 10 minutes (600 seconds). Adjust options(timeout=600) l. 18 if this is insufficient.
+3. Run the download preparation script:
+    ```bash
+    ./raw_prep/prep_dl.sh
+    ```
+
+4. Run `raw_to_prepared.R` with:
+    ```bash
+    Rscript raw_to_prepared.R
+    ```
+Note that a file of over 1 GB will be downloaded. The maximum allowed time for an individual download is 10 minutes (600 seconds). Adjust options(timeout=600) l. 18 if this is insufficient.
 
 This step outputs two types of files:
 - `diariesRef.csv`, `businessRegistry.csv` and `timeAtHomeIncreaseCTY.csv` should be gzipped and stored directly inside `nationaldata-v2` on Azure; and `lookUp-GB.csv` inside `referencedata`on Azure. These files are directly used by SPC.
