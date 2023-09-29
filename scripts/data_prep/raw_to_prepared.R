@@ -15,7 +15,8 @@ library(readxl)
 folderIn <- "Data/dl/"
 folderOut <- "Data/prepData/"
 APIKey <- Sys.getenv("API_KEY")
-options(timeout=600)
+dir.create("Data/prepData/")
+options(timeout=600, error = traceback)
   
 set.seed(12345)
 
@@ -983,7 +984,7 @@ write.table(oatoOther,paste(folderOut,"lookUp-GB.csv",sep = ""),row.names = F, s
 
 
 #download.file("https://stg-arcgisazurecdataprod1.az.arcgis.com/exportfiles-1559-14679/Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv?sv=2018-03-28&sr=b&sig=lXtKu1VuADphReJfFvfgqHHWm4CtHnk3iusPMruCxO0%3D&se=2023-04-24T18%3A30%3A56Z&sp=r",destfile = paste(folderIn,"Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv",sep = ""))
-OACoords <- read.csv(paste(folderIn,"Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv",sep = ""))
+OACoords <- read.csv(paste(folderIn,"Output_Areas_Dec_2011_PWC_2022.csv",sep = ""))
 
 download.file("https://www.nrscotland.gov.uk/files/geography/output-area-2011-pwc.zip",destfile = paste(folderIn,"Output_Areas_2011_Scotland.zip",sep = ""))
 unzip(paste(folderIn,"Output_Areas_2011_Scotland.zip",sep = ""),exdir=folderIn)
