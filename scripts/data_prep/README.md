@@ -30,8 +30,9 @@ The following steps assume the following have been installed:
     ./raw_prep/prep_dl.sh
     ```
 
-4. Run `raw_to_prepared.R` with:
+4. Restore `renv` environment and run `raw_to_prepared.R` with:
     ```bash
+    R -e 'renv::restore()'
     Rscript raw_to_prepared.R
     ```
 Note that a file of over 1 GB will be downloaded. The maximum allowed time for an individual download is 10 minutes (600 seconds). Adjust options(timeout=600) l. 18 if this is insufficient.
