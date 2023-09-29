@@ -62,6 +62,7 @@ def main():
     lsoa_file_name = os.path.join(
         outpath, "LSOA_Dec_2011_PWC_in_England_and_Wales_2022.csv"
     )
+
     # OA output and check
     df_oas.to_csv(
         oa_file_name,
@@ -69,6 +70,7 @@ def main():
         line_terminator="\r\n",
     )
     check_digest(oa_file_name)
+
     # LSOA out and check
     df_lsoas.rename(columns={"lsoa11nm": "LSOA11NM", "lsoa11cd": "LSOA11CD"}).to_csv(
         lsoa_file_name,
