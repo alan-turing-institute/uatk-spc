@@ -223,7 +223,7 @@ print("Adding coordinates...")
 
 # England and Wales
 #download.file("https://stg-arcgisazurecdataprod1.az.arcgis.com/exportfiles-1559-15693/Lower_layer_Super_Output_Areas_Dec_2011_Boundaries_Full_Clipped_BFC_EW_V3_2022_3601855424856006397.csv?sv=2018-03-28&sr=b&sig=tmZTl6Eh6ryGtEsEaHWPbp0GKF2SUcejnO1DeF7csk4%3D&se=2023-04-26T15%3A58%3A01Z&sp=r",destfile = paste(folderIn,"Lower_Layer_Super_Output_Areas__December_2011__Boundaries_Full_Clipped__BFC__EW_V3.csv",sep = ""))
-shp <- read.csv(paste(folderIn,"LSOA_Dec_2011_PWC_in_England_and_Wales_2022_1923591000694358693.csv",sep = ""))
+shp <- read.csv(paste(folderIn,"LSOA_Dec_2011_PWC_in_England_and_Wales_2022.csv",sep = ""))
 coords <- data.frame(LSOA11CD = shp$LSOA11CD, lng = shp$x, lat = shp$y)
 
 # Scotland
