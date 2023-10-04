@@ -1,3 +1,4 @@
+from typing import Any, Dict
 from google.protobuf.json_format import MessageToDict
 import polars as pl
 import uatk_spc.synthpop_pb2 as synthpop_pb2
@@ -10,15 +11,32 @@ import json
 # - Add functionality for simplified merging of the different tables (e.g. people with time use diaries)
 
 
+
+
 class SPCReaderProto:
+    """
+    A class for reading from protobuf into ready to use data structures.
+
+        Attributes:
+            pop (Population): Deserialized protobuf population.
+            people (pd.DataFrame | pl.DataFrame): People in tabular format.
+            households (pd.DataFrame | pl.DataFrame): Households in tabular format.
+            people (pd.DataFrame | pl.DataFrame): People in tabular format.
+            time_use_diaries (pd.DataFrame | pl.DataFrame): Time use diaries in tabular
+                format.
+            venues_per_activity (Dict[str, Any]): Venues per activity as a Python dict.
+            info_per_msoa (Dict[str, Any]): Info per MSOA as a Python dict.
+    """
+
     pop: synthpop_pb2.Population()
     people: pl.DataFrame
     households: pl.DataFrame
     time_use_diaries: pl.DataFrame
-    venues_per_activity: dict
-    info_per_msoa: dict
+    venues_per_activity: Dict[str, Any]
+    info_per_msoa: Dict[str, Any]
 
     def __init__(self, path: str):
+        """Init from a path and region."""
         self.pop = SPCReaderProto.read_pop(path)
         pop_as_dict = MessageToDict(self.pop, including_default_value_fields=True)
         self.households = pl.from_records(pop_as_dict["households"])
@@ -37,6 +55,18 @@ class SPCReaderProto:
 
 
 class SPCReaderParquet:
+    """
+    A class for reading from parquet and JSON into ready to use data structures.
+
+        Attributes:
+            people (pd.DataFrame | pl.DataFrame): People in tabular format.
+            households (pd.DataFrame | pl.DataFrame): Households in tabular format.
+            people (pd.DataFrame | pl.DataFrame): People in tabular format.
+            time_use_diaries (pd.DataFrame | pl.DataFrame): Time use diaries in tabular
+                format.
+            venues_per_activity (Dict[str, Any]): Venues per activity as a Python dict.
+            info_per_msoa (Dict[str, Any]): Info per MSOA as a Python dict.
+    """
     people: pl.DataFrame
     households: pl.DataFrame
     time_use_diaries: pl.DataFrame
