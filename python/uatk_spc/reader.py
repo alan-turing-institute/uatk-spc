@@ -2,16 +2,14 @@ import os
 from typing import Any, Dict
 from google.protobuf.json_format import MessageToDict
 import polars as pl
+import pandas as pd
 import uatk_spc.synthpop_pb2 as synthpop_pb2
 import json
 
 
 # TODO:
-# - Add flexible dataframe backend (e.g. pandas, polars)
 # - Add graph data structure reading for flows (e.g. into networkx)
 # - Add functionality for simplified merging of the different tables (e.g. people with time use diaries)
-
-
 
 
 class SPCReaderProto:
@@ -36,13 +34,20 @@ class SPCReaderProto:
     venues_per_activity: Dict[str, Any]
     info_per_msoa: Dict[str, Any]
 
-    def __init__(self, path: str, region: str):
+    def __init__(self, path: str, region: str, backend="polars"):
         """Init from a path and region."""
         self.pop = SPCReaderProto.read_pop(os.path.join(path, region + ".pb"))
         pop_as_dict = MessageToDict(self.pop, including_default_value_fields=True)
-        self.households = pl.from_records(pop_as_dict["households"])
-        self.people = pl.from_records(pop_as_dict["people"])
-        self.time_use_diaries = pl.from_records(pop_as_dict["timeUseDiaries"])
+        if backend == "polars":
+            self.households = pl.from_records(pop_as_dict["households"])
+            self.people = pl.from_records(pop_as_dict["people"])
+            self.time_use_diaries = pl.from_records(pop_as_dict["timeUseDiaries"])
+        elif backend == "pandas":
+            self.households = pd.DataFrame.from_records(pop_as_dict["households"])
+            self.people = pd.DataFrame.from_records(pop_as_dict["people"])
+            self.time_use_diaries = pd.DataFrame.from_records(pop_as_dict["timeUseDiaries"])
+        else:
+            raise ValueError(f"Backend: {backend} is not implemented. Use 'polars' or 'pandas' instead.")
         self.venues_per_activity = pop_as_dict["venuesPerActivity"]
         self.info_per_msoa = pop_as_dict["infoPerMsoa"]
 
@@ -74,11 +79,19 @@ class SPCReaderParquet:
     venues_per_activity: pl.DataFrame
     info_per_msoa: dict
 
-    def __init__(self, path: str, region: str):
+    def __init__(self, path: str, region: str, backend="polars"):
         path_ = os.path.join(path, region)
-        self.households = pl.read_parquet(path_ + "_households.pq")
-        self.people = pl.read_parquet(path_ + "_people.pq")
-        self.time_use_diaries = pl.read_parquet(path_ + "_time_use_diaries.pq")
-        self.venues_per_activity = pl.read_parquet(path_ + "_venues.pq")
+        if backend == "polars":
+            self.households = pl.read_parquet(path_ + "_households.pq")
+            self.people = pl.read_parquet(path_ + "_people.pq")
+            self.time_use_diaries = pl.read_parquet(path_ + "_time_use_diaries.pq")
+            self.venues_per_activity = pl.read_parquet(path_ + "_venues.pq")
+        elif backend == "pandas":
+            self.households = pd.read_parquet(path_ + "_households.pq")
+            self.people = pd.read_parquet(path_ + "_people.pq")
+            self.time_use_diaries = pd.read_parquet(path_ + "_time_use_diaries.pq")
+            self.venues_per_activity = pd.read_parquet(path_ + "_venues.pq")
+        else:
+            raise ValueError(f"Backend: {backend} is not implemented. Use 'polars' or 'pandas' instead.")
         with open(path_ + "_info_per_msoa.json", "rb") as f:
             self.info_per_msoa = json.loads(f.read())
