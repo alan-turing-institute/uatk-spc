@@ -43,7 +43,13 @@ where
     V: Serialize,
 {
     fn write_parquet(&self, output: &str) -> Result<()> {
-        let fields = serialize_into_fields(self, TracingOptions::default())?;
+        let fields = serialize_into_fields(
+            self,
+            TracingOptions {
+                allow_null_fields: true,
+                ..Default::default()
+            },
+        )?;
         let arrays = serialize_into_arrays(&fields, self)?;
         write_chunk(output, Schema::from(fields), Chunk::new(arrays))?;
         Ok(())
