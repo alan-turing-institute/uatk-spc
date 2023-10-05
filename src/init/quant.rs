@@ -55,24 +55,25 @@ pub fn get_flows(
     let pb = progress_count_with_msg(msoas.len());
     let mut result = BTreeMap::new();
     for msoa in msoas {
-        // TODO The Python code defaults to 0 when the MSOA is missing; this seems problematic?
-        let zonei = msoa_to_zonei.get(msoa).cloned().unwrap_or(0);
-        pb.set_message(format!(
-            "Get {:?} flows for {} (zonei {})",
-            activity, msoa.0, zonei
-        ));
-        pb.inc(1);
+        // Skip if MSOA not in lookup
+        if let Some(zonei) = msoa_to_zonei.get(msoa).cloned() {
+            pb.set_message(format!(
+                "Get {:?} flows for {} (zonei {})",
+                activity, msoa.0, zonei
+            ));
+            pb.inc(1);
 
-        let pr_visit_venue = match activity {
-            Activity::Retail => get_venue_flows(zonei, &table, 0.0)?,
-            Activity::PrimarySchool => get_venue_flows(zonei, &table, 0.0)?,
-            Activity::SecondarySchool => get_venue_flows(zonei, &table, 0.0)?,
-            // Something else must handle these
-            Activity::Home | Activity::Work => unreachable!(),
-        };
+            let pr_visit_venue = match activity {
+                Activity::Retail => get_venue_flows(zonei, &table, 0.0)?,
+                Activity::PrimarySchool => get_venue_flows(zonei, &table, 0.0)?,
+                Activity::SecondarySchool => get_venue_flows(zonei, &table, 0.0)?,
+                // Something else must handle these
+                Activity::Home | Activity::Work => unreachable!(),
+            };
 
-        // There are lots of venues! Just keep some of them
-        result.insert(msoa.clone(), normalize(threshold.apply(pr_visit_venue)));
+            // There are lots of venues! Just keep some of them
+            result.insert(msoa.clone(), normalize(threshold.apply(pr_visit_venue)));
+        }
     }
     Ok(result)
 }
