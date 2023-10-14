@@ -112,14 +112,17 @@ class SPCReaderParquet:
     #     else:
     #         raise(NotImplementedError)
 
-    def merge_people_and_households(self):
-        pass
+    def merge_people_and_households(self) -> pl.DataFrame:
+        return self.people.unnest("identifiers").join(
+            self.households, left_on="household", right_on="id", how="left"
+        )
 
     def merge_people_and_time_use_diaries(
-        self, people_features: Dict[str, List[str]], diary_type: str="weekday_diaries"
+        self, people_features: Dict[str, List[str]], diary_type: str = "weekday_diaries"
     ) -> pl.DataFrame:
         people = (
-            self.people.unnest(people_features.keys()).select(
+            self.people.unnest(people_features.keys())
+            .select(
                 ["id", "household"]
                 + [el for (_, features) in people_features.items() for el in features]
                 + [diary_type]
