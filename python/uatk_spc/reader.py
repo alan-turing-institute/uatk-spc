@@ -5,7 +5,7 @@ import polars as pl
 import pandas as pd
 import uatk_spc.synthpop_pb2 as synthpop_pb2
 import json
-
+import pprint
 
 # TODO:
 # - Add graph data structure reading for flows (e.g. into networkx)
@@ -102,15 +102,48 @@ class SPCReaderParquet:
         with open(path_ + "_info_per_msoa.json", "rb") as f:
             self.info_per_msoa = json.loads(f.read())
 
-    # TODO: Create wrapper method to merge data from population
-    # def merge(self, left: str, right: str, **kwargs) -> pl.DataFrame:
-    #     """Merges a left and right fields from SPC."""
-    #     if left == "people" and right == "time_use_diaries":
-    #         self.__merge_people_and_time_use_diaries(
-    #             kwargs.get("people", None), kwargs.get("time_use_diaries"), None
-    #         )
-    #     else:
-    #         raise(NotImplementedError)
+    def __summary(
+        self, df: pl.DataFrame
+    ) -> Dict[str, List[pl.datatypes.classes.DataTypeClass]]:
+        return dict(zip(df.columns, df.dtypes))
+
+    def summary(
+        self, field: str
+    ) -> Dict[str, List[pl.datatypes.classes.DataTypeClass]] | None:
+        """Provides a summary of the given SPC field.
+
+        Args:
+            field (str): The name of the field to provide a summary of.
+
+        Returns:
+            If applicable, a dictionary of column names and the associated dtype of the
+            column.
+
+        """
+        if field == "people":
+            return self.__summary(self.people)
+        elif field == "households":
+            return self.__summary(self.households)
+        elif field == "venues_per_activity":
+            return self.__summary(self.venues_per_activity)
+        elif field == "time_use_diaries":
+            return self.__summary(self.time_use_diaries)
+        elif field == "info_per_msoa":
+            print(json.dumps(self.info_per_msoa, indent=2, sort_keys=True))
+            return
+        else:
+            raise (
+                ValueError(
+                    f"'{field}' field does not exist. Choose one of: ['people', "
+                    f"'households', 'time_use_diaries', 'venues_per_activity', "
+                    f"'info_per_msoa']"
+                )
+            )
+
+    def merge(self, left: str, right: str, **kwargs) -> pl.DataFrame:
+        """Merges a left and right fields from SPC."""
+        # TODO: add implementation for any pair of fields
+        pass
 
     def merge_people_and_households(self) -> pl.DataFrame:
         return self.people.unnest("identifiers").join(
