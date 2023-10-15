@@ -1,6 +1,7 @@
-from uatk_spc.reader import SPCReaderParquet as SPCReader
-import pathlib
 import os
+import pathlib
+
+from uatk_spc.reader import SPCReaderParquet as SPCReader
 
 
 def get_path():
@@ -23,6 +24,7 @@ def test_merge_people_and_time_use_diaries():
         {"health": ["bmi"], "demographics": ["age_years"]}, diary_type="weekday_diaries"
     )
     assert merged.shape == (197_397, 30)
+
 
 def test_merge_people_and_households():
     spc = SPCReader(TEST_PATH, TEST_REGION)

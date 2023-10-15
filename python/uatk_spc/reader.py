@@ -1,11 +1,11 @@
+import json
 import os
 from typing import Any, Dict, List
-from google.protobuf.json_format import MessageToDict
-import polars as pl
+
 import pandas as pd
+import polars as pl
 import uatk_spc.synthpop_pb2 as synthpop_pb2
-import json
-import pprint
+from google.protobuf.json_format import MessageToDict
 
 # TODO:
 # - Add graph data structure reading for flows (e.g. into networkx)
@@ -49,7 +49,8 @@ class SPCReaderProto:
             )
         else:
             raise ValueError(
-                f"Backend: {backend} is not implemented. Use 'polars' or 'pandas' instead."
+                f"Backend: {backend} is not implemented. Use 'polars' or 'pandas' "
+                f"instead."
             )
         self.venues_per_activity = pop_as_dict["venuesPerActivity"]
         self.info_per_msoa = pop_as_dict["infoPerMsoa"]
@@ -97,7 +98,8 @@ class SPCReaderParquet:
             self.venues_per_activity = pd.read_parquet(path_ + "_venues.pq")
         else:
             raise ValueError(
-                f"Backend: {backend} is not implemented. Use 'polars' or 'pandas' instead."
+                f"Backend: {backend} is not implemented. Use 'polars' or 'pandas' "
+                f"instead."
             )
         with open(path_ + "_info_per_msoa.json", "rb") as f:
             self.info_per_msoa = json.loads(f.read())
