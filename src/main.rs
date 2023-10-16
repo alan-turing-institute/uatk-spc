@@ -29,7 +29,7 @@ async fn main() -> Result<()> {
 
     let start = Instant::now();
     let output_stats = args.output_stats;
-    let output_arrow = args.output_arrow;
+    let output_arrow = args.flat_output;
     let (input, country, region) = args.to_input().await?;
     let _s = info_span!("initialisation", ?region).entered();
     let (population, commuting_runtime) = Population::create(input, &mut rng).await?;
@@ -98,7 +98,7 @@ struct Args {
     #[clap(long)]
     no_commuting: bool,
     #[clap(long)]
-    output_arrow: bool,
+    flat_output: bool,
     #[clap(long)]
     filter_empty_msoas: bool,
     /// Write a `stats.json` file at the end for automated benchmarking
