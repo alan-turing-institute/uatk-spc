@@ -123,12 +123,16 @@ class SPCReaderParquet:
 
         """
         if field == "people":
+            print(f"Shape: {self.people.shape}")
             return self.__summary(self.people)
         elif field == "households":
+            print(f"Shape: {self.households.shape}")
             return self.__summary(self.households)
         elif field == "venues_per_activity":
+            print(f"Shape: {self.venues_per_activity.shape}")
             return self.__summary(self.venues_per_activity)
         elif field == "time_use_diaries":
+            print(f"Shape: {self.time_use_diaries.shape}")
             return self.__summary(self.time_use_diaries)
         elif field == "info_per_msoa":
             print(json.dumps(self.info_per_msoa, indent=2, sort_keys=True))
