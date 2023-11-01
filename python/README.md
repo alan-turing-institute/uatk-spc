@@ -9,11 +9,11 @@ A Python package providing a toolkit facilitating use of SPC output.
 
 ## Quickstart
 
-- Run SPC on a region with `--flat-output`:
+- From the repo root, run SPC on a region with `--flat-output`:
 ```
-cargo run --release -- --rng-seed 0 --flat-output ../config/England/rutland.txt
+cargo run --release -- --rng-seed 0 --flat-output config/England/rutland.txt
 ```
-- Install the SPC toolkit package `uatk-spc`:
+- From `python/`, install the SPC toolkit package `uatk-spc` with:
 ```
 poetry install
 ```
