@@ -1,7 +1,7 @@
 import os
 import pathlib
 
-from uatk_spc.reader import SPCReaderParquet as SPCReader
+from uatk_spc.reader import SPCReader
 
 
 def get_path():
