@@ -1,30 +1,27 @@
----
-title: "Getting started"
----
+# Introduction {.unnumbered}
 
 ![](img/SPC_Schema.png)
 
 The Synthetic Population Catalyst (SPC) makes it easier for researchers to work
-with synthetic population data in England. It combines a variety of [data
-sources](data_sources.qmd) and outputs a single file in [protocol buffer
+with synthetic population data in Great Britain. It combines a variety of [data
+sources](understanding_data_sources.qmd) and outputs a single file in [protocol buffer
 format](https://github.com/alan-turing-institute/uatk-spc/blob/main/synthpop.proto),
-describing the population in a given study area. The data includes demographic,
-health, and daily activity data per person, and information about the venues
-where people conduct activities.
+describing the population and its activities in a given study area. The data include socio-demographic,
+health, salary and daily activity data per person, and information about the venues
+where people conduct those activities.
 
-You can use SPC output to catalyze your own project. Rather than join together
-many [raw data sources](data_sources.qmd) yourself and deal with missing and
+SPC outputs can be used to catalyse other projects. Rather than join together
+many [raw data sources](understanding_data_sources.qmd) yourself and deal with missing and
 messy data, you can leverage SPC's effort and well-documented schema.
 
-To get started:
+A formal [paper](https://doi.org/10.1177/23998083231203066) to describe SPC has been published in Environment and Planning B: Urban Analytics and City Science.
 
-1.  [Download sample data for a county in England](outputs.qmd)
-2.  [Explore how to use the data](use_output.qmd)
-3.  If you need a different study area, [build](installation.qmd) and then [run](custom_areas.qmd) SPC
-
-You can also download this site as [a
+You can download this site as [a
 PDF](https://alan-turing-institute.github.io/uatk-spc/Synthetic-Population-Catalyst.pdf) and find all code [on Github](https://github.com/alan-turing-institute/uatk-spc).
 
+<br/>
+
+---
+
 This work was supported by Wave 1 of The UKRI Strategic Priorities Fund under
-the EPSRC Grant EP/W006022/1, particularly the “Ecosystem of Digital Twins”  
-and "Shocks and Resilience" themes within that grant & The Alan Turing Institute
+the EPSRC Grant EP/W006022/1, particularly the “Ecosystem of Digital Twins” and "Shocks and Resilience" themes within that grant & The Alan Turing Institute

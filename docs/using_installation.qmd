@@ -1,10 +1,9 @@
 ---
-title: "Installation"
+title: "Full tool installation"
 toc: true
 ---
 
-You only need to compile SPC to run for a custom set of MSOAs. Just [download
-existing output](outputs.qmd) if your study area matches what we provide.
+This guide allows you to install the full SPC tool to run a custom area.
 
 ## Dependencies
 

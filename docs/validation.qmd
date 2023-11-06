@@ -1,0 +1,5 @@
+# Validation {.unnumbered}
+
+Currently, the validation of each element of the methods is mentioned (or referenced) inside the [modelling methods section](understanding_modelling_methods.qmd).
+
+A [sytematic validation](https://github.com/alan-turing-institute/uatk-spc/issues/57) of the model is under construction. Approximative ETA: September 2023.
