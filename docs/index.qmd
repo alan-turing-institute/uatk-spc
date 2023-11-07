@@ -14,6 +14,8 @@ SPC outputs can be used to catalyse other projects. Rather than join together
 many [raw data sources](understanding_data_sources.qmd) yourself and deal with missing and
 messy data, you can leverage SPC's effort and well-documented schema.
 
+A formal [paper](https://doi.org/10.1177/23998083231203066) to describe SPC has been published in Environment and Planning B: Urban Analytics and City Science.
+
 You can download this site as [a
 PDF](https://alan-turing-institute.github.io/uatk-spc/Synthetic-Population-Catalyst.pdf) and find all code [on Github](https://github.com/alan-turing-institute/uatk-spc).
 
