@@ -1,6 +1,7 @@
 library(parallel)
 library(readxl)
 
+sig_figs = 6
 folderIn <- "Data/dl/"
 folderOut <- "Data/prepData/"
 options(timeout=600)
@@ -198,13 +199,13 @@ coefTable <- function(table,t){ # t = max allowed p-value for fitting
 }
 
 print("Calculating coefficients for Female Full-Time")
-coefFFT <- coefTable(refFFT,0.01)
+coefFFT <- coefTable(refFFT,0.01) %>% mutate_at(vars(inter,coef1,coef2,coef3,ceilingVal), function(x) signif(s, sig_figs))
 print("Calculating coefficients for Female Part-Time")
-coefFPT <- coefTable(refFPT,0.01)
+coefFPT <- coefTable(refFPT,0.01) %>% mutate_at(vars(inter,coef1,coef2,coef3,ceilingVal), function(x) signif(s, sig_figs))
 print("Calculating coefficients for Male Full-Time")
-coefMFT <- coefTable(refMFT,0.01)
+coefMFT <- coefTable(refMFT,0.01) %>% mutate_at(vars(inter,coef1,coef2,coef3,ceilingVal), function(x) signif(s, sig_figs))
 print("Calculating coefficients for Male Part-Time")
-coefMPT <- coefTable(refMPT,0.01)
+coefMPT <- coefTable(refMPT,0.01) %>% mutate_at(vars(inter,coef1,coef2,coef3,ceilingVal), function(x) signif(s, sig_figs))
 
 print("Writing modelled coefficients")
 write.table(coefFFT,paste(folderOut,"coefFFT.csv",sep = ""),row.names = F,sep = ",")
@@ -807,9 +808,9 @@ meanHoursFFT$mean <- as.numeric(meanHoursFFT$mean)
 meanHoursFPT <- resFPT[[2]]
 meanHoursFPT$mean <- as.numeric(meanHoursFPT$mean)
 
-distribHours = data.frame(MFT = distribHoursMFT, MPT = distribHoursMPT,
+distribHours <- data.frame(MFT = distribHoursMFT, MPT = distribHoursMPT,
                           FFT = distribHoursFFT, FPT = distribHoursFPT)
-
+distribHours <- distribHours  %>% mutate_all(function(x) signif(x, sig_figs))
 print("Writing outputs...")
 write.table(distribHours,paste(folderOut,"distribHours.csv",sep = ""),row.names = F,sep = ",")
 

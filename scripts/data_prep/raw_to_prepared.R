@@ -14,6 +14,7 @@ library(readxl)
 
 folderIn <- "Data/dl/"
 folderOut <- "Data/prepData/"
+sig_figs = 6
 APIKey <- Sys.getenv("API_KEY")
 dir.create("Data/prepData/")
 options(timeout=600, error = traceback)
@@ -347,6 +348,7 @@ dVariance <- data.frame(ref = c("shape_inter","shape_coef1","shape_coef2","shape
 dMean <- data.frame(F1 = unname(fitF1$coefficients),F2 = unname(fitF2$coefficients),F3 = unname(fitF3$coefficients),F4 = unname(fitF4$coefficients),
                     M1 = unname(fitM1$coefficients),M2 = unname(fitM2$coefficients),M3 = unname(fitM3$coefficients),M4 = unname(fitM4$coefficients)
 )
+dMean <- dMean %>% mutate_all(function(x) signif(x, sig_figs))
 
 print("Writing outputs...")
 write.table(dMean,paste(folderOut,"BMIdMean.csv",sep = ""),row.names = F, sep = ",")
