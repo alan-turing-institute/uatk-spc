@@ -9,7 +9,11 @@ A Python package providing a toolkit facilitating use of SPC output.
 
 ## Quickstart
 
-- From the repo root, run SPC on a region with `--flat-output`:
+- From the repo root, checkout the branch:
+```
+git checkout 55-output-formats-python
+```
+and then run SPC on a region with `--flat-output` (e.g. Rutland is shown below):
 ```
 cargo run --release -- --rng-seed 0 --flat-output config/England/rutland.txt
 ```
