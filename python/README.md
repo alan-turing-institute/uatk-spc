@@ -28,16 +28,19 @@ poetry run spc_to_json --input_path ../data/output/England/2020/rutland.pb
 - Read outputs with `SPCReaderParquet`:
 ```python
 # Import package
-from uatk_spc.reader import SPCReaderParquet as SPC
+from uatk_spc.reader import SPCReader as SPC
 
 # Pick a region with SPC output saved
-(region, path) = "rutland", "../data/output/England/2020/"
+(region, path) = "rutland", "../../data/output/England/2020/"
 
 # Read from parquet and JSON
 spc = SPC(path, region, backend="polars")
 
 # Print people
-print(spc.people)
+print(spc.people.head())
+
+# Print households
+print(spc.people.head())
 
 # Merge people and households
 people_and_households = spc.merge_people_and_households()
