@@ -25,7 +25,7 @@ poetry install
 ```
 poetry run spc_to_json --input_path ../data/output/England/2020/rutland.pb
 ```
-- Read outputs with `SPCReaderParquet`:
+- Read outputs with `SPCReader`:
 ```python
 # Import package
 from uatk_spc.reader import SPCReader as SPC
