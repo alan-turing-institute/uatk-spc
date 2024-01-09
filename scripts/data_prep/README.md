@@ -62,7 +62,7 @@ The final data preparation step is to generate age rescaling coefficients:
 
 A bash script can be executed to perform the above two steps with:
 ```bash
-./run_pipelineLAD_age_rescaling.sh \
+./age_rescaling/run_pipelineLAD_age_rescaling.sh \
     <STEP1_PATH> \
     <SPENSER_INPUT_PATH> \
     <A_TMP_OUTPUT_PATH>
