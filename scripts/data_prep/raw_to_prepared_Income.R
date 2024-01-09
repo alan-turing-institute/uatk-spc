@@ -199,13 +199,13 @@ coefTable <- function(table,t){ # t = max allowed p-value for fitting
 }
 
 print("Calculating coefficients for Female Full-Time")
-coefFFT <- coefTable(refFFT,0.01) %>% mutate_at(vars(inter,coef1,coef2,coef3,ceilingVal), function(x) signif(s, sig_figs))
+coefFFT <- coefTable(refFFT,0.01) %>% mutate_at(vars(inter,coef1,coef2,coef3,ceilingVal), function(x) signif(x, sig_figs))
 print("Calculating coefficients for Female Part-Time")
-coefFPT <- coefTable(refFPT,0.01) %>% mutate_at(vars(inter,coef1,coef2,coef3,ceilingVal), function(x) signif(s, sig_figs))
+coefFPT <- coefTable(refFPT,0.01) %>% mutate_at(vars(inter,coef1,coef2,coef3,ceilingVal), function(x) signif(x, sig_figs))
 print("Calculating coefficients for Male Full-Time")
-coefMFT <- coefTable(refMFT,0.01) %>% mutate_at(vars(inter,coef1,coef2,coef3,ceilingVal), function(x) signif(s, sig_figs))
+coefMFT <- coefTable(refMFT,0.01) %>% mutate_at(vars(inter,coef1,coef2,coef3,ceilingVal), function(x) signif(x, sig_figs))
 print("Calculating coefficients for Male Part-Time")
-coefMPT <- coefTable(refMPT,0.01) %>% mutate_at(vars(inter,coef1,coef2,coef3,ceilingVal), function(x) signif(s, sig_figs))
+coefMPT <- coefTable(refMPT,0.01) %>% mutate_at(vars(inter,coef1,coef2,coef3,ceilingVal), function(x) signif(x, sig_figs))
 
 print("Writing modelled coefficients")
 write.table(coefFFT,paste(folderOut,"coefFFT.csv",sep = ""),row.names = F,sep = ",")
