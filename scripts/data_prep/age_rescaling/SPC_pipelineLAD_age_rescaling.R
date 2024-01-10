@@ -52,7 +52,7 @@ rownames(merge) <- seq_len(nrow(merge))
 msoas <- unique(merge$MSOA11CD)
 merge$hid <- unname(unlist(mcmapply(function(x) {
   addIdH(x, merge$MSOA11CD, merge$hid)
-}, msoas, mc.cores = cores)))
+}, msoas, mc.cores = cores, mc.set.seed = FALSE)))
 merge$pid <- addIdP(merge$hid)
 
 # Transform ethnicity

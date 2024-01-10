@@ -41,7 +41,7 @@ merge$HOUSE_NCars <- merge$HOUSE_NCars - 1
 merge <- merge[order(merge$MSOA11CD,merge$hid,-merge$age),]
 rownames(merge) <- 1:nrow(merge)
 msoas <- unique(merge$MSOA11CD)
-merge$hid <- unname(unlist(mcmapply(function(x){addIdH(x,merge$MSOA11CD,merge$hid)}, msoas, mc.cores = cores)))
+merge$hid <- unname(unlist(mcmapply(function(x){addIdH(x,merge$MSOA11CD,merge$hid)}, msoas, mc.cores = cores, mc.set.seed = FALSE)))
 merge$pid <- addIdP(merge$hid)
 
 # Transform ethnicity
@@ -61,7 +61,7 @@ age35gH <- age35g
 if(countryR == "Wales"){
   age35gH[age35gH > 19] <- 19
 }
-ind <- mcmapply(function(x){findHSEMatch(x,merge$sex,age35gH,HS)},1:nrow(merge), mc.cores = cores)
+ind <- mcmapply(function(x){findHSEMatch(x,merge$sex,age35gH,HS)},1:nrow(merge), mc.cores = cores, mc.set.seed = FALSE)
 merge$id_HS <- HS$id_HS[ind]
 merge$HEALTH_diabetes <- HS$diabetes[ind]
 merge$HEALTH_bloodpressure <- HS$bloodpressure[ind]
@@ -84,7 +84,7 @@ if(countryR == "England"){
   coefM <- BMIdiff$ScotlandM
   minBMI <- 14.71
 }
-merge$HEALTH_bmi <- mcmapply(function(x){applyBMI(x,merge,dMean,varData)}, 1:nrow(merge), mc.cores = cores)
+merge$HEALTH_bmi <- mcmapply(function(x){applyBMI(x,merge,dMean,varData)}, 1:nrow(merge), mc.cores = cores, mc.set.seed = FALSE)
 merge$HEALTH_bmi[which(merge$HEALTH_bmi < minBMI)] <- minBMI
 
 
@@ -108,7 +108,7 @@ if(countryR == "England" | countryR == "Wales"){
 
 
 # Match with TUS
-ind <- unlist(mcmapply(function(x){findTUSMatch(x,merge,indivTUS)}, 1:nrow(merge), mc.cores = cores))
+ind <- unlist(mcmapply(function(x){findTUSMatch(x,merge,indivTUS)}, 1:nrow(merge), mc.cores = cores, mc.set.seed = FALSE))
 
 merge$id_TUS_hh <- indivTUS$id_TUS[ind]
 merge$id_TUS_p <- indivTUS$pnum[ind]
