@@ -43,4 +43,4 @@ done
 # Run rescaling
 pueue add -- Rscript age_rescaling/age_rescaling.R \
     $STEP1_PATH \
-    $OUTPUT_PATH
+    $OUTPUT_PATH/England/2020/
