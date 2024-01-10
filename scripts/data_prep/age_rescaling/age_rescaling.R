@@ -32,14 +32,15 @@ print("Read modelled data")
 # Read data outputted at LAD20CD resolution
 lookup <- read.csv(paste(folder_step_1, "lookUp-GB.csv", sep = ""))
 lad_files <- (
-    lookup |> filter(Country == "England")
-        |> select(LAD20CD)
-        |> unique()
-        |> mutate(
-            file_name = str_replace(
-                LAD20CD, LAD20CD, paste0(folder_pre_rescaling, LAD20CD, ".csv")
-            )
+    lookup
+    |> filter(Country == "England")
+    |> select(LAD20CD)
+    |> unique()
+    |> mutate(
+        file_name = str_replace(
+            LAD20CD, LAD20CD, paste0(folder_pre_rescaling, LAD20CD, ".csv")
         )
+    )
 )
 # Load data pre-rescaling
 check_res <- do.call(rbind, lapply(lad_files$file_name, read.csv))
