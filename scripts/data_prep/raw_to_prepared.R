@@ -434,8 +434,8 @@ downloadNSSEC <- function(age,sex){
   date<- "latest"
   other <- paste("&c_sex=",sex,"&c_nssec=1,4...10,13&c_age=",age,"&measures=20100&select=geography_code,c_nssec_name,obs_value",sep="")
   url <- createURL(dataset,geogrMSOA,APIKey,date,other)
-  download.file(url,destfile = paste(folderIn,"data.csv",sep=""))
-  data <- read.csv(paste(folderIn,"data.csv",sep=""))
+  download.file(url,destfile = paste(folderIn,"data_1.csv",sep=""))
+  data <- read.csv(paste(folderIn,"data_1.csv",sep=""))
   data$C_NSSEC_NAME <- substr(as.character(data$C_NSSEC_NAME),1,1)
   data$C_NSSEC_NAME[data$C_NSSEC_NAME == "L"] <- 9
   data$C_NSSEC_NAME <- as.numeric(data$C_NSSEC_NAME)

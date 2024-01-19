@@ -3,7 +3,7 @@
 set -e
 
 # Check zip digests from UK Data Service
-shasum -c uk_data_service_digests.txt
+shasum -c digests/uk_data_service.txt
 
 # Unzip
 OUTPATH=Data/dl/
