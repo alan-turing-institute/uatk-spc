@@ -13,10 +13,6 @@ source("age_rescaling/SPC_functions_age_rescaling.R")
 lu <- read.csv(paste(folderInOT, "lookUp-GB.csv", sep = ""))
 
 # Income related data // Only necessary for England
-# ageRescaleFFT <- read.csv(paste(folderInOT,"ageRescaleFFT.csv", sep = ""))
-# ageRescaleFPT <- read.csv(paste(folderInOT,"ageRescaleFPT.csv", sep = ""))
-# ageRescaleMFT <- read.csv(paste(folderInOT,"ageRescaleMFT.csv", sep = ""))
-# ageRescaleMPT <- read.csv(paste(folderInOT,"ageRescaleMPT.csv", sep = ""))
 coefFFT <- read.csv(paste(folderInOT, "coefFFT.csv", sep = ""))
 coefFPT <- read.csv(paste(folderInOT, "coefFPT.csv", sep = ""))
 coefMFT <- read.csv(paste(folderInOT, "coefMFT.csv", sep = ""))
