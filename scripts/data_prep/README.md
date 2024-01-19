@@ -12,25 +12,25 @@ The following steps assume the following have been installed:
 
 ## Step 1: Curate public data from diverse sources
 
-1. This step requires a nomis API key that can be obtained by registering with [nomisweb](https://www.nomisweb.co.uk/). Once registered, the API key can be found [here](https://www.nomisweb.co.uk/myaccount/webservice.asp). Replace the content of `raw_to_prepared_nomisAPIKey.txt` with this key.
+1. This step requires a nomis API key that can be obtained by registering with [nomisweb](https://www.nomisweb.co.uk/). Once registered, the API key can be found [here](https://www.nomisweb.co.uk/myaccount/webservice.asp) and then set as the environment variable `NOMIS_API_KEY` with `export NOMIS_API_KEY=<YOUR_API_KEY>`.
 
-1. Make a path for the UK Data Service datasets in the next step:
+2. Make a path for the UK Data Service datasets in the next step:
     ```bash
     mkdir -p Data/dl/zip
     ```
 
-2. Manually dowload the following tab-separated datasets from the UK Data Service, moving the downloaded `.zip` files to the path `./Data/dl/zip/`. The required datasets are:
+3. Manually dowload the following tab-separated datasets from the UK Data Service, moving the downloaded `.zip` files to the path `./Data/dl/zip/`. The required datasets are:
    1. [10.5255/UKDA-SN-8860-1](http://doi.org/10.5255/UKDA-SN-8860-1)
    2. [10.5255/UKDA-SN-8090-1](http://doi.org/10.5255/UKDA-SN-8090-1)
    3. [10.5255/UKDA-SN-8737-1](http://doi.org/10.5255/UKDA-SN-8737-1)
    4. [10.5255/UKDA-SN-8128-1](http://doi.org/10.5255/UKDA-SN-8128-1)
 
-3. Run the download preparation script:
+4. Run the download preparation script:
     ```bash
     ./raw_prep/prep_dl.sh
     ```
 
-4. Restore `renv` environment and run `raw_to_prepared.R` with:
+5. Restore `renv` environment and run `raw_to_prepared.R` with:
     ```bash
     R -e 'renv::restore()'
     Rscript raw_to_prepared.R
