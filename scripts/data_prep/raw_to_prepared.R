@@ -15,7 +15,7 @@ library(readxl)
 folderIn <- "Data/dl/"
 folderOut <- "Data/prepData/"
 sig_figs = 6
-APIKey <- Sys.getenv("API_KEY")
+APIKey <- Sys.getenv("NOMIS_API_KEY")
 dir.create("Data/prepData/")
 options(timeout=600, error = traceback)
   

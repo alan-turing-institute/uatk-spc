@@ -10,7 +10,7 @@ library(stringr)
 
 folderIn <- "Data/dl/"
 folderOut <- "Data/prepData/"
-APIKey <- Sys.getenv("API_KEY")
+APIKey <- Sys.getenv("NOMIS_API_KEY")
 
 set.seed(14101066)
 
