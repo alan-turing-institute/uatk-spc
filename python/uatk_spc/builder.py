@@ -29,16 +29,26 @@ class Builder(SPCReader):
     def add_households(self) -> Self:
         if self.backend == "polars":
             self.data = self.data.unnest("identifiers").join(
-                self.households, left_on="household", right_on="id", how="left"
+                self.households,
+                left_on="household",
+                right_on="id",
+                how="left",
             )
             return self
         elif self.backend == "pandas":
-            # TODO: handle duplicate column names ("id")
             self.data = (
                 self.data.drop(columns=["identifiers"])
                 .join(pd.json_normalize(self.people["identifiers"]))
-                .merge(self.households, left_on="household", right_on="id", how="left")
+                .merge(
+                    self.households,
+                    left_on="household",
+                    right_on="id",
+                    how="left",
+                    suffixes=("", "_right"),
+                )
+                .drop(columns=["id_right"])
             )
+
             return self
         else:
             raise backend_error(self.backend)
