@@ -1,15 +1,5 @@
-import os
-import pathlib
-
+from test_utils import TEST_PATH, TEST_REGION
 from uatk_spc.reader import SPCReader
-
-
-def get_path():
-    return pathlib.Path(os.path.abspath(__file__)).parent.joinpath("data/")
-
-
-TEST_REGION = "test_region"
-TEST_PATH = get_path()
 
 
 def test_reader():

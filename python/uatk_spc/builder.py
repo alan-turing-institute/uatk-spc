@@ -5,6 +5,13 @@ import polars as pl
 from uatk_spc.reader import DataFrame, SPCReader, backend_error
 
 
+def unnest(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
+    """Unnests a list of columns in a pandas dataframe."""
+    for column in columns:
+        df = df.drop(columns=column).join(pd.json_normalize(df[column]))
+    return df
+
+
 class Builder(SPCReader):
     """
     A class for building a flat dataset starting from peeopl per row and combining
@@ -56,38 +63,74 @@ class Builder(SPCReader):
     def add_time_use_diaries(
         self, features: Dict[str, List[str]], diary_type: str = "weekday_diaries"
     ) -> Self:
-        people = (
-            self.data.unnest(features.keys())
-            .select(
-                ["id", "household"]
-                + [el for (_, features) in features.items() for el in features]
-                + [diary_type]
+        # Get a list of all columns
+        all_columns = [el for (_, features) in features.items() for el in features]
+        if self.backend == "polars":
+            people = (
+                self.data.unnest(features.keys())
+                .select(["id", "household"] + all_columns + [diary_type])
+                .explode(diary_type)
             )
-            .explode(diary_type)
-        )
-        time_use_diaries_with_idx = pl.concat(
-            [
-                self.time_use_diaries,
-                pl.int_range(0, self.time_use_diaries.shape[0], eager=True)
-                .rename("index")
-                .cast(pl.UInt64)
-                .to_frame(),
-            ],
-            how="horizontal",
-        )
-        self.data = people.join(
-            time_use_diaries_with_idx, left_on=diary_type, right_on="index"
-        )
+            time_use_diaries_with_idx = pl.concat(
+                [
+                    self.time_use_diaries,
+                    pl.int_range(0, self.time_use_diaries.shape[0], eager=True)
+                    .rename("index")
+                    .cast(pl.UInt64)
+                    .to_frame(),
+                ],
+                how="horizontal",
+            )
+            # Drop columns present already
+            duplicate_feature_columns = [
+                col for col in time_use_diaries_with_idx.columns if col in all_columns
+            ]
+            time_use_diaries_with_idx = time_use_diaries_with_idx.drop(
+                duplicate_feature_columns
+            )
+
+            self.data = people.join(
+                time_use_diaries_with_idx, left_on=diary_type, right_on="index"
+            )
+        elif self.backend == "pandas":
+            people = (
+                unnest(self.data, features.keys())
+                .loc[
+                    :,
+                    ["id", "household"] + all_columns + [diary_type],
+                ]
+                .explode(diary_type)
+            )
+            # Drop columns present already
+            duplicate_feature_columns = [
+                col for col in self.time_use_diaries.columns if col in all_columns
+            ]
+            self.data = people.merge(
+                self.time_use_diaries.drop(columns=duplicate_feature_columns),
+                left_on=diary_type,
+                right_index=True,
+            )
         return self
 
-    def unnest(self, features: List[str]) -> Self:
-        # TODO: unnest object/struct columns
-        pass
+    def unnest(self, columns: List[str]) -> Self:
+        """Unnests the given columns."""
+        if self.backend == "polars":
+            self.data = self.data.unnest(columns)
+        elif self.backend == "pandas":
+            self.data = unnest(self.data, columns)
+        else:
+            backend_error(self.backend)
+        return self
 
-    def select(self, features: List[str]) -> Self:
-        """Select column subset of features from people."""
-        # TODO: select columns
-        pass
+    def select(self, columns: List[str]) -> Self:
+        """Select subset of columns."""
+        if self.backend == "polars":
+            self.data = self.data.select(columns)
+        elif self.backend == "pandas":
+            self.data = self.data.loc[:, columns]
+        else:
+            backend_error(self.backend)
+        return self
 
     def build(self) -> DataFrame:
         """Returns the final built DataFrame."""
