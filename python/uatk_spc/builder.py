@@ -78,6 +78,7 @@ class Builder(SPCReader):
             diary_type (str): Either 'weekday_diaries' or 'weekend_diaries'.
 
         """
+        # TODO: refactor so select and unnest are distinct build calls.
         # Get a list of all columns
         all_columns = [el for (_, features) in features.items() for el in features]
         if self.backend == "polars":
