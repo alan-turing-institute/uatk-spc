@@ -64,22 +64,26 @@ class SPCReader:
     def __init_protobuf(self, path: str, region: str, backend: str = "polars"):
         """Init from a protobuf output."""
         self.pop = SPCReader.read_pop(os.path.join(path, region + ".pb"))
-        pop_as_dict = MessageToDict(self.pop, including_default_value_fields=True)
+        pop_as_dict = MessageToDict(
+            self.pop,
+            preserving_proto_field_name=True,
+            including_default_value_fields=True,
+        )
         venues_per_activity_as_rows = [
             row
-            for key in pop_as_dict["venuesPerActivity"]
-            for row in pop_as_dict["venuesPerActivity"][key]["venues"]
+            for key in pop_as_dict["venues_per_activity"]
+            for row in pop_as_dict["venues_per_activity"][key]["venues"]
         ]
         if backend == "polars":
             self.households = pl.from_records(pop_as_dict["households"])
             self.people = pl.from_records(pop_as_dict["people"])
-            self.time_use_diaries = pl.from_records(pop_as_dict["timeUseDiaries"])
+            self.time_use_diaries = pl.from_records(pop_as_dict["time_use_diaries"])
             self.venues_per_activity = pl.from_records(venues_per_activity_as_rows)
         elif backend == "pandas":
             self.households = pd.DataFrame.from_records(pop_as_dict["households"])
             self.people = pd.DataFrame.from_records(pop_as_dict["people"])
             self.time_use_diaries = pd.DataFrame.from_records(
-                pop_as_dict["timeUseDiaries"]
+                pop_as_dict["time_use_diaries"]
             )
             self.venues_per_activity = pd.DataFrame.from_records(
                 venues_per_activity_as_rows
@@ -87,7 +91,7 @@ class SPCReader:
         else:
             raise backend_error(backend)
 
-        self.info_per_msoa = pop_as_dict["infoPerMsoa"]
+        self.info_per_msoa = pop_as_dict["info_per_msoa"]
 
     @classmethod
     def read_pop(cls, file_name: str) -> synthpop_pb2.Population:
