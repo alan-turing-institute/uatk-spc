@@ -3,7 +3,7 @@ from uatk_spc.builder import Builder, unnest
 from uatk_spc.reader import SPCReader
 
 
-def test_unnest():
+def test_unnest_data():
     spc = SPCReader(TEST_PATH, TEST_REGION, backend="pandas")
     spc_unnested = unnest(spc.households, ["details"])
     assert spc_unnested.columns.to_list() == [

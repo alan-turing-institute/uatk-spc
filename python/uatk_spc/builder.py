@@ -8,7 +8,9 @@ from uatk_spc.reader import DataFrame, SPCReader, backend_error
 def unnest(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
     """Unnests a list of columns in a pandas dataframe."""
     for column in columns:
-        df = df.drop(columns=column).join(pd.json_normalize(df[column]))
+        df = df.drop(columns=column).join(
+            pd.json_normalize(df[column]).set_index(df.index)
+        )
     return df
 
 
@@ -19,6 +21,8 @@ class Builder(SPCReader):
 
     Attributes:
         data (DataFrame | None): DataFrame that is being built.
+        backend (str): DataFrame backend being used, must be either 'polars' or
+            'pandas'.
     """
 
     data: DataFrame | None
@@ -32,8 +36,10 @@ class Builder(SPCReader):
     ):
         super().__init__(path, region, input_type, backend)
         self.data = self.people
+        self.backend = backend
 
     def add_households(self) -> Self:
+        """Joins households to the dataframe being built."""
         if self.backend == "polars":
             self.data = self.data.unnest("identifiers").join(
                 self.households,
@@ -44,8 +50,7 @@ class Builder(SPCReader):
             return self
         elif self.backend == "pandas":
             self.data = (
-                self.data.drop(columns=["identifiers"])
-                .join(pd.json_normalize(self.people["identifiers"]))
+                unnest(self.data, ["identifiers"])
                 .merge(
                     self.households,
                     left_on="household",
@@ -63,6 +68,16 @@ class Builder(SPCReader):
     def add_time_use_diaries(
         self, features: Dict[str, List[str]], diary_type: str = "weekday_diaries"
     ) -> Self:
+        """
+        Joins time use diaries to the dataframe being built, exploding rows to a
+        persons's activities on a given day .
+
+        Args:
+            features (Dict[str, List[str]]): dictionary of columns with nested
+                features to retain.
+            diary_type (str): Either 'weekday_diaries' or 'weekend_diaries'.
+
+        """
         # Get a list of all columns
         all_columns = [el for (_, features) in features.items() for el in features]
         if self.backend == "polars":
@@ -105,10 +120,14 @@ class Builder(SPCReader):
             duplicate_feature_columns = [
                 col for col in self.time_use_diaries.columns if col in all_columns
             ]
-            self.data = people.merge(
-                self.time_use_diaries.drop(columns=duplicate_feature_columns),
-                left_on=diary_type,
-                right_index=True,
+            self.data = (
+                people.merge(
+                    self.time_use_diaries.drop(columns=duplicate_feature_columns),
+                    left_on=diary_type,
+                    right_index=True,
+                )
+                .sort_values("id")
+                .reset_index(drop=True)
             )
         return self
 
