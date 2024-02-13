@@ -122,9 +122,9 @@ get_coef_age_data <- function(age, coef_age_data) {
         ref_val[i] <- (
             coef_age_data[1, i]
             + coef_age_data[2, i] * age
-                + coef_age_data[3, i] * age^2
-                + coef_age_data[4, i] * age^3
-                + coef_age_data[5, i] * age^4
+            + coef_age_data[3, i] * age^2
+            + coef_age_data[4, i] * age^3
+            + coef_age_data[5, i] * age^4
         )
     }
     return(ref_val)
@@ -136,8 +136,8 @@ fitted_cubic <- function(fit, vals) {
         (
             fit$coefficients[1]
             + fit$coefficients[2] * x
-                + fit$coefficients[3] * x^2
-                + fit$coefficients[4] * x^3
+            + fit$coefficients[3] * x^2
+            + fit$coefficients[4] * x^3
         )
     }))
 }
