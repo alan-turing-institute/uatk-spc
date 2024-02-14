@@ -10,7 +10,7 @@ library(stringr)
 
 folderIn <- "Data/dl/"
 folderOut <- "Data/prepData/"
-APIKey <- Sys.getenv("API_KEY")
+APIKey <- Sys.getenv("NOMIS_API_KEY")
 
 set.seed(14101066)
 
@@ -35,10 +35,10 @@ geogr <- "2092957699"
 date<- "latestMINUS2"
 other <- "&industry=150994945...150994965&employment_sizeband=1...9&legal_status=0&measures=20100&select=industry_name,employment_sizeband_name,obs_value&rows=employment_sizeband_name&cols=industry_name"
 url <- createURL(datasetBR,geogr,APIKey,date,other)
-download.file(url,destfile = paste(folderIn,"data.csv",sep=""))
+download.file(url,destfile = paste(folderIn,"data_workplaces_1.csv",sep=""))
 
 # Load data and clean
-data <- read.csv(paste(folderIn,"data.csv",sep=""))
+data <- read.csv(paste(folderIn,"data_workplaces_1.csv",sep=""))
 data <- data[c(1,7,2,5,8,3,6,9,4),]
 row.names(data) <- 1:nrow(data)
 
@@ -124,8 +124,8 @@ if(!file.exists(paste(folderOut,"lsoaData.csv",sep = ""))){
   other <- "&industry=146800641...146800643,146800645...146800673,146800675...146800679,146800681...146800683,146800685...146800687,146800689...146800693,146800695,146800696,146800698...146800706,146800708...146800715,146800717...146800722,146800724...146800728,146800730...146800739&employment_status=1&measure=1&measures=20100&select=geography_code,industry_code,obs_value&rows=geography_code&cols=industry_code"
   geogrLSOA2 <- paste(geogrLSOA[1:1000],collapse=",")
   url <- createURL(datasetES,geogrLSOA2,APIKey,date,other)
-  download.file(url,destfile = paste(folderIn,"data.csv",sep=""))
-  data <- read.csv(paste(folderIn,"data.csv",sep=""))
+  download.file(url,destfile = paste(folderIn,"data_workplaces_2.csv",sep=""))
+  data <- read.csv(paste(folderIn,"data_workplaces_2.csv",sep=""))
   for(i in 1:22){
     geogrLSOA2 <- paste(geogrLSOA[(i*1000 + 1):min(i*1000 + 1000,l)],collapse=",")
     url <- createURL(datasetES,geogrLSOA2,APIKey,date,other)
@@ -223,7 +223,7 @@ print("Adding coordinates...")
 
 # England and Wales
 #download.file("https://stg-arcgisazurecdataprod1.az.arcgis.com/exportfiles-1559-15693/Lower_layer_Super_Output_Areas_Dec_2011_Boundaries_Full_Clipped_BFC_EW_V3_2022_3601855424856006397.csv?sv=2018-03-28&sr=b&sig=tmZTl6Eh6ryGtEsEaHWPbp0GKF2SUcejnO1DeF7csk4%3D&se=2023-04-26T15%3A58%3A01Z&sp=r",destfile = paste(folderIn,"Lower_Layer_Super_Output_Areas__December_2011__Boundaries_Full_Clipped__BFC__EW_V3.csv",sep = ""))
-shp <- read.csv(paste(folderIn,"LSOA_Dec_2011_PWC_in_England_and_Wales_2022_1923591000694358693.csv",sep = ""))
+shp <- read.csv(paste(folderIn,"LSOA_Dec_2011_PWC_in_England_and_Wales_2022.csv",sep = ""))
 coords <- data.frame(LSOA11CD = shp$LSOA11CD, lng = shp$x, lat = shp$y)
 
 # Scotland
@@ -247,4 +247,4 @@ busPop <- busPop[order(busPop$id),]
 row.names(busPop) <- 1:nrow(busPop)
 
 print("Writing outputs...")
-write.table(busPop,"Outputs/businessRegistry.csv",sep=",",row.names = F)
+write.table(busPop,paste(folderOut,"businessRegistry.csv", sep=""), sep=",",row.names = F)

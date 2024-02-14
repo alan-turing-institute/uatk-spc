@@ -14,8 +14,10 @@ library(readxl)
 
 folderIn <- "Data/dl/"
 folderOut <- "Data/prepData/"
-APIKey <- Sys.getenv("API_KEY")
-options(timeout=600)
+sig_figs = 6
+APIKey <- Sys.getenv("NOMIS_API_KEY")
+dir.create("Data/prepData/")
+options(timeout=600, error = traceback)
   
 set.seed(12345)
 
@@ -346,6 +348,7 @@ dVariance <- data.frame(ref = c("shape_inter","shape_coef1","shape_coef2","shape
 dMean <- data.frame(F1 = unname(fitF1$coefficients),F2 = unname(fitF2$coefficients),F3 = unname(fitF3$coefficients),F4 = unname(fitF4$coefficients),
                     M1 = unname(fitM1$coefficients),M2 = unname(fitM2$coefficients),M3 = unname(fitM3$coefficients),M4 = unname(fitM4$coefficients)
 )
+dMean <- dMean %>% mutate_all(function(x) signif(x, sig_figs))
 
 print("Writing outputs...")
 write.table(dMean,paste(folderOut,"BMIdMean.csv",sep = ""),row.names = F, sep = ",")
@@ -431,8 +434,8 @@ downloadNSSEC <- function(age,sex){
   date<- "latest"
   other <- paste("&c_sex=",sex,"&c_nssec=1,4...10,13&c_age=",age,"&measures=20100&select=geography_code,c_nssec_name,obs_value",sep="")
   url <- createURL(dataset,geogrMSOA,APIKey,date,other)
-  download.file(url,destfile = paste(folderIn,"data.csv",sep=""))
-  data <- read.csv(paste(folderIn,"data.csv",sep=""))
+  download.file(url,destfile = paste(folderIn,"data_1.csv",sep=""))
+  data <- read.csv(paste(folderIn,"data_1.csv",sep=""))
   data$C_NSSEC_NAME <- substr(as.character(data$C_NSSEC_NAME),1,1)
   data$C_NSSEC_NAME[data$C_NSSEC_NAME == "L"] <- 9
   data$C_NSSEC_NAME <- as.numeric(data$C_NSSEC_NAME)
@@ -441,8 +444,8 @@ downloadNSSEC <- function(age,sex){
 }
 
 writeNSSECTables <- function(age,sex){
-  ref <- matrix(c("M_16-24","M_25-34","M_35-49","M_50-64","M_65p",
-                  "F_16-24","F_25-34","F_35-49","F_50-64","F_65p"),
+  ref <- matrix(c("M_16to24","M_25to34","M_35to49","M_50to64","M_65to74",
+                  "F_16to24","F_25to34","F_35to49","F_50to64","F_65to74"),
                 ncol = 2)
   if(!file.exists(paste(folderOut,"NSSEC8_EW_",ref[age,sex],"_CLEAN.csv",sep = ""))){
     NSSEC <- downloadNSSEC(age,sex)
@@ -795,9 +798,14 @@ print("Working on mobility data...")
 # Assumption: if percent value for a County is NA -> change value to national average
 
 # Download latest file from google mobility
+global_mobility_report <- paste(folderIn,"Google_Global_Mobility_Report.csv",sep = "")
+if(!file.exists(global_mobility_report)){
 download.file("https://www.gstatic.com/covid19/mobility/Global_Mobility_Report.csv", 
-              destfile = paste(folderIn,"Google_Global_Mobility_Report.csv",sep = ""))
-gm <- read_csv(paste(folderIn,"Google_Global_Mobility_Report.csv",sep = "")) %>% 
+              destfile = global_mobility_report)
+} else {
+  print("'Google_Global_Mobility_Report.csv' already exists, not downloading again")
+}
+gm <- read_csv(global_mobility_report) %>%
   filter(country_region == "United Kingdom" & !is.na(sub_region_1))
 gm <- gm %>% dplyr::select( c(sub_region_1,date,residential_percent_change_from_baseline))
 colnames(gm) <- c("GoogleCTY_CNC","date","change")
@@ -978,7 +986,7 @@ write.table(oatoOther,paste(folderOut,"lookUp-GB.csv",sep = ""),row.names = F, s
 
 
 #download.file("https://stg-arcgisazurecdataprod1.az.arcgis.com/exportfiles-1559-14679/Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv?sv=2018-03-28&sr=b&sig=lXtKu1VuADphReJfFvfgqHHWm4CtHnk3iusPMruCxO0%3D&se=2023-04-24T18%3A30%3A56Z&sp=r",destfile = paste(folderIn,"Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv",sep = ""))
-OACoords <- read.csv(paste(folderIn,"Output_Areas_Dec_2011_PWC_2022_4250323215893203467.csv",sep = ""))
+OACoords <- read.csv(paste(folderIn,"Output_Areas_Dec_2011_PWC_2022.csv",sep = ""))
 
 download.file("https://www.nrscotland.gov.uk/files/geography/output-area-2011-pwc.zip",destfile = paste(folderIn,"Output_Areas_2011_Scotland.zip",sep = ""))
 unzip(paste(folderIn,"Output_Areas_2011_Scotland.zip",sep = ""),exdir=folderIn)

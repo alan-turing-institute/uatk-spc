@@ -4,7 +4,7 @@
 
 ## Prerequisites
 The following steps assume the following have been installed:
-- [R](https://www.r-project.org/): for running data curation scripts
+- [R](https://www.r-project.org/) and [Python3](https://www.python.org/): for running data curation scripts
 - [renv](https://rstudio.github.io/renv/articles/renv.html): to load the R environment for reproducibility
 - [GDAL](https://gdal.org/): Geospatial Data Abstraction Library, also installable with [brew](https://formulae.brew.sh/formula/gdal)
 - [pueue](https://github.com/Nukesor/pueue): a process queue for running all
@@ -12,20 +12,30 @@ The following steps assume the following have been installed:
 
 ## Step 1: Curate public data from diverse sources
 
-1. This step requires a nomis API key that can be obtained by registering with [nomisweb](https://www.nomisweb.co.uk/). Once registered, the API key can be found [here](https://www.nomisweb.co.uk/myaccount/webservice.asp). Replace the content of `raw_to_prepared_nomisAPIKey.txt` with this key.
+1. This step requires a nomis API key that can be obtained by registering with [nomisweb](https://www.nomisweb.co.uk/). Once registered, the API key can be found [here](https://www.nomisweb.co.uk/myaccount/webservice.asp) and then set as the environment variable `NOMIS_API_KEY` with `export NOMIS_API_KEY=<YOUR_API_KEY>`.
 
-2. Use `raw_to_prepared_Environment.R` to install the necessary R packages and create directories.
+2. Make a path for the UK Data Service datasets in the next step:
+    ```bash
+    mkdir -p Data/dl/zip
+    ```
 
-3. Download manually safeguarded/geoportal data, place those inside the `Data/dl` directory. Required:
-   1. [LSOA centroids in csv format](https://geoportal.statistics.gov.uk/datasets/ons::lsoa-dec-2011-population-weighted-centroids-in-england-and-wales/explore) (adapt l. 219-220 of `raw_to_prepared_Workplaces.R` if necessary)
-   2. [OA centroids in csv format](https://geoportal.statistics.gov.uk/datasets/ons::output-areas-dec-2011-pwc/explore) (adapt section OA centroids inside `raw_to_prepared.R` if necessary)
-   3. Health and time use data, download directly from:
-      1. [10.5255/UKDA-SN-8860-1](http://doi.org/10.5255/UKDA-SN-8860-1)
-      2. [10.5255/UKDA-SN-8090-1](http://doi.org/10.5255/UKDA-SN-8090-1)
-      3. [10.5255/UKDA-SN-8737-1](http://doi.org/10.5255/UKDA-SN-8737-1)
-      4. [10.5255/UKDA-SN-8128-1](http://doi.org/10.5255/UKDA-SN-8128-1)
+3. Manually dowload the following tab-separated datasets from the UK Data Service, moving the downloaded `.zip` files to the path `./Data/dl/zip/`. The required datasets are:
+   1. [10.5255/UKDA-SN-8860-1](http://doi.org/10.5255/UKDA-SN-8860-1)
+   2. [10.5255/UKDA-SN-8090-1](http://doi.org/10.5255/UKDA-SN-8090-1)
+   3. [10.5255/UKDA-SN-8737-1](http://doi.org/10.5255/UKDA-SN-8737-1)
+   4. [10.5255/UKDA-SN-8128-1](http://doi.org/10.5255/UKDA-SN-8128-1)
 
-4. Run `raw_to_prepared.R`. Note that a file of over 1 GB will be downloaded. The maximum allowed time for an individual download is 10 minutes (600 seconds). Adjust options(timeout=600) l. 18 if this is insufficient.
+4. Run the download preparation script:
+    ```bash
+    ./raw_prep/prep_dl.sh
+    ```
+
+5. Restore `renv` environment and run `raw_to_prepared.R` with:
+    ```bash
+    R -e 'renv::restore()'
+    Rscript raw_to_prepared.R
+    ```
+Note that a file of over 1 GB will be downloaded. The maximum allowed time for an individual download is 10 minutes (600 seconds). Adjust options(timeout=600) l. 18 if this is insufficient.
 
 This step outputs two types of files:
 - `diariesRef.csv`, `businessRegistry.csv` and `timeAtHomeIncreaseCTY.csv` should be gzipped and stored directly inside `nationaldata-v2` on Azure; and `lookUp-GB.csv` inside `referencedata`on Azure. These files are directly used by SPC.
@@ -33,15 +43,32 @@ This step outputs two types of files:
 
 Refer to the [data sources](https://alan-turing-institute.github.io/uatk-spc/data_sources.html) to learn more about the raw data and the content of the files.
 
-The script calls `raw_to_prepared_Income.R` to produce income data for the next step. Note that only the modelled coefficients for hourly salaries (averaged over all age groups) and number of hours worked are produced by the script. The age rescaling coefficients require running the entire population once without rescaling, which is not practical. The methodology is left commented out for reference. Use the content of `SAVE_SPC_required_data.zip` to obtain these coefficients. The script also calls `raw_to_prepared_Workplaces.R` to create `businessRegistry.csv`. Note that both these scripts can only be used on their own after some of the content of `raw_to_prepared.R` have been created.
+The script calls `raw_to_prepared_Income.R` to produce income data for the next step.
 
-## Step 2: Add to SPENSER
-This step assumes that you have already run the complete SPENSER pipeline either
-with a [single
+### Age rescaling coefficients
+_(Note: Data preparation from here on assumes that you have already run the
+complete SPENSER pipeline either with a [single
 machine](https://github.com/alan-turing-institute/spc-hpc-pipeline/blob/main/scripts/full_pipeline/README.md)
 or using [Azure batch
-computing](https://github.com/alan-turing-institute/spc-hpc-pipeline/).
+computing](https://github.com/alan-turing-institute/spc-hpc-pipeline/))_
 
+The final data preparation step is to generate age rescaling coefficients:
+1. Run entire population is once for 2020 (since the income data is from 2020)
+   without rescaling to add an income for each person (single region (LAD)
+   script
+   [age_rescaling/SPC_single_region_rescaling.R](age_rescaling/SPC_single_region_age_rescaling.R)).
+2. Run [age_rescaling/age_rescaling.R](age_rescaling/age_rescaling.R) to produce
+   the rescaling coefficients.
+
+A bash script can be executed to perform the above two steps with:
+```bash
+./age_rescaling/run_pipelineLAD_age_rescaling.sh \
+    <STEP1_PATH> \
+    <SPENSER_INPUT_PATH> \
+    <A_TMP_OUTPUT_PATH>
+```
+
+## Step 2: Add to SPENSER
 First, unpack `SAVE_SPC_required_data.zip` or run the step 1:
 ```bash
 unzip SAVE_SPC_required_data.zip

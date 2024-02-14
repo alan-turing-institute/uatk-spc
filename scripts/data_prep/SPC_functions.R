@@ -323,7 +323,7 @@ addToData2 <- function(data,region,coefFFT,coefFPT,coefMFT,coefMPT){
   coefFPTR <- coefFPT[which(coefFFT$region == region),]
   coefMFTR <- coefMFT[which(coefFFT$region == region),]
   coefMPTR <- coefMPT[which(coefFFT$region == region),]
-  incs <- mcmapply(function(x){fillIncome2(x,old,pwkstat,coefFFTR,coefFPTR,coefMFTR,coefMPTR,region)}, 1:nrow(old), mc.cores = detectCores())
+  incs <- mcmapply(function(x){fillIncome2(x,old,pwkstat,coefFFTR,coefFPTR,coefMFTR,coefMPTR,region)}, 1:nrow(old), mc.cores = detectCores(), mc.set.seed = FALSE)
   old$incomeH <- incs[1,]
   old$incomeY <- incs[2,]
   old$incomeHAsIf <- incs[3,]
