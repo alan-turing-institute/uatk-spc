@@ -1,7 +1,8 @@
-from typing import Dict, List, Self
+from typing import Dict, List
 
 import pandas as pd
 import polars as pl
+from typing_extensions import Self
 from uatk_spc.reader import DataFrame, SPCReader, backend_error
 
 
