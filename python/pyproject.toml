@@ -6,7 +6,7 @@ authors = ["Dustin Carlino <dcarlino@turing.ac.uk>", "Hadrien Salat <hsalat@turi
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = ">=3.10, <3.12"
+python = ">=3.10"
 protobuf = "^4.22.3"
 ipykernel = "^6.22.0"
 pandas = "^2.0.0"
