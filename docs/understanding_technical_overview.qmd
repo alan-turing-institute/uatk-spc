@@ -14,13 +14,13 @@ We provide in this document a step by step approach to running the entire SPC pi
 - **Phase 2 - The user has selected a study area and started a simulation**
     1. All the data relevant to the study area are pulled from Azure.
     2. Individuals are assigned a single education destination (if under 16 y.o.) and several potential retail destinations, according to a local version of the [QUANT](https://github.com/maptube/QUANT_RAMP) model.
-    3. Individuals are assigned a single workplace destination (if above 16 y.o), according to the method described [here](https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#commuting-flows).
+    3. Individuals are assigned a single workplace destination (if above 16 y.o), according to the method described [here](https://alan-turing-institute.github.io/uatk-spc/understanding_modelling_methods.html#commuting-flows).
     4. The population, its activities and an optional lockdown modelling are gathered into a single `.pb` file that can be visualised with the [SPC explorer](https://alan-turing-institute.github.io/uatk-spc/app/).
 
 
 ![](img/SPC_Schema_full_new.png)
 
-We now explain how to run each step. The theoretical concepts supporting the modelling are presented [here](understanding_modelling_methods.qmd).
+We now explain how to run each step. The theoretical concepts supporting the modelling are presented [here](understanding_modelling_methods.qmd). The different data sources are detailed [here](understanding_data_sources.qmd).
 
 ## Phase 1: Data preparation
 
@@ -41,7 +41,7 @@ The result of SPENSER is two separate datasets and a merging key: one dataset fo
 
 ### Downloading and preparation of public data from various sources
 
-Instructions to run this step from the source code can be found under [Step 1: Curate public data from diverse sources](https://github.com/alan-turing-institute/uatk-spc/tree/main/scripts/data_prep).
+Instructions to run this step from the source code can be found under [Step 1: Curate public data from diverse sources](https://github.com/alan-turing-institute/uatk-spc/tree/main/scripts/data_prep). More information on the various data sources can be found [here](understanding_data_sources.qmd).
 The result is a set of data files, some of which will be merged with the outputs from SPENSER during the next step, containing:
 
 - NSSEC8 distributions among the population of England and Wales by age group and sex at MSOA level (`NSSEC8_EW_F_16to24_CLEAN.csv`, etc.) and among the total population of Scotland by age group, sex and ethnicity (`NSSECS_CLEAN.csv`)
