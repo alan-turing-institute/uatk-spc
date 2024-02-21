@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.549">
+<meta name="generator" content="quarto-1.4.550">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -307,12 +307,12 @@ ul.task-list li input[type="checkbox"] {
 <ol type="1">
 <li>All the data relevant to the study area are pulled from Azure.</li>
 <li>Individuals are assigned a single education destination (if under 16 y.o.) and several potential retail destinations, according to a local version of the <a href="https://github.com/maptube/QUANT_RAMP">QUANT</a> model.</li>
-<li>Individuals are assigned a single workplace destination (if above 16 y.o), according to the method described <a href="https://alan-turing-institute.github.io/uatk-spc/modelling_methods.html#commuting-flows">here</a>.</li>
+<li>Individuals are assigned a single workplace destination (if above 16 y.o), according to the method described <a href="https://alan-turing-institute.github.io/uatk-spc/understanding_modelling_methods.html#commuting-flows">here</a>.</li>
 <li>The population, its activities and an optional lockdown modelling are gathered into a single <code>.pb</code> file that can be visualised with the <a href="https://alan-turing-institute.github.io/uatk-spc/app/">SPC explorer</a>.</li>
 </ol></li>
 </ul>
 <p><img src="img/SPC_Schema_full_new.png" class="img-fluid"></p>
-<p>We now explain how to run each step. The theoretical concepts supporting the modelling are presented <a href="./understanding_modelling_methods.html">here</a>.</p>
+<p>We now explain how to run each step. The theoretical concepts supporting the modelling are presented <a href="./understanding_modelling_methods.html">here</a>. The different data sources are detailed <a href="./understanding_data_sources.html">here</a>.</p>
 <section id="phase-1-data-preparation" class="level2" data-number="10.1">
 <h2 data-number="10.1" class="anchored" data-anchor-id="phase-1-data-preparation"><span class="header-section-number">10.1</span> Phase 1: Data preparation</h2>
 <section id="spenser" class="level3" data-number="10.1.1">
@@ -328,7 +328,7 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="downloading-and-preparation-of-public-data-from-various-sources" class="level3" data-number="10.1.2">
 <h3 data-number="10.1.2" class="anchored" data-anchor-id="downloading-and-preparation-of-public-data-from-various-sources"><span class="header-section-number">10.1.2</span> Downloading and preparation of public data from various sources</h3>
-<p>Instructions to run this step from the source code can be found under <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/scripts/data_prep">Step 1: Curate public data from diverse sources</a>. The result is a set of data files, some of which will be merged with the outputs from SPENSER during the next step, containing:</p>
+<p>Instructions to run this step from the source code can be found under <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/scripts/data_prep">Step 1: Curate public data from diverse sources</a>. More information on the various data sources can be found <a href="./understanding_data_sources.html">here</a>. The result is a set of data files, some of which will be merged with the outputs from SPENSER during the next step, containing:</p>
 <ul>
 <li>NSSEC8 distributions among the population of England and Wales by age group and sex at MSOA level (<code>NSSEC8_EW_F_16to24_CLEAN.csv</code>, etc.) and among the total population of Scotland by age group, sex and ethnicity (<code>NSSECS_CLEAN.csv</code>)</li>
 <li>A combined extract from the three latest GB Health Surveys (<code>HSComplete.csv</code>)</li>
@@ -756,12 +756,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./understanding_introduction.html" class="pagination-link  aria-label=" &lt;span="">
+      <a href="./understanding_introduction.html" class="pagination-link" aria-label="Introduction">
         <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Introduction</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./understanding_modelling_methods.html" class="pagination-link" aria-label="<span class='chapter-number'>11</span>&nbsp; <span class='chapter-title'>Modelling methods</span>">
+      <a href="./understanding_modelling_methods.html" class="pagination-link" aria-label="Modelling methods">
         <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Modelling methods</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
