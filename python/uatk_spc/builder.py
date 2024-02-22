@@ -3,7 +3,7 @@ from typing import Dict, List
 import pandas as pd
 import polars as pl
 from typing_extensions import Self
-from uatk_spc.reader import DataFrame, SPCReader, backend_error
+from uatk_spc.reader import DataFrame, Reader, backend_error
 
 
 def unnest(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
@@ -15,7 +15,7 @@ def unnest(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
     return df
 
 
-class Builder(SPCReader):
+class Builder(Reader):
     """
     A class for building a flat dataset starting from peeopl per row and combining
     additional population fields.

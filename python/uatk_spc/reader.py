@@ -19,7 +19,7 @@ def backend_error(backend: str) -> ValueError:
     )
 
 
-class SPCReader:
+class Reader:
     """
     A class for reading from parquet and JSON into ready to use data structures.
 
@@ -63,7 +63,7 @@ class SPCReader:
 
     def __init_protobuf(self, path: str, region: str, backend: str = "polars"):
         """Init from a protobuf output."""
-        self.pop = SPCReader.read_pop(os.path.join(path, region + ".pb"))
+        self.pop = Reader.read_pop(os.path.join(path, region + ".pb"))
         pop_as_dict = MessageToDict(
             self.pop,
             preserving_proto_field_name=True,
