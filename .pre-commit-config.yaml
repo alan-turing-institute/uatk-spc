@@ -1,4 +1,4 @@
-files: ^python/
+files: "^python/|.github"
 exclude: synthpop_pb2.py$
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
