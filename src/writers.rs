@@ -21,7 +21,10 @@ use serde_arrow::{
 };
 use typed_index_collections::TiVec;
 
-use crate::{pb::Point, protobuf::convert_point, Activity, Venue, VenueID};
+use crate::{
+    pb::{self, Point, VenueList},
+    VenueID,
+};
 
 pub trait WriteParquet {
     fn write_parquet(&self, output: &str) -> Result<()>;
@@ -56,6 +59,24 @@ where
     }
 }
 
+impl<V> WriteParquet for prost::alloc::vec::Vec<V>
+where
+    V: Serialize,
+{
+    fn write_parquet(&self, output: &str) -> Result<()> {
+        let fields = serialize_into_fields(
+            self,
+            TracingOptions {
+                allow_null_fields: true,
+                ..Default::default()
+            },
+        )?;
+        let arrays = serialize_into_arrays(&fields, self)?;
+        write_chunk(output, Schema::from(fields), Chunk::new(arrays))?;
+        Ok(())
+    }
+}
+
 // Version of Venue that can be serialized to parquet.
 #[derive(Serialize, Deserialize)]
 struct ArrowVenue {
@@ -65,21 +86,21 @@ struct ArrowVenue {
     urn: Option<String>,
 }
 
-impl From<&Venue> for ArrowVenue {
-    fn from(venue: &Venue) -> Self {
+impl From<&pb::Venue> for ArrowVenue {
+    fn from(venue: &pb::Venue) -> Self {
         Self {
-            id: venue.id.0.try_into().unwrap(),
-            activity: format!("{:?}", venue.activity),
-            location: convert_point(&venue.location),
+            id: venue.id,
+            activity: format!("{}", venue.activity),
+            location: venue.location.clone(),
             urn: venue.urn.clone(),
         }
     }
 }
 
-impl WriteParquet for EnumMap<Activity, TiVec<VenueID, Venue>> {
+impl<K> WriteParquet for BTreeMap<K, VenueList> {
     fn write_parquet(&self, output: &str) -> Result<()> {
         self.iter()
-            .flat_map(|(_, venues)| venues.iter().map(ArrowVenue::from))
+            .flat_map(|(_, venues)| venues.venues.iter().map(ArrowVenue::from))
             .collect::<TiVec<VenueID, ArrowVenue>>()
             .write_parquet(output)
     }

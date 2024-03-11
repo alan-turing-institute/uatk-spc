@@ -13,7 +13,7 @@ use spc::writers::{WriteJSON, WriteParquet};
 use tracing::{info, info_span};
 
 use spc::utilities::{memory_usage, print_count};
-use spc::{protobuf, Input, Population, MSOA};
+use spc::{pb, protobuf, Input, Population, MSOA};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -42,37 +42,40 @@ async fn main() -> Result<()> {
         let dir = format!("data/output/{country}/{}", population.year);
         fs_err::create_dir_all(&dir)?;
 
+        // Convert to protobuf population
+        let pb_population: pb::Population = (&population).try_into()?;
+
         // Write split outputs as parquet and JSON
         let _s_outer = info_span!("writing outputs").entered();
         if output_arrow {
             let output = format!("{dir}/{region}_households.pq");
             let _s = info_span!("writing households to", ?output).entered();
-            population.households.write_parquet(&output)?;
+            pb_population.households.write_parquet(&output)?;
             drop(_s);
             let output = format!("{dir}/{region}_people.pq");
             let _s = info_span!("writing people to", ?output).entered();
-            population.people.write_parquet(&output)?;
+            pb_population.people.write_parquet(&output)?;
             drop(_s);
             let output = format!("{dir}/{region}_time_use_diaries.pq");
             let _s = info_span!("writing time use diaries to", ?output).entered();
-            population.time_use_diaries.write_parquet(&output)?;
+            pb_population.time_use_diaries.write_parquet(&output)?;
             drop(_s);
             let output = format!("{dir}/{region}_venues.pq");
             let _s = info_span!("writing venues to", ?output).entered();
-            population.venues_per_activity.write_parquet(&output)?;
+            pb_population.venues_per_activity.write_parquet(&output)?;
             drop(_s);
             let output = format!("{dir}/{region}_venues_per_activity.json");
             let _s = info_span!("writing venues to", ?output).entered();
-            population.venues_per_activity.write_json(&output)?;
+            pb_population.venues_per_activity.write_json(&output)?;
             drop(_s);
             let output = format!("{dir}/{region}_info_per_msoa.json");
             let _s = info_span!("writing info per MSOA to", ?output).entered();
-            population.info_per_msoa.write_json(&output)?;
+            pb_population.info_per_msoa.write_json(&output)?;
             drop(_s);
         }
         let output = format!("{dir}/{region}.pb");
         let _s = info_span!("writing protobuf to", ?output).entered();
-        protobuf::convert_to_pb(&population, output)?
+        protobuf::write_pb(&pb_population, output)?
     } as u64)
     .to_string();
 
