@@ -1,9 +1,9 @@
 # You may need to 'pip install' some extra dependencies, or run in a
 # conda/poetry environment.
 
+import click
 import pandas as pd
 import synthpop_pb2
-import click
 
 
 @click.command()
