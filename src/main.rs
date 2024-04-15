@@ -64,10 +64,6 @@ async fn main() -> Result<()> {
             let _s = info_span!("writing venues to", ?output).entered();
             pb_population.venues_per_activity.write_parquet(&output)?;
             drop(_s);
-            let output = format!("{dir}/{region}_venues_per_activity.json");
-            let _s = info_span!("writing venues to", ?output).entered();
-            pb_population.venues_per_activity.write_json(&output)?;
-            drop(_s);
             let output = format!("{dir}/{region}_info_per_msoa.json");
             let _s = info_span!("writing info per MSOA to", ?output).entered();
             pb_population.info_per_msoa.write_json(&output)?;
