@@ -14,7 +14,7 @@ use arrow2::{
 };
 
 use enum_map::EnumMap;
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use serde_arrow::{
     arrow2::{serialize_into_arrays, serialize_into_fields},
     schema::TracingOptions,
@@ -78,7 +78,7 @@ where
 }
 
 // Version of Venue that can be serialized to parquet.
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize)]
 struct ArrowVenue {
     id: u64,
     activity: String,

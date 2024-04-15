@@ -20,7 +20,7 @@ use anyhow::Result;
 use cap::Cap;
 use enum_map::{Enum, EnumMap};
 use geo::{MultiPolygon, Point};
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 pub mod pb {
     include!(concat!(env!("OUT_DIR"), "/synthpop.rs"));
@@ -32,7 +32,6 @@ static ALLOCATOR: Cap<std::alloc::System> = Cap::new(std::alloc::System, usize::
 
 /// After running the initialization for a study area, this one file carries all data needed for
 /// the simulation.
-#[derive(Serialize, Deserialize)]
 pub struct Population {
     /// The study area covers these MSOAs
     pub msoas: BTreeSet<MSOA>,
@@ -68,13 +67,13 @@ pub struct Input {
 /// A region of the UK with around 7800 people.
 ///
 /// See https://en.wikipedia.org/wiki/ONS_coding_system. This is usually called `MSOA11CD`.
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
 pub struct MSOA(pub String);
 
 /// A region of the UK with around X people.
 ///
 /// See https://en.wikipedia.org/wiki/ONS_coding_system. This is usually called `OA11CD`.
-#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Deserialize)]
 pub struct OA(pub String);
 
 /// This represents a 2020 county boundary, which contains several MSOAs. It's used in Google
@@ -87,7 +86,7 @@ impl MSOA {
         init::all_msoas_nationally().await
     }
 }
-#[derive(Serialize, Deserialize)]
+
 pub struct InfoPerMSOA {
     pub shape: MultiPolygon<f32>,
     pub population: u64,
@@ -104,7 +103,6 @@ pub struct InfoPerMSOA {
 }
 
 /// A special type of venue where people live
-#[derive(Serialize, Deserialize)]
 pub struct Household {
     pub id: VenueID,
     pub msoa: MSOA,
@@ -113,7 +111,6 @@ pub struct Household {
     pub details: pb::HouseholdDetails,
 }
 
-#[derive(Serialize, Deserialize)]
 pub struct Person {
     pub id: PersonID,
     pub household: VenueID,
@@ -132,7 +129,7 @@ pub struct Person {
     pub weekend_diaries: Vec<DiaryID>,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Enum, Serialize, Deserialize)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, PartialOrd, Ord, Enum)]
 pub enum Activity {
     Retail,
     PrimarySchool,
@@ -142,7 +139,6 @@ pub enum Activity {
 }
 
 /// Represents a place where people do an activity
-#[derive(Serialize, Deserialize, Clone)]
 pub struct Venue {
     pub id: VenueID,
     pub activity: Activity,
@@ -156,9 +152,7 @@ pub struct Venue {
 // These are unsigned integers, used to index into different vectors. They're wrapped in a type, so
 // we never accidentally confuse a VenueID with a PersonID.
 
-#[derive(
-    Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into, Serialize, Deserialize,
-)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into)]
 pub struct PersonID(pub usize);
 impl fmt::Display for PersonID {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -169,9 +163,7 @@ impl fmt::Display for PersonID {
 /// These IDs are scoped by Activity. This means two VenueIDs may be equal, but represent different
 /// places!
 // TODO Just encode Activity in here too
-#[derive(
-    Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into, Serialize, Deserialize,
-)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into)]
 pub struct VenueID(pub usize);
 impl fmt::Display for VenueID {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
@@ -179,9 +171,7 @@ impl fmt::Display for VenueID {
     }
 }
 
-#[derive(
-    Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into, Serialize, Deserialize,
-)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq, PartialOrd, Ord, From, Into)]
 pub struct DiaryID(pub usize);
 impl fmt::Display for DiaryID {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
