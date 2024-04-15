@@ -36,7 +36,7 @@ pub trait WriteJSON {
         Self: Serialize,
     {
         let mut f = std::fs::File::create(output).unwrap();
-        write!(f, "{}", serde_json::to_string(self).unwrap())?;
+        write!(f, "{}", serde_jcs::to_string(self).unwrap())?;
         Ok(())
     }
 }
