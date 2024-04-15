@@ -1,36 +1,43 @@
+import pytest
 from test_utils import TEST_PATH, TEST_REGION
 from uatk_spc.builder import Builder, unnest
 from uatk_spc.reader import Reader
 
+INPUT_TYPES = ["protobuf", "parquet"]
 
-def test_unnest_data():
-    spc = Reader(TEST_PATH, TEST_REGION, backend="pandas")
+
+@pytest.mark.parametrize("input_type", INPUT_TYPES)
+def test_unnest_data(input_type):
+    spc = Reader(TEST_PATH, TEST_REGION, input_type, backend="pandas")
     spc_unnested = unnest(spc.households, ["details"])
-    assert spc_unnested.columns.to_list() == [
-        "id",
-        "msoa",
-        "oa",
-        "members",
-        "hid",
-        "nssec8",
-        "accommodation_type",
-        "communal_type",
-        "num_rooms",
-        "central_heat",
-        "tenure",
-        "num_cars",
-    ]
+    assert sorted(spc_unnested.columns.to_list()) == sorted(
+        [
+            "id",
+            "msoa11cd",
+            "oa11cd",
+            "members",
+            "hid",
+            "nssec8",
+            "accommodation_type",
+            "communal_type",
+            "num_rooms",
+            "central_heat",
+            "tenure",
+            "num_cars",
+        ]
+    )
 
 
-def test_add_households():
+@pytest.mark.parametrize("input_type", INPUT_TYPES)
+def test_add_households(input_type):
     df_pandas = (
-        Builder(TEST_PATH, TEST_REGION, backend="pandas")
+        Builder(TEST_PATH, TEST_REGION, input_type, backend="pandas")
         .add_households()
         .unnest(["details"])
         .build()
     )
     df_polars = (
-        Builder(TEST_PATH, TEST_REGION, backend="polars")
+        Builder(TEST_PATH, TEST_REGION, input_type, backend="polars")
         .add_households()
         .unnest(["details"])
         .build()
@@ -42,7 +49,8 @@ def test_add_households():
     assert set(df_pandas.columns.to_list()) == set(df_polars.columns)
 
 
-def test_time_use_diaries_pandas():
+@pytest.mark.parametrize("input_type", INPUT_TYPES)
+def test_time_use_diaries_pandas(input_type):
     features = {
         "health": [
             "bmi",
@@ -56,12 +64,12 @@ def test_time_use_diaries_pandas():
         "employment": ["pwkstat", "salary_yearly"],
     }
     df_polars = (
-        Builder(TEST_PATH, TEST_REGION, backend="polars")
+        Builder(TEST_PATH, TEST_REGION, input_type, backend="polars")
         .add_time_use_diaries(features)
         .build()
     )
     df_pandas = (
-        Builder(TEST_PATH, TEST_REGION, backend="pandas")
+        Builder(TEST_PATH, TEST_REGION, input_type, backend="pandas")
         .add_time_use_diaries(features)
         .build()
     )

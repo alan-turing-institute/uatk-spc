@@ -93,7 +93,7 @@ class Builder(Reader):
                     self.time_use_diaries,
                     pl.int_range(0, self.time_use_diaries.shape[0], eager=True)
                     .rename("index")
-                    .cast(pl.UInt32)
+                    .cast(people.dtypes[people.get_column_index(diary_type)])
                     .to_frame(),
                 ],
                 how="horizontal",

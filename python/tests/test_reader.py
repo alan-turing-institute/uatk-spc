@@ -19,4 +19,4 @@ def test_merge_people_and_time_use_diaries():
 def test_merge_people_and_households():
     spc = Reader(TEST_PATH, TEST_REGION)
     merged = spc.merge_people_and_households()
-    assert merged.shape == (4991, 18)
+    assert merged.shape == (4991, 17)
