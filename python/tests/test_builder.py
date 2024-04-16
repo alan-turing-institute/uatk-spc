@@ -1,6 +1,6 @@
 import pytest
 from test_utils import TEST_PATH, TEST_REGION
-from uatk_spc.builder import Builder, unnest
+from uatk_spc.builder import Builder, unnest_pandas
 from uatk_spc.reader import Reader
 
 INPUT_TYPES = ["protobuf", "parquet"]
@@ -9,7 +9,7 @@ INPUT_TYPES = ["protobuf", "parquet"]
 @pytest.mark.parametrize("input_type", INPUT_TYPES)
 def test_unnest_data(input_type):
     spc = Reader(TEST_PATH, TEST_REGION, input_type, backend="pandas")
-    spc_unnested = unnest(spc.households, ["details"])
+    spc_unnested = unnest_pandas(spc.households, ["details"])
     assert sorted(spc_unnested.columns.to_list()) == sorted(
         [
             "id",

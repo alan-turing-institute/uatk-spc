@@ -2,16 +2,39 @@ from typing import Dict, List
 
 import pandas as pd
 import polars as pl
+import polars.selectors as cs
 from typing_extensions import Self
 from uatk_spc.reader import DataFrame, Reader, backend_error
 
 
-def unnest(df: pd.DataFrame, columns: List[str]) -> pd.DataFrame:
+def rename_overlap(
+    df: DataFrame, normalized: DataFrame, rsuffix: str = ""
+) -> Dict[str, str]:
+    """Renames overlapping dataframe columns with rsuffix."""
+    overlap = [col for col in normalized.columns if col in df.columns]
+    rename = {col: col + rsuffix for col in overlap}
+    return rename
+
+
+def unnest_pandas(
+    df: pd.DataFrame, columns: List[str], rsuffix: str = ""
+) -> pd.DataFrame:
     """Unnests a list of columns in a pandas dataframe."""
     for column in columns:
-        df = df.drop(columns=column).join(
-            pd.json_normalize(df[column]).set_index(df.index)
-        )
+        normalized = pd.json_normalize(df[column]).set_index(df.index)
+        normalized = normalized.rename(columns=rename_overlap(df, normalized, rsuffix))
+        df = df.drop(columns=column).join(normalized)
+    return df
+
+
+def unnest_polars(
+    df: pl.DataFrame, columns: List[str], rsuffix: str = ""
+) -> pl.DataFrame:
+    """Unnests a list of columns in a pandas dataframe."""
+    for column in columns:
+        normalized = df.select(column).unnest(column)
+        normalized = normalized.rename(rename_overlap(df, normalized, rsuffix))
+        df = df.select(cs.all().exclude(column)).hstack(normalized)
     return df
 
 
@@ -51,7 +74,7 @@ class Builder(Reader):
             return self
         elif self.backend == "pandas":
             self.data = (
-                unnest(self.data, ["identifiers"])
+                unnest_pandas(self.data, ["identifiers"])
                 .merge(
                     self.households,
                     left_on="household",
@@ -111,7 +134,7 @@ class Builder(Reader):
             )
         elif self.backend == "pandas":
             people = (
-                unnest(self.data, features.keys())
+                unnest_pandas(self.data, features.keys())
                 .loc[
                     :,
                     ["id", "household"] + all_columns + [diary_type],
@@ -133,12 +156,13 @@ class Builder(Reader):
             )
         return self
 
-    def unnest(self, columns: List[str]) -> Self:
+    def unnest(self, columns: List[str], rsuffix: None | str = None) -> Self:
         """Unnests the given columns."""
+        rsuffix = "" if rsuffix is None else rsuffix
         if self.backend == "polars":
-            self.data = self.data.unnest(columns)
+            self.data = unnest_polars(self.data, columns, rsuffix)
         elif self.backend == "pandas":
-            self.data = unnest(self.data, columns)
+            self.data = unnest_pandas(self.data, columns, rsuffix)
         else:
             backend_error(self.backend)
         return self
