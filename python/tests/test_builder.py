@@ -1,13 +1,32 @@
-import itertools
-
 import pytest
-from test_utils import TEST_PATH, TEST_REGION
-from uatk_spc.builder import Builder, unnest_pandas, unnest_polars
-from uatk_spc.reader import Reader
+from test_utils import (
+    builder_pandas_parquet,
+    builder_pandas_protobuf,
+    builder_polars_parquet,
+    builder_polars_protobuf,
+    spc_pandas_parquet,
+    spc_pandas_protobuf,
+    spc_polars_parquet,
+    spc_polars_protobuf,
+)
+from uatk_spc.builder import unnest_pandas, unnest_polars
 
-BACKENDS = ["pandas", "polars"]
-INPUT_TYPES = ["protobuf", "parquet"]
-PRODUCT = itertools.product(*[INPUT_TYPES, BACKENDS])
+READERS = [
+    spc_pandas_parquet,
+    spc_polars_parquet,
+    spc_pandas_protobuf,
+    spc_polars_protobuf,
+]
+BUILDERS = [
+    builder_pandas_parquet,
+    builder_pandas_protobuf,
+    builder_polars_parquet,
+    builder_polars_protobuf,
+]
+PAIRED_BUILDERS = [
+    (builder_pandas_protobuf, builder_polars_protobuf),
+    (builder_pandas_parquet, builder_polars_parquet),
+]
 
 EXPECTED_COLUMNS = [
     "id",
@@ -25,42 +44,24 @@ EXPECTED_COLUMNS = [
 ]
 
 
-@pytest.mark.parametrize("input_type", INPUT_TYPES)
-def test_unnest_pandas_data(input_type):
-    spc = Reader(
-        path=TEST_PATH, region=TEST_REGION, input_type=input_type, backend="pandas"
-    )
-    spc_unnested = unnest_pandas(spc.households, ["details"])
+def test_unnest_pandas_data(spc_pandas_parquet, spc_pandas_protobuf):
+    spc_unnested = unnest_pandas(spc_pandas_protobuf.households, ["details"])
+    assert sorted(spc_unnested.columns.to_list()) == sorted(EXPECTED_COLUMNS)
+    spc_unnested = unnest_pandas(spc_pandas_parquet.households, ["details"])
     assert sorted(spc_unnested.columns.to_list()) == sorted(EXPECTED_COLUMNS)
 
 
-@pytest.mark.parametrize("input_type", INPUT_TYPES)
-def test_unnest_polars_data(input_type):
-    spc = Reader(
-        path=TEST_PATH, region=TEST_REGION, input_type=input_type, backend="polars"
-    )
-    spc_unnested = unnest_polars(spc.households, ["details"])
+def test_unnest_polars_data(spc_polars_parquet, spc_polars_protobuf):
+    spc_unnested = unnest_polars(spc_polars_parquet.households, ["details"])
+    assert sorted(spc_unnested.columns) == sorted(EXPECTED_COLUMNS)
+    spc_unnested = unnest_polars(spc_polars_protobuf.households, ["details"])
     assert sorted(spc_unnested.columns) == sorted(EXPECTED_COLUMNS)
 
 
-@pytest.mark.parametrize("input_type", INPUT_TYPES)
-def test_add_households(input_type):
-    df_pandas = (
-        Builder(
-            path=TEST_PATH, region=TEST_REGION, input_type=input_type, backend="pandas"
-        )
-        .add_households()
-        .unnest(["details"])
-        .build()
-    )
-    df_polars = (
-        Builder(
-            path=TEST_PATH, region=TEST_REGION, input_type=input_type, backend="polars"
-        )
-        .add_households()
-        .unnest(["details"])
-        .build()
-    )
+@pytest.mark.parametrize(("builder_pandas", "builder_polars"), PAIRED_BUILDERS)
+def test_add_households(builder_pandas, builder_polars):
+    df_pandas = builder_pandas().add_households().unnest(["details"]).build()
+    df_polars = builder_polars().add_households().unnest(["details"]).build()
     # Check no duplicate columns
     assert len(set(df_pandas.columns.to_list())) == len(df_pandas.columns.to_list())
     assert len(set(df_polars.columns)) == len(df_polars.columns)
@@ -68,26 +69,14 @@ def test_add_households(input_type):
     assert set(df_pandas.columns.to_list()) == set(df_polars.columns)
 
 
-@pytest.mark.parametrize(("input_type", "backend"), PRODUCT)
-def test_column_overlap(input_type, backend):
+@pytest.mark.parametrize("builder", BUILDERS)
+def test_column_overlap(builder):
     # Exception: ovelapping 'nssec8' without `rsuffix`
     with pytest.raises(Exception):
-        df = (
-            Builder(
-                path=TEST_PATH,
-                region=TEST_REGION,
-                input_type=input_type,
-                backend=backend,
-            )
-            .add_households()
-            .unnest(["demographics", "details"])
-            .build()
-        )
+        df = builder().add_households().unnest(["demographics", "details"]).build()
     # Ok: ovelapping 'nssec8' with `rsuffix` specified
     df = (
-        Builder(
-            path=TEST_PATH, region=TEST_REGION, input_type=input_type, backend=backend
-        )
+        builder()
         .add_households()
         .unnest(["demographics", "details"], rsuffix="_household")
         .build()
@@ -95,8 +84,8 @@ def test_column_overlap(input_type, backend):
     assert all([col in df.columns for col in ["nssec8", "nssec8_household"]])
 
 
-@pytest.mark.parametrize("input_type", INPUT_TYPES)
-def test_time_use_diaries_pandas(input_type):
+@pytest.mark.parametrize(("builder_pandas", "builder_polars"), PAIRED_BUILDERS)
+def test_time_use_diaries_pandas(builder_pandas, builder_polars):
     features = {
         "health": [
             "bmi",
@@ -109,18 +98,6 @@ def test_time_use_diaries_pandas(input_type):
         "demographics": ["age_years", "sex", "nssec8"],
         "employment": ["pwkstat", "salary_yearly"],
     }
-    df_polars = (
-        Builder(
-            path=TEST_PATH, region=TEST_REGION, input_type=input_type, backend="polars"
-        )
-        .add_time_use_diaries(features)
-        .build()
-    )
-    df_pandas = (
-        Builder(
-            path=TEST_PATH, region=TEST_REGION, input_type=input_type, backend="pandas"
-        )
-        .add_time_use_diaries(features)
-        .build()
-    )
+    df_polars = builder_polars().add_time_use_diaries(features).build()
+    df_pandas = builder_pandas().add_time_use_diaries(features).build()
     assert df_polars.columns == df_pandas.columns.to_list()
