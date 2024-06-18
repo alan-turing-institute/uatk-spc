@@ -1,6 +1,11 @@
+import gzip
 import json
 import os
-from typing import Any, Dict, List
+import shutil
+import tarfile
+import urllib.request
+from tempfile import mkdtemp
+from typing import Any, Dict, List, Tuple
 
 import pandas as pd
 import polars as pl
@@ -11,12 +16,51 @@ from google.protobuf.json_format import MessageToDict
 DataFrame = pd.DataFrame | pl.DataFrame
 
 
-# TODO: refine with subclass?
-def backend_error(backend: str) -> ValueError:
+class BackendError(Exception):
     """Reusable error for backend error."""
-    ValueError(
-        f"Backend: {backend} is not implemented. Use 'polars' or 'pandas' instead."
-    )
+
+    def __init__(self, backend: str):
+        self.message = (
+            f"Backend: {backend} is not implemented. Use 'polars' or 'pandas' instead."
+        )
+
+
+def is_parquet(filepath: str) -> bool:
+    return filepath.endswith(".tar.gz") | filepath.endswith(".tar")
+
+
+def is_protobuf(filepath: str) -> bool:
+    return filepath.endswith(".pb.gz") | filepath.endswith(".pb")
+
+
+def download_and_unzip(url: str) -> str:
+    """Downloads and unzips a gzip url to parquet or tar"""
+    response = urllib.request.urlopen(url)
+    filename = url.split("/")[-1]
+    tmp_dir = mkdtemp()
+    filepath = os.path.join(tmp_dir, filename)
+    with open(filepath, "wb") as f:
+        shutil.copyfileobj(response, f)
+    unzipped_filepath = filepath.replace(".gz", "")
+    with gzip.open(filepath, "rb") as fin, open(unzipped_filepath, "wb") as fout:
+        shutil.copyfileobj(fin, fout)
+    return unzipped_filepath
+
+
+def get_path_and_region(filepath: str) -> Tuple[str, str]:
+    filepath_split = filepath.split("/")
+    path = "/".join(filepath_split[:-1])
+    if filepath.endswith(".tar"):
+        with tarfile.open(filepath, "r:") as tar:
+            tar.extractall(path)
+    region = filepath_split[-1].split(".")[0]
+    return path, region
+
+
+def filepath_to_path_and_region(filepath: str) -> Tuple[str, str]:
+    if filepath.startswith("http://") | filepath.startswith("https://"):
+        filepath = download_and_unzip(filepath)
+    return get_path_and_region(filepath)
 
 
 class Reader:
@@ -46,24 +90,51 @@ class Reader:
 
     def __init__(
         self,
-        path: str,
-        region: str,
+        path: str | None = None,
+        region: str | None = None,
+        filepath: str | None = None,
         input_type: str = "parquet",
         backend: str = "polars",
     ):
-        if input_type == "parquet" or input_type == "pq":
-            self.__init_parquet(path, region, backend)
-        elif input_type == "protobuf" or input_type == "pb":
-            self.__init_protobuf(path, region, backend)
+        if filepath is None:
+            if path is None or region is None:
+                raise ValueError("'filepath' or 'path' and 'region' must not be `None`")
+            if input_type == "parquet" or input_type == "pq":
+                self.__init_parquet(path, region, backend=backend)
+            elif input_type == "protobuf" or input_type == "pb":
+                self.__init_protobuf(path, region, backend=backend)
+            else:
+                raise ValueError(
+                    f"Input type {input_type} is not implemented. Use 'parquet' ('pq') "
+                    f"or 'protobuf' ('pb') instead."
+                )
         else:
-            raise ValueError(
-                f"Input type {input_type} is not implemented. Use 'parquet' ('pq') or "
-                f"'protobuf' ('pb') instead."
-            )
+            if is_parquet(filepath):
+                self.__init_parquet(filepath=filepath, backend=backend)
+            elif is_protobuf(filepath):
+                self.__init_protobuf(filepath=filepath, backend=backend)
+            else:
+                raise ValueError(
+                    f"Provided filepath ({filepath}) must be either 'protobuf' "
+                    f"('.pb' or '.pb.gz') or 'parquet' ('.tar' or '.tar.gz')"
+                )
 
-    def __init_protobuf(self, path: str, region: str, backend: str = "polars"):
+    def __init_protobuf(
+        self,
+        path: str | None = None,
+        region: str | None = None,
+        filepath: str | None = None,
+        backend: str = "polars",
+    ):
         """Init from a protobuf output."""
-        self.pop = Reader.read_pop(os.path.join(path, region + ".pb"))
+        if filepath is not None:
+            path_ = os.path.join(*filepath_to_path_and_region(filepath))
+        elif path is not None and region is not None:
+            path_ = os.path.join(path, region)
+        else:
+            msg = "A filepath or a path and region must be provided."
+            raise ValueError(msg)
+        self.pop = Reader.read_pop(os.path.join(path_ + ".pb"))
         pop_as_dict = MessageToDict(
             self.pop,
             preserving_proto_field_name=True,
@@ -89,7 +160,7 @@ class Reader:
                 venues_per_activity_as_rows
             )
         else:
-            raise backend_error(backend)
+            raise BackendError(backend)
 
         self.info_per_msoa = pop_as_dict["info_per_msoa"]
 
@@ -101,8 +172,21 @@ class Reader:
             f.close()
         return pop
 
-    def __init_parquet(self, path: str, region: str, backend: str = "polars"):
-        path_ = os.path.join(path, region)
+    def __init_parquet(
+        self,
+        path: str | None = None,
+        region: str | None = None,
+        filepath: str | None = None,
+        backend: str = "polars",
+    ):
+        if filepath is not None:
+            path_ = os.path.join(*filepath_to_path_and_region(filepath))
+        elif path is not None and region is not None:
+            path_ = os.path.join(path, region)
+        else:
+            msg = "A filepath or a path and region must be provided."
+            raise ValueError(msg)
+
         if backend == "polars":
             self.households = pl.read_parquet(path_ + "_households.pq")
             self.people = pl.read_parquet(path_ + "_people.pq")
@@ -116,7 +200,7 @@ class Reader:
             self.venues_per_activity = pd.read_parquet(path_ + "_venues.pq")
             self.backend = "pandas"
         else:
-            raise backend_error(backend)
+            raise BackendError(backend)
 
         with open(path_ + "_info_per_msoa.json", "rb") as f:
             self.info_per_msoa = json.loads(f.read())
@@ -177,7 +261,7 @@ class Reader:
                 .merge(self.households, left_on="household", right_on="id", how="left")
             )
         else:
-            raise backend_error(self.backend)
+            raise BackendError(self.backend)
 
     def merge_people_and_time_use_diaries(
         self, people_features: Dict[str, List[str]], diary_type: str = "weekday_diaries"

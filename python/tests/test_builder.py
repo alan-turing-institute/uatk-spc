@@ -27,14 +27,18 @@ EXPECTED_COLUMNS = [
 
 @pytest.mark.parametrize("input_type", INPUT_TYPES)
 def test_unnest_pandas_data(input_type):
-    spc = Reader(TEST_PATH, TEST_REGION, input_type, backend="pandas")
+    spc = Reader(
+        path=TEST_PATH, region=TEST_REGION, input_type=input_type, backend="pandas"
+    )
     spc_unnested = unnest_pandas(spc.households, ["details"])
     assert sorted(spc_unnested.columns.to_list()) == sorted(EXPECTED_COLUMNS)
 
 
 @pytest.mark.parametrize("input_type", INPUT_TYPES)
 def test_unnest_polars_data(input_type):
-    spc = Reader(TEST_PATH, TEST_REGION, input_type, backend="polars")
+    spc = Reader(
+        path=TEST_PATH, region=TEST_REGION, input_type=input_type, backend="polars"
+    )
     spc_unnested = unnest_polars(spc.households, ["details"])
     assert sorted(spc_unnested.columns) == sorted(EXPECTED_COLUMNS)
 
@@ -42,13 +46,17 @@ def test_unnest_polars_data(input_type):
 @pytest.mark.parametrize("input_type", INPUT_TYPES)
 def test_add_households(input_type):
     df_pandas = (
-        Builder(TEST_PATH, TEST_REGION, input_type, backend="pandas")
+        Builder(
+            path=TEST_PATH, region=TEST_REGION, input_type=input_type, backend="pandas"
+        )
         .add_households()
         .unnest(["details"])
         .build()
     )
     df_polars = (
-        Builder(TEST_PATH, TEST_REGION, input_type, backend="polars")
+        Builder(
+            path=TEST_PATH, region=TEST_REGION, input_type=input_type, backend="polars"
+        )
         .add_households()
         .unnest(["details"])
         .build()
@@ -65,14 +73,21 @@ def test_column_overlap(input_type, backend):
     # Exception: ovelapping 'nssec8' without `rsuffix`
     with pytest.raises(Exception):
         df = (
-            Builder(TEST_PATH, TEST_REGION, input_type, backend)
+            Builder(
+                path=TEST_PATH,
+                region=TEST_REGION,
+                input_type=input_type,
+                backend=backend,
+            )
             .add_households()
             .unnest(["demographics", "details"])
             .build()
         )
     # Ok: ovelapping 'nssec8' with `rsuffix` specified
     df = (
-        Builder(TEST_PATH, TEST_REGION, input_type, backend)
+        Builder(
+            path=TEST_PATH, region=TEST_REGION, input_type=input_type, backend=backend
+        )
         .add_households()
         .unnest(["demographics", "details"], rsuffix="_household")
         .build()
@@ -95,12 +110,16 @@ def test_time_use_diaries_pandas(input_type):
         "employment": ["pwkstat", "salary_yearly"],
     }
     df_polars = (
-        Builder(TEST_PATH, TEST_REGION, input_type, backend="polars")
+        Builder(
+            path=TEST_PATH, region=TEST_REGION, input_type=input_type, backend="polars"
+        )
         .add_time_use_diaries(features)
         .build()
     )
     df_pandas = (
-        Builder(TEST_PATH, TEST_REGION, input_type, backend="pandas")
+        Builder(
+            path=TEST_PATH, region=TEST_REGION, input_type=input_type, backend="pandas"
+        )
         .add_time_use_diaries(features)
         .build()
     )

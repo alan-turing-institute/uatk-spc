@@ -4,7 +4,7 @@ import pandas as pd
 import polars as pl
 import polars.selectors as cs
 from typing_extensions import Self
-from uatk_spc.reader import DataFrame, Reader, backend_error
+from uatk_spc.reader import BackendError, DataFrame, Reader
 
 
 def rename_overlap(
@@ -53,12 +53,13 @@ class Builder(Reader):
 
     def __init__(
         self,
-        path: str,
-        region: str,
+        path: str | None = None,
+        region: str | None = None,
+        filepath: str | None = None,
         input_type: str = "parquet",
         backend: str = "polars",
     ):
-        super().__init__(path, region, input_type, backend)
+        super().__init__(path, region, filepath, input_type, backend)
         self.data = self.people
         self.backend = backend
 
@@ -87,7 +88,7 @@ class Builder(Reader):
 
             return self
         else:
-            raise backend_error(self.backend)
+            raise BackendError(self.backend)
 
     def add_time_use_diaries(
         self, features: Dict[str, List[str]], diary_type: str = "weekday_diaries"
@@ -164,7 +165,7 @@ class Builder(Reader):
         elif self.backend == "pandas":
             self.data = unnest_pandas(self.data, columns, rsuffix)
         else:
-            backend_error(self.backend)
+            raise BackendError(self.backend)
         return self
 
     def select(self, columns: List[str]) -> Self:
@@ -174,7 +175,7 @@ class Builder(Reader):
         elif self.backend == "pandas":
             self.data = self.data.loc[:, columns]
         else:
-            backend_error(self.backend)
+            raise BackendError(self.backend)
         return self
 
     def build(self) -> DataFrame:
