@@ -10,3 +10,4 @@ web/dist
 web/*pb
 /.luarc.json
 poetry.lock
+python/tests/data
