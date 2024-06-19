@@ -55,13 +55,19 @@ poetry run spc_to_json --input_path ../data/output/England/2020/rutland.pb
 Read outputs with `Reader` class providing population fields as individual dataframes:
 ```python
 # Import package
-from uatk_spc.reader import Reader
+from uatk_spc import Reader
 
 # Pick a region with SPC output saved
 (region, path) = "rutland", "../../data/output/England/2020/"
 
 # Read from parquet and JSON
 population = Reader(path, region, backend="polars")
+
+# Or directly from a filepath
+population = Reader(
+    filepath="https://ramp0storage.blob.core.windows.net/test-spc-output/test_region.tar.gz",
+    backend="polars"
+)
 
 # Print people
 print(population.people.head())
