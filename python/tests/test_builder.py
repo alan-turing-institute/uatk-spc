@@ -1,5 +1,6 @@
 import pytest
-from uatk_spc.builder import unnest_pandas, unnest_polars
+from test_utils import TEST_URL_PB, TEST_URL_PQ
+from uatk_spc.builder import Builder
 
 TEST_PARAMS = [
     ("protobuf", "pandas"),
@@ -7,45 +8,37 @@ TEST_PARAMS = [
     ("parquet", "pandas"),
     ("parquet", "polars"),
 ]
-TEST_PARAMS_PANDAS = [
-    ("protobuf", "pandas"),
-    ("parquet", "pandas"),
-]
-TEST_PARAMS_POLARS = [
-    ("protobuf", "polars"),
-    ("parquet", "polars"),
-]
 TEST_PARAMS_PAIRED = [
     ("protobuf", "protobuf"),
     ("parquet", "parquet"),
 ]
 
-EXPECTED_COLUMNS = [
-    "id",
-    "msoa11cd",
-    "oa11cd",
-    "members",
-    "hid",
-    "nssec8",
-    "accommodation_type",
-    "communal_type",
-    "num_rooms",
-    "central_heat",
-    "tenure",
-    "num_cars",
-]
+
+@pytest.fixture
+def builder(request):
+    input_type, backend = request.param
+    if input_type == "parquet":
+        return Builder(filepath=TEST_URL_PQ, backend=backend)
+    else:
+        return Builder(filepath=TEST_URL_PB, backend=backend)
 
 
-@pytest.mark.parametrize("reader", TEST_PARAMS_PANDAS, indirect=True)
-def test_unnest_pandas_data(reader):
-    spc_unnested = unnest_pandas(reader.households, ["details"])
-    assert sorted(spc_unnested.columns.to_list()) == sorted(EXPECTED_COLUMNS)
+@pytest.fixture
+def builder_pandas(request):
+    input_type = request.param
+    if input_type == "parquet":
+        return Builder(filepath=TEST_URL_PQ, backend="pandas")
+    else:
+        return Builder(filepath=TEST_URL_PB, backend="pandas")
 
 
-@pytest.mark.parametrize("reader", TEST_PARAMS_POLARS, indirect=True)
-def test_unnest_polars_data(reader):
-    spc_unnested = unnest_polars(reader.households, ["details"])
-    assert sorted(spc_unnested.columns) == sorted(EXPECTED_COLUMNS)
+@pytest.fixture
+def builder_polars(request):
+    input_type = request.param
+    if input_type == "parquet":
+        return Builder(filepath=TEST_URL_PQ, backend="polars")
+    else:
+        return Builder(filepath=TEST_URL_PB, backend="polars")
 
 
 @pytest.mark.parametrize(
