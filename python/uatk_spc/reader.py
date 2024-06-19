@@ -35,7 +35,7 @@ def is_protobuf(filepath: str) -> bool:
 
 
 def download_and_unzip(url: str) -> str:
-    """Downloads and unzips a gzip url to parquet or tar"""
+    """Downloads and unzips a gzip url to protobuf or tar."""
     response = urllib.request.urlopen(url)
     filename = url.split("/")[-1]
     tmp_dir = mkdtemp()
@@ -49,6 +49,7 @@ def download_and_unzip(url: str) -> str:
 
 
 def get_path_and_region(filepath: str) -> Tuple[str, str]:
+    """Gets path and region from a given filepath (extracting if tar)."""
     filepath_split = filepath.split("/")
     path = "/".join(filepath_split[:-1])
     if filepath.endswith(".tar"):
@@ -59,6 +60,10 @@ def get_path_and_region(filepath: str) -> Tuple[str, str]:
 
 
 def filepath_to_path_and_region(filepath: str) -> Tuple[str, str]:
+    """
+    Returns path and region for a given filepath, including download
+    and unzip of URL filepaths.
+    """
     if filepath.startswith("http://") | filepath.startswith("https://"):
         filepath = download_and_unzip(filepath)
     return get_path_and_region(filepath)
@@ -100,7 +105,11 @@ class Reader:
         self.backend = backend
         if filepath is None:
             if path is None or region is None:
-                raise ValueError("'filepath' or 'path' and 'region' must not be `None`")
+                msg = (
+                    "If no 'filepath' is provided, 'path' and 'region' must not be "
+                    "`None`"
+                )
+                raise ValueError(msg)
             if input_type == "parquet" or input_type == "pq":
                 self.__init_parquet(path, region, backend=backend)
             elif input_type == "protobuf" or input_type == "pb":
@@ -111,6 +120,9 @@ class Reader:
                     f"or 'protobuf' ('pb') instead."
                 )
         else:
+            if path is not None or region is not None:
+                msg = "If 'filepath' is provided, 'path' and 'region' must be `None`"
+                raise ValueError(msg)
             if is_parquet(filepath):
                 self.__init_parquet(filepath=filepath, backend=backend)
             elif is_protobuf(filepath):
