@@ -18,8 +18,6 @@
 
   // State
   export let show = false;
-  export let show_schools = true;
-  export let show_retail = true;
   let hoverId;
   let modalContents;
   let showModal = false;
@@ -193,7 +191,7 @@
         }
 
         // Shop?
-        if (diary.pshop > 0.0 & show_retail) {
+        if (diary.pshop > 0.0) {
           // Pick a different venue every day
           let pt = pickVenueForActivity(person, synthpop.Activity.RETAIL);
           gj.features.push({
@@ -210,7 +208,7 @@
         }
 
         // Go to school?
-        if (diary.pschool > 0.0 & show_schools) {
+        if (diary.pschool > 0.0) {
           let pt = schoolsPerPerson[index];
           if (pt != null) {
             gj.features.push({
@@ -359,8 +357,6 @@
 <div class="legend" style:top={show ? "120px" : "382px"}>
   <div><input type="checkbox" bind:checked={show} />Daily diaries</div>
   {#if show}
-    <div><input type="checkbox" bind:checked={show_schools} />Show schools</div>
-    <div><input type="checkbox" bind:checked={show_retail} />Show retail</div>
     <div>
       Number of people: {sample_size}
       <input type="range" bind:value={sample_size} min="1" max="100" />
