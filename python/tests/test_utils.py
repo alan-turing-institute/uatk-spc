@@ -11,36 +11,36 @@ TEST_URL_PQ = (
 
 
 @pytest.fixture
-def spc_pandas_parquet():
-    return Reader(filepath=TEST_URL_PQ, backend="pandas", input_type="parquet")
+def reader(request):
+    input_type, backend = request.param
+    if input_type == "parquet":
+        return Reader(filepath=TEST_URL_PQ, backend=backend)
+    else:
+        return Reader(filepath=TEST_URL_PB, backend=backend)
 
 
 @pytest.fixture
-def spc_polars_parquet():
-    return Reader(filepath=TEST_URL_PQ, backend="polars", input_type="parquet")
+def builder(request):
+    input_type, backend = request.param
+    if input_type == "parquet":
+        return Builder(filepath=TEST_URL_PQ, backend=backend)
+    else:
+        return Builder(filepath=TEST_URL_PB, backend=backend)
 
 
 @pytest.fixture
-def spc_pandas_protobuf():
-    return Reader(filepath=TEST_URL_PB, backend="pandas", input_type="protobuf")
+def builder_pandas(request):
+    input_type = request.param
+    if input_type == "parquet":
+        return Builder(filepath=TEST_URL_PQ, backend="pandas")
+    else:
+        return Builder(filepath=TEST_URL_PB, backend="pandas")
 
 
 @pytest.fixture
-def spc_polars_protobuf():
-    return Reader(filepath=TEST_URL_PB, backend="polars", input_type="protobuf")
-
-
-def builder_pandas_parquet():
-    return Builder(filepath=TEST_URL_PQ, backend="pandas", input_type="parquet")
-
-
-def builder_polars_parquet():
-    return Builder(filepath=TEST_URL_PQ, backend="polars", input_type="parquet")
-
-
-def builder_pandas_protobuf():
-    return Builder(filepath=TEST_URL_PB, backend="pandas", input_type="protobuf")
-
-
-def builder_polars_protobuf():
-    return Builder(filepath=TEST_URL_PB, backend="polars", input_type="protobuf")
+def builder_polars(request):
+    input_type = request.param
+    if input_type == "parquet":
+        return Builder(filepath=TEST_URL_PQ, backend="polars")
+    else:
+        return Builder(filepath=TEST_URL_PB, backend="polars")

@@ -11,6 +11,7 @@ import pandas as pd
 import polars as pl
 import uatk_spc.synthpop_pb2 as synthpop_pb2
 from google.protobuf.json_format import MessageToDict
+from typing_extensions import deprecated
 
 # Type alias for a dataframe
 DataFrame = pd.DataFrame | pl.DataFrame
@@ -96,6 +97,7 @@ class Reader:
         input_type: str = "parquet",
         backend: str = "polars",
     ):
+        self.backend = backend
         if filepath is None:
             if path is None or region is None:
                 raise ValueError("'filepath' or 'path' and 'region' must not be `None`")
@@ -243,11 +245,7 @@ class Reader:
                 )
             )
 
-    def merge(self, left: str, right: str, **kwargs) -> DataFrame:
-        """Merges a left and right fields from SPC."""
-        # TODO: add implementation for any pair of fields
-        pass
-
+    @deprecated("Use `Builder` class instead of `Reader` for merge operations.")
     def merge_people_and_households(self) -> DataFrame:
         if self.backend == "polars":
             return self.people.unnest("identifiers").join(
@@ -263,9 +261,12 @@ class Reader:
         else:
             raise BackendError(self.backend)
 
+    @deprecated("Use `Builder` class instead of `Reader` for merge operations.")
     def merge_people_and_time_use_diaries(
         self, people_features: Dict[str, List[str]], diary_type: str = "weekday_diaries"
     ) -> DataFrame:
+        if self.backend != "polars":
+            raise ValueError("Method only implemented for 'polars' backend.")
         people = (
             self.people.unnest(people_features.keys())
             .select(
@@ -280,7 +281,7 @@ class Reader:
                 self.time_use_diaries,
                 pl.int_range(0, self.time_use_diaries.shape[0], eager=True)
                 .rename("index")
-                .cast(pl.UInt32)
+                .cast(people.dtypes[people.get_column_index(diary_type)])
                 .to_frame(),
             ],
             how="horizontal",

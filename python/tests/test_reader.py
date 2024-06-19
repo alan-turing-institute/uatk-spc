@@ -2,6 +2,8 @@ import pytest
 from test_utils import TEST_URL_PB, TEST_URL_PQ
 from uatk_spc.reader import Reader, filepath_to_path_and_region, is_parquet, is_protobuf
 
+TEST_READER_PARAMS = [("parquet", "polars"), ("protobuf", "polars")]
+
 
 def test_is_parquet():
     assert is_parquet(TEST_URL_PQ)
@@ -26,13 +28,15 @@ def test_reader(filepath):
     assert spc.people.shape[0] == 4991
 
 
-def test_merge_people_and_time_use_diaries(spc_polars_parquet):
-    merged = spc_polars_parquet.merge_people_and_time_use_diaries(
+@pytest.mark.parametrize("reader", TEST_READER_PARAMS, indirect=True)
+def test_merge_people_and_time_use_diaries(reader):
+    merged = reader.merge_people_and_time_use_diaries(
         {"health": ["bmi"], "demographics": ["age_years"]}, diary_type="weekday_diaries"
     )
     assert merged.shape == (197_397, 30)
 
 
-def test_merge_people_and_households(spc_polars_parquet):
-    merged = spc_polars_parquet.merge_people_and_households()
+@pytest.mark.parametrize("reader", TEST_READER_PARAMS, indirect=True)
+def test_merge_people_and_households(reader):
+    merged = reader.merge_people_and_households()
     assert merged.shape == (4991, 17)
