@@ -48,19 +48,19 @@ async fn main() -> Result<()> {
         // Write split outputs as parquet and JSON
         let _s_outer = info_span!("writing outputs").entered();
         if output_arrow {
-            let output = format!("{dir}/{region}_households.pq");
+            let output = format!("{dir}/{region}_households.parquet");
             let _s = info_span!("writing households to", ?output).entered();
             pb_population.households.write_parquet(&output)?;
             drop(_s);
-            let output = format!("{dir}/{region}_people.pq");
+            let output = format!("{dir}/{region}_people.parquet");
             let _s = info_span!("writing people to", ?output).entered();
             pb_population.people.write_parquet(&output)?;
             drop(_s);
-            let output = format!("{dir}/{region}_time_use_diaries.pq");
+            let output = format!("{dir}/{region}_time_use_diaries.parquet");
             let _s = info_span!("writing time use diaries to", ?output).entered();
             pb_population.time_use_diaries.write_parquet(&output)?;
             drop(_s);
-            let output = format!("{dir}/{region}_venues.pq");
+            let output = format!("{dir}/{region}_venues.parquet");
             let _s = info_span!("writing venues to", ?output).entered();
             pb_population.venues_per_activity.write_parquet(&output)?;
             drop(_s);

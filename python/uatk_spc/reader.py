@@ -202,16 +202,16 @@ class Reader:
             raise ValueError(msg)
 
         if backend == "polars":
-            self.households = pl.read_parquet(path_ + "_households.pq")
-            self.people = pl.read_parquet(path_ + "_people.pq")
-            self.time_use_diaries = pl.read_parquet(path_ + "_time_use_diaries.pq")
-            self.venues_per_activity = pl.read_parquet(path_ + "_venues.pq")
+            self.households = pl.read_parquet(path_ + "_households.parquet")
+            self.people = pl.read_parquet(path_ + "_people.parquet")
+            self.time_use_diaries = pl.read_parquet(path_ + "_time_use_diaries.parquet")
+            self.venues_per_activity = pl.read_parquet(path_ + "_venues.parquet")
             self.backend = "polars"
         elif backend == "pandas":
-            self.households = pd.read_parquet(path_ + "_households.pq")
-            self.people = pd.read_parquet(path_ + "_people.pq")
-            self.time_use_diaries = pd.read_parquet(path_ + "_time_use_diaries.pq")
-            self.venues_per_activity = pd.read_parquet(path_ + "_venues.pq")
+            self.households = pd.read_parquet(path_ + "_households.parquet")
+            self.people = pd.read_parquet(path_ + "_people.parquet")
+            self.time_use_diaries = pd.read_parquet(path_ + "_time_use_diaries.parquet")
+            self.venues_per_activity = pd.read_parquet(path_ + "_venues.parquet")
             self.backend = "pandas"
         else:
             raise BackendError(backend)
