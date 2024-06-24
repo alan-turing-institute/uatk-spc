@@ -81,6 +81,11 @@ impl TryFrom<&Population> for pb::Population {
     }
 }
 
+/// Returns the size in bytes of protobuf population
+pub fn encoded_len(population: &pb::Population) -> usize {
+    population.encoded_len()
+}
+
 /// Writes a given protobuf population to output path, returning the bytes written
 pub fn write_pb(output: &pb::Population, output_path: String) -> Result<usize> {
     let mut buf = Vec::with_capacity(output.encoded_len());

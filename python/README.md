@@ -9,13 +9,9 @@ A Python package providing a toolkit facilitating use of SPC output.
 
 ## Quickstart
 ### Generating outputs
-From the repo root, checkout the branch:
-```
-git checkout 55-output-formats-python
-```
-and then run SPC on a region with `--flat-output` (e.g. Rutland is shown below):
-```
-cargo run --release -- --rng-seed 0 --flat-output config/England/rutland.txt
+From the repo root, run SPC on a region with `--output-formats` (e.g. Rutland is shown below with output to both `protobuf` and `parquet` formats):
+```bash
+cargo run --release -- config/England/rutland.txt --rng-seed 0 --output-formats protobuf,parquet
 ```
 
 ### Install
