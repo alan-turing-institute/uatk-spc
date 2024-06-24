@@ -4,7 +4,7 @@ from google.protobuf.json_format import MessageToJson
 
 
 @click.command()
-@click.option("--input_path", required=True, help="path to an SPC .pb file")
+@click.option("--input-path", required=True, help="path to an SPC .pb file")
 def convert_to_json(input_path: str) -> None:
     """Converts a protobuf population to JSON.
 
@@ -19,3 +19,7 @@ def convert_to_json(input_path: str) -> None:
     # SPC uses 0 for some IDs. Proto3 optimizes "default values" away, but this is
     # incredibly misleading when viewing the JSON.
     print(MessageToJson(pop, including_default_value_fields=True))
+
+
+if __name__ == "__main__":
+    convert_to_json()
