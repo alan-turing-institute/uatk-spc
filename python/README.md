@@ -44,7 +44,7 @@ poetry install --extras "dev examples"
 ### Convert protobuf to JSON
 If installed with Poetry, convert a protobuf to JSON:
 ```
-poetry run spc_to_json --input_path ../data/output/England/2020/rutland.pb
+poetry run spc_to_json --input-path ../data/output/England/2020/rutland.pb
 ```
 
 ### Reader: load synthetic population into Python
