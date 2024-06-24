@@ -17,11 +17,11 @@ cargo run --release -- config/England/rutland.txt --rng-seed 0 --output-formats 
 ### Install
 The package can be installed with `pip` from git with:
 ```bash
-pip install 'git+https://github.com/alan-turing-institute/uatk-spc.git@55-output-formats-python#subdirectory=python'
+pip install 'git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'
 ```
 or with Poetry:
 ```bash
-poetry add 'git+https://github.com/alan-turing-institute/uatk-spc.git@55-output-formats-python#subdirectory=python'
+poetry add 'git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'
 ```
 
 #### Extras
@@ -31,7 +31,7 @@ pip install 'uatk-spc[dev,examples] @ git+https://github.com/alan-turing-institu
 ```
 or with Poetry:
 ```bash
-poetry add 'git+https://github.com/alan-turing-institute/uatk-spc.git@55-output-formats-python#subdirectory=python'
+poetry add 'git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'
 ```
 
 ### Install (developer)
