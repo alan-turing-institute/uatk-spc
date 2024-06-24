@@ -9,10 +9,14 @@ use clap::Parser;
 use fs_err::{File, OpenOptions};
 use rand::rngs::StdRng;
 use rand::SeedableRng;
+use serde::{Deserialize, Serialize};
+use spc::protobuf::encoded_len;
+use spc::writers::{WriteJSON, WriteParquet};
+use strum_macros::EnumString;
 use tracing::{info, info_span};
 
 use spc::utilities::{memory_usage, print_count};
-use spc::{protobuf, Input, Population, MSOA};
+use spc::{pb, protobuf, Input, Population, MSOA};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -28,7 +32,7 @@ async fn main() -> Result<()> {
 
     let start = Instant::now();
     let output_stats = args.output_stats;
-
+    let output_format = args.output_formats.clone();
     let (input, country, region) = args.to_input().await?;
     let _s = info_span!("initialisation", ?region).entered();
     let (population, commuting_runtime) = Population::create(input, &mut rng).await?;
@@ -36,15 +40,45 @@ async fn main() -> Result<()> {
     info!("By the end, {}", memory_usage());
 
     info!("Saving output file");
-    let pb_file_size = indicatif::HumanBytes({
-        // Create the output dir if needed
-        let dir = format!("data/output/{country}/{}", population.year);
-        fs_err::create_dir_all(&dir)?;
+
+    // Create the output dir if needed
+    let dir = format!("data/output/{country}/{}", population.year);
+    fs_err::create_dir_all(&dir)?;
+
+    // Convert to protobuf population
+    let pb_population: pb::Population = (&population).try_into()?;
+    let pb_file_size = indicatif::HumanBytes(encoded_len(&pb_population) as u64).to_string();
+
+    // Write outputs as parquet and JSON if OutputFormat is `All`` or `Parquet``
+    let _s_outer = info_span!("writing outputs").entered();
+    if output_format.contains(&OutputFormat::Parquet) {
+        let output = format!("{dir}/{region}_households.parquet");
+        let _s = info_span!("writing households to", ?output).entered();
+        pb_population.households.write_parquet(&output)?;
+        drop(_s);
+        let output = format!("{dir}/{region}_people.parquet");
+        let _s = info_span!("writing people to", ?output).entered();
+        pb_population.people.write_parquet(&output)?;
+        drop(_s);
+        let output = format!("{dir}/{region}_time_use_diaries.parquet");
+        let _s = info_span!("writing time use diaries to", ?output).entered();
+        pb_population.time_use_diaries.write_parquet(&output)?;
+        drop(_s);
+        let output = format!("{dir}/{region}_venues.parquet");
+        let _s = info_span!("writing venues to", ?output).entered();
+        pb_population.venues_per_activity.write_parquet(&output)?;
+        drop(_s);
+        let output = format!("{dir}/{region}_info_per_msoa.json");
+        let _s = info_span!("writing info per MSOA to", ?output).entered();
+        pb_population.info_per_msoa.write_json(&output)?;
+        drop(_s);
+    }
+    // Write outputs as parquet and JSON if OutputFormat is `All`` or `Protobuf`
+    if output_format.contains(&OutputFormat::Protobuf) {
         let output = format!("{dir}/{region}.pb");
-        let _s = info_span!("Writing protobuf to", ?output).entered();
-        protobuf::convert_to_pb(&population, output)?
-    } as u64)
-    .to_string();
+        let _s = info_span!("writing protobuf to", ?output).entered();
+        protobuf::write_pb(&pb_population, output)?;
+    }
 
     if output_stats {
         write_stats(
@@ -59,6 +93,13 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
+#[derive(Clone, Debug, Deserialize, Serialize, EnumString, PartialEq, Eq)]
+#[strum(ascii_case_insensitive)]
+enum OutputFormat {
+    Protobuf,
+    Parquet,
+}
+
 #[derive(Parser)]
 #[clap(about, version, author)]
 struct Args {
@@ -67,6 +108,15 @@ struct Args {
     year: u32,
     #[clap(long)]
     no_commuting: bool,
+    /// Specify output format
+    #[clap(
+        long,
+        help = "Comma-separated list of output formats (`protobuf` or `parquet` currently supported)",
+        value_delimiter = ',',
+        num_args = 1,
+        default_value = "protobuf"
+    )]
+    output_formats: Vec<OutputFormat>,
     #[clap(long)]
     filter_empty_msoas: bool,
     /// Write a `stats.json` file at the end for automated benchmarking

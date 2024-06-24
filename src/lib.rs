@@ -9,6 +9,7 @@ mod init;
 pub mod protobuf;
 pub mod tracing_span_tree;
 pub mod utilities;
+pub mod writers;
 
 use derive_more::{From, Into};
 use std::collections::{BTreeMap, BTreeSet};

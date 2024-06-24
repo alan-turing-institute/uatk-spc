@@ -55,7 +55,7 @@ pub fn get_flows(
     let pb = progress_count_with_msg(msoas.len());
     let mut result = BTreeMap::new();
     for msoa in msoas {
-        // TODO The Python code defaults to 0 when the MSOA is missing; this seems problematic?
+        // TODO [fix]: to skip if MSOA not in lookup as `unwrap_or(0)` will be incorrect
         let zonei = msoa_to_zonei.get(msoa).cloned().unwrap_or(0);
         pb.set_message(format!(
             "Get {:?} flows for {} (zonei {})",

@@ -28,49 +28,80 @@ reference for how to use the proto output.
 
 ## Python
 
-To work with SPC protobufs in Python, you need two dependencies setup:
+To work with SPC outputs in Python, we recommend using the [SPC toolkit](https://github.com/alan-turing-institute/uatk-spc/tree/main/python).
 
-- The [protobuf](https://pypi.org/project/protobuf/) library
-  - You can install system-wide with `pip install protobuf`
-  - Or add as a dependency to a conda, poetry, etc environment
-- The generated Python library, [synthpop_pb2.py](https://raw.githubusercontent.com/alan-turing-institute/uatk-spc/main/python/synthpop_pb2.py)
-  - You can download a copy of this file into your codebase, then `import synthpop_pb2`
-  - You can also generate the file yourself, following the [docs](https://developers.google.com/protocol-buffers/docs/reference/python-generated): `protoc --python_out=python/ synthpop.proto`
-
-### Converting to Pandas data-frames and CSV
-
-The [schema](understanding_data_schema.qmd) expresses relationships between people, households,
-and venues that can't all be captured by a simple 2D table. Nevertheless, you
-can extract per-person information and express as a dataframe or CSV file. See
-[this example Python
-script](https://github.com/alan-turing-institute/uatk-spc/blob/main/python/protobuf_to_csv.py)
-for inspiration. You can try it out:
-
-```shell
-# Download a file
-wget https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz
-# Uncompress
-gunzip rutland.pb.gz
-# Convert the .pb to JSON
-python3 python/protobuf_to_csv.py --input_path data/output/rutland.pb
-# View the output
-less people.csv
+### Install
+The package can be installed with `pip` from git with:
+```bash
+pip install 'git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'
 ```
+or with Poetry:
+```bash
+poetry add 'git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'
+```
+To include extra dependencies `dev` and `examples` for running [tests](https://github.com/alan-turing-institute/uatk-spc/tree/main/python/tests) and [example notebooks](https://github.com/alan-turing-institute/uatk-spc/tree/main/python/examples):
+```bash
+pip install 'uatk-spc[dev,examples] @ git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'
+```
+or with Poetry:
+```bash
+poetry add 'git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'
+```
+
+### Reading and Building
+The two classes provided by the toolkit are a `Reader` (reads all population fields: `people`, `households`, `venues_per_activity`, `time_use_diaries` and `info_per_msoa`) and a `Builder` (extends the `Reader` to include methods for combining the fields on top a people dataframe to build a single final dataframe).
+
+An example of using the `Reader` is shown below:
+```python
+# Import package
+from uatk_spc import Reader
+# Pick a region with SPC output saved
+(region, path) = "rutland", "data/output/England/2020/"
+# Read from parquet and JSON
+population = Reader(path, region, backend="polars")
+# Or directly from a filepath to a gzip archive
+population = Reader(
+    filepath="https://ramp0storage.blob.core.windows.net/test-spc-output/test_region.tar.gz",
+    backend="polars"
+)
+# Write people to csv
+population.people.to_pandas().to_csv("people.csv", index=False)
+```
+
+And an example of using the `Builder`:
+```python
+# Import Builder
+from uatk_spc import Builder
+(region, path) = "rutland", "../data/output/England/2020/"
+# Build population from people and households and unnest "health" and "details"
+population = (
+  Builder(path, region, backend="polars")
+  .add_households()
+  .unnest(["health", "details"])
+  .build()
+)
+# Write combined people and household dataframe to csv
+population.to_pandas().to_csv("people_and_households.csv", index=False)
+```
+
+For further examples of using the `Reader` and `Builder` to analyse SPC outputs, see the [examples folder](https://github.com/alan-turing-institute/uatk-spc/tree/main/python/examples).
 
 ### Converting .pb file to JSON format
 
 To interactively explore the data, viewing JSON is much easier. It shows the
 same structure as the protobuf, but in a human-readable text format. The
-example below uses a [small Python
-script](https://github.com/alan-turing-institute/uatk-spc/blob/main/python/protobuf_to_json.py):
+example below uses a [small Python script](../python/uatk_spc/scripts.py):
 
 ```shell
 # Download a file
-wget https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz
+wget https://ramp0storage.blob.core.windows.net/spc-output/v2.1/England/2020/rutland.pb.gz
 # Uncompress
 gunzip rutland.pb.gz
 # Convert the .pb to JSON
-python3 python/protobuf_to_json.py data/output/rutland.pb > rutland.json
+# - without poetry
+python python/uatk_spc/scripts.py --input-path data/output/England/2020/rutland.pb > rutland.json
+# - with poetry
+cd python && poetry run spc_to_json --input-path ../data/output/England/2020/rutland.pb > rutland.json
 # View the output
 less rutland.json
 ```
