@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.550">
+<meta name="generator" content="quarto-1.4.555">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -19,6 +19,40 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -264,10 +298,11 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#javascript" id="toc-javascript" class="nav-link active" data-scroll-target="#javascript"><span class="header-section-number">6.1</span> Javascript</a></li>
   <li><a href="#python" id="toc-python" class="nav-link" data-scroll-target="#python"><span class="header-section-number">6.2</span> Python</a>
   <ul class="collapse">
-  <li><a href="#converting-to-pandas-data-frames-and-csv" id="toc-converting-to-pandas-data-frames-and-csv" class="nav-link" data-scroll-target="#converting-to-pandas-data-frames-and-csv"><span class="header-section-number">6.2.1</span> Converting to Pandas data-frames and CSV</a></li>
-  <li><a href="#converting-.pb-file-to-json-format" id="toc-converting-.pb-file-to-json-format" class="nav-link" data-scroll-target="#converting-.pb-file-to-json-format"><span class="header-section-number">6.2.2</span> Converting .pb file to JSON format</a></li>
-  <li><a href="#converting-to-numpy-arrays" id="toc-converting-to-numpy-arrays" class="nav-link" data-scroll-target="#converting-to-numpy-arrays"><span class="header-section-number">6.2.3</span> Converting to numpy arrays</a></li>
-  <li><a href="#visualizing-venues" id="toc-visualizing-venues" class="nav-link" data-scroll-target="#visualizing-venues"><span class="header-section-number">6.2.4</span> Visualizing venues</a></li>
+  <li><a href="#install" id="toc-install" class="nav-link" data-scroll-target="#install"><span class="header-section-number">6.2.1</span> Install</a></li>
+  <li><a href="#reading-and-building" id="toc-reading-and-building" class="nav-link" data-scroll-target="#reading-and-building"><span class="header-section-number">6.2.2</span> Reading and Building</a></li>
+  <li><a href="#converting-.pb-file-to-json-format" id="toc-converting-.pb-file-to-json-format" class="nav-link" data-scroll-target="#converting-.pb-file-to-json-format"><span class="header-section-number">6.2.3</span> Converting .pb file to JSON format</a></li>
+  <li><a href="#converting-to-numpy-arrays" id="toc-converting-to-numpy-arrays" class="nav-link" data-scroll-target="#converting-to-numpy-arrays"><span class="header-section-number">6.2.4</span> Converting to numpy arrays</a></li>
+  <li><a href="#visualizing-venues" id="toc-visualizing-venues" class="nav-link" data-scroll-target="#visualizing-venues"><span class="header-section-number">6.2.5</span> Visualizing venues</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -303,50 +338,72 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="python" class="level2" data-number="6.2">
 <h2 data-number="6.2" class="anchored" data-anchor-id="python"><span class="header-section-number">6.2</span> Python</h2>
-<p>To work with SPC protobufs in Python, you need two dependencies setup:</p>
-<ul>
-<li>The <a href="https://pypi.org/project/protobuf/">protobuf</a> library
-<ul>
-<li>You can install system-wide with <code>pip install protobuf</code></li>
-<li>Or add as a dependency to a conda, poetry, etc environment</li>
-</ul></li>
-<li>The generated Python library, <a href="https://raw.githubusercontent.com/alan-turing-institute/uatk-spc/main/python/synthpop_pb2.py">synthpop_pb2.py</a>
-<ul>
-<li>You can download a copy of this file into your codebase, then <code>import synthpop_pb2</code></li>
-<li>You can also generate the file yourself, following the <a href="https://developers.google.com/protocol-buffers/docs/reference/python-generated">docs</a>: <code>protoc --python_out=python/ synthpop.proto</code></li>
-</ul></li>
-</ul>
-<section id="converting-to-pandas-data-frames-and-csv" class="level3" data-number="6.2.1">
-<h3 data-number="6.2.1" class="anchored" data-anchor-id="converting-to-pandas-data-frames-and-csv"><span class="header-section-number">6.2.1</span> Converting to Pandas data-frames and CSV</h3>
-<p>The <a href="./understanding_data_schema.html">schema</a> expresses relationships between people, households, and venues that can’t all be captured by a simple 2D table. Nevertheless, you can extract per-person information and express as a dataframe or CSV file. See <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/python/protobuf_to_csv.py">this example Python script</a> for inspiration. You can try it out:</p>
-<pre class="shell"><code># Download a file
-wget https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz
-# Uncompress
-gunzip rutland.pb.gz
-# Convert the .pb to JSON
-python3 python/protobuf_to_csv.py --input_path data/output/rutland.pb
-# View the output
-less people.csv</code></pre>
+<p>To work with SPC outputs in Python, we recommend using the <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/python">SPC toolkit</a>.</p>
+<section id="install" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="install"><span class="header-section-number">6.2.1</span> Install</h3>
+<p>The package can be installed with <code>pip</code> from git with:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="st">'git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>or with Poetry:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> add <span class="st">'git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>To include extra dependencies <code>dev</code> and <code>examples</code> for running <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/python/tests">tests</a> and <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/python/examples">example notebooks</a>:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">pip</span> install <span class="st">'uatk-spc[dev,examples] @ git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>or with Poetry:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">poetry</span> add <span class="st">'git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="converting-.pb-file-to-json-format" class="level3" data-number="6.2.2">
-<h3 data-number="6.2.2" class="anchored" data-anchor-id="converting-.pb-file-to-json-format"><span class="header-section-number">6.2.2</span> Converting .pb file to JSON format</h3>
-<p>To interactively explore the data, viewing JSON is much easier. It shows the same structure as the protobuf, but in a human-readable text format. The example below uses a <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/python/protobuf_to_json.py">small Python script</a>:</p>
+<section id="reading-and-building" class="level3" data-number="6.2.2">
+<h3 data-number="6.2.2" class="anchored" data-anchor-id="reading-and-building"><span class="header-section-number">6.2.2</span> Reading and Building</h3>
+<p>The two classes provided by the toolkit are a <code>Reader</code> (reads all population fields: <code>people</code>, <code>households</code>, <code>venues_per_activity</code>, <code>time_use_diaries</code> and <code>info_per_msoa</code>) and a <code>Builder</code> (extends the <code>Reader</code> to include methods for combining the fields on top a people dataframe to build a single final dataframe).</p>
+<p>An example of using the <code>Reader</code> is shown below:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import package</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> uatk_spc <span class="im">import</span> Reader</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Pick a region with SPC output saved</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>(region, path) <span class="op">=</span> <span class="st">"rutland"</span>, <span class="st">"data/output/England/2020/"</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Read from parquet and JSON</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>population <span class="op">=</span> Reader(path, region, backend<span class="op">=</span><span class="st">"polars"</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Or directly from a filepath to a gzip archive</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>population <span class="op">=</span> Reader(</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>    filepath<span class="op">=</span><span class="st">"https://ramp0storage.blob.core.windows.net/test-spc-output/test_region.tar.gz"</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    backend<span class="op">=</span><span class="st">"polars"</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Write people to csv</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>population.people.to_pandas().to_csv(<span class="st">"people.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>And an example of using the <code>Builder</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Import Builder</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> uatk_spc <span class="im">import</span> Builder</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>(region, path) <span class="op">=</span> <span class="st">"rutland"</span>, <span class="st">"../data/output/England/2020/"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Build population from people and households and unnest "health" and "details"</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>population <span class="op">=</span> (</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  Builder(path, region, backend<span class="op">=</span><span class="st">"polars"</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  .add_households()</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  .unnest([<span class="st">"health"</span>, <span class="st">"details"</span>])</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  .build()</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Write combined people and household dataframe to csv</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>population.to_pandas().to_csv(<span class="st">"people_and_households.csv"</span>, index<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For further examples of using the <code>Reader</code> and <code>Builder</code> to analyse SPC outputs, see the <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/python/examples">examples folder</a>.</p>
+</section>
+<section id="converting-.pb-file-to-json-format" class="level3" data-number="6.2.3">
+<h3 data-number="6.2.3" class="anchored" data-anchor-id="converting-.pb-file-to-json-format"><span class="header-section-number">6.2.3</span> Converting .pb file to JSON format</h3>
+<p>To interactively explore the data, viewing JSON is much easier. It shows the same structure as the protobuf, but in a human-readable text format. The example below uses a <a href="../python/uatk_spc/scripts.py">small Python script</a>:</p>
 <pre class="shell"><code># Download a file
-wget https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz
+wget https://ramp0storage.blob.core.windows.net/spc-output/v2.1/England/2020/rutland.pb.gz
 # Uncompress
 gunzip rutland.pb.gz
 # Convert the .pb to JSON
-python3 python/protobuf_to_json.py data/output/rutland.pb &gt; rutland.json
+# - without poetry
+python python/uatk_spc/scripts.py --input-path data/output/England/2020/rutland.pb &gt; rutland.json
+# - with poetry
+cd python &amp;&amp; poetry run spc_to_json --input-path ../data/output/England/2020/rutland.pb &gt; rutland.json
 # View the output
 less rutland.json</code></pre>
 </section>
-<section id="converting-to-numpy-arrays" class="level3" data-number="6.2.3">
-<h3 data-number="6.2.3" class="anchored" data-anchor-id="converting-to-numpy-arrays"><span class="header-section-number">6.2.3</span> Converting to numpy arrays</h3>
+<section id="converting-to-numpy-arrays" class="level3" data-number="6.2.4">
+<h3 data-number="6.2.4" class="anchored" data-anchor-id="converting-to-numpy-arrays"><span class="header-section-number">6.2.4</span> Converting to numpy arrays</h3>
 <p>The <a href="https://github.com/alan-turing-institute/uatk-aspics">ASPICS</a> project simulates the spread of COVID through a population. The code uses numpy, and <a href="https://github.com/alan-turing-institute/uatk-aspics/blob/main/convert_snapshot.py">this script</a> converts the protobuf to a bunch of different numpy arrays.</p>
 <p>Note the ASPICS code doesn’t keep using the generated Python protobuf classes for the rest of the pipeline. Data frames and numpy arrays may be more familiar and appropriate. The protobuf is a format optimized for reading and writing; you don’t need to use it throughout all of your model code.</p>
 </section>
-<section id="visualizing-venues" class="level3" data-number="6.2.4">
-<h3 data-number="6.2.4" class="anchored" data-anchor-id="visualizing-venues"><span class="header-section-number">6.2.4</span> Visualizing venues</h3>
+<section id="visualizing-venues" class="level3" data-number="6.2.5">
+<h3 data-number="6.2.5" class="anchored" data-anchor-id="visualizing-venues"><span class="header-section-number">6.2.5</span> Visualizing venues</h3>
 <p>Use <a href="https://github.com/alan-turing-institute/uatk-spc/blob/main/python/draw_venues.py">this script</a> to read a protobuf file, then draws a dot for every venue, color-coded by activity.</p>
 <p><img src="img/venues.png" class="img-fluid"></p>
 
@@ -434,6 +491,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -468,7 +543,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.550">
+<meta name="generator" content="quarto-1.4.555">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -290,6 +290,7 @@ ul.task-list li input[type="checkbox"] {
 
 <p>We provide outputs in protocol buffer format for all lieutenancy areas (more commonly known as ceremonial counties) of England, all ITL regions of Wales (international divisions based on the former unified European territorial division system) and all police divisions of Scotland for five reference years. These regions represent coherent territorial units whose scale is particularly well suited to the <a href="./understanding_modelling_methods.html">modelling methods</a> used by SPC. In addition, we have included two interesting areas: the Liverpool-Manchester-Leeds arc and the Cambridge to Oxford arc. See <a href="https://github.com/alan-turing-institute/uatk-spc/tree/main/config">config/</a> for the full list of MSOAs covered by each area.</p>
 <p>The <a href="https://alan-turing-institute.github.io/uatk-spc/app/">SPC Explorer</a> can be used to visualise the data, understand what attributes can be obtained form SPC and get inspired about potential applications that could stem from using these outputs.</p>
+<p>The <a href="./using_use_output.html#python">SPC toolkit</a> can be used to work with SPC outputs in Python using <a href="https://pandas.pydata.org/">pandas</a> or <a href="https://pola.rs/">polars</a>.</p>
 <p>If you want to run SPC for a different list of MSOAs, <a href="./using_custom_areas.html">see here</a>.</p>
 <p>The data for 2012, 2020, 2022, 2032 &amp; 2039 are available here:</p>
 <ul>
@@ -427,6 +428,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -461,7 +480,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.550">
+<meta name="generator" content="quarto-1.4.555">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -263,8 +263,9 @@ ul.task-list li input[type="checkbox"] {
   <ul>
   <li><a href="#specifying-the-area" id="toc-specifying-the-area" class="nav-link active" data-scroll-target="#specifying-the-area"><span class="header-section-number">8.1</span> Specifying the area</a></li>
   <li><a href="#run-spc-for-the-new-area" id="toc-run-spc-for-the-new-area" class="nav-link" data-scroll-target="#run-spc-for-the-new-area"><span class="header-section-number">8.2</span> Run SPC for the new area</a></li>
-  <li><a href="#optional-run-spc-for-lots-of-areas" id="toc-optional-run-spc-for-lots-of-areas" class="nav-link" data-scroll-target="#optional-run-spc-for-lots-of-areas"><span class="header-section-number">8.3</span> (Optional) run SPC for lots of areas</a></li>
-  <li><a href="#using-the-output" id="toc-using-the-output" class="nav-link" data-scroll-target="#using-the-output"><span class="header-section-number">8.4</span> Using the output</a></li>
+  <li><a href="#optional-output-to-parquet-format" id="toc-optional-output-to-parquet-format" class="nav-link" data-scroll-target="#optional-output-to-parquet-format"><span class="header-section-number">8.3</span> (Optional) Output to parquet format</a></li>
+  <li><a href="#optional-run-spc-for-lots-of-areas" id="toc-optional-run-spc-for-lots-of-areas" class="nav-link" data-scroll-target="#optional-run-spc-for-lots-of-areas"><span class="header-section-number">8.4</span> (Optional) run SPC for lots of areas</a></li>
+  <li><a href="#using-the-output" id="toc-using-the-output" class="nav-link" data-scroll-target="#using-the-output"><span class="header-section-number">8.5</span> Using the output</a></li>
   </ul>
 </nav>
     </div>
@@ -302,13 +303,19 @@ ul.task-list li input[type="checkbox"] {
 <pre><code>cargo run --release -- config/your_region.txt</code></pre>
 <p>This will download some large files the first time. You’ll wind up with <code>data/output/your_region.pb</code> as output, as well as lots of intermediate files in <code>data/raw_data/</code>. The next time you run this command (even on a different study area), it should go much faster.</p>
 </section>
-<section id="optional-run-spc-for-lots-of-areas" class="level2" data-number="8.3">
-<h2 data-number="8.3" class="anchored" data-anchor-id="optional-run-spc-for-lots-of-areas"><span class="header-section-number">8.3</span> (Optional) run SPC for lots of areas</h2>
+<section id="optional-output-to-parquet-format" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="optional-output-to-parquet-format"><span class="header-section-number">8.3</span> (Optional) Output to parquet format</h2>
+<p>As an alternative to protobuf outputs, you can also run the SPC and choose to output to parquet format instead by running:</p>
+<pre><code>cargo run --release -- config/your_region.txt --output-formats parquet</code></pre>
+<p>or if both protobuf and parquet are required, change the flag to <code>--output-formats protobuf,parquet</code>.</p>
+</section>
+<section id="optional-run-spc-for-lots-of-areas" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="optional-run-spc-for-lots-of-areas"><span class="header-section-number">8.4</span> (Optional) run SPC for lots of areas</h2>
 <p>If you want to run the program over lots of areas at once and are using Mac/Linux, you can use a <code>for</code> loop in a terminal to repeatedly run SPC over all files in the config directory. For example, this will run SPC on all <code>.txt</code> files in the <code>config</code> directory:</p>
 <pre><code>for file in config/*.csv; do cargo run --release -- config/$file; done</code></pre>
 </section>
-<section id="using-the-output" class="level2" data-number="8.4">
-<h2 data-number="8.4" class="anchored" data-anchor-id="using-the-output"><span class="header-section-number">8.4</span> Using the output</h2>
+<section id="using-the-output" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="using-the-output"><span class="header-section-number">8.5</span> Using the output</h2>
 <p>After you generate the files, see <a href="./using_use_output.html">here</a> for how to use them in your project.</p>
 <p>If you use SPC code or data in your work, please cite using the <a href="https://zenodo.org/badge/latestdoi/479038905">Zenodo DOI</a> (using the bottom-right tool to generate the citation).</p>
 
@@ -395,6 +402,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -429,7 +454,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');

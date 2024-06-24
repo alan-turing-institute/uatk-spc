@@ -102,7 +102,7 @@
     "href": "using_use_output.html#python",
     "title": "6  How to use the output file",
     "section": "6.2 Python",
-    "text": "6.2 Python\nTo work with SPC protobufs in Python, you need two dependencies setup:\n\nThe protobuf library\n\nYou can install system-wide with pip install protobuf\nOr add as a dependency to a conda, poetry, etc environment\n\nThe generated Python library, synthpop_pb2.py\n\nYou can download a copy of this file into your codebase, then import synthpop_pb2\nYou can also generate the file yourself, following the docs: protoc --python_out=python/ synthpop.proto\n\n\n\n6.2.1 Converting to Pandas data-frames and CSV\nThe schema expresses relationships between people, households, and venues that can’t all be captured by a simple 2D table. Nevertheless, you can extract per-person information and express as a dataframe or CSV file. See this example Python script for inspiration. You can try it out:\n# Download a file\nwget https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz\n# Uncompress\ngunzip rutland.pb.gz\n# Convert the .pb to JSON\npython3 python/protobuf_to_csv.py --input_path data/output/rutland.pb\n# View the output\nless people.csv\n\n\n6.2.2 Converting .pb file to JSON format\nTo interactively explore the data, viewing JSON is much easier. It shows the same structure as the protobuf, but in a human-readable text format. The example below uses a small Python script:\n# Download a file\nwget https://ramp0storage.blob.core.windows.net/spc-output/v1/rutland.pb.gz\n# Uncompress\ngunzip rutland.pb.gz\n# Convert the .pb to JSON\npython3 python/protobuf_to_json.py data/output/rutland.pb &gt; rutland.json\n# View the output\nless rutland.json\n\n\n6.2.3 Converting to numpy arrays\nThe ASPICS project simulates the spread of COVID through a population. The code uses numpy, and this script converts the protobuf to a bunch of different numpy arrays.\nNote the ASPICS code doesn’t keep using the generated Python protobuf classes for the rest of the pipeline. Data frames and numpy arrays may be more familiar and appropriate. The protobuf is a format optimized for reading and writing; you don’t need to use it throughout all of your model code.\n\n\n6.2.4 Visualizing venues\nUse this script to read a protobuf file, then draws a dot for every venue, color-coded by activity.",
+    "text": "6.2 Python\nTo work with SPC outputs in Python, we recommend using the SPC toolkit.\n\n6.2.1 Install\nThe package can be installed with pip from git with:\npip install 'git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'\nor with Poetry:\npoetry add 'git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'\nTo include extra dependencies dev and examples for running tests and example notebooks:\npip install 'uatk-spc[dev,examples] @ git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'\nor with Poetry:\npoetry add 'git+https://github.com/alan-turing-institute/uatk-spc.git#subdirectory=python'\n\n\n6.2.2 Reading and Building\nThe two classes provided by the toolkit are a Reader (reads all population fields: people, households, venues_per_activity, time_use_diaries and info_per_msoa) and a Builder (extends the Reader to include methods for combining the fields on top a people dataframe to build a single final dataframe).\nAn example of using the Reader is shown below:\n# Import package\nfrom uatk_spc import Reader\n# Pick a region with SPC output saved\n(region, path) = \"rutland\", \"data/output/England/2020/\"\n# Read from parquet and JSON\npopulation = Reader(path, region, backend=\"polars\")\n# Or directly from a filepath to a gzip archive\npopulation = Reader(\n    filepath=\"https://ramp0storage.blob.core.windows.net/test-spc-output/test_region.tar.gz\",\n    backend=\"polars\"\n)\n# Write people to csv\npopulation.people.to_pandas().to_csv(\"people.csv\", index=False)\nAnd an example of using the Builder:\n# Import Builder\nfrom uatk_spc import Builder\n(region, path) = \"rutland\", \"../data/output/England/2020/\"\n# Build population from people and households and unnest \"health\" and \"details\"\npopulation = (\n  Builder(path, region, backend=\"polars\")\n  .add_households()\n  .unnest([\"health\", \"details\"])\n  .build()\n)\n# Write combined people and household dataframe to csv\npopulation.to_pandas().to_csv(\"people_and_households.csv\", index=False)\nFor further examples of using the Reader and Builder to analyse SPC outputs, see the examples folder.\n\n\n6.2.3 Converting .pb file to JSON format\nTo interactively explore the data, viewing JSON is much easier. It shows the same structure as the protobuf, but in a human-readable text format. The example below uses a small Python script:\n# Download a file\nwget https://ramp0storage.blob.core.windows.net/spc-output/v2.1/England/2020/rutland.pb.gz\n# Uncompress\ngunzip rutland.pb.gz\n# Convert the .pb to JSON\n# - without poetry\npython python/uatk_spc/scripts.py --input-path data/output/England/2020/rutland.pb &gt; rutland.json\n# - with poetry\ncd python && poetry run spc_to_json --input-path ../data/output/England/2020/rutland.pb &gt; rutland.json\n# View the output\nless rutland.json\n\n\n6.2.4 Converting to numpy arrays\nThe ASPICS project simulates the spread of COVID through a population. The code uses numpy, and this script converts the protobuf to a bunch of different numpy arrays.\nNote the ASPICS code doesn’t keep using the generated Python protobuf classes for the rest of the pipeline. Data frames and numpy arrays may be more familiar and appropriate. The protobuf is a format optimized for reading and writing; you don’t need to use it throughout all of your model code.\n\n\n6.2.5 Visualizing venues\nUse this script to read a protobuf file, then draws a dot for every venue, color-coded by activity.",
     "crumbs": [
       "Using SPC",
       "<span class='chapter-number'>6</span>  <span class='chapter-title'>How to use the output file</span>"
@@ -175,11 +175,22 @@
     ]
   },
   {
+    "objectID": "using_custom_areas.html#optional-output-to-parquet-format",
+    "href": "using_custom_areas.html#optional-output-to-parquet-format",
+    "title": "8  Running a custom area",
+    "section": "8.3 (Optional) Output to parquet format",
+    "text": "8.3 (Optional) Output to parquet format\nAs an alternative to protobuf outputs, you can also run the SPC and choose to output to parquet format instead by running:\ncargo run --release -- config/your_region.txt --output-formats parquet\nor if both protobuf and parquet are required, change the flag to --output-formats protobuf,parquet.",
+    "crumbs": [
+      "Using SPC",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a custom area</span>"
+    ]
+  },
+  {
     "objectID": "using_custom_areas.html#optional-run-spc-for-lots-of-areas",
     "href": "using_custom_areas.html#optional-run-spc-for-lots-of-areas",
     "title": "8  Running a custom area",
-    "section": "8.3 (Optional) run SPC for lots of areas",
-    "text": "8.3 (Optional) run SPC for lots of areas\nIf you want to run the program over lots of areas at once and are using Mac/Linux, you can use a for loop in a terminal to repeatedly run SPC over all files in the config directory. For example, this will run SPC on all .txt files in the config directory:\nfor file in config/*.csv; do cargo run --release -- config/$file; done",
+    "section": "8.4 (Optional) run SPC for lots of areas",
+    "text": "8.4 (Optional) run SPC for lots of areas\nIf you want to run the program over lots of areas at once and are using Mac/Linux, you can use a for loop in a terminal to repeatedly run SPC over all files in the config directory. For example, this will run SPC on all .txt files in the config directory:\nfor file in config/*.csv; do cargo run --release -- config/$file; done",
     "crumbs": [
       "Using SPC",
       "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a custom area</span>"
@@ -189,8 +200,8 @@
     "objectID": "using_custom_areas.html#using-the-output",
     "href": "using_custom_areas.html#using-the-output",
     "title": "8  Running a custom area",
-    "section": "8.4 Using the output",
-    "text": "8.4 Using the output\nAfter you generate the files, see here for how to use them in your project.\nIf you use SPC code or data in your work, please cite using the Zenodo DOI (using the bottom-right tool to generate the citation).",
+    "section": "8.5 Using the output",
+    "text": "8.5 Using the output\nAfter you generate the files, see here for how to use them in your project.\nIf you use SPC code or data in your work, please cite using the Zenodo DOI (using the bottom-right tool to generate the citation).",
     "crumbs": [
       "Using SPC",
       "<span class='chapter-number'>8</span>  <span class='chapter-title'>Running a custom area</span>"

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.550">
+<meta name="generator" content="quarto-1.4.555">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -346,7 +346,7 @@ ul.task-list li input[type="checkbox"] {
 </ul>
 <p><strong>Number of employees per sex and full-time/part-time classification</strong></p>
 <p>The numbers given by ONS vary from dataset to dataset and are reported by ONS as indicative only. For the modelled values, we give the total number of individuals with a non-zero salary in each category.</p>
-<table class="table">
+<table class="caption-top table">
 <colgroup>
 <col style="width: 14%">
 <col style="width: 9%">
@@ -414,7 +414,7 @@ ul.task-list li input[type="checkbox"] {
 </table>
 <p>A significant number of individuals listed as working either full or part time have 0 effective worked hours per day according to the Time Use Survey matching. In those cases, an hourly salary is modelled depending on their SOC, region and sex, as for any other employee, but the annual salary will be displayed as 0. It is possible to estimate the likely true number of hours worked from the same ONS dataset (Table 15.9a: Paid hours worked - Total 2020), also depending on their sex, soc and region. This calculation has been added to the “As If” column.</p>
 <p><strong>Hourly gross salary per sex and full-time/part-time classification</strong></p>
-<table class="table">
+<table class="caption-top table">
 <colgroup>
 <col style="width: 18%">
 <col style="width: 9%">
@@ -495,7 +495,7 @@ ul.task-list li input[type="checkbox"] {
 <p>The median values are quite close to the ONS values, but the mean values are always lower. This is expected, see the description of the modelling above.</p>
 <p><strong>Annual gross salary per sex and full-time/part-time classification</strong></p>
 <p>Only values &gt; 0 are retained for these calculations.</p>
-<table class="table">
+<table class="caption-top table">
 <colgroup>
 <col style="width: 15%">
 <col style="width: 9%">
@@ -575,7 +575,7 @@ ul.task-list li input[type="checkbox"] {
 </table>
 <p>The average salary for part-time employees is correct when values equal to 0 are taken into account. This suggests that the total number of hours worked for part-time employees is correct, but the way they are distributed among individuals is not. It could be due to the TUS taking a snapshot of the situation during a particular week, rather than averaging their data over the year. It appears that the TUS matching also overestimates the average number of hours worked for female employees.</p>
 <p><strong>Regional differences (hourly gross salary)</strong></p>
-<table class="table">
+<table class="caption-top table">
 <colgroup>
 <col style="width: 9%">
 <col style="width: 4%">
@@ -655,7 +655,7 @@ ul.task-list li input[type="checkbox"] {
 </table>
 <p>The pearson correlations for mean and median between the modelled and raw values are 0.92 and and 0.93.</p>
 <p><strong>Hourly gross salary per one-digit SOC</strong></p>
-<table class="table">
+<table class="caption-top table">
 <colgroup>
 <col style="width: 18%">
 <col style="width: 9%">
@@ -748,7 +748,7 @@ ul.task-list li input[type="checkbox"] {
 <p><strong>Hourly gross salary per age</strong></p>
 <p>The reference for this table is: <a href="https://www.ons.gov.uk/employmentandlabourmarket/peopleinwork/earningsandworkinghours/datasets/agegroupashetable6">Table 6.5a Hourly pay - Gross 2020</a></p>
 <p>Table before weighting by age:</p>
-<table class="table">
+<table class="caption-top table">
 <thead>
 <tr class="header">
 <th>Age</th>
@@ -806,7 +806,7 @@ ul.task-list li input[type="checkbox"] {
 </table>
 <p>The Pearson correlations for mean and median between the modelled and raw values are 0.92 and 0.92.</p>
 <p>Table after weighting by age:</p>
-<table class="table">
+<table class="caption-top table">
 <thead>
 <tr class="header">
 <th>Age</th>
@@ -968,6 +968,24 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
   function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
@@ -1002,7 +1020,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
     });
   }
   const xrefs = window.document.querySelectorAll('a.quarto-xref');
