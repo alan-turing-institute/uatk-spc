@@ -9,10 +9,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Install quarto
-      uses: quarto-dev/quarto-actions/setup@v2
+      uses: quarto-dev/quarto-actions/setup@v3
       with:
         tinytex: true
 
@@ -22,11 +22,10 @@ jobs:
         quarto render --to all
 
     - name: Install node
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: 18.x
         cache: 'npm'
-        cache-dependency-path: web/package-lock.json
 
     - name: Build web app
       run: |
