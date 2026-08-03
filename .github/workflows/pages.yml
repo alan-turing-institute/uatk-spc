@@ -12,7 +12,7 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Install quarto
-      uses: quarto-dev/quarto-actions/setup@v3
+      uses: quarto-dev/quarto-actions/setup@v2
       with:
         tinytex: true
 
