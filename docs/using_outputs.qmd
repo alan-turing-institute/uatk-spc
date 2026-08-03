@@ -12,7 +12,7 @@ The [SPC toolkit](using_use_output.qmd#python) can be used to work with SPC outp
 
 If you want to run SPC for a different list of MSOAs, [see here](using_custom_areas.qmd).
 
-The data for 2012, 2020, 2022, 2032 & 2039 are available here:
+The data for 2012, 2020, 2022, 2032 & 2039 are no longer available here, but 2012 and 2020 can still be requested directly from [the authors](mailto:hadrien.salat@ucl.ac.uk):
 
 - [England](using_england_outputs.qmd)
 - [Wales](using_wales_outputs.qmd)
